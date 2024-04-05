@@ -202,3 +202,12 @@ AbilitySystemComponent->ApplyGameplayEffectToTarget(SourceActor.Get(), TargetAct
 
 - 在客户端，可以通过调用UAbilitySystemComponent::BeginPlay()函数来确认AbilitySystemComponent的所有权，并将Avatar Actor设置为AICharacter。同时，客户端还需要调用UAbilitySystemComponent::OnRep_AvatarActor()函数来处理Avatar Actor的更新。
 
+
+
+![image-20240406020332916](.\image-20240406020332916.png)
+
+在Unreal Engine中，Mixed Replication Mode是一种特殊的网络复制模式，它允许在网络中同时存在多个拥有者。在这种模式下，每个Actor都有一个Owner Actor，而Owner Actor的拥有者可能是Controller（如PlayerController或AIController），也可能是PlayerState。
+
+在Mixed Replication Mode下，对于Player-Controlled Characters，Owner Actor通常是PlayerState，因为PlayerState的Owner自动设置为Controller。对于AI-Controlled Characters，Owner Actor通常是AIController，因为AIController的Owner自动设置为Controller。
+
+然而，如果Owner Actor不是PlayerState，但在使用Mixed Replication Mode时，你需要手动设置Owner Actor的Owner为其Controller。这可以通过调用SetOwner()函数来实现。例如，如果你的Owner Actor是一个非PlayerState的Actor，但在使用Mixed Replication Mode时，你需要将其Owner设置为Controller。
