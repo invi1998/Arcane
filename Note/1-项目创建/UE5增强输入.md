@@ -106,6 +106,14 @@ public class Arcane : ModuleRules
 private:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputMappingContext> AuraContext;	// 输入映射上下文
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> MoveAction;	// 移动动作
+
+	// 有了移动动作，我们还需要一个输入处理函数
+	void Move(const FInputActionValue& Value);	// 移动函数
+
+
 ```
 
 同时，我认为输入映射应该是很重要的一部分，如果游戏开发者没有定义这部分，那么我们将终止游戏进程。所以这里在begainPlay中断言 AuraContext，同时拿到输入增强子系统
@@ -142,3 +150,41 @@ void AAuraPlayerController::BeginPlay()
 
 ```
 
+然后，一切装备就绪，接下来我们就可以响以往一样，在类的 SetupInputComponent 函数中，处理绑定输入和输入的执行方法了。
+
+```c++
+
+void AAuraPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);	// 获取增强输入组件，类型转换为增强输入组件，如果类型转换失败则报错
+
+	// 一但有了增强输入组件，我们就可以绑定输入了
+	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Started, this, &AAuraPlayerController::Move);		// 绑定移动动作，当动作开始时调用Move函数
+}
+
+void AAuraPlayerController::Move(const FInputActionValue& Value)
+{
+	// 这里是移动函数的实现
+
+	const FVector2D& InputAxisVector = Value.Get<FVector2D>();	// 获取输入轴向量，这里是二维向量，因为我们的移动是二维的，而且我们在输入映射上下文中设置了二维向量
+	const FRotator& ControlRotation = GetControlRotation();	// 获取控制旋转
+	const FRotator YawRotation(0.0f, ControlRotation.Yaw, 0.0f);	// 创建一个只有Yaw旋转的旋转，这样我们就可以在水平面上移动
+
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);	// 获取前向方向
+	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);		// 获取右向方向
+
+	if (APawn* ControlledPawn = GetPawn<APawn>())
+	{
+		ControlledPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);		// 添加前向移动输入
+		ControlledPawn->AddMovementInput(RightDirection, InputAxisVector.X);		// 添加右向移动输入
+	}
+	
+}
+
+```
+
+然后基于该C++类，创建一个蓝图，最后将角色的蓝图的控制器设置为该控制器蓝图，我们就实现了角色移动。
+
+![image-20240405185158661](.\image-20240405185158661.png)
