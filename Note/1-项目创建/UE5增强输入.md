@@ -70,3 +70,75 @@
 然后，对于S后移来说，也是一样的，因为我们还需要一个负值，所以这里在w的基础上，再加一个修饰符，否定即可。
 
 ![image-20240405144949051](.\image-20240405144949051.png)
+
+
+
+然后在公共模块包含 `EnhancedInput`，这样才能引用头文件
+
+```c++
+
+using UnrealBuildTool;
+
+public class Arcane : ModuleRules
+{
+	public Arcane(ReadOnlyTargetRules Target) : base(Target)
+	{
+		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+	
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+
+		PrivateDependencyModuleNames.AddRange(new string[] {  });
+
+		// Uncomment if you are using Slate UI
+		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+		
+		// Uncomment if you are using online features
+		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
+
+		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
+	}
+}
+```
+
+然后，这里项目里我希望在controller文件中处理输入，所以在controller文件中，我们定义 输入映射上下文
+
+```c++
+private:
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputMappingContext> AuraContext;	// 输入映射上下文
+```
+
+同时，我认为输入映射应该是很重要的一部分，如果游戏开发者没有定义这部分，那么我们将终止游戏进程。所以这里在begainPlay中断言 AuraContext，同时拿到输入增强子系统
+
+```c++
+
+#include "EnhancedInputSubsystems.h"
+
+AAuraPlayerController::AAuraPlayerController()
+{
+	bReplicates = true;		// 开启复制
+}
+
+void AAuraPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	check(AuraContext);	// 检查输入映射上下文是否存在，如果不存在则报错
+
+	UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());		// 获取增强输入子系统
+
+	check(EnhancedInputSubsystem);	// 检查增强输入子系统是否存在，如果不存在则报错
+
+	EnhancedInputSubsystem->AddMappingContext(AuraContext, 0);	// 添加输入映射上下文，0表示优先级，因为只有一个输入映射上下文，所以优先级为0
+
+	bShowMouseCursor = true;	// 显示鼠标光标
+	DefaultMouseCursor = EMouseCursor::Default;	// 设置鼠标光标为默认
+
+	FInputModeGameAndUI InputMode;	// 创建输入模式
+	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);	// 设置鼠标锁定模式为不锁定，这样我们就可以在窗口外移动鼠标
+	InputMode.SetHideCursorDuringCapture(false);	// 设置捕获时隐藏鼠标光标为false，这样我们就可以在窗口外移动鼠标
+	SetInputMode(InputMode);	// 设置输入模式
+}
+
+```
+
