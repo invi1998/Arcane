@@ -9,6 +9,7 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
+class IEnemyInterface;
 
 /**
  * 
@@ -20,10 +21,13 @@ class ARCANE_API AAuraPlayerController : public APlayerController
 
 public:
 	AAuraPlayerController();
+	virtual void PlayerTick(float DeltaTime) override;
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
+
+	void CursorTrace();	// 光标追踪，追踪鼠标指向的物体
 
 private:
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -34,5 +38,7 @@ private:
 
 	// 有了移动动作，我们还需要一个输入处理函数
 	void Move(const FInputActionValue& Value);	// 移动函数
-	
+
+	IEnemyInterface* LastActor;		// 上一个命中的Actor
+	IEnemyInterface* ThisActor;	// 当前命中的Actor
 };

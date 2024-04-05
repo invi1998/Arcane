@@ -5,10 +5,18 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Interaction/EnemyInterface.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;		// 开启复制
+}
+
+void AAuraPlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+
+	CursorTrace();	// 鼠标点的射线检测
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -40,6 +48,44 @@ void AAuraPlayerController::SetupInputComponent()
 
 	// 一但有了增强输入组件，我们就可以绑定输入了
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);		// 绑定移动输入，这里是一个动作输入，所以使用BindAction，触发事件是Triggered，绑定的函数是Move，Triggered事件是在按下按键时触发，因为我们的移动是持续的，所以我们需要在按下按键时触发
+}
+
+void AAuraPlayerController::CursorTrace()
+{
+	FHitResult CursorHitResult;	// 创建一个碰撞结果
+	GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);	// 获取鼠标光标下的碰撞结果，ECC_Visibility表示只检测可见性通道，false表示不检测复杂碰撞，CursorHitResult是碰撞结果
+
+	if (!CursorHitResult.bBlockingHit) return;
+
+	// 根据这帧和上一帧的碰撞结果，判断是否是同一个物体
+	LastActor = ThisActor;
+	ThisActor = Cast<IEnemyInterface>(CursorHitResult.GetActor());		// 将碰撞结果的Actor转换为敌人接口，如果转换失败则返回nullptr
+
+	/*
+	 * 鼠标点的射线检测。可能有如下情况：
+	 * 1：上一帧和这一帧都没有碰撞到物体，那么不做任何操作
+	 * 2：上一帧和这一帧都碰撞到了物体，但是不是同一个物体，那么取消上一个物体的高亮
+	 * 3：上一帧和这一帧都碰撞到了物体，而且是同一个物体，那么不做任何操作
+	 * 4：上一帧没有碰撞到物体，这一帧碰撞到了物体，那么高亮这个物体
+	 * 5：上一帧碰撞到了物体，这一帧没有碰撞到物体，那么取消上一个物体的高亮
+	 */
+	if (LastActor && ThisActor)
+	{
+		if (LastActor != ThisActor)
+		{
+			LastActor->UnHighlightActor();	// 取消上一个物体的高亮
+			ThisActor->HighlightActor();	// 高亮这个物体
+		}
+	}
+	else if (LastActor && !ThisActor)
+	{
+		LastActor->UnHighlightActor();	// 取消上一个物体的高亮
+	}
+	else if (!LastActor && ThisActor)
+	{
+		ThisActor->HighlightActor();	// 高亮这个物体
+	}
+
 }
 
 void AAuraPlayerController::Move(const FInputActionValue& Value)
