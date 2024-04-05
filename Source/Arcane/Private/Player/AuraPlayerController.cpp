@@ -39,7 +39,7 @@ void AAuraPlayerController::SetupInputComponent()
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);	// 获取增强输入组件，类型转换为增强输入组件，如果类型转换失败则报错
 
 	// 一但有了增强输入组件，我们就可以绑定输入了
-	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Started, this, &AAuraPlayerController::Move);		// 绑定移动动作，当动作开始时调用Move函数
+	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);		// 绑定移动输入，这里是一个动作输入，所以使用BindAction，触发事件是Triggered，绑定的函数是Move，Triggered事件是在按下按键时触发，因为我们的移动是持续的，所以我们需要在按下按键时触发
 }
 
 void AAuraPlayerController::Move(const FInputActionValue& Value)
