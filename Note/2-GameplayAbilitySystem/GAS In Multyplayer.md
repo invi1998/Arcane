@@ -105,3 +105,52 @@ UE5的Gameplay Ability System（GAS）与传统虚幻引擎（UE）中的远程�
    - 客户端可以触发特定的网络事件，如网络通知（RepNotify）或网络代理（NetProxy）函数，这些函数在服务器上执行并产生相应的游戏逻辑变化。
 
 总之，虽然Replication本身是单向的，但客户端可以通过各种网络通信机制间接地影响服务器的状态，而服务器对这些请求的处理结果会通过Replication同步到所有客户端。
+
+
+
+## 设置复制模式 AbilitySystemComponent->SetReplicationMode
+
+
+
+Minimal, Mixed 和 Full 这三种模式是针对 GameplayEffect（游戏效果）的 replication settings，而不是 `AbilitySystemComponent` 的 `SetReplicationMode` 方法。
+
+在 Unreal Engine 5 的 Gameplay Ability System 中，GameplayEffect 的 replication settings 包括：
+
+1. **Minimal Replication**：
+   - 仅在初始应用 GameplayEffect 时，基本信息（例如，效果的ID和持续时间）会被复制到客户端。后续的效果更新（如随时间变化的数值）不会被复制。
+
+2. **Mixed Replication**：
+   - 初始应用时的基本信息会被复制，同时一些关键的数值更新（如造成伤害或治疗量）也会被复制到客户端。此模式提供了比 Minimal 更多的同步信息，但不是所有数值变化都会复制。
+
+3. **Full Replication**：
+   - 所有 GameplayEffect 的相关信息都会被复制到客户端，包括初始应用时的信息以及所有后续的数值更新。这是最完整的同步模式，保证了客户端和服务器之间的完全一致。
+
+在 Unreal 编程中，这些设置通常在创建 GameplayEffectSpec 时指定，例如：
+
+```cpp
+// 创建 GameplayEffectSpec
+FGameplayEffectSpecHandle SpecHandle = FGameplayEffectSpec::CreateAndSetDuration(GetDefault<UGameplayEffect>(), Duration, EffectContext);
+
+// 设置 replication 设置
+SpecHandle.Data.SetReplicationMode(EGameplayEffectReplicationMode::Full); // 示例，设置为全复制模式
+
+// 应用 GameplayEffect
+AbilitySystemComponent->ApplyGameplayEffectToTarget(SourceActor.Get(), TargetActor.Get(), SpecHandle, 1.0f);
+```
+![image-20240406003451466](.\image-20240406003451466.png)
+
+这张图片显示的是不同类型的复制模式（Replication Mode），以及它们各自的应用场景。根据表格内容，我们可以看到以下三种复制模式及其描述：
+
+1. Full Replication Mode（全复制模式）：
+   - 使用场景：单人游戏（Single Player）
+   - 描述：所有游戏效果都会被复制到所有客户端。
+
+2. Mixed Replication Mode（混合复制模式）：
+   - 使用场景：多人游戏，玩家控制（Multiplayer, Player-Controlled）
+   - 描述：游戏效果只被复制到拥有者客户端。游戏提示和游戏标签被复制到所有客户端。
+
+3. Minimal Replication Mode（最小化复制模式）：
+   - 使用场景：多人游戏，AI控制（Multiplayer, AI-Controlled）
+   - 描述：游戏效果不被复制。游戏提示和游戏标签被复制到所有客户端。
+
+这些复制模式在游戏开发中用于管理游戏状态和数据在网络中的传输方式。在单人游戏中，所有数据都需要在本地机器上处理和呈现；而在多人游戏中，需要区分哪些数据需要在所有玩家之间共享，哪些数据只需要在特定玩家或AI之间共享。通过选择合适的复制模式，开发者可以优化网络性能并确保游戏体验的一致性。

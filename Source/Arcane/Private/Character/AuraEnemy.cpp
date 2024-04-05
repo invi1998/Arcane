@@ -13,6 +13,7 @@ AAuraEnemy::AAuraEnemy()
 
 	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>(TEXT("AbilitySystemComponent"));	// 创建能力系统组件
 	AbilitySystemComponent->SetIsReplicated(true);	// 设置复制
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);	// 设置复制模式，对于AI来说，只需要最小的复制
 
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("AttributeSet"));	// 创建属性集
 }
