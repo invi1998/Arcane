@@ -36,3 +36,82 @@ GAS设计的目标是模块化和可扩展性，允许开发者通过蓝图和/�
 
 而对于我们主角角色来说，我们会将这些能力组件和属性集在玩家状态上进行设置。
 
+
+
+**要使用该功能，我们需要再插件里开启该插件**
+
+![image-20240405232412478](.\image-20240405232412478.png)
+
+
+
+每次添加新的插件后，记得去项目构建文件里(xx.build.cs)添加依赖。 对于GAS，我们需要添加 `"GameplayAbilities", "GameplayTags", "GameplayTasks"`，这里我把他添加到private依赖中。
+
+```c#
+using UnrealBuildTool;
+
+public class Arcane : ModuleRules
+{
+	public Arcane(ReadOnlyTargetRules Target) : base(Target)
+	{
+		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+	
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+
+		PrivateDependencyModuleNames.AddRange(new string[] { "GameplayAbilities", "GameplayTags", "GameplayTasks" });
+
+		// Uncomment if you are using Slate UI
+		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+		
+		// Uncomment if you are using online features
+		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
+
+		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
+	}
+}
+
+```
+
+
+
+
+
+创建 游戏能力组件 和 属性集类
+
+```c++
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "AbilitySystemComponent.h"
+#include "AuraAbilitySystemComponent.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANE_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
+{
+	GENERATED_BODY()
+	
+};
+```
+
+```c++
+#pragma once
+
+#include "CoreMinimal.h"
+#include "AttributeSet.h"
+#include "AuraAttributeSet.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANE_API UAuraAttributeSet : public UAttributeSet
+{
+	GENERATED_BODY()
+	
+};
+
+```
+
