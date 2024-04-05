@@ -154,3 +154,51 @@ AbilitySystemComponent->ApplyGameplayEffectToTarget(SourceActor.Get(), TargetAct
    - 描述：游戏效果不被复制。游戏提示和游戏标签被复制到所有客户端。
 
 这些复制模式在游戏开发中用于管理游戏状态和数据在网络中的传输方式。在单人游戏中，所有数据都需要在本地机器上处理和呈现；而在多人游戏中，需要区分哪些数据需要在所有玩家之间共享，哪些数据只需要在特定玩家或AI之间共享。通过选择合适的复制模式，开发者可以优化网络性能并确保游戏体验的一致性。
+
+
+
+## Init Ability Actor Info
+
+![image-20240406005131969](.\image-20240406005131969.png)
+
+在多人游戏中，AbilitySystemComponent的初始化是一个关键步骤，因为它涉及到游戏玩法和角色能力的正确设置。图中展示了AbilitySystemComponent的初始化过程，并强调了在不同角色类型（如敌人角色和玩家角色）之间的差异。
+
+在初始化AbilitySystemComponent时，需要注意以下几点：
+
+1. Owner Actor and Avatar Actor:
+   - 对于敌人角色，AbilitySystemComponent是直接挂载在其角色上的，因此Owner Actor和Avatar Actor是同一个实体。
+   - 对于玩家角色，AbilitySystemComponent通常挂载在PlayerState上，因此Owner Actor是PlayerState，而Avatar Actor是实际的游戏角色。
+
+2. Init Ability Actor Info:
+   - 图中展示了UAbilitySystemComponent::InitAbilityActorInfo()函数的调用，这个函数用于设置AbilitySystemComponent的Owner Actor和Avatar Actor属性。
+   - 对于敌人角色，调用InitAbilityActorInfo()时传入其自身作为Owner Actor和Avatar Actor参数。
+   - 对于玩家角色，调用InitAbilityActorInfo()时传入PlayerState作为Owner Actor，以及实际的游戏角色作为Avatar Actor。
+
+3. Ability System Component:
+   - AbilitySystemComponent是Ability System框架的核心组件，它负责管理角色的能力、技能和Buff等。
+   - 在初始化AbilitySystemComponent时，需要确保它与正确的Owner Actor和Avatar Actor关联，以便正确地应用和管理角色的能力。
+
+4. Multiplayer Considerations:
+   - 在多人游戏中，需要确保AbilitySystemComponent的初始化在所有玩家之间同步。
+   - 这可能需要使用网络编程技术来确保每个玩家的角色都能正确地初始化AbilitySystemComponent，并与其他玩家的角色保持同步。
+
+综上所述，初始化AbilitySystemComponent时，需要考虑Owner Actor和Avatar Actor的区别，以及在多人游戏环境下的同步问题。正确地初始化AbilitySystemComponent对于确保游戏玩法的一致性和角色能力的正确管理至关重要。
+
+![image-20240406010538856](.\image-20240406010538856.png)
+
+### 那我们应该在什么时机去调用函数呢？
+
+对于Player-Controlled Character，初始化AbilitySystemComponent应该在角色被控制后进行。在这个过程中，Controller（通常是PlayerController）会将自己设置为Pawn（通常是PlayerCharacter）的拥有者。在这一时刻，AbilitySystemComponent已经存在于Pawn上，因此可以在服务器和客户端同时进行初始化。
+
+- 在服务器上，对于Player-Controlled Character，AbilitySystemComponent的初始化确实应该在PossessionBy函数中进行。当PlayerController对Pawn进行控制时，可以通过调用UAbilitySystemComponent::InitAbilityActorInfo()函数来初始化AbilitySystemComponent，同时将Owner Actor设置为PlayerController，将Avatar Actor设置为PlayerCharacter。
+
+​	PossessionBy()函数是在一个Controller（通常是PlayerController或AIScriptedProxy）控制一个Pawn（通常是PlayerCharacter或	AICharacter）时被调用的。这个函数在Controller和Pawn之间建立了一个关联关系，使得Controller可以控制Pawn的行为和动作。
+
+​	这点对于Character和PlayerState来说都是一样的，在服务端。
+
+- 在客户端，可以通过调用UAbilitySystemComponent::AcknowledgePossession()函数来确认AbilitySystemComponent的所有权，并将Avatar Actor设置为PlayerCharacter。同时，客户端还需要调用UAbilitySystemComponent::OnRep_AvatarActor()函数来处理Avatar Actor的更新。而且，因为对于玩家控制的角色，ASC是挂载在PlayerState上的，所以我们不仅要等Character生成完成，还需要等PlayerState生成完成，所以，在PlayerState中，我们需要在收到服务端的OnRep_PlayerState rpc后才能进行ASC的初始化调用。
+
+对于AI-Controlled Character，初始化AbilitySystemComponent也应在角色被控制后进行。在这个过程中，Controller（通常是AIScriptedProxy）会将自己设置为Pawn（通常是AICharacter）的拥有者。在这一时刻，AbilitySystemComponent已经存在于Pawn上，因此可以在服务器和客户端同时进行初始化。
+
+- 在客户端，可以通过调用UAbilitySystemComponent::BeginPlay()函数来确认AbilitySystemComponent的所有权，并将Avatar Actor设置为AICharacter。同时，客户端还需要调用UAbilitySystemComponent::OnRep_AvatarActor()函数来处理Avatar Actor的更新。
+

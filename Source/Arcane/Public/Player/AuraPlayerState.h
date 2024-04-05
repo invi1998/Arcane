@@ -20,6 +20,7 @@ class ARCANE_API AAuraPlayerState : public APlayerState, public IAbilitySystemIn
 
 public:
 	AAuraPlayerState();
+	virtual void BeginPlay() override;
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;		// 获取能力系统组件
 	UAttributeSet* GetAttributeSet() const;												// 获取属性集

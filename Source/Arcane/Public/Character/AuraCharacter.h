@@ -16,5 +16,11 @@ class ARCANE_API AAuraCharacter : public AAuraCharacterBase
 
 public:
 	AAuraCharacter();
+
+	virtual void PossessedBy(AController* NewController) override;		// 当角色被控制器控制时调用
+	virtual void OnRep_PlayerState() override;		// 当角色的PlayerState被复制时调用
+
+private:
+	void InitAbilityActorInfo();	// 初始化能力Actor信息
 	
 };

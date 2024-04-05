@@ -18,7 +18,12 @@ class ARCANE_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 public:
 	AAuraEnemy();
 
+	/*begin Enemy 接口*/
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
+	/*end Enemy 接口*/
+
+protected:
+	virtual void BeginPlay() override;
 
 };

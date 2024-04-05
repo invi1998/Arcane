@@ -18,6 +18,11 @@ AAuraPlayerState::AAuraPlayerState()
 
 }
 
+void AAuraPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 UAbilitySystemComponent* AAuraPlayerState::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;

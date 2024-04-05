@@ -18,6 +18,13 @@ AAuraEnemy::AAuraEnemy()
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("AttributeSet"));	// 创建属性集
 }
 
+void AAuraEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);	// 初始化能力系统组件，设置拥有者和所有者
+}
+
 void AAuraEnemy::HighlightActor()
 {
 	// 通过设置后处理材质来高亮，后处理材质主要通过渲染自定义深度来实现
