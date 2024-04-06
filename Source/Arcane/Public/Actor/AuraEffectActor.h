@@ -14,32 +14,13 @@ class ARCANE_API AAuraEffectActor : public AActor
 public:	
 	AAuraEffectActor();
 
-	// 重叠事件
-	UFUNCTION()
-	virtual void OnOverlap(
-		UPrimitiveComponent* OverlappedComponent,	//	重叠组件
-		AActor* OtherActor,							//	重叠的Actor
-		UPrimitiveComponent* OtherComp,				//	重叠的组件
-		int32 OtherBodyIndex,						//	重叠的BodyIndex
-		bool bFromSweep,							//	是否是扫描
-		const FHitResult& SweepResult);				//	扫描结果
-
-	UFUNCTION()
-	virtual void EndOverlap(
-		UPrimitiveComponent* OverlappedComponent,	//	重叠组件
-		AActor* OtherActor,							//	重叠的Actor
-		UPrimitiveComponent* OtherComp,				//	重叠的组件
-		int32 OtherBodyIndex);						//	重叠的BodyIndex
-
 protected:
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, Category="Applied Effects")
+	TSubclassOf<UGameplayEffect> InstanceGameplayEffectClass;	// 实例化的GameplayEffect类
+
+	void ApplyEffectToTarget(AActor* Target, TSubclassOf<UGameplayEffect> GameplayEffectClass);	// 将效果应用到目标，传入目标和GameplayEffect类
 
 private:
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class USphereComponent> Sphere;	// 球形碰撞组件
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<class UStaticMeshComponent> StaticMesh;	// 静态网格组件
-
 };
