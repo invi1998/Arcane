@@ -211,3 +211,21 @@ AbilitySystemComponent->ApplyGameplayEffectToTarget(SourceActor.Get(), TargetAct
 在Mixed Replication Mode下，对于Player-Controlled Characters，Owner Actor通常是PlayerState，因为PlayerState的Owner自动设置为Controller。对于AI-Controlled Characters，Owner Actor通常是AIController，因为AIController的Owner自动设置为Controller。
 
 然而，如果Owner Actor不是PlayerState，但在使用Mixed Replication Mode时，你需要手动设置Owner Actor的Owner为其Controller。这可以通过调用SetOwner()函数来实现。例如，如果你的Owner Actor是一个非PlayerState的Actor，但在使用Mixed Replication Mode时，你需要将其Owner设置为Controller。
+
+
+
+## Attributes
+
+![image-20240406094829066](.\image-20240406094829066.png)
+
+尽管可以直接通过代码来改变Attributes的值，但更推荐使用Gameplay Effect来改变Attributes有以下几个原因：
+
+1. **预测性**：使用Gameplay Effect可以让客户端无需等待服务器的许可就能立即改变属性值。这意味着客户端可以立即看到属性值的变化，而服务器只需稍后被告知这些变化。这种机制称为预测，它提高了游戏的响应速度和流畅性。
+
+2. **可逆性**：服务器可以撤销无效的属性更改。如果客户端的某个属性更改被服务器拒绝，服务器可以回滚该更改，以保持数据的一致性和正确性。
+
+3. **统一性**：使用Gameplay Effect可以提供一种统一的方式来管理属性更改，无论这些更改是来自客户端的预测还是来自服务器的命令。这样可以简化代码逻辑，提高代码的可维护性和可扩展性。
+
+4. **灵活性**：Gameplay Effect还可以包含持续时间、衰减曲线等额外信息，这使得属性更改更加灵活和可控。
+
+综上所述，尽管直接修改属性值在技术上是可行的，但使用Gameplay Effect提供了更好的性能、可逆性、统一性和灵活性，因此是更推荐的做法。
