@@ -250,6 +250,74 @@ FGameplayAttributeData的主要成员变量包括：
 
 在Unreal Engine中，FGameplayAttributeData通常与FGameplayAttribute和UGameplayAbility一起使用，作为游戏能力系统的一部分。通过这些组件，开发者可以轻松地添加、修改和删除游戏中的属性，以实现复杂的游戏行为和效果。
 
+![image-20240406104932612](.\image-20240406104932612.png)
+
+## GAMEPLAYATTRIBUTE_PROPERTY_GETTER
+
+在Unreal Engine中，`GAMEPLAYATTRIBUTE_PROPERTY_GETTER`是一个宏定义，用于定义一个属性获取器。这个宏通常在类的声明中使用，以确保在获取属性值时，可以正确地从属性数据中读取。
+
+`GAMEPLAYATTRIBUTE_PROPERTY_GETTER`宏的作用是定义一个属性获取器，用于从属性数据中读取属性的值。当获取`MyAttributeValue`的值时，实际上会调用`GetMyAttribute`方法来获取`MyAttribute`的值。
+
+通过这种方式，可以方便地获取属性的值，而不需要直接访问属性数据。这对于需要频繁获取属性值的场景非常有用，例如在游戏逻辑中，需要不断获取玩家的生命值、攻击力等属性的值。
+
+### 展开说说
+
+在Unreal Engine中，`GAMEPLAYATTRIBUTE_PROPERTY_GETTER`和其他宏是属性访问器宏，它们用于定义一组帮助函数，以便于访问和初始化属性，避免手动编写这些函数。这些宏定义了与属性相关的函数，包括获取属性值、设置属性值以及初始化属性值等。
+
+以下是对这些宏的详细解释：
+
+1. `GAMEPLAYATTRIBUTE_PROPERTY_GETTER`: 定义了一个属性获取器函数，用于获取属性的值。这个宏定义了一个名为`Get{PropertyName}`的静态函数，返回一个`{ClassName}`类型的属性值。
+
+```cpp
+#define GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
+    static FGameplayAttribute {ClassName}::Get{PropertyName}Attribute();
+```
+
+2. `GAMEPLAYATTRIBUTE_VALUE_GETTER`: 定义了一个属性值获取器函数，用于获取属性的值。这个宏定义了一个名为`{PropertyName}`的常量函数，返回一个`{ClassName}`类型的属性值。
+
+```cpp
+#define GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
+    const float {ClassName}::{PropertyName}() const { return Get{PropertyName}Attribute().Get(); }
+```
+
+3. `GAMEPLAYATTRIBUTE_VALUE_SETTER`: 定义了一个属性值设置器函数，用于设置属性的值。这个宏定义了一个名为`{PropertyName}`的函数，接受一个浮点数参数，并设置属性的值。
+
+```cpp
+#define GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
+    void {ClassName}::{PropertyName}(float NewVal) { Set{PropertyName}(NewVal); }
+```
+
+4. `GAMEPLAYATTRIBUTE_VALUE_INITTER`: 定义了一个属性值初始化函数，用于初始化属性的值。这个宏定义了一个名为`Init{PropertyName}`的函数，接受一个浮点数参数，并初始化属性的值。
+
+```cpp
+#define GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName) \
+    void {ClassName}::Init{PropertyName}(float NewVal) { Init{PropertyName}(NewVal); }
+```
+
+5. `ATTRIBUTEE_ACCESSORS`: 定义了一组属性访问器宏，用于在类中定义属性访问器函数。这个宏接受两个参数，第一个参数是类名，第二个参数是属性名。
+
+```cpp
+#define ATTRIBUTEE_ACCESSORS(ClassName, PropertyName) \\
+    GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \\
+    GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \\
+    GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \\
+    GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
+```
+
+在使用这些宏时，可以定义一个类，然后在类中使用`ATTRIBUTEE_ACCESSORS`宏来定义属性访问器函数。例如：
+
+```cpp
+class UMyClass : public UObject
+{
+    GENERATED_BODY()
+
+    // 使用宏定义属性访问器函数
+    #define ATTRIBUTEE_ACCESSORS(UMyClass, Health)
+};
+```
+
+这样就可以在类中使用`GetHealthAttribute()`、`Health()`、`SetHealth(float)`和`InitHealth(float)`等函数来访问和初始化属性。
+
 
 
 ## EG
@@ -291,3 +359,43 @@ void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) co
 ```
 
 `GAMEPLAYATTRIBUTE_REPNOTIFY`宏的作用是将属性的变更事件与指定的方法关联起来。当属性的值发生变更时，系统会调用指定的方法来通知所有相关对象。这对于需要实时同步属性状态的应用场景非常有用，例如在多人游戏中，需要将玩家的状态同步给其他玩家。
+
+5：添加属性访问宏
+
+然后如果我们想快速直接的获取到Health值，要么通过 FGameplayAttributeData 去里面找，要么通过 FGameplayAttributeData 提供的宏动态生成该属性的Getter，Setter，Init函数。如果要这么做，我们需要再文件头部事先声明该宏，包含头文件 `#include "AbilitySystemComponent.h"`
+
+```c+
+// 该宏用于生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+#define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
+	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
+	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
+	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
+	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
+```
+
+然后，再在我们希望生成的属性下面，添加上宏生成
+
+```c++
+/** 生命值 */
+UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_Health, Category="Vital Attributes")	// 蓝图只读，复制使用OnRep_Health函数，分类为Vital Attributes（重要属性）
+FGameplayAttributeData Health;		// 生命值，类型为FGameplayAttributeData，这是一个结构体，包含了当前值和基础值
+ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+```
+
+他们会为我们生成各种属性获取或者设置函数，然后我们就能在代码中直接获取float类型的属性值了
+
+```c++
+UAuraAttributeSet::UAuraAttributeSet()
+{
+	InitHealth(100.f);	// 初始化生命值
+	GetHealth();	// 获取生命值
+}
+```
+
+
+
+## DEBUG
+
+进入游戏护，`~`输入 `showdebug abilitysystem` 就能进入Ability调试界面
+
+![image-20240406111212812](.\image-20240406111212812.png)
