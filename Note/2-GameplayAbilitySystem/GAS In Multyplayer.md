@@ -399,3 +399,32 @@ UAuraAttributeSet::UAuraAttributeSet()
 进入游戏护，`~`输入 `showdebug abilitysystem` 就能进入Ability调试界面
 
 ![image-20240406111212812](.\image-20240406111212812.png)
+
+
+
+如果不使用GameplayEffect来改变AttributeSet的值，而且直接硬编码去改值，会有什么后果
+
+![image-20240406120433106](.\image-20240406120433106.png)
+
+可以看到，编码失败，因为GetAttributeSet返回的值是一个const属性的，是不允许被修改的值，所以事实上，我们是不能改变AttributSet的，但是如果强行去const，那就是后话了，这都破坏了代码的封装性，显然不是个好办法。
+
+```c++
+void AAuraEffectActor::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// TODO: 在GamePlayEffect中改变属性，而不是直接在这里改变
+	if (const IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(OtherActor))
+	{
+		const UAuraAttributeSet* AuraAttributeSet = Cast<UAuraAttributeSet>(AbilitySystemInterface->GetAbilitySystemComponent()->GetAttributeSet(UAuraAttributeSet::StaticClass()));
+
+		// 去const
+		UAuraAttributeSet* AuraAS = const_cast<UAuraAttributeSet*>(AuraAttributeSet);
+
+		AuraAS->SetHealth(AuraAttributeSet->GetHealth() + 10.f);
+	}
+}
+```
+
+
+
+所以，我们不应该直接在属性集上设置角色属性，应该在响应游戏效果时更改属性。
