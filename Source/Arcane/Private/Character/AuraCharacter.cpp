@@ -5,7 +5,9 @@
 
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
+#include "UI/HUD/AuraHUD.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -45,4 +47,17 @@ void AAuraCharacter::InitAbilityActorInfo()
 	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);	// 初始化技能系统组件
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();	// 获取技能系统组件
 	AttributeSet = AuraPlayerState->GetAttributeSet();	// 获取属性集
+
+	// 很多人纠结到底在什么情况下应该断言PlayerController*，什么时候只需要判断指针是否为空？
+	// 因为我们这个是一个多人游戏，而控制器在客户端只有自己角色的控制器，其他角色的控制器是空的，服务端有所有角色的控制器。
+	// 所以控制器这个指针是会存在空的情况的，这是正常的，说明这个控制器不是自己的控制器。
+	// 所以这种情况下我们只需要判断指针是否为空就可以了，不需要断言。
+	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	{
+		if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
+		{
+			AuraHUD->InitOverlay(AuraPlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
+		}
+	}
+
 }
