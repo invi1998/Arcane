@@ -41,6 +41,7 @@ void AAuraEffectActor::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		UAuraAttributeSet* AuraAS = const_cast<UAuraAttributeSet*>(AuraAttributeSet);
 
 		AuraAS->SetHealth(AuraAttributeSet->GetHealth() + 10.f);
+		AuraAS->SetMana(AuraAttributeSet->GetMana() - 10.f);
 
 		Destroy();
 	}
