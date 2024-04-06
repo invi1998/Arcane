@@ -229,3 +229,65 @@ AbilitySystemComponent->ApplyGameplayEffectToTarget(SourceActor.Get(), TargetAct
 4. **灵活性**：Gameplay Effect还可以包含持续时间、衰减曲线等额外信息，这使得属性更改更加灵活和可控。
 
 综上所述，尽管直接修改属性值在技术上是可行的，但使用Gameplay Effect提供了更好的性能、可逆性、统一性和灵活性，因此是更推荐的做法。
+
+
+
+## FGameplayAttributeData
+
+FGameplayAttributeData是Unreal Engine中用于表示游戏属性数据的结构体类型。它包含了属性的当前值、最大值和最小值等信息。FGameplayAttributeData通常与FGameplayAttribute类型一起使用，后者定义了属性的类型和名称。
+
+在Unreal Engine中，FGameplayAttributeData通常用于存储和管理游戏中的各种属性，如生命值、法力值、攻击力等。这些属性可以由FGameplayAttribute定义，然后通过FGameplayAttributeData存储和更新其数值。
+
+FGameplayAttributeData的主要成员变量包括：
+
+- CurrentValue：属性的当前值。
+- MaxValue：属性的最大值。
+- MinValue：属性的最小值。
+- bIsAdditive：一个布尔值，指示是否应将此属性与其他属性相加。
+- bIsMultiplicative：一个布尔值，指示是否应将此属性与其他属性相乘。
+
+此外，FGameplayAttributeData还包括一些其他成员变量，如用于存储属性值的缓存、属性值的原始值等。
+
+在Unreal Engine中，FGameplayAttributeData通常与FGameplayAttribute和UGameplayAbility一起使用，作为游戏能力系统的一部分。通过这些组件，开发者可以轻松地添加、修改和删除游戏中的属性，以实现复杂的游戏行为和效果。
+
+
+
+## EG
+
+1：在属性集中定义属性，类型是 FGameplayAttributeData，设置为可复制，同时指定复制函数（值变化时的回调函数）
+
+```c++
+UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_Health, Category="Vital Attributes")	// 蓝图只读，复制使用OnRep_Health函数，分类为Vital Attributes（重要属性）
+FGameplayAttributeData Health;		// 生命值，类型为FGameplayAttributeData，这是一个结构体，包含了当前值和基础值
+
+```
+
+2：添加属性复制函数，属性复制函数一般如果不传参数表示使用新值，但是如果希望实现新旧值比对的类似功能，可以指定参数传入旧值
+
+```c++
+UFUNCTION()
+void OnRep_Health(const FGameplayAttributeData& OldHealth) const;		// 一般来说，Rep函数是不需要传入参数的，但是如果你需要在Rep函数中使用旧值，那么你就需要传入参数
+	
+```
+
+3：在声明周期函数中设置属性的复制属性，对于 FGameplayAttributeData类型的数据，我们希望同时也指定其复制条件和通知方式，所以这里用DOREPLIFETIME_CONDITION_NOTIFY，
+
+```c++
+void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, Health, COND_None, REPNOTIFY_Always);	// 设置属性的复制方式，传入属性名，复制条件（无条件复制），通知方式（始终通知）
+}
+```
+
+4：完善客户端调用
+
+```c++
+void UAuraAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Health, OldHealth);	// 通知属性变化，传入属性名，新值和旧值
+}
+```
+
+`GAMEPLAYATTRIBUTE_REPNOTIFY`宏的作用是将属性的变更事件与指定的方法关联起来。当属性的值发生变更时，系统会调用指定的方法来通知所有相关对象。这对于需要实时同步属性状态的应用场景非常有用，例如在多人游戏中，需要将玩家的状态同步给其他玩家。
