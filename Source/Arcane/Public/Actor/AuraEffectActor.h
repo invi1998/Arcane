@@ -17,10 +17,11 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category="Applied Effects")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
 	TSubclassOf<UGameplayEffect> InstanceGameplayEffectClass;	// 实例化的GameplayEffect类
 
-	void ApplyEffectToTarget(AActor* Target, TSubclassOf<UGameplayEffect> GameplayEffectClass);	// 将效果应用到目标，传入目标和GameplayEffect类
+	UFUNCTION(BlueprintCallable)
+	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);	// 将效果应用到目标，传入目标和GameplayEffect类
 
 private:
 };

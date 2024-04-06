@@ -1,3 +1,5 @@
+# Apply Gameplay Effect （游戏效果应用于目标negligible系统组件）
+
 这里为了理解Gameplay Effect到底是干嘛，我们对比前后两版代码来看
 
 ```c++
@@ -21,7 +23,13 @@ void AAuraEffectActor::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 现在，我们希望通过Game Effect 来修改属性集。那我们的做法就是下面这种。我们在类中新写一个ApplyEffectToTarget函数，顾名思义，该函数的作用就是将效果应用到目标角色上。
 
+```c++
+	UFUNCTION(BlueprintCallable)
+	void ApplyEffectToTarget(AActor* Target, TSubclassOf<UGameplayEffect> GameplayEffectClass);	// 将效果应用到目标，传入目标和GameplayEffect类
 
+```
+
+CPP
 
 ```c++
 void AAuraEffectActor::ApplyEffectToTarget(AActor* Target, TSubclassOf<UGameplayEffect> GameplayEffectClass)
@@ -86,3 +94,23 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* Target, TSubclassOf<UGameplay
 6. 最后，代码会检查 Gameplay Effect 类是否为空，以及规格是否有效。如果规格无效，代码会抛出错误信息。
 
 总之，这段代码的主要目的是在 Unreal Engine 游戏中应用一个 Gameplay Effect 规格到目标 Actor 上，以实现特定的游戏效果。
+
+
+
+# Instant Gameplay Effects
+
+我们在UE中创建一个GE_PotionHeal（血点）基于最基础的GameplayEffect，用来实现碰撞加血逻辑。
+
+![image-20240407023108265](.\image-20240407023108265.png)
+
+然后我们在设置里指定好属性集，因为是加血逻辑，所以这里关联的是属性集里的Health，然后指定数据操作运算（这里是做加法操作，选择Add），然后指定操作数值，比如一次加多少血，这里定为25.5。然后保存，这样，一个最简单的GameEffect蓝图就设置好了。
+
+然后我们基于我们上面的 AAuraEffectActor 类创建蓝图，该蓝图用于实例化生成一个血点，比如实例化一些血球（药瓶）的静态网格体啊之类的。
+
+![image-20240407023545828](.\image-20240407023545828.png)
+
+然后编辑该蓝图的事件。我们希望角色碰撞到（和碰撞球体重合）触发回血效果，然后销毁血包。所以在蓝图里我们在overlap节点下，执行我们的将我们的GameplayEffect应用到角色上，targetActor就是应用目标，对于碰撞球来说，就是配碰到了我（角色碰到了血瓶）。然后我们将我们准备好的GE_PointHeal作为游戏效果传给ApplyEffectToTarget函数，这样就实现了回血逻辑。ApplyEffectToTarget函数就是上面我们暴露给蓝图的。
+
+![image-20240407023657270](.\image-20240407023657270.png)
+
+由此我们就打通了GameplayEffect的一个最基础的工作流程。
