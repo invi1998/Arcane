@@ -27,10 +27,10 @@ public:
 	FGameplayAttributeData MaxHealth;	// 最大生命值
 
 	/** 魔法 */
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Mana, Category="Mana Attributes")	// 蓝图只读, 复制使用OnRep_Mana函数，分类为Mana Attributes（魔法属性）
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Mana, Category="Vital Attributes")	// 蓝图只读, 复制使用OnRep_Mana函数，分类为Vital Attributes（重要属性）
 	FGameplayAttributeData Mana;		// 魔法
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxMana, Category="Mana Attributes")	// 蓝图只读，分类为Mana Attributes（魔法属性）
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxMana, Category="Vital Attributes")	// 蓝图只读，分类为Vital Attributes（重要属性）
 	FGameplayAttributeData MaxMana;		// 最大魔法
 
 	UFUNCTION()
