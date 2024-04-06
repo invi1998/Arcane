@@ -7,9 +7,9 @@
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
-	InitHealth(100.f);	// 初始化生命值
+	InitHealth(10.f);	// 初始化生命值
 	InitMaxHealth(100.f);	// 初始化最大生命值
-	InitMana(50.f);		// 初始化魔法
+	InitMana(40.f);		// 初始化魔法
 	InitMaxMana(50.f);	// 初始化最大魔法
 }
 

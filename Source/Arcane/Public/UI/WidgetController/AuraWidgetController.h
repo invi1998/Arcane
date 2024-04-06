@@ -40,6 +40,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetControllerParams(const FWidgetControllerParams& InParams);	// 设置控制器参数
 	virtual void BroadcastInitialValues();		// 广播初始值
+	virtual void BindCallbacksToDependencies();	// 绑定回调到依赖项
 
 
 protected:
