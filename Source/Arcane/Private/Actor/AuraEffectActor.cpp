@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 AAuraEffectActor::AAuraEffectActor()
@@ -60,6 +61,8 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 		// 什么是效果上下文呢？效果上下文是一个结构体，用于存储效果的来源，目标，施法者等信息。在创建效果规格时，我们需要传入效果上下文。
 		FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
 		EffectContext.AddSourceObject(this);	// 添加源对象，表示这个效果是由谁发出的。
+
+		UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("ApplyEffectToTarget: %s"), *TargetActor->GetName()), true, true, FLinearColor::Red, 1.f);	// 打印字符串
 
 		// 创建效果规格，用于应用效果。参数分别是效果类，等级，效果上下文。
 		FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, EffectContext);
