@@ -73,6 +73,39 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 
 }
 
+void AAuraEffectActor::OnOverlap(AActor* TargetActor)
+{
+	// 获取目标的能力系统组件
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	if (TargetASC)
+	{
+		// 创建效果上下文，用于创建效果规格。
+		// 什么是效果上下文呢？效果上下文是一个结构体，用于存储效果的来源，目标，施法者等信息。在创建效果规格时，我们需要传入效果上下文。
+		FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
+		EffectContext.AddSourceObject(this);	// 添加源对象，表示这个效果是由谁发出的。
+
+		// 创建效果规格，用于应用效果。参数分别是效果类，等级，效果上下文。
+		FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1.f, EffectContext);
+		// 如果效果规格有效，就应用效果规格到自己。
+		if (EffectSpecHandle.IsValid())
+		{
+			// 应用效果规格到自己。
+			TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+		}
+	}
+}
+
+void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
+{
+	// 获取目标的能力系统组件
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	if (TargetASC)
+	{
+		// 移除效果
+		TargetASC->RemoveActiveGameplayEffectBySourceEffect(this);
+	}
+}
+
 
 
 
