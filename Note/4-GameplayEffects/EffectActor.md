@@ -492,3 +492,52 @@ if (Elem.Value == TargetASC)	// 如果映射表中的能力系统组件和目标
 ```
 
 ![image-20240407201605146](.\image-20240407201605146.png)
+
+
+
+# PreAttributeChange （临时限制属性数值范围）
+
+我们之前所做的所有的效果，他们在改变属性集里的数值的时候，是没有边界限制的，血量可以低于0，可以高于100等等等等，现在，我们需要限制这些边界值。
+
+只需要在UAuraAttributeSet类中 重写PreAttributeChange函数，用于属性改变前的处理
+
+```c++
+void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
+{
+	Super::PreAttributeChange(Attribute, NewValue);
+
+	// 限制生命值和最大生命值的范围
+	if (Attribute == GetHealthAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
+	}
+	else if (Attribute == GetMaxHealthAttribute())
+	{
+		NewValue = FMath::Max(NewValue, 0.f);
+	}
+	else if (Attribute == GetManaAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
+	}
+	else if (Attribute == GetMaxManaAttribute())
+	{
+		NewValue = FMath::Max(NewValue, 0.f);
+	}
+}
+```
+
+![image-20240407203849780](D:\study\Arcane\Note\4-GameplayEffects\image-20240407203849780.png)
+
+PreAttributeChange函数是一个在虚幻引擎 5 中用于处理属性变化的函数。它在属性值发生改变之前被调用，用于计算属性的新值。以下是PreAttributeChange函数的一些主要特点：
+
+1. 改变CurrentValue：PreAttributeChange函数会在属性值发生改变之前被调用，用于计算属性的新值。这个新值被称为CurrentValue，它是属性当前值的临时副本。
+
+2. 触发器：PreAttributeChange函数是由属性访问器、游戏效果或游戏效果执行器等引起的属性值改变所触发的。
+
+3. 不永久改变修饰符：PreAttributeChange函数不会永久改变修饰符，它只是临时地改变了查询修饰符时返回的值。
+
+4. 后续操作重新计算Current Value：在PreAttributeChange函数之后的操作会重新计算属性的Current Value，这可能会导致需要再次进行限制（clamp）。
+
+5. 与PostGameplayEffectExecute的关系：PreAttributeChange函数在PostGameplayEffectExecute函数之前被调用。PostGameplayEffectExecute函数是在游戏效果执行后调用的，用于更新属性值。
+
+总之，PreAttributeChange函数提供了一种在属性值改变之前进行临时计算和处理的方法，这对于游戏中的属性系统来说是非常重要的。通过使用PreAttributeChange函数，游戏开发者可以在属性值改变之前进行一些必要的计算和检查，确保属性值的变化符合游戏规则和逻辑。
