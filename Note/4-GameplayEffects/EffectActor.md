@@ -27,6 +27,10 @@ void AAuraEffectActor::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	UFUNCTION(BlueprintCallable)
 	void ApplyEffectToTarget(AActor* Target, TSubclassOf<UGameplayEffect> GameplayEffectClass);	// 将效果应用到目标，传入目标和GameplayEffect类
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
+	TSubclassOf<UGameplayEffect> InstanceGameplayEffectClass;	// 瞬时类型的GameplayEffect类
+
+
 ```
 
 CPP
@@ -113,4 +117,51 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* Target, TSubclassOf<UGameplay
 
 ![image-20240407023657270](.\image-20240407023657270.png)
 
-由此我们就打通了GameplayEffect的一个最基础的工作流程。
+由此我们就打通了GameplayEffect的一个最基础的工作流程。（这个紫色节点就是我们在C++代码里暴露给蓝图的GamplayEffect类型），他需要我再蓝图中设置他的游戏效果类型（GameEffect），它是一个瞬时类型的游戏效果
+
+```c++
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
+	TSubclassOf<UGameplayEffect> InstanceGameplayEffectClass;	// 瞬时类型的GameplayEffect类
+```
+
+当然，我们也可以直接在蓝图里直接拖拽一个 GameEffec 蓝图来使用。
+
+
+
+## 纯蓝图
+
+当然，有了上面的基础，我们想使用纯蓝图实现gameEffect也是很容易的
+
+![image-20240407112037333](.\image-20240407112037333.png)
+
+同样是碰撞事件触发，然后获取AbilitySystemCompenent，然后AddSourceObject添加源对象。然后创建上下文，然后创建一个 Gameplay Effect 规格（Spec）。这个规格包含了要应用到目标 Actor 的效果类（Gameplay Effect Class）以及效果等级（Level）。最后调用`ApplyGameplayEffectSpecToSelf()` 函数将规格应用到目标 Actor 自身。
+
+
+
+一个有意思的事情是，我们在蓝图中是没办法使用 AddSourceObject 节点去设置源对象的，因为我们回到代码，可以看到该函数不是一个蓝图可调函数（它其实是一个静态函数，并不是类的成员函数），但是我们可以调用  GetSourceObject 节点，这个函数在代码里其实也是一个非蓝图可调函数，但是我们却可以在这里调用。为啥？因为这个节点不是代码里的那个函数（不是Ability结构体上的函数）他是Ability System蓝图库上的函数。这些静态库是向蓝图公开某些只能通过C++代码完成某些事情的好方法。
+
+![image-20240407110859495](.\image-20240407110859495.png)
+
+后续我将制作自己的蓝图库，可以用来暴露特定的功能给蓝图端使用。
+
+
+
+# Duration Gamepaly Effect （持续游戏效果）
+
+这里我们介绍第二种游戏效果类型，上面的瞬时游戏效果（加血，是一瞬间就加25.5），现在，我们做一个回血水晶，它可以有一个持续回血的效果。
+
+![image-20240407112924173](.\image-20240407112924173.png)
+
+![image-20240407113349951](.\image-20240407113349951.png)
+
+如图，我们做点疯狂的事情，我们让这个游戏效果改变我们的最大生命值。首先选择效果持续类型，选择持续，然后设置持续时间，然后添加modifiers，这里我们选择改变MaxHealth属性，数值计算为加，加100。至此，GE完成。
+
+这里我们需要回到代码，为我们的游戏效果新增一个类型（持续型）
+
+![image-20240407113848644](.\image-20240407113848644.png)
+
+同样蓝图设置
+
+![image-20240407120118805](.\image-20240407120118805.png)
+
+**记住，这里的持续时间是这个效果的持续时间，而不是施加这个效果，需要的时间。换句话说，我们上面这个加最大血量的效果，按照我们的设置，它只能持续2s。2s后又恢复到原来的100了。**

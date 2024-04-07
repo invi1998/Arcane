@@ -18,10 +18,15 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
-	TSubclassOf<UGameplayEffect> InstanceGameplayEffectClass;	// 实例化的GameplayEffect类
+	TSubclassOf<UGameplayEffect> InstanceGameplayEffectClass;	// 瞬时类型的GameplayEffect类
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
+	TSubclassOf<UGameplayEffect> DurationGameplayEffectClass;	// 持续类型的GameplayEffect类
 
 	UFUNCTION(BlueprintCallable)
 	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);	// 将效果应用到目标，传入目标和GameplayEffect类
+
+	
 
 private:
 };
