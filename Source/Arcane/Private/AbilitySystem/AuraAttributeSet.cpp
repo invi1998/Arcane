@@ -46,40 +46,45 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 {
 	Super::PostGameplayEffectExecute(Data);
 
+	FEffectProperties EffectProperties;
+	SetEffectsProperties(Data, EffectProperties);	// 设置效果属性
+
+}
+
+void UAuraAttributeSet::SetEffectsProperties(const FGameplayEffectModCallbackData& Data,
+	FEffectProperties& EffectProperties) const
+{
 	// Source = causer of the effect, Target = the actor the effect is applied to
 	// Source = 效果的施法者，Target = 效果应用的目标
-	const FGameplayEffectContextHandle Context = Data.EffectSpec.GetContext();	// 获取效果上下文
-	const UAbilitySystemComponent* SourceASC = Context.GetOriginalInstigatorAbilitySystemComponent();	// 获取效果的施法者
 
-	if (IsValid(SourceASC) && SourceASC->AbilityActorInfo.IsValid() && SourceASC->AbilityActorInfo->AvatarActor.IsValid())
+	EffectProperties.EffectContextHandle = Data.EffectSpec.GetContext();	// 获取效果上下文
+	EffectProperties.SourceASC = EffectProperties.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();	// 获取效果的施法者
+
+	if (IsValid(EffectProperties.SourceASC) && EffectProperties.SourceASC->AbilityActorInfo.IsValid() && EffectProperties.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
 	{
-		const AActor* SourceAvatarActor = SourceASC->AbilityActorInfo->AvatarActor.Get();	// 获取施法者的Actor
-		if (IsValid(SourceAvatarActor))
+		EffectProperties.SourceAvatarActor = EffectProperties.SourceASC->AbilityActorInfo->AvatarActor.Get();	// 获取施法者的Actor
+		if (IsValid(EffectProperties.SourceAvatarActor))
 		{
-			const AController* PC = SourceASC->AbilityActorInfo->PlayerController.Get();	// 获取施法者的控制器
-			if (IsValid(PC))
+			EffectProperties.SourceController = EffectProperties.SourceASC->AbilityActorInfo->PlayerController.Get();	// 获取施法者的控制器
+			if (IsValid(EffectProperties.SourceController))
 			{
-				const ACharacter* Character = Cast<ACharacter>(PC->GetPawn());	// 获取施法者的角色
-				if (IsValid(Character))
-				{
-					// 如果生命值小于等于0，那么角色死亡
-					if (GetHealth() <= 0.f)
-					{
-						Character->GetCharacterMovement()->DisableMovement();	// 禁用角色移动
-						Character->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// 禁用角色碰撞
-					}
-				}
+				EffectProperties.SourceCharacter = Cast<ACharacter>(EffectProperties.SourceController->GetPawn());	// 获取施法者的角色
+			}
+			if (EffectProperties.SourceController == nullptr && EffectProperties.SourceAvatarActor->IsA<ACharacter>())
+			{
+				EffectProperties.SourceCharacter = Cast<ACharacter>(EffectProperties.SourceAvatarActor);	// 获取施法者的角色
+				EffectProperties.SourceController = EffectProperties.SourceCharacter->GetController();		// 获取施法者的控制器
 			}
 		}
 	}
 
 	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
 	{
-		AActor* TargetAvatarActor = Data.Target.AbilityActorInfo->AvatarActor.Get();	// 获取目标的Actor
-		AController* TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();	// 获取目标的控制器
-		ACharacter* TargetCharacter = Cast<ACharacter>(TargetAvatarActor);	// 获取目标的角色
+		EffectProperties.TargetAvatarActor = Data.Target.AbilityActorInfo->AvatarActor.Get();	// 获取目标的Actor
+		EffectProperties.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();	// 获取目标的控制器
+		EffectProperties.TargetCharacter = Cast<ACharacter>(EffectProperties.TargetAvatarActor);	// 获取目标的角色
 
-		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetAvatarActor);	// 获取目标的能力系统组件
+		EffectProperties.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(EffectProperties.TargetAvatarActor);	// 获取目标的能力系统组件
 	}
 
 }
@@ -113,3 +118,4 @@ void UAuraAttributeSet::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) 
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, MaxMana, OldMaxMana);	// 通知属性变化，传入属性名，新值和旧值
 }
+

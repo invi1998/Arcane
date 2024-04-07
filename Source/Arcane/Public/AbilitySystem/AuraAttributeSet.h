@@ -7,12 +7,69 @@
 #include "AttributeSet.h"
 #include "AuraAttributeSet.generated.h"
 
+
 // 该宏用于生成属性的Getter函数，属性的Setter函数，属性的初始化函数
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
+
+
+USTRUCT(BlueprintType)
+struct FEffectProperties
+{
+	GENERATED_BODY()
+
+	FEffectProperties()
+		: SourceASC(nullptr)
+		, SourceAvatarActor(nullptr)
+		, SourceController(nullptr)
+		, SourceCharacter(nullptr)
+		, TargetASC(nullptr)
+		, TargetAvatarActor(nullptr)
+		, TargetController(nullptr)
+		, TargetCharacter(nullptr)
+	{}
+
+	/*
+	 * Source
+	 */
+	UPROPERTY()
+	UAbilitySystemComponent* SourceASC;		// 施法者的能力系统组件
+
+	UPROPERTY()
+	AActor* SourceAvatarActor;					// 施法者的Actor
+
+	UPROPERTY()
+	AController* SourceController;			// 施法者的控制器
+
+	UPROPERTY()
+	ACharacter* SourceCharacter;			// 施法者的角色
+
+	/*
+	 * Target
+	 */
+
+	UPROPERTY()
+	UAbilitySystemComponent* TargetASC;		// 目标的能力系统组件
+
+	UPROPERTY()
+	AActor* TargetAvatarActor;					// 目标的Actor
+
+	UPROPERTY()
+	AController* TargetController;			// 目标的控制器
+
+	UPROPERTY()
+	ACharacter* TargetCharacter;			// 目标的角色
+
+	/*
+	 * Context
+	 */
+
+	FGameplayEffectContextHandle EffectContextHandle;	// 效果上下文句柄
+};
+
 
 
 /**
@@ -62,4 +119,7 @@ public:
 
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;	// 最大魔法回调函数
+
+private:
+	void SetEffectsProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;	// 设置效果属性
 };

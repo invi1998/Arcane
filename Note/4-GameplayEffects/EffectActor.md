@@ -557,3 +557,113 @@ PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)是一个�
 5. 处理堆叠类型：PostGameplayEffectExecute函数可以处理游戏效果的堆叠类型。例如，如果游戏效果的堆叠类型为“按目标叠加”，那么此函数可以计算出所有来自不同来源的游戏效果对目标属性的总影响。
 
 总之，PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)函数提供了一种在游戏效果执行后更新属性值的方法。通过使用此函数，游戏开发者可以在游戏效果执行后进行一些必要的计算和处理，确保属性值的变化符合游戏规则和逻辑。
+
+所以综上所述，FGameplayEffectModCallbackData里面有我们想要得到的一切东西，我们将这些数据整理起来，就能基于此构建属于我们的RPG战斗框架了。
+
+```c++
+USTRUCT(BlueprintType)
+struct FEffectProperties
+{
+	GENERATED_BODY()
+
+	FEffectProperties()
+		: SourceASC(nullptr)
+		, SourceAvatarActor(nullptr)
+		, SourceController(nullptr)
+		, SourceCharacter(nullptr)
+		, TargetASC(nullptr)
+		, TargetAvatarActor(nullptr)
+		, TargetController(nullptr)
+		, TargetCharacter(nullptr)
+	{}
+
+	/*
+	 * Source
+	 */
+	UPROPERTY()
+	UAbilitySystemComponent* SourceASC;		// 施法者的能力系统组件
+
+	UPROPERTY()
+	AActor* SourceAvatarActor;					// 施法者的Actor
+
+	UPROPERTY()
+	AController* SourceController;			// 施法者的控制器
+
+	UPROPERTY()
+	ACharacter* SourceCharacter;			// 施法者的角色
+
+	/*
+	 * Target
+	 */
+
+	UPROPERTY()
+	UAbilitySystemComponent* TargetASC;		// 目标的能力系统组件
+
+	UPROPERTY()
+	AActor* TargetAvatarActor;					// 目标的Actor
+
+	UPROPERTY()
+	AController* TargetController;			// 目标的控制器
+
+	UPROPERTY()
+	ACharacter* TargetCharacter;			// 目标的角色
+
+	/*
+	 * Context
+	 */
+
+	FGameplayEffectContextHandle EffectContextHandle;	// 效果上下文句柄
+};
+```
+
+然后在PostGameplayEffectExecute函数中收集这些信息
+
+```c++
+void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+	Super::PostGameplayEffectExecute(Data);
+
+	FEffectProperties EffectProperties;
+	SetEffectsProperties(Data, EffectProperties);	// 设置效果属性
+
+}
+
+void UAuraAttributeSet::SetEffectsProperties(const FGameplayEffectModCallbackData& Data,
+	FEffectProperties& EffectProperties) const
+{
+	// Source = causer of the effect, Target = the actor the effect is applied to
+	// Source = 效果的施法者，Target = 效果应用的目标
+
+	EffectProperties.EffectContextHandle = Data.EffectSpec.GetContext();	// 获取效果上下文
+	EffectProperties.SourceASC = EffectProperties.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();	// 获取效果的施法者
+
+	if (IsValid(EffectProperties.SourceASC) && EffectProperties.SourceASC->AbilityActorInfo.IsValid() && EffectProperties.SourceASC->AbilityActorInfo->AvatarActor.IsValid())
+	{
+		EffectProperties.SourceAvatarActor = EffectProperties.SourceASC->AbilityActorInfo->AvatarActor.Get();	// 获取施法者的Actor
+		if (IsValid(EffectProperties.SourceAvatarActor))
+		{
+			EffectProperties.SourceController = EffectProperties.SourceASC->AbilityActorInfo->PlayerController.Get();	// 获取施法者的控制器
+			if (IsValid(EffectProperties.SourceController))
+			{
+				EffectProperties.SourceCharacter = Cast<ACharacter>(EffectProperties.SourceController->GetPawn());	// 获取施法者的角色
+			}
+			if (EffectProperties.SourceController == nullptr && EffectProperties.SourceAvatarActor->IsA<ACharacter>())
+			{
+				EffectProperties.SourceCharacter = Cast<ACharacter>(EffectProperties.SourceAvatarActor);	// 获取施法者的角色
+				EffectProperties.SourceController = EffectProperties.SourceCharacter->GetController();		// 获取施法者的控制器
+			}
+		}
+	}
+
+	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
+	{
+		EffectProperties.TargetAvatarActor = Data.Target.AbilityActorInfo->AvatarActor.Get();	// 获取目标的Actor
+		EffectProperties.TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();	// 获取目标的控制器
+		EffectProperties.TargetCharacter = Cast<ACharacter>(EffectProperties.TargetAvatarActor);	// 获取目标的角色
+
+		EffectProperties.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(EffectProperties.TargetAvatarActor);	// 获取目标的能力系统组件
+	}
+
+}
+```
+
