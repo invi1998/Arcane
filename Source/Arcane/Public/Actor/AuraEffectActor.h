@@ -86,6 +86,8 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void OnEndOverlap(AActor* TargetActor);	// 结束重叠时的策略函数
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura Effect")
+	float ActorLevel = 1.f;	// Actor等级
 
 private:
 };

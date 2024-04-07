@@ -62,7 +62,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 		EffectContext.AddSourceObject(this);	// 添加源对象，表示这个效果是由谁发出的。
 
 		// 创建效果规格，用于应用效果。参数分别是效果类，等级，效果上下文。
-		FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1.f, EffectContext);
+		FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, EffectContext);
 		// 如果效果规格有效，就应用效果规格到自己。
 		if (EffectSpecHandle.IsValid())
 		{
