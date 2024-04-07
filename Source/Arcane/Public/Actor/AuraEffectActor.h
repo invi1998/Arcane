@@ -45,7 +45,7 @@ protected:
 	 */
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
-	TSubclassOf<UGameplayEffect> InstanceGameplayEffectClass;	// 瞬时类型的GameplayEffect类
+	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;	// 瞬时类型的GameplayEffect类
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
 	TSubclassOf<UGameplayEffect> DurationGameplayEffectClass;	// 持续类型的GameplayEffect类
@@ -57,7 +57,7 @@ protected:
 	 * 3种游戏效果的应用策略
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
-	EEffectApplicationPolicy InstanceEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;	// 瞬时效果应用策略
+	EEffectApplicationPolicy InstantEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;	// 瞬时效果应用策略
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	EEffectApplicationPolicy DurationEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;	// 持续效果应用策略
