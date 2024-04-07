@@ -495,7 +495,7 @@ if (Elem.Value == TargetASC)	// 如果映射表中的能力系统组件和目标
 
 
 
-# PreAttributeChange （临时限制属性数值范围）
+# PreAttributeChange （预先限制属性数值范围）
 
 我们之前所做的所有的效果，他们在改变属性集里的数值的时候，是没有边界限制的，血量可以低于0，可以高于100等等等等，现在，我们需要限制这些边界值。
 
@@ -540,4 +540,20 @@ PreAttributeChange函数是一个在虚幻引擎 5 中用于处理属性变化�
 
 5. 与PostGameplayEffectExecute的关系：PreAttributeChange函数在PostGameplayEffectExecute函数之前被调用。PostGameplayEffectExecute函数是在游戏效果执行后调用的，用于更新属性值。
 
-总之，PreAttributeChange函数提供了一种在属性值改变之前进行临时计算和处理的方法，这对于游戏中的属性系统来说是非常重要的。通过使用PreAttributeChange函数，游戏开发者可以在属性值改变之前进行一些必要的计算和检查，确保属性值的变化符合游戏规则和逻辑。
+总之，PreAttributeChange函数提供了一种在属性值改变之前进行临时计算和处理的方法，这对于游戏中的属性系统来说是非常重要的。通过使用PreAttributeChange函数，游戏开发者可以在属性值改变之前进行一些必要的计算和检查，确保属性值的变化符合游戏规则和逻辑。Epic注释，不要使用`PreAttributeChange()`处理游戏性事件，仅用它处理`clamping`（让`CurrentValue`处在正确的范围内）。
+
+# PostGameplayEffectExecute()
+
+PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)是一个在虚幻引擎 5 中用于处理游戏效果的回调函数。它在游戏效果执行后被调用，用于更新属性值。以下是PostGameplayEffectExecute函数的一些主要特点：
+
+1. 参数：PostGameplayEffectExecute函数接收一个名为Data的参数，它是一个FGameplayEffectModCallbackData类型的对象。这个对象包含了游戏效果的相关信息，包括游戏效果的来源、目标、持续时间、堆叠类型等。
+
+2. 更新属性值：PostGameplayEffectExecute函数用于更新属性值。在游戏效果执行后，此函数将根据游戏效果的规则和属性值的当前状态来计算新的属性值。
+
+3. 游戏效果执行后的操作：PostGameplayEffectExecute函数在游戏效果执行后被调用，因此它可以用来处理游戏效果执行后的一些操作，例如更新属性值、应用限制（clamp）等。
+
+4. 与PreAttributeChange的关系：PostGameplayEffectExecute函数在PreAttributeChange函数之后被调用。PreAttributeChange函数是在属性值改变之前被调用的，用于计算属性的新值；而PostGameplayEffectExecute函数是在游戏效果执行后被调用的，用于更新属性值。
+
+5. 处理堆叠类型：PostGameplayEffectExecute函数可以处理游戏效果的堆叠类型。例如，如果游戏效果的堆叠类型为“按目标叠加”，那么此函数可以计算出所有来自不同来源的游戏效果对目标属性的总影响。
+
+总之，PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)函数提供了一种在游戏效果执行后更新属性值的方法。通过使用此函数，游戏开发者可以在游戏效果执行后进行一些必要的计算和处理，确保属性值的变化符合游戏规则和逻辑。

@@ -26,9 +26,12 @@ class ARCANE_API UAuraAttributeSet : public UAttributeSet
 public:
 	UAuraAttributeSet();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;	// 重写GetLifetimeReplicatedProps函数，用于设置属性的复制方式
+
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;	// 重写PreAttributeChange函数，用于属性改变前的处理
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;	// 重写GetLifetimeReplicatedProps函数，用于设置属性的复制方式
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;	// 重写PostGameplayEffectExecute函数，用于效果执行后的处理
+
 
 	/** 生命值 */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_Health, Category="Vital Attributes")	// 蓝图只读，复制使用OnRep_Health函数，分类为Vital Attributes（重要属性）
