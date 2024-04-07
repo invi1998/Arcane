@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "GameplayEffectTypes.h"
 #include "AuraEffectActor.generated.h"
 
 // 定义效果应用策略
@@ -71,6 +72,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	EEffectRemovePolicy InfiniteEffectRemovePolicy = EEffectRemovePolicy::RemoveOnEndOverlap;		// (永久类型)无限效果移除策略
 
+	/*
+	 * 游戏效果和能力系统组件的映射Map，该Map后续用于移除效果
+	 */
+	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveGameplayEffectsMap;	// 活动效果句柄 用于存储游戏效果和能力系统组件的映射
 
 	/*
 	 * 策略函数

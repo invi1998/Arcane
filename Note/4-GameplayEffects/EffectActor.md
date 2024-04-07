@@ -363,5 +363,132 @@ private:
 
 
 
+## Infinite Effect Application and Removed
 
+我们如果想要移除一个游戏效果，首先，我们应该拿到他的效果句柄，一但一个游戏效果成功应用，那么他会有一个被激活的句柄，我们需要将这个句柄和游戏能力组件关联起来
 
+```c++
+#include "GameplayEffectTypes.h"
+
+	/*
+	 * 游戏效果和能力系统组件的映射Map，该Map后续用于移除效果
+	 */
+	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveGameplayEffectsMap;	// 活动效果句柄 用于存储游戏效果和能力系统组件的映射
+
+```
+
+那么我们应该在什么时候去保存这个信息呢？ApplyEffectToTarget 显然是极好的。
+
+```c++
+void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
+{
+	// 获取目标的能力系统组件
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	if (TargetASC)
+	{
+		checkf(GameplayEffectClass, TEXT("GameplayEffectClass is nullptr!"));	// 检查GameplayEffectClass是否为空
+
+		// 创建效果上下文，用于创建效果规格。
+		// 什么是效果上下文呢？效果上下文是一个结构体，用于存储效果的来源，目标，施法者等信息。在创建效果规格时，我们需要传入效果上下文。
+		FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
+		EffectContext.AddSourceObject(this);	// 添加源对象，表示这个效果是由谁发出的。
+
+		// 创建效果规格，用于应用效果。参数分别是效果类，等级，效果上下文。
+		FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1.f, EffectContext);
+		// 如果效果规格有效，就应用效果规格到自己。
+		if (EffectSpecHandle.IsValid())
+		{
+			// 应用效果规格到自己。
+			FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+
+			// 获取效果的持续时间类型，判断效果是否是无限持续的。
+			const bool bIsInfinite = EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
+
+			// 只有效果是无限持续的，并且我们希望在结束重叠时移除效果时，我们才将效果句柄和能力系统组件存储到映射表中。
+			if (bIsInfinite && InfiniteEffectRemovePolicy == EEffectRemovePolicy::RemoveOnEndOverlap)
+			{
+				// 如果效果是无限持续的，就将效果句柄和能力系统组件存储到映射表中。
+				ActiveGameplayEffectsMap.Add(ActiveEffectHandle, TargetASC);
+			}
+		}
+	}
+
+}
+```
+
+这里我们只保存永久无限类型的gamepalyEffect的效果句柄，因为其他类型的他们有自己的生命周期，能自行移除效果。我们做这个事情本来就是专门处理永久效果的移除的。
+
+然后，我们将移除逻辑在策略函数里进行实现
+
+```c++
+void AAuraEffectActor::OnOverlap(AActor* TargetActor)
+{
+	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
+	}
+	if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
+	}
+	if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
+	}
+}
+
+void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
+{
+	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
+	}
+	if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
+	}
+	if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
+	}
+	if (InfiniteEffectRemovePolicy == EEffectRemovePolicy::RemoveOnEndOverlap)
+	{
+		// 移除效果
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);	// 获取目标的能力系统组件
+		if (IsValid(TargetASC))
+		{
+			TArray<FActiveGameplayEffectHandle> ActiveEffectsToRemove;	// 用于存储要移除的效果句柄
+			for (const TTuple<FActiveGameplayEffectHandle, UAbilitySystemComponent*>& Elem : ActiveGameplayEffectsMap)
+			{
+				if (Elem.Value == TargetASC)	// 如果映射表中的能力系统组件和目标的能力系统组件相同，表示这个效果是目标的
+				{
+					TargetASC->RemoveActiveGameplayEffect(Elem.Key);	// 移除效果
+					ActiveEffectsToRemove.Add(Elem.Key);	// 将要移除的效果句柄存储到数组中
+				}
+			}
+			for (const FActiveGameplayEffectHandle& ActiveEffectHandle : ActiveEffectsToRemove)
+			{
+				ActiveGameplayEffectsMap.Remove(ActiveEffectHandle);	// 从映射表中移除效果句柄
+			}
+		}
+	}
+}
+```
+
+然后回到蓝图，我们制作一个进入后持续掉血的火焰区域。离开这个区域，结束掉血
+
+![image-20240407195108474](.\image-20240407195108474.png)
+
+这个图apply哪里选错了，应该选择重叠开始的时候应用效果，注意一下
+
+当然，上面这种实现，移除效果它是直接将这一类效果都移除了，但是比如，我们在一个火堆堆叠环境中，它的中心区域会收到3个火场的伤害，此时如果玩家从中心区域走出来，走到只受一个火场灼烧的区域，因为我们上面的移除函数，会导致玩家的灼烧效果都失效，都被移除，这显然不是我们想看到的，所以 TargetASC->RemoveActiveGameplayEffect(Elem.Key);这个函数它还提供了一个额外参数，我们将其设置为1，表示每次移除一个（默认不填是-1，表示全部移除）
+
+```c++
+if (Elem.Value == TargetASC)	// 如果映射表中的能力系统组件和目标的能力系统组件相同，表示这个效果是目标的
+{
+	TargetASC->RemoveActiveGameplayEffect(Elem.Key, 1);	// 移除效果
+	ActiveEffectsToRemove.Add(Elem.Key);	// 将要移除的效果句柄存储到数组中
+}
+```
+
+![image-20240407201605146](.\image-20240407201605146.png)

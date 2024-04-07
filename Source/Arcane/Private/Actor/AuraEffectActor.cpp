@@ -67,7 +67,17 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 		if (EffectSpecHandle.IsValid())
 		{
 			// 应用效果规格到自己。
-			TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+			FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+
+			// 获取效果的持续时间类型，判断效果是否是无限持续的。
+			const bool bIsInfinite = EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
+
+			// 只有效果是无限持续的，并且我们希望在结束重叠时移除效果时，我们才将效果句柄和能力系统组件存储到映射表中。
+			if (bIsInfinite && InfiniteEffectRemovePolicy == EEffectRemovePolicy::RemoveOnEndOverlap)
+			{
+				// 如果效果是无限持续的，就将效果句柄和能力系统组件存储到映射表中。
+				ActiveGameplayEffectsMap.Add(ActiveEffectHandle, TargetASC);
+			}
 		}
 	}
 
@@ -83,6 +93,10 @@ void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 	{
 		ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
 	}
+	if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
+	}
 }
 
 void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
@@ -94,6 +108,31 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 	if (DurationEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
 	{
 		ApplyEffectToTarget(TargetActor, DurationGameplayEffectClass);
+	}
+	if (InfiniteEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
+	{
+		ApplyEffectToTarget(TargetActor, InfiniteGameplayEffectClass);
+	}
+	if (InfiniteEffectRemovePolicy == EEffectRemovePolicy::RemoveOnEndOverlap)
+	{
+		// 移除效果
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);	// 获取目标的能力系统组件
+		if (IsValid(TargetASC))
+		{
+			TArray<FActiveGameplayEffectHandle> ActiveEffectsToRemove;	// 用于存储要移除的效果句柄
+			for (const TTuple<FActiveGameplayEffectHandle, UAbilitySystemComponent*>& Elem : ActiveGameplayEffectsMap)
+			{
+				if (Elem.Value == TargetASC)	// 如果映射表中的能力系统组件和目标的能力系统组件相同，表示这个效果是目标的
+				{
+					TargetASC->RemoveActiveGameplayEffect(Elem.Key, 1);	// 移除效果
+					ActiveEffectsToRemove.Add(Elem.Key);	// 将要移除的效果句柄存储到数组中
+				}
+			}
+			for (const FActiveGameplayEffectHandle& ActiveEffectHandle : ActiveEffectsToRemove)
+			{
+				ActiveGameplayEffectsMap.Remove(ActiveEffectHandle);	// 从映射表中移除效果句柄
+			}
+		}
 	}
 }
 
