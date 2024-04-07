@@ -9,8 +9,8 @@ UAuraAttributeSet::UAuraAttributeSet()
 {
 	InitHealth(10.f);	// 初始化生命值
 	InitMaxHealth(100.f);	// 初始化最大生命值
-	InitMana(40.f);		// 初始化魔法
-	InitMaxMana(50.f);	// 初始化最大魔法
+	InitMana(20.f);		// 初始化魔法
+	InitMaxMana(150.f);	// 初始化最大魔法
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
