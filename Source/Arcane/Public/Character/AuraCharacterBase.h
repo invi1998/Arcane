@@ -33,4 +33,6 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;	// 属性集
+
+	virtual void InitAbilityActorInfo();		// 初始化能力角色信息
 };

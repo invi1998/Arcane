@@ -21,6 +21,6 @@ public:
 	virtual void OnRep_PlayerState() override;		// 当角色的PlayerState被复制时调用
 
 private:
-	void InitAbilityActorInfo();	// 初始化能力Actor信息
+	virtual void InitAbilityActorInfo() override;	// 初始化能力Actor信息
 	
 };
