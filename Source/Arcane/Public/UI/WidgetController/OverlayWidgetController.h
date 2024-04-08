@@ -32,11 +32,7 @@ struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableRowBase
 
 struct FOnAttributeChangeData;		// 属性改变数据
 
-// 创建几个动态多播委托，因为我希望在蓝图中为他们分发事件
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChangedSignature, float, NewHealth);	// 生命值改变, 一个参数是新的生命值
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxHealthChangedSignature, float, NewMaxHealth);		// 最大生命值改变, 一个参数是新的最大生命值
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnManaChangedSignature, float, NewMana);		// 法力值改变, 一个参数是新的法力值
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxManaChangedSignature, float, NewMaxMana);		// 最大法力值改变, 一个参数是新的最大法力值
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangeSignature, float, NewValue);		// 属性改变委托，接收一个float类型的新值
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, MessageWidgetRow);		// 消息小部件行，一个参数是消息小部件行
 
@@ -58,16 +54,16 @@ public:
 	 */
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// 设置为蓝图可分配，分类为GAS下的Attributes
-	FOnHealthChangedSignature OnHealthChanged;		// 生命值改变
+	FOnAttributeChangeSignature OnHealthChanged;		// 生命值改变
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// 设置为蓝图可分配，分类为GAS下的Attributes
-	FOnMaxHealthChangedSignature OnMaxHealthChanged;		// 最大生命值改变
+	FOnAttributeChangeSignature OnMaxHealthChanged;		// 最大生命值改变
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// 设置为蓝图可分配，分类为GAS下的Attributes
-	FOnManaChangedSignature OnManaChanged;		// 法力值改变
+	FOnAttributeChangeSignature OnManaChanged;		// 法力值改变
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// 设置为蓝图可分配，分类为GAS下的Attributes
-	FOnMaxManaChangedSignature OnMaxManaChanged;		// 最大法力值改变
+	FOnAttributeChangeSignature OnMaxManaChanged;		// 最大法力值改变
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Message")		// 设置为蓝图可分配，分类为GAS下的Attributes
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;		// 消息小部件 行委托
