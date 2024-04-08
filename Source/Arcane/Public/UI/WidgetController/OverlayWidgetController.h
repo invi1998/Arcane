@@ -72,4 +72,20 @@ protected:
 	void MaxHealthChanged(const FOnAttributeChangeData& Data) const;		// 最大生命值改变，参数类型为FOnAttributeChangeData，这是一个结构体，用于存储属性改变的数据
 	void ManaChanged(const FOnAttributeChangeData& Data) const;		// 法力值改变，参数类型为FOnAttributeChangeData，这是一个结构体，用于存储属性改变的数据
 	void MaxManaChanged(const FOnAttributeChangeData& Data) const;		// 最大法力值改变，参数类型为FOnAttributeChangeData，这是一个结构体，用于存储属性改变的数据
+
+	template<typename T>
+	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag) const;		// 通过标签获取数据表行
+
 };
+
+template <typename T>
+T* UOverlayWidgetController::GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag) const
+{
+	if (!DataTable)
+	{
+		return nullptr;
+	}
+
+	const FString ContextString = TEXT("");
+	return DataTable->FindRow<T>(Tag.GetTagName().ToString(), ContextString, true);
+}

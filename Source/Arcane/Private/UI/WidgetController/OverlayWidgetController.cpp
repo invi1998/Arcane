@@ -30,11 +30,14 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxManaAttribute()).AddUObject(this, &UOverlayWidgetController::MaxManaChanged);	// 添加最大法力值改变的委托
 
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
-		[](const FGameplayTagContainer& AssertTags)
+		[this](const FGameplayTagContainer& AssertTags)
 		{
 			for (const FGameplayTag& Tag : AssertTags)
 			{
-				UKismetSystemLibrary::PrintString(GEngine->GetWorld(), Tag.ToString(), true, true, FLinearColor::Green, 5.0f);	// 打印Tag
+				// UKismetSystemLibrary::PrintString(GEngine->GetWorld(), Tag.ToString(), true, true, FLinearColor::Green, 5.0f);	// 打印Tag
+
+				FUIWidgetRow* WidgetRow = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);	// 通过Tag获取数据表行
+				// 如果我们希望通过Tag来获取数据表行，我们需要在数据表中添加一个列，列的类型为FName，列的名称为Tag，这样我们就可以通过Tag来获取数据表行
 			}
 		}
 	);
