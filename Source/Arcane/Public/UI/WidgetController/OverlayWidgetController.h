@@ -76,11 +76,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Widget Data")		// 设置为可编辑的任何地方，蓝图可读
 	TObjectPtr<UDataTable> MessageWidgetDataTable;		// 消息小部件数据表
 
-	void HealthChanged(const FOnAttributeChangeData& Data) const;		// 生命值改变，参数类型为FOnAttributeChangeData，这是一个结构体，用于存储属性改变的数据
-	void MaxHealthChanged(const FOnAttributeChangeData& Data) const;		// 最大生命值改变，参数类型为FOnAttributeChangeData，这是一个结构体，用于存储属性改变的数据
-	void ManaChanged(const FOnAttributeChangeData& Data) const;		// 法力值改变，参数类型为FOnAttributeChangeData，这是一个结构体，用于存储属性改变的数据
-	void MaxManaChanged(const FOnAttributeChangeData& Data) const;		// 最大法力值改变，参数类型为FOnAttributeChangeData，这是一个结构体，用于存储属性改变的数据
-
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag) const;		// 通过标签获取数据表行
 
