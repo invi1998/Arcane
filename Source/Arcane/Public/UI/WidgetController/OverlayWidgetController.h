@@ -25,6 +25,7 @@ struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
 	FGameplayTag MessageTag = FGameplayTag::EmptyTag;		// 消息标签
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读)
 	FText MessageText = FText::GetEmpty();		// 消息文本
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
