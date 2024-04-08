@@ -14,16 +14,20 @@ struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
-		FGameplayTag MessageTag = FGameplayTag::EmptyTag;		// 消息标签
+	FGameplayTag MessageTag = FGameplayTag::EmptyTag;		// 消息标签
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读)
-		FText MessageText = FText::GetEmpty();		// 消息文本
+	FText MessageText = FText::GetEmpty();		// 消息文本
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
-		TSubclassOf<class UAuraUserWidget> MessageWidgetClass;		// 小部件类，这个部件我们可以在蓝图中任意定制，比如显示文本，图片等等
+	TSubclassOf<class UAuraUserWidget> MessageWidgetClass;		// 小部件类，这个部件我们可以在蓝图中任意定制，比如显示文本，图片等等
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
-		UTexture2D* MessageIcon = nullptr;		// 消息图标
+	UTexture2D* MessageIcon = nullptr;		// 消息图标
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
+	UTexture2D* BackgroundIcon = nullptr;		// 消息背景
+
 };
 
 struct FOnAttributeChangeData;		// 属性改变数据
