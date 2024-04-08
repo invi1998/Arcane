@@ -34,10 +34,17 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		{
 			for (const FGameplayTag& Tag : AssertTags)
 			{
-				// UKismetSystemLibrary::PrintString(GEngine->GetWorld(), Tag.ToString(), true, true, FLinearColor::Green, 5.0f);	// 打印Tag
+				// 这里我们只要MessageTag
+				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));	// 获取Message
+				if (Tag.MatchesTag(MessageTag))
+				{
+					// UKismetSystemLibrary::PrintString(GEngine->GetWorld(), Tag.ToString(), true, true, FLinearColor::Green, 5.0f);	// 打印Tag
 
-				FUIWidgetRow* WidgetRow = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);	// 通过Tag获取数据表行
-				// 如果我们希望通过Tag来获取数据表行，我们需要在数据表中添加一个列，列的类型为FName，列的名称为Tag，这样我们就可以通过Tag来获取数据表行
+					const FUIWidgetRow* WidgetRow = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);	// 通过Tag获取数据表行
+					// 我们希望通过Tag来获取数据表行，然后使用这些数据来更新UI，比如使用它里面的一些资产来显示内容
+
+					MessageWidgetRowDelegate.Broadcast(*WidgetRow);	// 广播消息小部件行
+				}
 			}
 		}
 	);

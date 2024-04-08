@@ -7,6 +7,25 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
+// 这结构体用于存储UI小部件行的数据，用来在屏幕上显示消息
+USTRUCT(BlueprintType)		// 设置为蓝图类型
+struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
+		FGameplayTag MessageTag = FGameplayTag::EmptyTag;		// 消息标签
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读)
+		FText MessageText = FText::GetEmpty();		// 消息文本
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
+		TSubclassOf<class UAuraUserWidget> MessageWidgetClass;		// 小部件类，这个部件我们可以在蓝图中任意定制，比如显示文本，图片等等
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
+		UTexture2D* MessageIcon = nullptr;		// 消息图标
+};
+
 struct FOnAttributeChangeData;		// 属性改变数据
 
 // 创建几个动态多播委托，因为我希望在蓝图中为他们分发事件
@@ -15,25 +34,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxHealthChangedSignature, float,
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnManaChangedSignature, float, NewMana);		// 法力值改变, 一个参数是新的法力值
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMaxManaChangedSignature, float, NewMaxMana);		// 最大法力值改变, 一个参数是新的最大法力值
 
-
-// 这结构体用于存储UI小部件行的数据，用来在屏幕上显示消息
-USTRUCT(BlueprintType)		// 设置为蓝图类型
-struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
-	FGameplayTag MessageTag = FGameplayTag::EmptyTag;		// 消息标签
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读)
-	FText MessageText = FText::GetEmpty();		// 消息文本
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
-	TSubclassOf<class UAuraUserWidget> MessageWidgetClass;		// 小部件类，这个部件我们可以在蓝图中任意定制，比如显示文本，图片等等
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
-	UTexture2D* MessageIcon = nullptr;		// 消息图标
-};
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, MessageWidgetRow);		// 消息小部件行，一个参数是消息小部件行
 
 /**
  * OverlayWidgetController, 叠加层控件控制器, 设置为BlueprintType, Blueprintable，是因为我们希望在蓝图中使用它
@@ -64,6 +65,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// 设置为蓝图可分配，分类为GAS下的Attributes
 	FOnMaxManaChangedSignature OnMaxManaChanged;		// 最大法力值改变
 
+	UPROPERTY(BlueprintAssignable, Category="GAS|Message")		// 设置为蓝图可分配，分类为GAS下的Attributes
+	FMessageWidgetRowSignature MessageWidgetRowDelegate;		// 消息小部件 行委托
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Widget Data")		// 设置为可编辑的任何地方，蓝图可读
 	TObjectPtr<UDataTable> MessageWidgetDataTable;		// 消息小部件数据表
@@ -87,5 +91,5 @@ T* UOverlayWidgetController::GetDataTableRowByTag(UDataTable* DataTable, const F
 	}
 
 	const FString ContextString = TEXT("");
-	return DataTable->FindRow<T>(Tag.GetTagName().ToString(), ContextString, true);
+	return DataTable->FindRow<T>(*Tag.GetTagName().ToString(), ContextString, true);
 }

@@ -85,3 +85,78 @@ struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableR
 
 ![image-20240408164608255](.\image-20240408164608255.png)
 
+
+
+## Broadcast Data Row
+
+在我们的 Widget 类的回调绑定这里，我们想将我们的消息Widget广播出去，所以这里我们需要检索所有Tag，然后拿到MessageTag，这样就涉及到了GameplayEffect里的匹配方式了。
+
+```c++
+void UOverlayWidgetController::BindCallbacksToDependencies()
+{
+	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(this->AttributeSet);	// 将AttributeSet转换为UAuraAttributeSet
+
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute()).AddUObject(this, &UOverlayWidgetController::HealthChanged);	// 添加生命值改变的委托
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxHealthAttribute()).AddUObject(this, &UOverlayWidgetController::MaxHealthChanged);	// 添加最大生命值改变的委托
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetManaAttribute()).AddUObject(this, &UOverlayWidgetController::ManaChanged);	// 添加法力值改变的委托
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetMaxManaAttribute()).AddUObject(this, &UOverlayWidgetController::MaxManaChanged);	// 添加最大法力值改变的委托
+
+	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
+		[this](const FGameplayTagContainer& AssertTags)
+		{
+			for (const FGameplayTag& Tag : AssertTags)
+			{
+				// 这里我们只要MessageTag
+				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));	// 获取Message
+				if (Tag.MatchesTag(MessageTag))
+				{
+					// UKismetSystemLibrary::PrintString(GEngine->GetWorld(), Tag.ToString(), true, true, FLinearColor::Green, 5.0f);	// 打印Tag
+
+					const FUIWidgetRow* WidgetRow = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);	// 通过Tag获取数据表行
+					// 我们希望通过Tag来获取数据表行，然后使用这些数据来更新UI，比如使用它里面的一些资产来显示内容
+
+					MessageWidgetRowDelegate.Broadcast(*WidgetRow);	// 广播消息小部件行
+				}
+			}
+		}
+	);
+}
+```
+
+### Match
+
+在虚幻引擎（Unreal Engine）的Gameplay Tag系统中，GameplayTags被设计用来标记游戏中的各种对象和行为，以便于分类、查询和响应。GameplayTag系统提供了多种匹配（Match）方式，以便根据不同的需求来查找或判断GameplayTag集合中的标签。以下是几种主要的匹配方式及其区别和用法：
+
+1. **Exact Match（精确匹配）**
+   - 顾名思义，精确匹配要求GameplayTag必须与查询的标签完全一致。例如，如果你有一个GameplayTagContainer包含了`Status.Buff.Healing`，而你正在寻找`Status.Buff.Healing`，那么精确匹配就会成功。
+
+2. **Partial Match（部分匹配）**
+   - 部分匹配允许你查找包含特定前缀的GameplayTags。比如，如果你查找`Status.Buff.*`，那么任何以`Status.Buff`开头的GameplayTag（如`Status.Buff.Healing`或`Status.Buff.Strength`）都会匹配成功。
+
+3. **Wildcard Match（通配符匹配）**
+   - 通配符匹配允许使用`*`作为任意字符的占位符。例如，`Status.*.Healing`会匹配所有中间有一段任意文本但结尾是`.Healing`的GameplayTag。
+
+4. **Complex Match（复杂匹配）**
+   - 虚幻引擎提供了`FGameplayTagQuery`类来实现更复杂的匹配条件，例如：
+     - 包含关系：可以检查GameplayTagContainer是否至少包含一组特定的GameplayTags。
+     - 排除关系：可以排除掉指定的一组GameplayTags。
+     - 任意数量的关系：可以设置匹配GameplayTags的数量限制，如至少匹配N个标签。
+
+5. **Named Requirements Match**
+   - 在`FGameplayTagQuery`中可以定义命名要求，每一个命名要求可以是一个单独的匹配条件，这些条件可以是AND（所有要求必须满足）或OR（只要满足任何一个要求即可）的关系。
+
+6. **Parent/Child Relationship Matching**
+   - GameplayTags具有父子层级结构，可以匹配某个GameplayTag及其所有子标签。例如，匹配`Status.Buff`时，所有以`Status.Buff`开头的子标签都会被认为匹配上了。
+
+每种匹配方式都有其特定的使用场合，例如在处理游戏内效果、判定角色状态、触发特定事件或筛选游戏对象时，根据具体情况选择合适的匹配方式能够有效提高代码的灵活性和可维护性。
+
+
+
+至此，我们就将MessageTag内容广播出去了，现在我们只需要绑定这个委托，就能实现在屏幕上显示Message了。
+
+这里先做一个简单的蓝图，将Tag里的message打印到屏幕上，来分配委托事务；
+
+![image-20240408202621900](.\image-20240408202621900.png)
+
+
+
