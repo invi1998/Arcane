@@ -17,5 +17,13 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,
                                                 const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
-    UKismetSystemLibrary::PrintString(this, TEXT("Effect Applied"), true, false, FLinearColor::Red, 1.f);
+	FGameplayTagContainer AssetTagContainer;    // 创建一个GameplayTagContainer
+    // 通过绑定委托，获取到GameplayTag，然后将其添加到AbilitySystemComponent的AssetTags中
+    EffectSpec.GetAllAssetTags(AssetTagContainer);
+
+    for (const FGameplayTag& Tag : AssetTagContainer)
+    {
+	    // TODO: 广播这些Tag到UI
+        UKismetSystemLibrary::PrintString(this, Tag.ToString(), true, true, FLinearColor::Gray, 5.0f);
+    }
 }
