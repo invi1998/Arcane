@@ -21,9 +21,11 @@ void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* Ability
     // 通过绑定委托，获取到GameplayTag，然后将其添加到AbilitySystemComponent的AssetTags中
     EffectSpec.GetAllAssetTags(AssetTagContainer);
 
+    EffectAssetTags.Broadcast(AssetTagContainer);    // 广播这些Tag到UI
+
     for (const FGameplayTag& Tag : AssetTagContainer)
     {
 	    // TODO: 广播这些Tag到UI
-        UKismetSystemLibrary::PrintString(this, Tag.ToString(), true, true, FLinearColor::Gray, 5.0f);
+        // UKismetSystemLibrary::PrintString(this, Tag.ToString(), true, true, FLinearColor::Gray, 5.0f);
     }
 }
