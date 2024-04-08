@@ -44,3 +44,44 @@ void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* Ability
 
 绑定EffectApplied委托用的不是AddDynamic，而是用AddObject。这个可以从源码看到。
 
+
+
+# UI Widget Data Table
+
+我们希望将Tag图表配置化，包括可以表格化他的图标，控件等，所以我们添加一个表格行结构体
+
+```c++
+// 这结构体用于存储UI小部件行的数据，用来在屏幕上显示消息
+USTRUCT(BlueprintType)		// 设置为蓝图类型
+struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
+	FGameplayTag MessageTag = FGameplayTag::EmptyTag;		// 消息标签
+
+	FText MessageText = FText::GetEmpty();		// 消息文本
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
+	TSubclassOf<UAuraUserWidget> MessageWidgetClass;		// 小部件类，这个部件我们可以在蓝图中任意定制，比如显示文本，图片等等
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// 设置为可编辑的任何地方，蓝图可读
+	UTexture2D* MessageIcon = nullptr;		// 消息图标
+};
+```
+
+然后我们在编辑器中，创建一个数据表格，行选择我们新写的这个行数据结构体
+
+![image-20240408163214404](.\image-20240408163214404.png)
+
+![image-20240408164501645](.\image-20240408164501645.png)
+
+同时，为了让我们的Widget控件能表格数据化，我们再给Widget类添加一个指向数据表格的指针成员。如下：
+
+```c++
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Widget Data")		// 设置为可编辑的任何地方，蓝图可读
+	TObjectPtr<UDataTable> MessageWidgetDataTable;		// 消息小部件数据表
+```
+
+![image-20240408164608255](.\image-20240408164608255.png)
+
