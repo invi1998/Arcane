@@ -21,5 +21,5 @@ class ARCANE_API ICombatInterface
 	GENERATED_BODY()
 	
 public:
-	virtual int32 GetLevel() const;
+	virtual int32 GetPlayerLevel() const;
 };

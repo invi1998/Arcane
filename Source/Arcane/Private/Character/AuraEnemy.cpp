@@ -55,3 +55,8 @@ void AAuraEnemy::UnHighlightActor()
 		Weapon->SetRenderCustomDepth(false);	// 取消自定义深度渲染
 	}
 }
+
+int32 AAuraEnemy::GetPlayerLevel() const
+{
+	return Level;
+}

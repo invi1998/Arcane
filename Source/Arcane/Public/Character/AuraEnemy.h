@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
+#include "Interaction/CombatInterface.h"
 #include "Interaction/EnemyInterface.h"
 #include "AuraEnemy.generated.h"
 
@@ -11,7 +12,7 @@
  * 
  */
 UCLASS()
-class ARCANE_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
+class ARCANE_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -22,6 +23,10 @@ public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 	/*end Enemy ½Ó¿Ú*/
+
+	/** CombatInterface begin */
+	virtual int32 GetPlayerLevel() const override;
+	/** CombatInterface end */
 
 protected:
 	virtual void BeginPlay() override;

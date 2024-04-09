@@ -39,6 +39,6 @@ private:
 	// 有了移动动作，我们还需要一个输入处理函数
 	void Move(const FInputActionValue& Value);	// 移动函数
 
-	TObjectPtr<IEnemyInterface> LastActor;		// 上一个命中的Actor
-	TObjectPtr<IEnemyInterface> ThisActor;		// 当前命中的Actor
+	IEnemyInterface* LastActor;		// 上一个命中的Actor
+	IEnemyInterface* ThisActor;		// 当前命中的Actor
 };

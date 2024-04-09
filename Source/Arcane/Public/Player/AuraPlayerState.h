@@ -27,6 +27,8 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;		// 获取能力系统组件
 	UAttributeSet* GetAttributeSet() const;												// 获取属性集
 
+	FORCEINLINE int32 GetPlayerLevel() const { return Level; }		// 获取等级
+
 protected:
 
 	UPROPERTY(VisibleAnywhere)
