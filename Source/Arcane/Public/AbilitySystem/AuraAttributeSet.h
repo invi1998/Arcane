@@ -90,6 +90,49 @@ public:
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;	// 重写PostGameplayEffectExecute函数，用于效果执行后的处理
 
 
+	/*
+	 * RPG 主属性（Primary Attributes）
+	 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
+	FGameplayAttributeData Strength;	// 力量
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Strength)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Agility, Category = "Primary Attributes")
+	FGameplayAttributeData Agility;		// 敏捷
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Agility)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Intelligence, Category = "Primary Attributes")
+	FGameplayAttributeData Intelligence;	// 智力
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Intelligence)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Vigor, Category = "Primary Attributes")
+	FGameplayAttributeData Vigor;		// 活力
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Vigor)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resilience, Category = "Primary Attributes")
+	FGameplayAttributeData Resilience;	// 韧性
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resilience)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UFUNCTION()
+	void OnRep_Strength(const FGameplayAttributeData& OldStrength) const;	// 力量回调函数
+
+	UFUNCTION()
+	void OnRep_Agility(const FGameplayAttributeData& OldAgility) const;	// 敏捷回调函数
+
+	UFUNCTION()
+	void OnRep_Intelligence(const FGameplayAttributeData& OldIntelligence) const;	// 智力回调函数
+
+	UFUNCTION()
+	void OnRep_Vigor(const FGameplayAttributeData& OldVigor) const;	// 活力回调函数
+
+	UFUNCTION()
+	void OnRep_Resilience(const FGameplayAttributeData& OldResilience) const;	// 韧性回调函数
+
+
+	/*
+	 * 重要属性（Vital Attributes）
+	 */
+
 	/** 生命值 */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_Health, Category="Vital Attributes")	// 蓝图只读，复制使用OnRep_Health函数，分类为Vital Attributes（重要属性）
 	FGameplayAttributeData Health;		// 生命值，类型为FGameplayAttributeData，这是一个结构体，包含了当前值和基础值

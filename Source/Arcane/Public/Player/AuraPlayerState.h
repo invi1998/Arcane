@@ -27,7 +27,7 @@ public:
 
 protected:
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;		// 能力系统组件
 
 	UPROPERTY()
