@@ -27,4 +27,11 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void InitAbilityActorInfo() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Default")
+	int32 Level = 1;	// µ–»Àµ»º∂
+
+private:
+	
+	
 };
