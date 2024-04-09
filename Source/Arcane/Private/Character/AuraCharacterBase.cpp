@@ -52,6 +52,7 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 {
 	ApplyEffectToSelf(DefaultPrimaryGameplayEffectClass, 1.f);
 	ApplyEffectToSelf(DefaultSecondaryGameplayEffectClass, 1.f);
+	ApplyEffectToSelf(DefaultVitalGameplayEffectClass, 1.f);
 }
 
 

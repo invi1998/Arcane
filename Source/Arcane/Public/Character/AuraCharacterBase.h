@@ -45,6 +45,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Attributes")
 	TSubclassOf<UGameplayEffect> DefaultSecondaryGameplayEffectClass;	// 默认次要游戏效果类
 
+	// 这是一个瞬时性的游戏效果，它会在角色初始化时被应用，然后立即消失
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Attributes")
+	TSubclassOf<UGameplayEffect> DefaultVitalGameplayEffectClass;		// 默认重要游戏效果类
+
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, float Level) const;	// 对自己应用效果
 	void InitializeDefaultAttributes() const;		// 初始化能力
 

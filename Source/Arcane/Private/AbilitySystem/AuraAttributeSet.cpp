@@ -13,8 +13,6 @@
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
-	InitHealth(10.f);	// 初始化生命值
-	InitMana(20.f);		// 初始化魔法
 }
 
 void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
