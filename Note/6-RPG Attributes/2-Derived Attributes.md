@@ -64,3 +64,26 @@
 	* 活力（Vigor）：增加法力恢复（Mana Regeneration）
 
 这些属性关系说明了游戏中的角色可以通过提升主要属性来解锁和增强次要属性，从而实现角色的成长和发展。
+
+
+
+# Modifier Magnitude Calculations
+
+我们此前的属性初始化都是使用系统自带的修饰符，现在，对于最大血量和最大蓝量，我们希望做一些自定义的事情。所以这里我们需要添加一个自定义属性修饰符
+
+回到代码，我们创建一个基类 为 GameplayModMagnitudeCalculation 的自定义修饰符
+
+## UGameplayModMagnitudeCalculation
+
+在Unreal Engine 5 (UE5) 中，UGameplayModMagnitudeCalculation 类是一个用于计算游戏性属性修改器（Gameplay Attribute Modifier）的幅度（Magnitude）的基类。游戏性属性修改器是一种机制，允许在运行时动态地改变游戏对象的属性值，例如生命值、攻击力等。
+
+UGameplayModMagnitudeCalculation 类定义了以下几种类型的游戏性属性修改器幅度计算方法：
+
+1. **固定值（FixedValue）**：幅度始终等于一个固定的数值。
+2. **线性函数（LinearFunction）**：幅度基于一个线性函数计算，即幅度等于输入值乘以一个常数。
+3. **二次函数（QuadraticFunction）**：幅度基于一个二次函数计算，即幅度等于输入值的平方乘以一个常数。
+4. **曲线（Curve）**：幅度基于一个预定义的曲线计算，曲线可以在编辑器中进行自定义。
+
+这些计算方法被用于根据游戏中的各种条件动态地调整属性修改器的幅度。例如，当一个角色受到伤害时，可以使用线性函数来计算减少的生命值幅度；当一个技能的等级提高时，可以使用二次函数来计算增加的技能伤害幅度。
+
+通过继承UGameplayModMagnitudeCalculation类并实现自己的计算逻辑，开发者可以创建自定义的幅度计算方法，以满足游戏中的特殊需求。
