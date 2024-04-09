@@ -40,6 +40,11 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Attributes")
 	TSubclassOf<UGameplayEffect> DefaultPrimaryGameplayEffectClass;		// 默认主要游戏效果类
 
-	void InitializePrimaryAbilities() const;		// 初始化主要能力
+	// 这会是一个永久性的游戏效果，它将始终存在于角色身上，每当角色的主属性发生变化时，这些次要属性也会发生相对应的调整
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Attributes")
+	TSubclassOf<UGameplayEffect> DefaultSecondaryGameplayEffectClass;	// 默认次要游戏效果类
+
+	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, float Level) const;	// 对自己应用效果
+	void InitializeDefaultAttributes() const;		// 初始化能力
 
 };

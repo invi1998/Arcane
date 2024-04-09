@@ -33,17 +33,23 @@ void AAuraCharacterBase::InitAbilityActorInfo()
 {
 }
 
-void AAuraCharacterBase::InitializePrimaryAbilities() const
+void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, float Level) const
 {
 	checkf(IsValid(GetAbilitySystemComponent()), TEXT("AbilitySystemComponent is nullptr!"));	// 检查AbilitySystemComponent是否为空
-	checkf(DefaultPrimaryGameplayEffectClass, TEXT("DefaultPrimaryGameplayEffectClass is nullptr!"));	// 检查DefaultPrimaryGameplayEffectClass是否为空
+	checkf(EffectClass, TEXT("EffectClass is nullptr!"));	// 检查EffectClass是否为空
 
 	// 1：获取上下文
 	const FGameplayEffectContextHandle EffectContext = GetAbilitySystemComponent()->MakeEffectContext();
 	// 2：创建效果
-	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(DefaultPrimaryGameplayEffectClass, 1.f, EffectContext);
+	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, Level, EffectContext);
 	// 3：应用效果到目标
-	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), GetAbilitySystemComponent());
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+}
+
+void AAuraCharacterBase::InitializeDefaultAttributes() const
+{
+	ApplyEffectToSelf(DefaultPrimaryGameplayEffectClass, 1.f);
+	ApplyEffectToSelf(DefaultSecondaryGameplayEffectClass, 1.f);
 }
 
 

@@ -14,9 +14,7 @@
 UAuraAttributeSet::UAuraAttributeSet()
 {
 	InitHealth(10.f);	// 初始化生命值
-	InitMaxHealth(100.f);	// 初始化最大生命值
 	InitMana(20.f);		// 初始化魔法
-	InitMaxMana(150.f);	// 初始化最大魔法
 }
 
 void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)

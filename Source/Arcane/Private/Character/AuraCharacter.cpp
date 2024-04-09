@@ -62,6 +62,6 @@ void AAuraCharacter::InitAbilityActorInfo()
 		}
 	}
 
-	InitializePrimaryAbilities();	// 初始化主要能力
+	InitializeDefaultAttributes();	// 初始化主要能力
 
 }
