@@ -158,3 +158,25 @@ float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffec
 
 ![image-20240409182339130](.\image-20240409182339130.png)
 
+总结一下：自定义修饰符的编写逻辑
+
+在Unreal Engine 5 (UE5) 中，添加自定义属性修饰符的过程通常涉及以下几个步骤：
+
+1. 创建自定义属性修饰符类：
+   - 继承自`UGameplayModMagnitudeCalculation`类。
+   - 在类定义中包含必要的成员变量和函数。
+   - 实现`CalculateBaseMagnitude_Implementation()`函数，该函数用于计算属性修饰符的幅度。
+2. 注册自定义属性修饰符类：
+   - 在项目中注册属性修饰符类，以便在运行时使用。
+   - 可以在插件的`Config`文件夹下创建`.ini`文件，将属性修饰符类注册到`GameplayTag`系统中。
+3. 使用自定义属性修饰符：
+   - 在游戏逻辑中，创建属性修饰符实例，并将其应用到目标对象上。
+   - 使用`FGameplayEffectAttributeCaptureDefinition`结构体来定义要捕获的目标属性。
+   - 将属性修饰符添加到`RelevantAttributesToCapture`数组中。
+4. 计算属性修饰符的幅度：
+   - 在`CalculateBaseMagnitude_Implementation()`函数中，根据捕获的属性值和游戏逻辑来计算属性修饰符的幅度。
+   - 可以使用`GetCapturedAttributeMagnitude()`函数来获取捕获的属性值。
+5. 应用属性修饰符：
+   - 将计算出的幅度应用到目标对象的属性上，以影响其行为或状态。
+
+![image-20240409184858032](.\image-20240409184858032.png)
