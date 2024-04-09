@@ -52,8 +52,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 	// 如果没有实现，他会查找目标的所有者是否实现了IAbilitySystemInterface接口，如果实现了，就会返回所有者的能力系统组件
 
 	// 获取目标的能力系统组件
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
-	if (TargetASC)
+	if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor))
 	{
 		checkf(GameplayEffectClass, TEXT("GameplayEffectClass is nullptr!"));	// 检查GameplayEffectClass是否为空
 
@@ -63,12 +62,12 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 		EffectContext.AddSourceObject(this);	// 添加源对象，表示这个效果是由谁发出的。
 
 		// 创建效果规格，用于应用效果。参数分别是效果类，等级，效果上下文。
-		FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, EffectContext);
+		const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, EffectContext);
 		// 如果效果规格有效，就应用效果规格到自己。
 		if (EffectSpecHandle.IsValid())
 		{
 			// 应用效果规格到自己。
-			FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
+			const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 
 			// 获取效果的持续时间类型，判断效果是否是无限持续的。
 			const bool bIsInfinite = EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;

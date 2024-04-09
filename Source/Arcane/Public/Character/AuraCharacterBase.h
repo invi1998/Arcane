@@ -10,6 +10,7 @@
 
 class UAbilitySystemComponent;
 class UAttributeSet;
+class UGameplayEffect;
 
 UCLASS(Abstract)	// 添加Abstract关键字，表示这个类是一个抽象类
 class ARCANE_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -35,4 +36,10 @@ protected:
 	TObjectPtr<UAttributeSet> AttributeSet;	// 属性集
 
 	virtual void InitAbilityActorInfo();		// 初始化能力角色信息
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Attributes")
+	TSubclassOf<UGameplayEffect> DefaultPrimaryGameplayEffectClass;		// 默认主要游戏效果类
+
+	void InitializePrimaryAbilities() const;		// 初始化主要能力
+
 };
