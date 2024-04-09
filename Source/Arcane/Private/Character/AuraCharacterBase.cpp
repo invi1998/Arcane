@@ -39,10 +39,12 @@ void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectCl
 	checkf(EffectClass, TEXT("EffectClass is nullptr!"));	// 检查EffectClass是否为空
 
 	// 1：获取上下文
-	const FGameplayEffectContextHandle EffectContext = GetAbilitySystemComponent()->MakeEffectContext();
-	// 2：创建效果
+	FGameplayEffectContextHandle EffectContext = GetAbilitySystemComponent()->MakeEffectContext();
+	// 2：设置SourceObject
+	EffectContext.AddSourceObject(this);
+	// 3：创建效果
 	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, Level, EffectContext);
-	// 3：应用效果到目标
+	// 4：应用效果到目标
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 }
 
