@@ -138,30 +138,92 @@ public:
 	FGameplayAttributeData Health;		// 生命值，类型为FGameplayAttributeData，这是一个结构体，包含了当前值和基础值
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxHealth, Category="Vital Attributes")	// 蓝图只读，分类为Vital Attributes（重要属性）
-	FGameplayAttributeData MaxHealth;	// 最大生命值
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
-
 	/** 魔法 */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Mana, Category="Vital Attributes")	// 蓝图只读, 复制使用OnRep_Mana函数，分类为Vital Attributes（重要属性）
 	FGameplayAttributeData Mana;		// 魔法
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxMana, Category="Vital Attributes")	// 蓝图只读，分类为Vital Attributes（重要属性）
+	UFUNCTION()
+	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;		// 一般来说，Rep函数是不需要传入参数的，但是如果你需要在Rep函数中使用旧值，那么你就需要传入参数
+
+	UFUNCTION()
+	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;		// 魔法回调函数
+
+
+	/*
+	 * 次要属性（Secondary Attributes） 或者说是派生属性（Derived Attributes）
+	 */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Secondary Attributes")	// 蓝图只读，分类为Secondary Attributes（次要属性）
+	FGameplayAttributeData MaxHealth;	// 最大生命值
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Secondary Attributes")	// 蓝图只读，分类为Secondary Attributes（次要属性）
 	FGameplayAttributeData MaxMana;		// 最大魔法
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
 
-	UFUNCTION()
-	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;		// 一般来说，Rep函数是不需要传入参数的，但是如果你需要在Rep函数中使用旧值，那么你就需要传入参数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor, Category="Secondary Attributes")	// 蓝图只读，分类为Secondary Attributes（次要属性）
+	FGameplayAttributeData Armor;		// 护甲
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Armor)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ArmorPenetration, Category="Secondary Attributes")	// 蓝图只读，分类为Secondary Attributes（次要属性）
+	FGameplayAttributeData ArmorPenetration;		// 护甲穿透
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArmorPenetration)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_BlockChance, Category="Secondary Attributes")	// 蓝图只读，分类为Secondary Attributes（次要属性）
+	FGameplayAttributeData BlockChance;		// 格挡几率
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, BlockChance)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitChance, Category="Secondary Attributes")	// 蓝图只读，分类为Secondary Attributes（次要属性）
+	FGameplayAttributeData CriticalHitChance;		// 暴击几率
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitChance)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitDamage, Category="Secondary Attributes")	// 蓝图只读，分类为Secondary Attributes（次要属性）
+	FGameplayAttributeData CriticalHitDamage;		// 暴击伤害
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitDamage)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitResistance, Category="Secondary Attributes")	// 蓝图只读，分类为Secondary Attributes（次要属性）
+	FGameplayAttributeData CriticalHitResistance;		// 暴击抗性
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitResistance)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegeneration, Category="Secondary Attributes")	// 蓝图只读，分类为Secondary Attributes（次要属性）
+	FGameplayAttributeData HealthRegeneration;		// 生命恢复
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, HealthRegeneration)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ManaRegeneration, Category="Secondary Attributes")	// 蓝图只读，分类为Secondary Attributes（次要属性）
+	FGameplayAttributeData ManaRegeneration;		// 魔法恢复
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
 
 	UFUNCTION()
 	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;	// 最大生命值回调函数
 
 	UFUNCTION()
-	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;		// 魔法回调函数
+	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;	// 最大魔法回调函数
 
 	UFUNCTION()
-	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;	// 最大魔法回调函数
+	void OnRep_Armor(const FGameplayAttributeData& OldArmor) const;		// 护甲回调函数
+
+	UFUNCTION()
+	void OnRep_ArmorPenetration(const FGameplayAttributeData& OldArmorPenetration) const;	// 护甲穿透回调函数
+
+	UFUNCTION()
+	void OnRep_BlockChance(const FGameplayAttributeData& OldBlockChance) const;	// 格挡几率回调函数
+
+	UFUNCTION()
+	void OnRep_CriticalHitChance(const FGameplayAttributeData& OldCriticalHitChance) const;	// 暴击几率回调函数
+
+	UFUNCTION()
+	void OnRep_CriticalHitDamage(const FGameplayAttributeData& OldCriticalHitDamage) const;	// 暴击伤害回调函数
+
+	UFUNCTION()
+	void OnRep_CriticalHitResistance(const FGameplayAttributeData& OldCriticalHitResistance) const;	// 暴击抗性回调函数
+
+	UFUNCTION()
+	void OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const;	// 生命恢复回调函数
+
+	UFUNCTION()
+	void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const;	// 魔法恢复回调函数
+
 
 private:
 	void SetEffectsProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;	// 设置效果属性
