@@ -321,3 +321,69 @@ T* UOverlayWidgetController::GetDataTableRowByTag(UDataTable* DataTable, const F
 ```
 
 所以，这里我们希望我们的Widget设置自己的WidgetController，而不是像上面这个一样，像HUD请求一个WidgetController。只需要一些很容易使用的蓝图函数，我们就能访问WidgetController，所以这里我采用创建一个蓝图函数库来进行实现。如果我们创建一个蓝图函数库，我们可以创建一些蓝图可调用的静态函数，并使用这些函数来简单的访问事务
+
+```c++
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Kismet/BlueprintFunctionLibrary.h"
+#include "AuraAbilitySystemLibrary.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANE_API UAuraAbilitySystemLibrary : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+
+public:
+	// 因为静态函数不能访问实例化对象，静态函数所属的类本身就不会被创建在World中，所以需要传入一个WorldContextObject，用于获取当前的World
+	// 所以这也就是为什么很多函数库在引擎中都需要一个WorldContextObject的原因
+	// 例如： 通过WorldContextObject获取当前的World，然后通过World获取GameInstance，再通过GameInstance获取自定义的GameInstance等等等
+
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|WidgetController") // BlueprintPure表示这是一个纯蓝图函数，不需要任何引脚，他只是执行某种操作，并返回结果
+	static UOverlayWidgetController* GetOverlayWidgetController(const UObject* WorldContextObject);
+	
+};
+
+```
+
+cPP
+
+```c++
+UOverlayWidgetController* UAuraAbilitySystemLibrary::GetOverlayWidgetController(const UObject* WorldContextObject)
+{
+	// 1：首先，我们是通过一个Widget来调用的这个函数，所以我们是从Widget内部调用它，也就是说是从本地玩家的角度调用的它，widget是在本地玩家的视角下创建的，
+	// 所以我们希望关联具有该会话的本地玩家控制器，换句话说就是GetFirstLocalPlayerController
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	{
+		// 2：然后，我们希望获取HUD，HUD是我们所有Widget的展示的地方，所以我们需要获取HUD，然后在HUD中创建一个OverlayWidgetController
+		if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(PlayerController->GetHUD()))
+		{
+			AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(PlayerController->PlayerState);	// 获取玩家状态
+			UAbilitySystemComponent* AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();	// 获取玩家的能力系统组件
+			UAttributeSet* AttributeSet = AuraPlayerState->GetAttributeSet();	// 获取玩家的属性集
+
+			// 3：有了这四个对象，我们就可以在HUD中创建一个OverlayWidgetController
+			const FWidgetControllerParams InitParams = { PlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet };
+			return AuraHUD->GetOverlayWidgetController(InitParams);
+		}
+	}
+	return nullptr;
+}
+
+```
+
+其实，单看代码，这个函数库做的事情挺简单的，就是走了一遍我们之前在HUD中创建OverlayWidgetController的路子，不过这个在代码中实现起来，就简单多了，也清晰很多，需要的各种依赖也能直接获取，每个调用该库函数的蓝图Widget，我们都能给他创建一个挂载在HUD上的controller（查看代码的话，其实不是每一个都创建，严格来说，是判断当前是否存在Controller，如果有，就直接返回，如果美没有，就创建一个Controller），后续Widget直接拿这个Controller用就行。
+
+这是之前血条和蓝条UI创建WidgetController的蓝图。试想一下，如果没有这个库函数，岂不是我们每次添加一个Widget都要这样链接一堆节点，同时还要在代码里添加一个Widget。
+
+![image-20240410195819429](.\image-20240410195819429.png)
+
+编译后，进入蓝图，随便创建一个节点，就可以看到，我们的库函数已经成功添加到蓝图中了
+
+![image-20240410200317914](D:\study\Arcane\Note\7-AttributeMenu\image-20240410200317914.png)
+
+
+
