@@ -70,6 +70,10 @@ struct FEffectProperties
 	FGameplayEffectContextHandle EffectContextHandle;	// 效果上下文句柄
 };
 
+// typedef is specific to the FGameplayAttribute() signature, but TStaticFunPtr is generic to any signature chosen
+//typedef TBaseStaticDelegateInstance<FGameplayAttribute(), FDefaultDelegateUserPolicy>::FFuncPtr FAttributeFuncPtr;
+template<class T>
+using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
 
 
 /**
@@ -89,6 +93,7 @@ public:
 
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;	// 重写PostGameplayEffectExecute函数，用于效果执行后的处理
 
+	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;	// GamplayTag和一个静态函数指针的映射，用于将GamplayTag映射到属性，或者后续用于绑定其他的回调函数
 
 	/*
 	 * RPG 主属性（Primary Attributes）
