@@ -6,6 +6,12 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "AttributeMenuWidgetController.generated.h"
 
+struct FAuraAttributeInfo;
+class UAttributeInfo;
+
+// 创建一个能广播AuraAttributeSet属性值的委托
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeInfoSignature, const FAuraAttributeInfo&, Info);
+
 /**
  * 
  */
@@ -17,5 +23,12 @@ class ARCANE_API UAttributeMenuWidgetController : public UAuraWidgetController
 public:
 	virtual void BroadcastInitialValues() override;		// 广播初始值
 	virtual void BindCallbacksToDependencies() override;	// 绑定回调函数到依赖项
+
+	UPROPERTY(BlueprintAssignable, Category = "gas|Attributes")		// 蓝图可调用的委托
+	FAttributeInfoSignature AttributeInfoDelegate;	// 属性信息委托
+
+protected:
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UAttributeInfo> AuraAttributeInfo;	// 属性信息
 
 };

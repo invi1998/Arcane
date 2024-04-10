@@ -387,3 +387,40 @@ UOverlayWidgetController* UAuraAbilitySystemLibrary::GetOverlayWidgetController(
 
 
 
+## 将属性广播展示给UI控件 Attribute Info Delegate
+
+1：声明委托
+
+```c++
+
+// 创建一个能广播AuraAttributeSet属性值的委托
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeInfoSignature, const FAuraAttributeInfo&, Info);
+```
+
+
+
+2：定义委托
+
+```c++
+	UPROPERTY(BlueprintAssignable, Category = "gas|Attributes")		// 蓝图可调用的委托
+	FAttributeInfoSignature AttributeInfoDelegate;	// 属性信息委托
+```
+
+3：捕获数据，然后广播委托
+
+```c++
+void UAttributeMenuWidgetController::BroadcastInitialValues()
+{
+	const UAuraAttributeSet* AuraAttributeSet = Cast<UAuraAttributeSet>(AttributeSet);
+
+	check(AuraAttributeInfo);	// 确保AttributeInfo不为空
+
+	// 获取属性信息
+	FAuraAttributeInfo Info = AuraAttributeInfo->GetAttributeInfo(FAuraGameplayTags::Get().Attributes_Primary_Strength);
+	Info.AttributeValue = AuraAttributeSet->GetStrength();	// 将属性值设置为当前值
+
+	// 广播属性信息
+	AttributeInfoDelegate.Broadcast(Info);
+}
+```
+
