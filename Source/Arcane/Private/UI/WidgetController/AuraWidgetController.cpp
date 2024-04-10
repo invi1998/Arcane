@@ -11,7 +11,7 @@ void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerPar
 	AttributeSet = InParams.AttributeSet;
 }
 
-void UAuraWidgetController::BroadcastInitialValues()
+void UAuraWidgetController::BroadcastInitialValues(const FGameplayTag& Tag)
 {
 	// Do nothing
 }

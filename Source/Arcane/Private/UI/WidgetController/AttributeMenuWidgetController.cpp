@@ -7,20 +7,42 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/Data/AttributeInfo.h"
 
-void UAttributeMenuWidgetController::BroadcastInitialValues()
+void UAttributeMenuWidgetController::BroadcastInitialValues(const FGameplayTag& Tag)
 {
-	const UAuraAttributeSet* AuraAttributeSet = Cast<UAuraAttributeSet>(AttributeSet);
+	UAuraAttributeSet* AS = CastChecked<UAuraAttributeSet>(AttributeSet);
 
-	check(AuraAttributeInfo);	// 确保AttributeInfo不为空
+	checkf(AuraAttributeInfo, TEXT("AuraAttributeInfo is not set!"));	// 需要保证我们在蓝图中设置了数据资产
 
-	// 获取属性信息
-	FAuraAttributeInfo Info = AuraAttributeInfo->GetAttributeInfo(FAuraGameplayTags::Get().Attributes_Primary_Strength);
-	Info.AttributeValue = AuraAttributeSet->GetStrength();	// 将属性值设置为当前值
-
-	// 广播属性信息
-	AttributeInfoDelegate.Broadcast(Info);
+	for (const FAuraAttributeInfo& Info : AuraAttributeInfo.Get()->AttributeInformation)
+	{
+		BroadcastAttributeInfo(Info.AttributeTag);
+	}
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 {
+	UAuraAttributeSet* AS = CastChecked<UAuraAttributeSet>(AttributeSet);
+	checkf(AuraAttributeInfo, TEXT("AuraAttributeInfo is not set!"));	// 需要保证我们在蓝图中设置了数据资产
+
+	for (const FAuraAttributeInfo& Tag : AuraAttributeInfo.Get()->AttributeInformation)
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Tag.AttributeGetter).AddLambda(
+			[this, Tag](const FOnAttributeChangeData& Data)->void
+			{
+				BroadcastAttributeInfo(Tag.AttributeTag);
+			}
+		);
+	}
+}
+
+void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& Tag)
+{
+	// 从数据资产中依据Tag匹配获取属性信息
+	FAuraAttributeInfo Info = AuraAttributeInfo->GetAttributeInfo(Tag);
+
+	// 将数据集中的值赋值给Info
+	Info.AttributeValue = Info.AttributeGetter.GetNumericValue(AttributeSet);
+
+	// 广播属性信息
+	AttributeInfoDelegate.Broadcast(Info);
 }

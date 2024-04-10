@@ -46,7 +46,7 @@ void AAuraHUD::InitOverlay(APlayerController* PlayerController, APlayerState* Pl
 
 	OverlayWidget->SetWidgetController(TempController);	// 设置OverlayWidget的控制器
 
-	TempController->BroadcastInitialValues();	// 广播初始值
+	TempController->BroadcastInitialValues({});	// 广播初始值
 
 	OverlayWidget->AddToViewport();
 }

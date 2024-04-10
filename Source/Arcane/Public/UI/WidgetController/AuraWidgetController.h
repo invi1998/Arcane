@@ -41,7 +41,7 @@ public:
 	void SetWidgetControllerParams(const FWidgetControllerParams& InParams);	// 设置控制器参数
 
 	UFUNCTION(BlueprintCallable)
-	virtual void BroadcastInitialValues();		// 广播初始值
+	virtual void BroadcastInitialValues(const FGameplayTag& Tag);		// 广播初始值
 	virtual void BindCallbacksToDependencies();	// 绑定回调到依赖项
 
 

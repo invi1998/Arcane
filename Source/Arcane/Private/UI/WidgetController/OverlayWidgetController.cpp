@@ -9,7 +9,8 @@
 #include "Fonts/UnicodeBlockRange.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-void UOverlayWidgetController::BroadcastInitialValues()
+
+void UOverlayWidgetController::BroadcastInitialValues(const FGameplayTag& Tag)
 {
 	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(this->AttributeSet);	// 将AttributeSet转换为UAuraAttributeSet
 
@@ -17,7 +18,6 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	OnMaxHealthChanged.Broadcast(AuraAttributeSet->GetMaxHealth());		// 广播最大生命值改变
 	OnManaChanged.Broadcast(AuraAttributeSet->GetMana());				// 广播法力值改变
 	OnMaxManaChanged.Broadcast(AuraAttributeSet->GetMaxMana());			// 广播最大法力值改变
-	
 }
 
 void UOverlayWidgetController::BindCallbacksToDependencies()

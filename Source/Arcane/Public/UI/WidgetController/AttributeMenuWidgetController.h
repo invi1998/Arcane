@@ -21,8 +21,10 @@ class ARCANE_API UAttributeMenuWidgetController : public UAuraWidgetController
 	GENERATED_BODY()
 
 public:
-	virtual void BroadcastInitialValues() override;		// 广播初始值
+	virtual void BroadcastInitialValues(const FGameplayTag& Tag) override;
 	virtual void BindCallbacksToDependencies() override;	// 绑定回调函数到依赖项
+
+	void BroadcastAttributeInfo(const FGameplayTag& Tag);	// 广播属性信息
 
 	UPROPERTY(BlueprintAssignable, Category = "gas|Attributes")		// 蓝图可调用的委托
 	FAttributeInfoSignature AttributeInfoDelegate;	// 属性信息委托

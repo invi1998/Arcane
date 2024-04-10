@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AttributeSet.h"
 #include "GameplayTagContainer.h"
 #include "Engine/DataAsset.h"
 #include "AttributeInfo.generated.h"
@@ -36,6 +37,10 @@ struct FAuraAttributeInfo
 	//  Ù–‘Icon
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UTexture2D* AttributeIcon = nullptr;
+
+	// GameplayAttribute
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayAttribute AttributeGetter;
 };
 
 

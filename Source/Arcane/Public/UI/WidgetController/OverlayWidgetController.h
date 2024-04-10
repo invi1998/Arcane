@@ -45,7 +45,7 @@ class ARCANE_API UOverlayWidgetController : public UAuraWidgetController
 	GENERATED_BODY()
 
 public:
-	virtual void BroadcastInitialValues() override;		// 广播初始值
+	virtual void BroadcastInitialValues(const FGameplayTag& Tag) override;	// 广播初始值
 	virtual void BindCallbacksToDependencies() override;		// 绑定回调到依赖项
 
 	/*
