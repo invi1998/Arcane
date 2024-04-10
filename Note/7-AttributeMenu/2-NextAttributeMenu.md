@@ -255,3 +255,69 @@ FAuraAttributeInfo UAttributeInfo::GetAttributeInfo(const FGameplayTag Attribute
 然后编译启动UE，我们基于这个DateAsset创建一个数据资产，用来初始化描述和填充信息
 
 ![image-20240410185423460](.\image-20240410185423460.png)
+
+
+
+## Attribute Menu Widget Controller--（蓝图函数库的创建用例）
+
+接下来就是为我们的属性创建WidgetController，用来做属性变化时的委托发送和蓝图节点的委托分发处理。
+
+同时，我还希望我们能够轻松的获取这个Widget Controller，而不必像之前的UOverlayWidgetController一样，要经历一大堆代码，为了找到Controller，还得在类中添加代码.。如下，我们加一个属性，就得加一些配套代码，去创建代理，
+
+```c++
+/**
+ * OverlayWidgetController, 叠加层控件控制器, 设置为BlueprintType, Blueprintable，是因为我们希望在蓝图中使用它
+ */
+UCLASS(BlueprintType, Blueprintable)
+class ARCANE_API UOverlayWidgetController : public UAuraWidgetController
+{
+	GENERATED_BODY()
+
+public:
+	virtual void BroadcastInitialValues() override;		// 广播初始值
+	virtual void BindCallbacksToDependencies() override;		// 绑定回调到依赖项
+
+	/*
+	 * 因为我们创建了一个动态多播委托，所以我们需要一个蓝图可分配的事件来触发它
+	 * 一但我们的小部件蓝图，WBP叠加层或者任何其他东西，如果他们能够访问到这个控制器，他们就可以分配一个事件来接收这个委托
+	 */
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// 设置为蓝图可分配，分类为GAS下的Attributes
+	FOnAttributeChangeSignature OnHealthChanged;		// 生命值改变
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// 设置为蓝图可分配，分类为GAS下的Attributes
+	FOnAttributeChangeSignature OnMaxHealthChanged;		// 最大生命值改变
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// 设置为蓝图可分配，分类为GAS下的Attributes
+	FOnAttributeChangeSignature OnManaChanged;		// 法力值改变
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// 设置为蓝图可分配，分类为GAS下的Attributes
+	FOnAttributeChangeSignature OnMaxManaChanged;		// 最大法力值改变
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Message")		// 设置为蓝图可分配，分类为GAS下的Attributes
+	FMessageWidgetRowSignature MessageWidgetRowDelegate;		// 消息小部件 行委托
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Widget Data")		// 设置为可编辑的任何地方，蓝图可读
+	TObjectPtr<UDataTable> MessageWidgetDataTable;		// 消息小部件数据表
+
+	template<typename T>
+	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag) const;		// 通过标签获取数据表行
+
+};
+
+template <typename T>
+T* UOverlayWidgetController::GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag) const
+{
+	if (!DataTable)
+	{
+		return nullptr;
+	}
+
+	const FString ContextString = TEXT("");
+	return DataTable->FindRow<T>(*Tag.GetTagName().ToString(), ContextString, true);
+}
+
+```
+
+所以，这里我们希望我们的Widget设置自己的WidgetController，而不是像上面这个一样，像HUD请求一个WidgetController。只需要一些很容易使用的蓝图函数，我们就能访问WidgetController，所以这里我采用创建一个蓝图函数库来进行实现。如果我们创建一个蓝图函数库，我们可以创建一些蓝图可调用的静态函数，并使用这些函数来简单的访问事务
