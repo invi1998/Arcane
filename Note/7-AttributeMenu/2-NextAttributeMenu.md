@@ -252,5 +252,6 @@ FAuraAttributeInfo UAttributeInfo::GetAttributeInfo(const FGameplayTag Attribute
 
 从实现上就可以看到，这个类要做的事情，基本就是将我们所有的属性信息进行归总，然后定义一个属性结构体，方便我们后续代理绑定和UI响应所需的数据内容
 
-然后编译启动UE，我们基于这个DateAsset创建一个蓝图
+然后编译启动UE，我们基于这个DateAsset创建一个数据资产，用来初始化描述和填充信息
 
+![image-20240410185423460](.\image-20240410185423460.png)
