@@ -160,3 +160,97 @@ void UAuraAssetManager::StartInitialLoading()
 编译启动，可以看到，我们新增的这个属性tag，就称为了一个Native（原生属性）
 
 ![image-20240410165015251](.\image-20240410165015251.png)
+
+
+
+## Attribute Info Data Asset-- FAuraAttributeInfo
+
+现在，我们已经创建了自己的GamplayTag，并在C++中处理这些Tag，现在，当我们使用功能我们的UAuraAssetManager单例或者FAuraGameplayTags创建本地（Native）标签时，我们需要一个信息数据作为资产属性，所以这里我们还要创建一个 UAttributeInfo数据资产，我们可以以结构体形式存储信息的资产。
+
+```c++
+#include "GameplayTagContainer.h"
+#include "Engine/DataAsset.h"
+#include "AttributeInfo.generated.h"
+
+// 这里创建一个结构体，用来存储给定属性的相关信息，一但属性发生变化，我们就可以将这个结构体传递给UI，让UI更新
+USTRUCT(BlueprintType)
+struct FAuraAttributeInfo
+{
+	GENERATED_BODY()
+
+	// GamelayTag
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag AttributeTag;
+
+	// 属性名
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FText AttributeName = FText();
+
+	// 属性中文名
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FText AttributeChineseName = FText();
+
+	// 属性描述
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FText AttributeDescription = FText();
+
+	// 属性值
+	UPROPERTY(BlueprintReadOnly)
+	float AttributeValue = 0.0f;
+
+	// 属性Icon
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UTexture2D* AttributeIcon = nullptr;
+};
+
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANE_API UAttributeInfo : public UDataAsset
+{
+	GENERATED_BODY()
+
+public:
+	// 传入一个GameplayTag，返回一个FAuraAttributeInfo，bLogNotFound 如果为true，当找不到属性时会打印错误信息，记录日志
+	FAuraAttributeInfo GetAttributeInfo(const FGameplayTag AttributeTag, bool bLogNotFound = false) const;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)	// 只读
+	TArray<FAuraAttributeInfo> AttributeInformation;	// 属性信息
+
+
+};
+
+```
+
+GetAttributeInfo要做的也很简单，就是遍历属性信息列表，然后进行匹配返回
+
+```c++
+#include "AbilitySystem/Data/AttributeInfo.h"
+
+FAuraAttributeInfo UAttributeInfo::GetAttributeInfo(const FGameplayTag AttributeTag, bool bLogNotFound) const
+{
+	for (const FAuraAttributeInfo& AttributeInfo : AttributeInformation)
+	{
+		// 这里判断Tag是否相等，如果不想用等于，可以使用AttributeInfo.AttributeTag.MatchesTagExact(AttributeTag)来判段也是可以的
+		if (AttributeInfo.AttributeTag == AttributeTag)		// 全匹配
+		{
+			return AttributeInfo;
+		}
+	}
+
+	if (bLogNotFound)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AttributeInfo for %s not found in %s"), *AttributeTag.ToString(), *GetName());
+	}
+
+	return FAuraAttributeInfo();
+}
+
+```
+
+从实现上就可以看到，这个类要做的事情，基本就是将我们所有的属性信息进行归总，然后定义一个属性结构体，方便我们后续代理绑定和UI响应所需的数据内容
+
+然后编译启动UE，我们基于这个DateAsset创建一个蓝图
+
