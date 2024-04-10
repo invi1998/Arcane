@@ -49,3 +49,114 @@
 > 我们还需要创建这个结构体。我们将创建一个Aura Attribute Info结构体，它包含了我们想要发送给Widgets的所有信息。
 >
 > 当然，我们需要创建我们的属性菜单的Widget控制器。这个Widget控制器将把所有的事情联系在一起，因为它将监听来自能力系统的广播，并能够从数据资产中检索到属性信息的结构体，然后将它广播给我们的Widgets，它们可以检查自己的Gameplay Tags是否与发送的结构中的Gameplay Tags匹配，然后它们可以更新自己。
+
+
+
+## FAuraGameplayTags
+
+C++中创建一个原生单例，用于管理游戏中所有的GameplayTags
+
+```c++
+// Copyright INVI1998
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+
+/**
+ * AuraGameplayTags
+ *
+ * 原生单例，用于管理游戏中的所有GameplayTags
+ */
+struct FAuraGameplayTags
+{
+public:
+	static const FAuraGameplayTags& Get() { return GameplayTags; };
+
+	static void InitializeNativeGameplayTags();
+
+protected:
+
+private:
+	static FAuraGameplayTags GameplayTags;
+};
+```
+
+cPP
+
+```c++
+FAuraGameplayTags FAuraGameplayTags::GameplayTags;	// 静态变量初始化
+
+void FAuraGameplayTags::InitializeNativeGameplayTags()
+{
+	// 添加原生标签，属性->次要属性->护甲，描述为减少受到的伤害，提高格挡几率
+	UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Secondary.Armor"), FString("Reduces damage Taken, improves Block Chance"));
+	
+}
+
+```
+
+现在，我们只是为属性 Attributes.Secondary.Armor 添加了一个本地游戏标签，现在我们需要在某个时刻调用这个函数，这也就是接下来我们的需要创建自己的资源管理器的作用。
+
+## UAuraAssetManager
+
+我们基于UAssetManager创建一个新的资产管理器，该类也是一个单例例，然后重写StartInitialLoading函数，这个函数会在引擎启动的时候调用，所以我们可以在这里去初始化上面的FAuraGameplayTags（GameplayTags资产）
+
+```c++
+
+#include "CoreMinimal.h"
+#include "Engine/AssetManager.h"
+#include "AuraAssetManager.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANE_API UAuraAssetManager : public UAssetManager
+{
+	GENERATED_BODY()
+
+public:
+	static UAuraAssetManager& Get();
+
+protected:
+	virtual void StartInitialLoading() override;	// 在这里加载资源，这个函数会在引擎启动时调用，所以这个函数时调用初始化本地Tags最好的地方
+	
+};
+```
+
+cPP
+
+```c++
+
+#include "AuraAssetManager.h"
+#include "AuraGameplayTags.h"
+
+UAuraAssetManager& UAuraAssetManager::Get()
+{
+	checkf(GEngine, TEXT("UAuraAssetManager::Get() called with GEngine == nullptr.  This function should only be called after Engine has been initialized."));
+	UAuraAssetManager* AuraAssetManagerSingleton = Cast<UAuraAssetManager>(GEngine->AssetManager);	// 将GEngine->AssetManager转换为UAuraAssetManager类型
+	return *AuraAssetManagerSingleton;
+}
+
+void UAuraAssetManager::StartInitialLoading()
+{
+	Super::StartInitialLoading();
+
+	FAuraGameplayTags::InitializeNativeGameplayTags();	// 初始化游戏标签
+
+	// 现在要做的最后一步，就是将这个AssetManager注册到GEngine中，设置为我们的项目的资产管理器
+}
+
+```
+
+现在要做的最后一步，就是将这个AssetManager注册到GEngine中，设置为我们的项目的资产管理器。
+
+进入项目配置文件（defaultEngine.ini），将我们的资产管理器设置为游戏的资产管理器，记住，这里设置命字的时候，需要去掉类名例的F
+
+![image-20240410164611014](.\image-20240410164611014.png)
+
+编译启动，可以看到，我们新增的这个属性tag，就称为了一个Native（原生属性）
+
+![image-20240410165015251](.\image-20240410165015251.png)

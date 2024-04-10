@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -12,6 +13,11 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 
     // 绑定EffectApplied委托，该委托在效果应用到目标时调用
     OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
+
+    const FAuraGameplayTags& GameplayTag = FAuraGameplayTags::Get();
+
+	// 打印 GameplayTag.Attributes_Secondary_Armor.ToString();
+    // GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, GameplayTag.Attributes_Secondary_Armor.ToString());
 }
 
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,

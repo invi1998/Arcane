@@ -15,7 +15,9 @@ struct FAuraGameplayTags
 public:
 	static const FAuraGameplayTags& Get() { return GameplayTags; };
 
-	static void InitializeNativeGameplayTags();
+	static void InitializeNativeGameplayTags();		// 初始化原生GameplayTags
+
+	FGameplayTag Attributes_Secondary_Armor;			// 二级属性：护甲
 
 protected:
 
