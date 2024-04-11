@@ -6,6 +6,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Components/SplineComponent.h"
 #include "Input/AuraEnhancedInputComponent.h"
@@ -148,9 +150,48 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("AbilityInputTagReleased: %s"), *InputTag.ToString()));
 
-	if (GetASC())
+	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RightMouseButton))	// 如果输入标签不匹配自动寻路标签（右键点地板）
 	{
-		GetASC()->AbilityInputTagReleased(InputTag);	// 调用能力系统组件的技能输入标签释放函数
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagReleased(InputTag);
+		}
+
+		return;
+	}
+
+	if (bTargeting)
+	{
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagReleased(InputTag);
+		}
+	}
+	else
+	{
+		APawn* ControlledPawn = GetPawn<APawn>();	// 获取控制的Pawn
+		// 判断当前是短按还是长按
+		if (FollowTime <= ShortPressThreshold && ControlledPawn)
+		{
+			// 点按（短按）时，通过寻路避障到目标位置
+			// // 寻找路径到目标位置
+			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CashedDestination))	// 如果路径有效
+			{
+				// 生成样条曲线
+				Spline->ClearSplinePoints();	// 清空样条曲线点
+				for (const auto& PathPoint : NavPath->PathPoints)	// 遍历路径点
+				{
+					Spline->AddSplinePoint(PathPoint, ESplineCoordinateSpace::World);	// 添加样条曲线点
+					// 绘制调试线
+					DrawDebugSphere(GetWorld(), PathPoint, 10.f, 12, FColor::Green, false, 5.1f);	// 绘制调试球体
+				}
+				bAutoRunning = true;	// 设置为自动寻路
+				Spline->UpdateSpline();	// 更新样条曲线
+			}
+		}
+
+		FollowTime = 0.f;	// 重置跟随时间
+		bTargeting = false;	// 取消瞄准
 	}
 }
 
