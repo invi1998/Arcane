@@ -292,3 +292,90 @@ void AAuraPlayerController::SetupInputComponent()
 然后将我们Input数据资产添加到BP_Controller蓝图
 
 ![image-20240411210103655](.\image-20240411210103655.png)
+
+
+
+# Activating Abilities
+
+## DynamicAbilityTags运行时添加和移除
+
+在Unreal Engine 5 (UE5) 中，DynamicAbilityTags 是一个用于在运行时动态添加或移除 Ability 标签的工具。Ability 标签是一种机制，用于标识和分类 Ability 类型，例如攻击、防御、治疗等。这些标签可以用来控制哪些 Ability 可以相互作用，以及它们如何相互作用。
+
+DynamicAbilityTags 的主要功能包括：
+
+1. 动态添加标签：在运行时，可以通过调用 `AddTag()` 函数来添加新的标签。例如，当玩家角色获得某个 Buff 或 Debuff 时，可以动态地为其添加一个标签，以便其他 Ability 可以根据这个标签来决定是否可以触发。
+
+2. 动态移除标签：在运行时，可以通过调用 `RemoveTag()` 函数来移除已有的标签。例如，当 Buff 或 Debuff 消失时，可以动态地移除相应的标签。
+
+3. 动态查询标签：在运行时，可以通过调用 `HasTag()` 函数来检查一个 Ability 是否具有某个标签。例如，在决定是否可以触发某个 Ability 时，可以先检查该 Ability 是否具有特定的标签。
+
+DynamicAbilityTags 的用法示例：
+
+```cpp
+// 添加标签
+AbilitySpec->DynamicAbilityTags.AddTag(FGameplayTag::FromTag("BuffTag"));
+
+// 移除标签
+AbilitySpec->DynamicAbilityTags.RemoveTag(FGameplayTag::FromTag("BuffTag"));
+
+// 查询标签
+if (AbilitySpec->DynamicAbilityTags.HasTag(FGameplayTag::FromTag("BuffTag")))
+{
+    // 执行某些操作
+}
+```
+
+在实际游戏中，DynamicAbilityTags 可以用来实现各种复杂的 Ability 系统。例如，可以使用 DynamicAbilityTags 来实现 Buffs 和 Debuffs 的效果叠加，或者实现不同 Ability 之间的协同作用。
+
+在这里就可以被实现为游戏运行时动态切换输入源
+
+```c++
+void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities)
+{
+	for (TSubclassOf<UGameplayAbility> Ability : StartupAbilities)
+	{
+		if (Ability)
+		{
+            // 创建能力
+            FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability.GetDefaultObject(), 1, 0);
+
+            if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
+            {
+                // 如果是AuraGameplayAbility，那么设置StartupInputTag
+                AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupInputTag);
+                // DynamicAbilityTags是一个标签集合，它包含了一些标签，这些标签可以在运行时动态添加或移除。
+                // 在这个上下文中，DynamicAbilityTags是AbilitySpec的一个成员变量，用于存储与Ability相关的标签。
+                // 简单来说，就是比如我在开始的时候给一个角色添加了一个能力，这个能力可以被左键点击触发，所以我将左键输入标签添加到了这个能力的DynamicAbilityTags中。
+                // 然后在游戏运行过程中，我可以卸载或者更换这个输入标签，改为右键输入标签，这样这个能力就可以被右键点击触发了。
+
+                // 将能力添加到AbilitySystemComponent中
+				GiveAbility(AbilitySpec);   // 添加能力
+            }
+
+            
+			// GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活能力
+            
+		}
+	}
+}
+```
+
+
+
+# Active Ability 激活能力
+
+AbilitySpecInputPressed 源码
+
+![image-20240411222815969](.\image-20240411222815969.png)
+
+AbilitySpecInputPressed 是一个函数，用于处理 AbilitySpec 的输入事件。这个函数的主要作用是在玩家按下某个按键时，将该按键与 AbilitySpec 的启动输入标签关联起来。
+
+在 AbilityInputTagHeld 函数中执行 AbilitySpecInputPressed(Spec) 语句是为了响应玩家按下的按键。当玩家按下某个按键时，该按键会被关联到一个 AbilitySpec 的启动输入标签上。如果这个 AbilitySpec 已经被激活，那么它会将输入事件传递给 Ability 对象；否则，它会尝试激活这个 Ability。
+
+![image-20240411222916389](.\image-20240411222916389.png)
+
+> 我们从 TagContainer 中获取标签，然后使用 TryActivateAbility()来激活它，传入标签。还有一个叫 TryActivateAbilityByTag()的函数，它接受 TagContainer 并激活（如果我理解正确的话）所有具有匹配标签的能力。
+
+> 可以使用TryActivateAbilitiesByTag()作为替代方法。这个函数允许您从TagContainer中激活所有具有匹配标签的能力。当您想要同时激活多个能力时，它可能很有用。然而，请记住，这个函数将激活所有具有匹配标签的能力，所以如果您只想激活特定的能力，TryActivateAbility()可能更合适。
+
+> 关于这种方法可能存在的问题，它实际上取决于您具体的使用情况。使用TryActivateAbilitiesByTag()可以简化激活过程，但您需要确保标签设置正确，并且您正在激活所需的能力。此外，如果您有大量具有相似标签的能力，可能会更难管理和调试。

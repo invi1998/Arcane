@@ -3,7 +3,9 @@
 
 #include "Player/AuraPlayerController.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputSubsystems.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Input/AuraEnhancedInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 
@@ -54,6 +56,16 @@ void AAuraPlayerController::SetupInputComponent()
 	// 绑定技能输入 ThisClass::AbilityInputTagPressed = AAuraPlayerController::AbilityInputTagPressed
 	AuraEnhancedInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 
+}
+
+UAuraAbilitySystemComponent* AAuraPlayerController::GetASC()
+{
+	if (!AuraAbilitySystemComponent)
+	{
+		// 当然，获取能力系统组件可能会失败，因为我们的角色可能没有能力系统组件，或者能力系统组件还没有初始化，不过不重要，我们只需要在这里缓存一下，如果获取失败，返回空也没关系
+		AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn<APawn>()));
+	}
+	return AuraAbilitySystemComponent;
 }
 
 void AAuraPlayerController::CursorTrace()
@@ -116,14 +128,31 @@ void AAuraPlayerController::Move(const FInputActionValue& Value)
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AbilityInputTagPressed: %s"), *InputTag.ToString()));
+
+	if (GetASC())
+	{
+		GetASC()->AbilityInputTagPressed(InputTag);	// 调用能力系统组件的技能输入标签按下函数
+	}
 }
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("AbilityInputTagReleased: %s"), *InputTag.ToString()));
+
+	if (GetASC())
+	{
+		GetASC()->AbilityInputTagReleased(InputTag);	// 调用能力系统组件的技能输入标签释放函数
+	}
 }
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AbilityInputTagHeld: %s"), *InputTag.ToString()));
+
+	if (GetASC())
+	{
+		GetASC()->AbilityInputTagHeld(InputTag);	// 调用能力系统组件的技能输入标签按住函数
+	}
 }
+
+

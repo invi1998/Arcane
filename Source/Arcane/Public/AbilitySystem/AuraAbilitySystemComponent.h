@@ -27,6 +27,12 @@ public:
 
 	void AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities);		// 添加角色的能力，这些能力在角色创建时就会被添加
 
+	void AbilityInputTagPressed(const FGameplayTag& InputTag);	// 技能输入标签按下
+
+	void AbilityInputTagReleased(const FGameplayTag& InputTag);	// 技能输入标签释放
+
+	void AbilityInputTagHeld(const FGameplayTag& InputTag);	// 技能输入标签按住
+
 protected:
 	// 在效果应用到目标时调用
 	void EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);

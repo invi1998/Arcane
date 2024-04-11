@@ -29,11 +29,97 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		{
             // 创建能力
             FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability.GetDefaultObject(), 1, 0);
-            // 将能力添加到AbilitySystemComponent中
-			// GiveAbility(AbilitySpec);   // 添加能力
-            GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活能力
+
+            if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
+            {
+                // 如果是AuraGameplayAbility，那么设置StartupInputTag
+                AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupInputTag);
+                // DynamicAbilityTags是一个标签集合，它包含了一些标签，这些标签可以在运行时动态添加或移除。
+                // 在这个上下文中，DynamicAbilityTags是AbilitySpec的一个成员变量，用于存储与Ability相关的标签。
+                // 简单来说，就是比如我在开始的时候给一个角色添加了一个能力，这个能力可以被左键点击触发，所以我将左键输入标签添加到了这个能力的DynamicAbilityTags中。
+                // 然后在游戏运行过程中，我可以卸载或者更换这个输入标签，改为右键输入标签，这样这个能力就可以被右键点击触发了。
+
+                // 将能力添加到AbilitySystemComponent中
+				GiveAbility(AbilitySpec);   // 添加能力
+            }
+
+            
+			// GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活能力
+            
 		}
 	}
+}
+
+void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
+{
+    // 1：检测输入的标签是否有效
+    if (InputTag.IsValid())
+    {
+    	// 2：获取所有的激活的能力(激活的能力是指那些可以被激活的能力) 这取决于AbilitySystemComponent的激活策略
+		TArray<FGameplayAbilitySpec> AbilitiesOfTheActivatable = GetActivatableAbilities();
+
+		// 3：遍历所有的激活的能力
+		for (FGameplayAbilitySpec& Spec : AbilitiesOfTheActivatable)
+		{
+            // 4：检测能力的输入标签是否与输入的标签相同，这里采用的是精确匹配
+            if (Spec.DynamicAbilityTags.HasTagExact(InputTag))
+            {
+               // 5： 判断能力是否已经激活
+                if (!Spec.IsActive())
+                {
+                	// 6：尝试激活能力
+					TryActivateAbility(Spec.Handle);    // 尝试激活能力
+				}
+            }
+		}
+	}
+}
+
+void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)
+{
+    // 1：检测输入的标签是否有效
+    if (InputTag.IsValid())
+    {
+        // 2：获取所有的激活的能力(激活的能力是指那些可以被激活的能力) 这取决于AbilitySystemComponent的激活策略
+        TArray<FGameplayAbilitySpec> AbilitiesOfTheActivatable = GetActivatableAbilities();
+
+        // 3：遍历所有的激活的能力
+        for (FGameplayAbilitySpec& Spec : AbilitiesOfTheActivatable)
+        {
+            // 4：检测能力的输入标签是否与输入的标签相同，这里采用的是精确匹配
+            if (Spec.DynamicAbilityTags.HasTagExact(InputTag))
+            {
+                // 5：释放输入标签
+                AbilitySpecInputReleased(Spec);    // 释放输入标签
+            }
+        }
+    }
+}
+
+void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputTag)
+{
+    // 1：检测输入的标签是否有效
+    if (InputTag.IsValid())
+    {
+        // 2：获取所有的激活的能力(激活的能力是指那些可以被激活的能力) 这取决于AbilitySystemComponent的激活策略
+        TArray<FGameplayAbilitySpec> AbilitiesOfTheActivatable = GetActivatableAbilities();
+
+        // 3：遍历所有的激活的能力
+        for (FGameplayAbilitySpec& Spec : AbilitiesOfTheActivatable)
+        {
+            // 4：检测能力的输入标签是否与输入的标签相同，这里采用的是精确匹配
+            if (Spec.DynamicAbilityTags.HasTagExact(InputTag))
+            {
+				AbilitySpecInputPressed(Spec);      // 按住输入标签
+                // 5： 判断能力是否已经激活
+                if (!Spec.IsActive())
+                {
+                    // 6：尝试激活能力
+                    TryActivateAbility(Spec.Handle);    // 尝试激活能力
+                }
+            }
+        }
+    }
 }
 
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,

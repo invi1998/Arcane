@@ -12,6 +12,7 @@ class UInputAction;
 struct FInputActionValue;
 class IEnemyInterface;
 class UAuraInputConfig;
+class UAuraAbilitySystemComponent;
 
 /**
  * 
@@ -50,4 +51,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	TObjectPtr<UAuraInputConfig> InputConfig;	// 输入配置
+
+	UPROPERTY()
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;	// 能力系统组件，因为在处理Input时需要用到能力系统组件，而这些Input往往会频繁触发，Cast消耗较大，所以我们在这里缓存一下
+
+	UAuraAbilitySystemComponent* GetASC();	// 获取能力系统组件
+
 };

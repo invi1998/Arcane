@@ -13,5 +13,10 @@ UCLASS()
 class ARCANE_API UAuraGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	 FGameplayTag StartupInputTag;	// ∆Ù∂Ø ‰»Î±Í«©
 	
 };
