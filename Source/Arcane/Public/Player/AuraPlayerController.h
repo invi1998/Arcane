@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "GameplayTagContainer.h"
 #include "AuraPlayerController.generated.h"
 
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class IEnemyInterface;
+class UAuraInputConfig;
 
 /**
  * 
@@ -25,7 +27,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void SetupInputComponent() override;
+	virtual void SetupInputComponent() override;	// 该函数在控制器被创建时调用，用于设置输入组件
 
 	void CursorTrace();	// 光标追踪，追踪鼠标指向的物体
 
@@ -41,4 +43,11 @@ private:
 
 	IEnemyInterface* LastActor;		// 上一个命中的Actor
 	IEnemyInterface* ThisActor;		// 当前命中的Actor
+
+	void AbilityInputTagPressed(FGameplayTag InputTag);	// 技能输入标签按下
+	void AbilityInputTagReleased(FGameplayTag InputTag);	// 技能输入标签释放
+	void AbilityInputTagHeld(FGameplayTag InputTag);	// 技能输入标签按住
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	TObjectPtr<UAuraInputConfig> InputConfig;	// 输入配置
 };

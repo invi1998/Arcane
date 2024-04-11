@@ -241,3 +241,47 @@ void UAuraEnhancedInputComponent::BindAbilityActions(const UAuraInputConfig* Inp
     这个版本的`BindAction`函数用于将一个输入动作与一个对象的方法关联起来，当输入动作被触发时，会调用指定的方法，并传入相应的参数。
 
 这些特化版本的`BindAction`函数提供了不同的输入事件类型和参数数量，使得用户可以根据自己的需求灵活地将输入动作与对象的方法或委托关联起来。
+
+
+
+# Callback For Ability Input
+
+上面，我们成功的对输入绑定了输入回调，现在，我们需要在PlayerController中调用这个函数。也就是我们需要在Controller中，创建3个函数，分别处理技能的按下，按住和释放这3个动作。
+
+```c++
+void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AbilityInputTagPressed: %s"), *InputTag.ToString()));
+}
+
+void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("AbilityInputTagReleased: %s"), *InputTag.ToString()));
+}
+
+void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AbilityInputTagHeld: %s"), *InputTag.ToString()));
+}
+```
+
+
+
+然后在SetupInputComponent函数（该函数在控制器被创建时调用，用于设置输入组件）里对技能输入回调进行绑定
+
+```c++
+void AAuraPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	UAuraEnhancedInputComponent* AuraEnhancedInputComponent = CastChecked<UAuraEnhancedInputComponent>(InputComponent);		// 获取增强输入组件，类型转换为增强输入组件，如果类型转换失败则报错
+
+	// 一但有了增强输入组件，我们就可以绑定输入了
+	AuraEnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);		// 绑定移动输入，这里是一个动作输入，所以使用BindAction，触发事件是Triggered，绑定的函数是Move，Triggered事件是在按下按键时触发，因为我们的移动是持续的，所以我们需要在按下按键时触发
+
+	// 绑定技能输入 ThisClass::AbilityInputTagPressed = AAuraPlayerController::AbilityInputTagPressed
+	AuraEnhancedInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
+
+}
+```
+
