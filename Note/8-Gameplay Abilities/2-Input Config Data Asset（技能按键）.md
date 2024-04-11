@@ -199,3 +199,45 @@ void UAuraEnhancedInputComponent::BindAbilityActions(const UAuraInputConfig* Inp
 }
 ```
 
+
+
+这里调用了UEnhancedInputComponent里的一个模板函数BindAction。这里我使用的是第三个template <class DelegateType, class UserClass, typename... VarTypes>特化版本对我们的输入动作和输入对像做绑定。
+
+![image-20240411200403588](.\image-20240411200403588.png)
+
+`UEnhancedInputComponent::BindAction`是一个模板函数，用于将输入动作与对象的方法或委托关联起来。这个函数有多个特化版本，每个版本支持不同的输入事件类型和参数数量。下面是对各个特化版本的参数和用法的分析：
+
+1. `template <class UserClass>`
+
+    这个版本的`BindAction`函数接受一个`FInputActionBinding`引用作为返回值，以及以下参数：
+    
+    - `const FName ActionName`: 输入动作名称。
+    - `const EInputEvent KeyEvent`: 输入事件类型，可以是按键按下、按键释放等。
+    - `UserClass* Object`: 指向调用此函数的对象的指针。
+    - `typename FInputActionHandlerSignature::TMethodPtr<UserClass> Func`: 一个指向用户自定义方法的指针，该方法的参数类型为`UserClass`。
+
+    这个版本的`BindAction`函数用于将一个输入动作与一个对象的方法关联起来，当输入动作被触发时，会调用指定的方法。
+
+2. `template <class UserClass>`
+
+    这个版本的`BindAction`函数接受一个`FInputActionBinding`引用作为返回值，以及以下参数：
+    
+    - `const FName ActionName`: 输入动作名称。
+    - `const EInputEvent KeyEvent`: 输入事件类型，可以是按键按下、按键释放等。
+    - `UserClass* Object`: 指向调用此函数的对象的指针。
+    - `typename FInputActionHandlerWithKeySignature::TMethodPtr<UserClass> Func`: 一个指向用户自定义方法的指针，该方法的参数类型为`UserClass`和一个输入键值。
+
+    这个版本的`BindAction`函数用于将一个输入动作与一个对象的方法关联起来，当输入动作被触发时，会调用指定的方法，并传入对应的输入键值。
+
+3. `template <class DelegateType, class UserClass, typename... VarTypes>`
+
+    这个版本的`BindAction`函数接受一个`FInputActionBinding`引用作为返回值，以及以下参数：
+    
+    - `const FName ActionName`: 输入动作名称。
+    - `const EInputEvent KeyEvent`: 输入事件类型，可以是按键按下、按键释放等。
+    - `UserClass* Object`: 指向调用此函数的对象的指针。
+    - `typename DelegateType::template TMethodPtr<UserClass> Func, VarTypes... Vars`: 一个指向用户自定义方法的指针，该方法的参数类型为`UserClass`和指定的变量类型列表。
+
+    这个版本的`BindAction`函数用于将一个输入动作与一个对象的方法关联起来，当输入动作被触发时，会调用指定的方法，并传入相应的参数。
+
+这些特化版本的`BindAction`函数提供了不同的输入事件类型和参数数量，使得用户可以根据自己的需求灵活地将输入动作与对象的方法或委托关联起来。
