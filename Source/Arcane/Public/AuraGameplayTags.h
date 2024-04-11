@@ -42,6 +42,23 @@ public:
 	FGameplayTag Attributes_Secondary_HealthRegeneration;	// 二级属性: 生命回复
 	FGameplayTag Attributes_Secondary_ManaRegeneration;		// 二级属性: 法力回复
 
+	/*
+	 * Input
+	 */
+	FGameplayTag InputTag_LeftMouseButton;						// 输入：左键
+	FGameplayTag InputTag_RightMouseButton;						// 输入：右键
+	FGameplayTag InputTag_1;									// 输入：1
+	FGameplayTag InputTag_2;									// 输入：2
+	FGameplayTag InputTag_3;									// 输入：3
+	FGameplayTag InputTag_4;									// 输入：4
+	FGameplayTag InputTag_5;									// 输入：5
+	FGameplayTag InputTag_6;									// 输入：6
+	FGameplayTag InputTag_7;									// 输入：7
+	FGameplayTag InputTag_8;									// 输入：8
+	FGameplayTag InputTag_9;									// 输入：9
+	FGameplayTag InputTag_0;									// 输入：0
+
+
 
 protected:
 

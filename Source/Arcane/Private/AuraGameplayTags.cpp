@@ -93,4 +93,68 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Attributes.Secondary.MaxMana"),
 		FString("Maximum amount of Mana obtainable")
 	);
+
+	/*
+	 * Input ∞¥º¸ ‰»Î
+	 */
+	GameplayTags.InputTag_LeftMouseButton = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.LeftMouseButton"),
+		FString("Input Tag for the Left Mouse Button")
+	);
+
+	GameplayTags.InputTag_RightMouseButton = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.RightMouseButton"),
+		FString("Input Tag for the Right Mouse Button")
+	);
+
+	GameplayTags.InputTag_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.1"),
+		FString("Input Tag for the 1 Key")
+	);
+
+	GameplayTags.InputTag_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.2"),
+		FString("Input Tag for the 2 Key")
+	);
+
+	GameplayTags.InputTag_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.3"),
+		FString("Input Tag for the 3 Key")
+	);
+
+	GameplayTags.InputTag_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.4"),
+		FString("Input Tag for the 4 Key")
+	);
+
+	GameplayTags.InputTag_5 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.5"),
+		FString("Input Tag for the 5 Key")
+	);
+
+	GameplayTags.InputTag_6 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.6"),
+		FString("Input Tag for the 6 Key")
+	);
+
+	GameplayTags.InputTag_7 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.7"),
+		FString("Input Tag for the 7 Key")
+	);
+
+	GameplayTags.InputTag_8 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.8"),
+		FString("Input Tag for the 8 Key")
+	);
+
+	GameplayTags.InputTag_9 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.9"),
+		FString("Input Tag for the 9 Key")
+	);
+
+	GameplayTags.InputTag_0 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.0"),
+		FString("Input Tag for the 0 Key")
+	);
+
 }

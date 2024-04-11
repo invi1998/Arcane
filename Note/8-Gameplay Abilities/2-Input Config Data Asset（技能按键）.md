@@ -28,4 +28,105 @@
 
 
 
-因此，第一步是创建这个数据资产。
+因此，第一步是创建这个数据资产。这个数据资产，有一个成员，它里面存储了项目里所有输入相关的标签和该输入绑定的动作（就是按键和按键响应动作）
+
+```c++
+#include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
+#include "Engine/DataAsset.h"
+#include "AuraInputConfig.generated.h"
+
+// 这个结构体用来存储输入动作的信息
+USTRUCT(BlueprintType)
+struct FAuraInputAction
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly)
+	const class UInputAction* InputAction = nullptr;	// 用来绑定输入的输入动作
+
+	UPROPERTY(EditDefaultsOnly)
+	const FGameplayTag InputTag = FGameplayTag();	// 输入动作的标签
+
+};
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANE_API UAuraInputConfig : public UDataAsset
+{
+	GENERATED_BODY()
+
+public:
+
+	const UInputAction* GetInputActionByTag(const FGameplayTag& Tag, bool bLogNotGet = false) const;	// 通过标签获取输入动作
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TArray<FAuraInputAction> AbilityInputActions;	// 用来存储所有的输入动作信息，包含特定输入动作和对应的标签
+
+
+};
+
+```
+
+然后，接下来去GameplayTag中，添加我们需要的输入，将其作为Tag资产
+
+```c++
+	/*
+	 * Input
+	 */
+	FGameplayTag InputTag_LeftMouseButton;						// 输入：左键
+	FGameplayTag InputTag_RightMouseButton;						// 输入：右键
+	FGameplayTag InputTag_1;									// 输入：1
+	FGameplayTag InputTag_2;									// 输入：2
+	FGameplayTag InputTag_3;									// 输入：3
+	FGameplayTag InputTag_4;									// 输入：4
+	FGameplayTag InputTag_5;									// 输入：5
+	FGameplayTag InputTag_6;									// 输入：6
+	FGameplayTag InputTag_7;									// 输入：7
+	FGameplayTag InputTag_8;									// 输入：8
+	FGameplayTag InputTag_9;									// 输入：9
+	FGameplayTag InputTag_0;									// 输入：0
+```
+
+然后，将这些Tag初始化原生GameplayTags
+
+```c++
+/*
+ * Input 按键输入
+ */
+GameplayTags.InputTag_LeftMouseButton = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("InputTag.LeftMouseButton"),
+	FString("Input Tag for the Left Mouse Button")
+);
+
+GameplayTags.InputTag_RightMouseButton = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("InputTag.RightMouseButton"),
+	FString("Input Tag for the Right Mouse Button")
+);
+
+GameplayTags.InputTag_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("InputTag.1"),
+	FString("Input Tag for the 1 Key")
+);
+
+```
+
+下一步就是在编辑器中创建我们新的数据资产（Input）
+
+1：创建输入操作，输入类型因为我们都是单值类型，所以选择Axis1D(float)。
+
+2：创建数据资产，类选择我们的UAuraInputConfig，
+
+3：在我们的输入映射上下文中，添加上我们新增的这些输入操作
+
+![image-20240411160813735](.\image-20240411160813735.png)
+
+4：接下来只需要在我们的数据资产中将我们的inputAction和Tag标签绑定即可
+
+![image-20240411160956616](.\image-20240411160956616.png)
+
+> 这样使用数据资产有个很不错的特性，就是我们可以在运行时动态的交换我们的数据资产，从而让输入执行不同的动作，比如，游戏运行时，我们既可以用鼠标左键去点击怪物然后执行攻击指令，又可以在切换出背包界面的时候或者点击物品的时候执行拾取物品的指令
+>
+> 所以输入增强是一个很方便也很强大改进。同时通过数据资产我们也可以更模块化规整的管理我们的输入
