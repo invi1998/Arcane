@@ -301,3 +301,29 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 在Ability设置项中选择冷却效果类后，Ability将自动应用所选的冷却效果。例如，如果选择了"Cooldown"冷却效果类，那么每当玩家使用该Ability时，角色将进入冷却状态，必须等待一段时间后才能再次使用。
 
 通过添加冷却效果，可以增加游戏的策略性和挑战性，防止玩家无限制地使用强力的Ability。
+
+
+
+# Instancing Policy（实例化策略）
+
+![image-20240411113736263](.\image-20240411113736263.png)
+
+在Ability设置项的Advanced部分，有一个名为"Instancing Policy"的配置项，用于指定Ability的实例化策略。
+
+Ability的实例化策略决定了Ability在使用时的行为。不同的实例化策略适用于不同类型的Ability，具体取决于Ability是否需要存储持久数据、是否需要绑定到特定的事件或任务，以及性能需求等因素。
+
+以下是三种不同的实例化策略：
+
+1. **Instanced Per Actor**：这种策略适用于需要存储持久数据的Ability。每个Ability实例都是为每个激活的Actor创建的，并且可以存储持久数据。但是，变量必须手动重置，每次激活时都需要重新设置。
+
+   使用这种策略的优点是可以存储持久数据，但缺点是需要手动重置变量，而且在性能上不如其他策略。
+
+2. **Instanced Per Execution**：这种策略适用于不需要存储持久数据的Ability。每次激活Ability时都会创建一个新的实例。这种策略不会存储Ability在不同激活之间的数据，因此性能比Instanced Per Actor策略更好。
+
+   使用这种策略的优点是性能好，但缺点是无法存储持久数据。
+
+3. **Non-Instanced**：这种策略适用于不需要实例化Ability的情况。在这种情况下，只会使用Ability的类默认对象，不会创建任何实例。由于没有实例被创建，所以这种策略的性能最好。
+
+   使用这种策略的优点是性能最好，但缺点是无法存储持久数据，也无法绑定到特定的事件或任务。
+
+在选择实例化策略时，开发者需要根据Ability的需求和性能要求来决定。例如，如果Ability需要存储持久数据，那么应该选择Instanced Per Actor策略；如果Ability只需要临时数据，那么可以选择Instanced Per Execution策略；如果Ability不需要实例化，那么可以选择Non-Instanced策略。
