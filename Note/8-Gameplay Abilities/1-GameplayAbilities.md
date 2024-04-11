@@ -245,4 +245,59 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 
 
-Cast （）
+## Casts
+
+![image-20240411112908929](.\image-20240411112908929.png)
+
+在Ability设置项的Costs部分，有一个名为"Cost Gameplay Effect Class"的配置项，用于指定Ability的成本效果类。
+
+这个配置项允许开发者为Ability设置成本效果，例如，当玩家使用某个Ability时，可能会消耗一定的资源（如法力值、能量、冷却时间等）。成本效果类定义了这些资源消耗的规则和效果。
+
+开发者可以创建自定义的成本效果类，或者使用预设的类。预设的成本效果类可能包括：
+- **Mana Cost**：消耗法力值。
+- **Energy Cost**：消耗能量。
+- **Cooldown**：冷却时间，一段时间内不能再次使用该Ability。
+- **Resource Cost**：消耗某种资源。
+
+在创建自定义的成本效果类时，开发者可以定义消耗的资源类型、消耗的数量、消耗的时间等。例如，如果游戏中的角色需要消耗法力值来使用某个Ability，开发者可以创建一个名为"Mana Cost"的成本效果类，定义每使用一次该Ability会消耗多少法力值。
+
+在Ability设置项中选择成本效果类后，Ability将自动应用所选的成本效果。例如，如果选择了"Mana Cost"成本效果类，那么每当玩家使用该Ability时，角色的法力值将会减少。
+
+使用成本效果类可以帮助平衡游戏中的能力系统，确保玩家在使用强力的Ability时需要付出相应的代价。通过这种方式，可以增加游戏的战略性和挑战性。
+
+## Triggers（触发器）
+
+![image-20240411113018227](.\image-20240411113018227.png)
+
+在Ability设置项的Triggers部分，开发者可以定义Ability的触发器，即启动Ability的条件。
+
+在Triggers部分，有一个名为"Ability Triggers"的数组，用于添加和管理Ability的触发器。每个触发器都有两个成员：Trigger Tag和Trigger Source。
+
+1. **Trigger Tag**：这是一个标签，用于标识触发器。开发者可以为不同的触发器设置不同的标签，以便在游戏逻辑中区分它们。
+
+2. **Trigger Source**：这是一个源，用于启动Ability。开发者可以选择不同的触发源，例如：
+   - **Gameplay Event**：当游戏发生某个事件时触发Ability。
+   - **Input**：当玩家按下某个输入键时触发Ability。
+   - **Server Request**：当服务器请求启动Ability时触发Ability。
+
+在Ability设置项中添加触发器后，Ability将根据所设置的条件启动。例如，如果添加了一个名为"Fire"的触发器，当玩家按下"Fire"键时，将启动对应的Ability。
+
+通过添加和管理触发器，开发者可以控制Ability的启动时机，增加游戏的策略性和互动性。
+
+## Cooldowns (冷却)
+
+![image-20240411113107257](.\image-20240411113107257.png)
+
+在Ability设置项的Cooldowns部分，开发者可以为Ability设置冷却时间，以限制玩家在短时间内重复使用同一Ability。
+
+在Cooldowns部分，有一个名为"Cooldown Gameplay Effect Class"的配置项，用于指定Ability的冷却效果类。冷却效果类定义了Ability在使用后需要等待多长时间才能再次使用。
+
+开发者可以创建自定义的冷却效果类，或者使用预设的类。预设的冷却效果类可能包括：
+- **Cooldown**：简单的冷却时间，一段时间内不能再次使用该Ability。
+- **Recharge Rate**：基于时间的恢复率，随着时间的推移，玩家可以逐渐恢复使用Ability的次数。
+
+在创建自定义的冷却效果类时，开发者可以定义冷却的时间、恢复率、是否可以被清除等。例如，如果游戏中的角色需要等待一段时间才能再次使用某个Ability，开发者可以创建一个名为"Cooldown"的冷却效果类，定义每次使用该Ability后的冷却时间。
+
+在Ability设置项中选择冷却效果类后，Ability将自动应用所选的冷却效果。例如，如果选择了"Cooldown"冷却效果类，那么每当玩家使用该Ability时，角色将进入冷却状态，必须等待一段时间后才能再次使用。
+
+通过添加冷却效果，可以增加游戏的策略性和挑战性，防止玩家无限制地使用强力的Ability。
