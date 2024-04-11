@@ -374,3 +374,8 @@ Ability的网络执行策略决定了Ability在网络环境下的运行方式。
 4. **Replicate Input Directly**：总是将输入按住/释放事件复制到服务器。Epic不推荐这样做。相反，建议使用通用的复制事件（Generic Replicated Events）。
 
 综上所述，在配置Ability时，应避免使用Replication Policy，注意Gameplay Abilities的运行环境，谨慎使用远程能力取消功能，以及直接复制输入事件。
+
+
+
+---
+
