@@ -357,3 +357,20 @@ Ability的网络执行策略决定了Ability在网络环境下的运行方式。
    使用这种策略的优点是可以实现服务器对能力激活的控制，同时保持了客户端的反馈速度。但缺点是增加了网络通信的复杂性，因为需要在服务器和客户端之间传递激活信息。
 
 在选择网络执行策略时，开发者需要根据Ability的需求和性能要求来决定。例如，如果Ability需要在本地客户端和服务器之间进行预测和校验，那么应该选择Local Predicted策略；如果Ability需要保证激活的权威性，那么应该选择Server Only策略。
+
+
+
+# Things Not To Use（注意）
+
+> 通常来说，选择本地预测方式对大多数游戏已经够用了，但是这可能引发了一个问题，为什么我们要有这个复制策略？它被设置为不复制。 我们必须打开它吗？ 它必须设置为复制吗？嗯，不是的。 游戏能力默认情况下会自动复制。我们不需要改变复制策略。
+
+![image-20240411120314448](.\image-20240411120314448.png)
+
+在配置Ability时，有一些事项是应该避免的，以下是根据图片内容总结的几点：
+
+1. **Replication Policy**：正如图中所说，这个选项是无用的。不要使用它。建议参考Epic的Ability System Questions以获取官方解释。
+2. **Gameplay Abilities Replication**：根据图片中的描述，Gameplay Abilities已经从服务器复制到拥有该能力的客户端。需要注意的是，Gameplay Abilities不会在模拟代理（Simulated Proxies）上运行。因此，在配置Ability时，应考虑这一点，确保Ability只在正确的情况下运行。
+3. **Server Respects Remote Ability Cancellation**：这意味着当本地客户端的能力结束时，服务器上的能力也会结束。通常情况下，这并不是一个好的做法，因为服务器版本的能力才是重要的。
+4. **Replicate Input Directly**：总是将输入按住/释放事件复制到服务器。Epic不推荐这样做。相反，建议使用通用的复制事件（Generic Replicated Events）。
+
+综上所述，在配置Ability时，应避免使用Replication Policy，注意Gameplay Abilities的运行环境，谨慎使用远程能力取消功能，以及直接复制输入事件。
