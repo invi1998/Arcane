@@ -13,6 +13,7 @@ struct FInputActionValue;
 class IEnemyInterface;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
+class USplineComponent;		// 样条曲线组件
 
 /**
  * 
@@ -56,5 +57,24 @@ private:
 	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;	// 能力系统组件，因为在处理Input时需要用到能力系统组件，而这些Input往往会频繁触发，Cast消耗较大，所以我们在这里缓存一下
 
 	UAuraAbilitySystemComponent* GetASC();	// 获取能力系统组件
+
+	/*
+	 * 寻路避障
+	 */
+	FVector CashedDestination = FVector::ZeroVector;	// 缓存的目标位置
+
+	float FollowTime = 0.1f;	// 跟随时间
+
+	float ShortPressThreshold = 0.5f;	// 短按阈值
+
+	bool bAutoRunning = false;	// 是否自动寻路
+
+	bool bTargeting = false;	// 是否在瞄准
+
+	UPROPERTY(EditDefaultsOnly)
+	float AutoRunAcceptanceRadius = 50.0f;	// 自动寻路接受半径
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USplineComponent> Spline;	// 样条曲线组件
 
 };

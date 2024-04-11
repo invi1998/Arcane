@@ -4,14 +4,20 @@
 #include "Player/AuraPlayerController.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AuraGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Components/SplineComponent.h"
 #include "Input/AuraEnhancedInputComponent.h"
 #include "Interaction/EnemyInterface.h"
 
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;		// 开启复制
+
+	// 在生成路径时，设置样条点的位置
+	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));	// 创建样条曲线组件
+	
 }
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -129,10 +135,13 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AbilityInputTagPressed: %s"), *InputTag.ToString()));
 
-	if (GetASC())
+	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RightMouseButton))	// 如果输入标签匹配自动寻路标签（右键点地板）
 	{
-		GetASC()->AbilityInputTagPressed(InputTag);	// 调用能力系统组件的技能输入标签按下函数
+		bTargeting = ThisActor != nullptr;	// 如果当前命中的Actor不为空，则设置为瞄准状态
+		bAutoRunning = false;	// 取消自动寻路
 	}
+
+	
 }
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
@@ -149,9 +158,43 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AbilityInputTagHeld: %s"), *InputTag.ToString()));
 
-	if (GetASC())
+	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RightMouseButton))	// 如果输入标签不匹配自动寻路标签（右键点地板）
 	{
-		GetASC()->AbilityInputTagHeld(InputTag);	// 调用能力系统组件的技能输入标签按住函数
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagHeld(InputTag);	// 调用能力系统组件的技能输入标签按住函数
+		}
+
+		return;
+	}
+
+	// 表明右键点击角色也能触发技能
+	if (bTargeting)
+	{
+		if (GetASC())
+		{
+			GetASC()->AbilityInputTagHeld(InputTag);	// 调用能力系统组件的技能输入标签按住函数
+		}
+	}
+	else
+	{
+		// 如果当前没有命中Actor，那么自动寻路
+		FollowTime += GetWorld()->GetDeltaSeconds();	// 跟随时间增加
+
+		// 前往目标位置，所以这里需要获取鼠标光标下的碰撞结果
+		FHitResult CursorHitResult;	// 创建一个碰撞结果
+		if (GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult))	// 获取鼠标光标下的碰撞结果，ECC_Visibility表示只检测可见性通道，false表示不检测复杂碰撞，CursorHitResult是碰撞结果
+		{
+			CashedDestination = CursorHitResult.ImpactPoint;	// 缓存目标位置,ImpactPoint是碰撞点
+		}
+
+		// 如果按下时间超过阈值，那么自动寻路
+		if (APawn* ControlledPawn = GetPawn<APawn>())
+		{
+			ControlledPawn->AddMovementInput(
+				(CashedDestination - ControlledPawn->GetActorLocation()).GetSafeNormal(),	// 添加移动输入，这里是前往目标位置，所以方向是目标位置减去当前位置,GetSafeNormal是获取单位向量
+				1.f);	// 添加移动输入，这里是前往目标位置，所以方向是目标位置减去当前位置，速度是1
+		}
 	}
 }
 
