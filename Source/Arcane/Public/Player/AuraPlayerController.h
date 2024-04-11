@@ -77,4 +77,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent> Spline;	// 样条曲线组件
 
+	void AutoRun();	// 自动寻路
+
 };

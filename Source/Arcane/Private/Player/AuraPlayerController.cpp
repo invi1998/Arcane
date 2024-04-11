@@ -27,6 +27,8 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	CursorTrace();	// 鼠标点的射线检测
+
+	AutoRun();	// 自动奔跑
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -74,6 +76,29 @@ UAuraAbilitySystemComponent* AAuraPlayerController::GetASC()
 		AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn<APawn>()));
 	}
 	return AuraAbilitySystemComponent;
+}
+
+void AAuraPlayerController::AutoRun()
+{
+	if (bAutoRunning)
+	{
+		APawn* ContrlPawn = GetPawn();	// 获取控制的Pawn
+		if (!ContrlPawn) return;
+
+		const FVector PawnLocation = ContrlPawn->GetActorLocation();	// 获取Pawn的位置
+		const FVector LocationOnSpline = Spline->FindLocationClosestToWorldLocation(PawnLocation, ESplineCoordinateSpace::World);	// 获取样条曲线上离Pawn最近的点的位置
+		const FVector DirectionOnSpline = Spline->FindDirectionClosestToWorldLocation(PawnLocation, ESplineCoordinateSpace::World);	// 获取样条曲线上离Pawn最近的点的方向
+
+		ContrlPawn->AddMovementInput(DirectionOnSpline, 1.f);	// 添加移动输入，这里是沿着样条曲线移动，所以方向是样条曲线上离Pawn最近的点的方向，速度是1
+
+		// 判断是否到达我们的目标位置，并且在我们自动奔跑的半径阈值下
+		const float Distance = FVector::Dist(PawnLocation, LocationOnSpline);	// 计算Pawn位置和样条曲线上离Pawn最近的点的位置的距离
+		if (Distance <= AutoRunAcceptanceRadius)	// 如果距离小于100
+		{
+			bAutoRunning = false;	// 取消自动寻路
+		}
+
+	}
 }
 
 void AAuraPlayerController::CursorTrace()
