@@ -11,6 +11,7 @@
 class UAbilitySystemComponent;
 class UAttributeSet;
 class UGameplayEffect;
+class UAuraGameplayAbility;
 
 UCLASS(Abstract)	// 添加Abstract关键字，表示这个类是一个抽象类
 class ARCANE_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -51,5 +52,14 @@ protected:
 
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, float Level) const;	// 对自己应用效果
 	void InitializeDefaultAttributes() const;		// 初始化能力
+
+	/*
+	 * Ability
+	 */
+	void AddCharacterAbilities();	// 添加角色能力
+
+private:
+	UPROPERTY(EditAnywhere, Category="Abilities")
+	TArray<TSubclassOf<UAuraGameplayAbility>> StartupAbilities;	// 默认能力
 
 };

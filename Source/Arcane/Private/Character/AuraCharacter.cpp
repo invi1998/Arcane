@@ -30,6 +30,9 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	// 为服务器初始化AbilitySystemComponent
 	InitAbilityActorInfo();
+
+	// 初始化角色能力
+	AddCharacterAbilities();
 	
 }
 

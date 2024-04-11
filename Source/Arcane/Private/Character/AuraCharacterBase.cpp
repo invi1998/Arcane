@@ -3,6 +3,7 @@
 #include "Character/AuraCharacterBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
@@ -53,6 +54,17 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 	ApplyEffectToSelf(DefaultPrimaryGameplayEffectClass, 1.f);
 	ApplyEffectToSelf(DefaultSecondaryGameplayEffectClass, 1.f);
 	ApplyEffectToSelf(DefaultVitalGameplayEffectClass, 1.f);
+}
+
+void AAuraCharacterBase::AddCharacterAbilities()
+{
+	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
+
+	// 给角色添加技能，这一行为应该只能在服务端进行
+	if (!HasAuthority() || !AuraASC) return;
+
+	AuraASC->AddCharacterAbilities(StartupAbilities);
+
 }
 
 

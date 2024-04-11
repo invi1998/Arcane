@@ -55,3 +55,95 @@
 - 能力的使用通常需要消耗资源，并有冷却时间限制。
 - GAS支持异步运行能力，允许多个能力同时处于激活状态。
 - Ability Tasks是异步执行的操作，可以在能力激活期间或之后异步执行。
+
+# Granting Abilities (授予能力)
+
+首先，我希望角色的能力（技能）信息存放在角色上，所以我在角色基类这里添加一个能力指针数组。UAuraGameplayAbility 表明，这里我是基于GameplayAbility创建的一个自己的Ability类，后续我们会对这个类做很多自定义的事情。
+
+```c++
+UPROPERTY(EditAnywhere, Category="Abilities")
+TArray<TSubclassOf<UAuraGameplayAbility>> StartupAbilities;	// 默认能力
+```
+
+同时，新增一个为角色添加能力的函数。给角色新增技能，这种事情只能在服务端进行。
+
+```c++
+void AAuraCharacterBase::AddCharacterAbilities()
+{
+	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
+
+	// 给角色添加技能，这一行为应该只能在服务端进行
+	if (!HasAuthority() || !AuraASC) return;
+
+	AuraASC->AddCharacterAbilities(StartupAbilities);
+
+}
+```
+
+可以看到，我们的能力添加，其实最终是添加进ASC中，（每个角色，包括怪物都有一个ASC），所以我在ASC中创建一个函数用来添加技能
+
+```c++
+void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities)
+{
+	for (TSubclassOf<UGameplayAbility> Ability : StartupAbilities)
+	{
+		if (Ability)
+		{
+            // 创建能力
+            FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability.GetDefaultObject(), 1, 0);
+            // 将能力添加到AbilitySystemComponent中
+			// GiveAbility(AbilitySpec);   // 添加能力
+            GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活能力
+		}
+	}
+}
+```
+
+## GiveAbility 和 GiveAbilityAndActivateOnce
+
+在Unreal Engine 5 (UE5) 的Gameplay Ability System (GAS) 中，GiveAbility 和 GiveAbilityAndActivateOnce 都是用来赋予玩家角色能力的方法，但它们之间存在一些关键区别。
+
+**GiveAbility** 方法用于将一个Gameplay Ability赋予玩家角色。这个方法不会立即激活赋予的能力，而是等待玩家角色手动激活。当玩家角色激活能力时，能力才会生效。这个方法通常用于在游戏开始时赋予玩家角色基础能力，或者在游戏过程中根据需要赋予玩家角色新的能力。
+
+**GiveAbilityAndActivateOnce** 方法则是在赋予玩家角色能力的同时，立即激活一次该能力。这个方法通常用于一次性事件，例如给予玩家角色一个临时增益效果，或者一次性奖励。
+
+下面是这两个方法的参数和用法的简要说明：
+
+**GiveAbility** 方法：
+```cpp
+void GiveAbility(TSubclassOf<UGameplayAbility> AbilityClass, AActor* AbilityOwner = nullptr, UGameplayAbility* ExistingAbilityToReplace = nullptr);
+```
+- `AbilityClass`: 要赋予的Gameplay Ability的类。
+- `AbilityOwner`: 要赋予能力的玩家角色。如果未指定，则默认为调用此方法的玩家角色。
+- `ExistingAbilityToReplace`: 如果指定，将替换现有具有相同类的Gameplay Ability。
+
+**GiveAbilityAndActivateOnce** 方法：
+```cpp
+void GiveAbilityAndActivateOnce(TSubclassOf<UGameplayAbility> AbilityClass, AActor* AbilityOwner = nullptr, UGameplayAbility* ExistingAbilityToReplace = nullptr);
+```
+- `AbilityClass`: 要赋予的Gameplay Ability的类。
+- `AbilityOwner`: 要赋予能力的玩家角色。如果未指定，则默认为调用此方法的玩家角色。
+- `ExistingAbilityToReplace`: 如果指定，将替换现有具有相同类的Gameplay Ability。
+
+在使用这两个方法时，需要注意的是，`GiveAbility` 方法只是赋予玩家角色能力，而不会立即激活能力；而`GiveAbilityAndActivateOnce` 方法则会在赋予能力的同时立即激活一次能力。因此，在使用这两个方法时，需要根据具体的游戏设计需求来选择合适的方法。
+
+然后，在什么时候赋予角色技能呢？
+
+对于玩家角色的初始技能，自然是在 PossessedBy 这里最合适。
+
+```c++
+void AAuraCharacter::PossessedBy(AController* NewController)
+{
+	// 该函数只会在服务器端被调用
+	// PossessedBy()函数通常在服务器端被调用。当一个Controller（如PlayerController或AIController）开始控制一个Pawn（如PlayerCharacter或AICharacter）时，服务器会调用PossessedBy()函数来设置Pawn的Controller属性。
+	Super::PossessedBy(NewController);
+
+	// 为服务器初始化AbilitySystemComponent
+	InitAbilityActorInfo();
+
+	// 初始化角色能力
+	AddCharacterAbilities();
+	
+}
+```
+

@@ -5,6 +5,7 @@
 
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
@@ -18,6 +19,21 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 
 	// 打印 GameplayTag.Attributes_Secondary_Armor.ToString();
     // GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, GameplayTag.Attributes_Secondary_Armor.ToString());
+}
+
+void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities)
+{
+	for (TSubclassOf<UGameplayAbility> Ability : StartupAbilities)
+	{
+		if (Ability)
+		{
+            // 创建能力
+            FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability.GetDefaultObject(), 1, 0);
+            // 将能力添加到AbilitySystemComponent中
+			// GiveAbility(AbilitySpec);   // 添加能力
+            GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活能力
+		}
+	}
 }
 
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,
