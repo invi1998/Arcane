@@ -285,3 +285,10 @@ void AAuraPlayerController::SetupInputComponent()
 }
 ```
 
+回到编辑器，项目设置里将默认输入组件设置为我们新写的这个
+
+![image-20240411204553887](.\image-20240411204553887.png)
+
+然后将我们Input数据资产添加到BP_Controller蓝图
+
+![image-20240411210103655](.\image-20240411210103655.png)
