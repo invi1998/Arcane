@@ -180,3 +180,69 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 10. **Target Blocked Tags**：如果目标对象具有任何这些标签中的任何一个，那么这个能力将无法激活。这可以用来防止某些情况下的能力滥用，例如，当目标对象处于无敌状态时，禁止对其使用技能。
 
 通过这些设置，开发者可以精细地控制能力的激活、取消和阻止，从而实现复杂的游戏逻辑。
+
+
+
+## Input
+
+![image-20240411111855846](.\image-20240411111855846.png)
+
+"Replicate Input Directly"这个设置项的作用是决定是否将输入事件直接复制到网络上的所有玩家。如果勾选了这个选项，那么当一个玩家按下某个按键或触发某个输入事件时，这个输入事件将会被同步到网络上的其他玩家，这样其他玩家也可以看到这个玩家的动作。
+
+这个设置项通常在多人在线游戏中使用，以确保所有玩家都能看到其他玩家的动作。例如，在一个多人在线射击游戏中，当一个玩家按下空格键跳跃时，其他玩家也能看到这个玩家的跳跃动作。
+
+然而，直接复制输入事件可能会导致网络带宽的增加，因此在使用这个设置项时需要谨慎考虑。如果网络带宽有限，或者游戏中的输入事件非常频繁，那么直接复制输入事件可能会导致网络延迟增加，影响游戏体验。
+
+因此，使用"Replicate Input Directly"这个设置项时，建议先在本地测试中验证其效果，确保网络带宽和输入事件的频率都在可接受范围内。如果在网络测试中发现网络延迟增加，可以尝试减少输入事件的频率，或者使用其他方法来减少网络带宽的使用。
+
+
+
+## Advanced  (高级)
+
+![image-20240411112347963](.\image-20240411112347963.png)
+
+在Ability设置项的Advanced（高级）属性设置中，包含了一些高级选项，用于控制Ability的网络同步和安全策略。以下是各个配置项的作用及其子项的功能和使用建议：
+
+1. **Replication Policy**：这个设置决定了Ability是否在网络上传输。可以选择的选项包括：
+
+   - **Do Not Replicate**：不复制Ability到网络上。
+   - **Replicated**：将Ability复制到网络上的所有玩家。
+   - **Server Authoritative**：将Ability的控制权交给服务器，服务器负责将Ability的状态同步到客户端。
+
+   根据游戏的网络架构和需求，选择合适的复制策略。
+
+2. **Instancing Policy**：这个设置决定了Ability的实例化策略。可以选择的选项包括：
+
+   - **Instanced Per Execution**：每次执行Ability时都会创建一个新的实例。
+   - **Singleton**：只创建一个Ability实例，无论何时执行Ability都会使用同一个实例。
+
+   根据Ability的使用方式和性能要求，选择合适的实例化策略。
+
+3. **Server Respects Remote Ability Calls**：这个选项决定了服务器是否尊重来自远程客户端的Ability调用。如果勾选，服务器将允许远程客户端启动Ability。否则，只有服务器自己可以启动Ability。
+
+   这个选项通常用于多人在线游戏，以允许玩家在远程启动Ability。
+
+4. **Retrigger Instanced Ability**：这个选项决定了是否允许重新触发已经实例化的Ability。如果勾选，即使Ability已经实例化，也可以再次触发。否则，一旦Ability实例化，就不能再触发。
+
+   根据Ability的使用场景和设计，选择是否允许重新触发。
+
+5. **Net Execution Policy**：这个设置决定了Ability在网络上的执行策略。可以选择的选项包括：
+
+   - **Local Predicted**：在本地预测执行Ability，然后将结果同步到服务器。
+   - **Server Authoritative**：服务器控制Ability的执行和状态更新。
+   - **Server Authoritative With Prediction**：服务器控制Ability的执行，但客户端可以预测Ability的状态。
+
+   根据游戏的网络架构和性能要求，选择合适的执行策略。
+
+6. **Net Security Policy**：这个设置决定了Ability在网络上的安全策略。可以选择的选项包括：
+
+   - **Client Or Server**：客户端和服务器都可以启动Ability。
+   - **Server Only**：只有服务器可以启动Ability。
+
+   根据游戏的安全需求，选择合适的安全策略。
+
+在使用这些高级设置时，需要根据游戏的具体需求和网络架构进行调整。例如，如果游戏需要保证安全性，可以选择更严格的网络安全策略。如果游戏需要实时同步Ability的状态，可以选择合适的网络执行策略。
+
+
+
+Cast （）
