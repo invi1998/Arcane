@@ -1,0 +1,79 @@
+# Ability Tasks
+
+
+
+在 Unreal Engine 5 (UE5) 的游戏能力系统 (Gameplay Abilities System, GAS) 中，AbilityTasks 是一种用于实现能力系统功能的异步任务系统。AbilityTasks 是一种轻量级的任务系统，用于异步地执行与能力相关的工作，比如冷却时间的计时、能力的激活和取消等。
+
+AbilityTasks 是通过 AbilityTaskBase 类来实现的。AbilityTaskBase 类是一个抽象基类，定义了 AbilityTask 的基本接口。AbilityTaskBase 类的定义如下：
+
+```cpp
+class UAbilityTaskBase : public UTaskGraphInterface
+{
+    GENERATED_BODY()
+
+public:
+    virtual void OnTaskFinished() = 0;
+};
+```
+
+在 AbilityTaskBase 类中，定义了一个纯虚函数 OnTaskFinished()，用于在任务完成时调用。子类需要实现这个函数，以处理任务完成后的逻辑。
+
+在 Unreal Engine 5 的游戏能力系统中，AbilityTasks 通常用于实现以下功能：
+
+1. **冷却时间计时**：AbilityTasks 可以用来计时某个能力的冷却时间，当冷却时间结束时，可以自动激活该能力。
+
+2. **能力激活和取消**：AbilityTasks 可以用来激活和取消某个能力，当能力激活或取消时，可以自动更新游戏状态。
+
+3. **能力触发器**：AbilityTasks 可以用来触发某个能力的激活，当满足某个条件时，可以自动激活该能力。
+
+4. **能力状态管理**：AbilityTasks 可以用来管理能力的状态，比如激活、冷却、可用等。
+
+在游戏逻辑中，可以使用 AbilityTaskBase 类来创建和管理 AbilityTasks。以下是一个创建和使用 AbilityTask 的示例代码：
+
+```cpp
+// 创建一个 AbilityTask
+UAbilityTask* MyAbilityTask = NewAbilityTask<MyAbilityTaskClass>();
+
+// 启动 AbilityTask
+MyAbilityTask->StartTask();
+
+// 等待 AbilityTask 完成
+MyAbilityTask->WaitForTaskCompletion();
+```
+
+在这个示例中，我们首先创建了一个 AbilityTask 类的实例 MyAbilityTask，然后启动该任务。接着，我们等待该任务完成。当任务完成后，我们可以调用 OnTaskFinished() 函数来处理任务完成后的逻辑。
+
+# PlayMontageAndWait 
+
+在 Unreal Engine 5 (UE5) 的游戏能力系统 (Gameplay Abilities System, GAS) 中，PlayMontageAndWait 是一个 AbilityTask 类，用于播放指定的蒙太奇动画并等待其完成。这个任务通常用于播放角色的动作动画，比如攻击、跳跃、移动等。
+
+PlayMontageAndWait 类的定义如下：
+
+```cpp
+UAbilityTask* UAbilityTask_WaitForMontageToFinish::PlayMontageAndWait(UAnimMontage* Montage, float EndOffset)
+```
+
+PlayMontageAndWait 类的构造函数接受两个参数：一个是 UAnimMontage 类的指针，表示要播放的蒙太奇动画；另一个是 float 类型的 EndOffset，表示播放蒙太奇动画时的结束偏移量。
+
+在 PlayMontageAndWait 类中，实现了一个 StartTask() 函数，用于启动任务。这个函数首先调用 UAbilityTaskBase 类的 StartTask() 函数，然后调用 UAnimInstance::Montage_Play() 函数来播放指定的蒙太奇动画。接着，它设置一个定时器，用于等待蒙太奇动画的完成。
+
+在 PlayMontageAndWait 类中，还有一个 OnTaskFinished() 函数，用于处理任务完成后的逻辑。这个函数首先调用 UAbilityTaskBase 类的 OnTaskFinished() 函数，然后调用 UAnimInstance::Montage_Stop() 函数来停止播放蒙太奇动画。
+
+在游戏逻辑中，可以使用 PlayMontageAndWait 类来播放蒙太奇动画并等待其完成。以下是一个使用 PlayMontageAndWait 类的示例代码：
+
+```cpp
+// 创建一个 PlayMontageAndWait 类的实例
+UAbilityTask* MyPlayMontageAndWaitTask = NewAbilityTask<UPlayMontageAndWait>();
+
+// 设置要播放的蒙太奇动画和结束偏移量
+MyPlayMontageAndWaitTask->Montage = MyMontage;
+MyPlayMontageAndWaitTask->EndOffset = 0.5f;
+
+// 启动 PlayMontageAndWait 任务
+MyPlayMontageAndWaitTask->StartTask();
+
+// 等待 PlayMontageAndWait 任务完成
+MyPlayMontageAndWaitTask->WaitForTaskCompletion();
+```
+
+在这个示例中，我们首先创建了一个 PlayMontageAndWait 类的实例 MyPlayMontageAndWaitTask，然后设置要播放的蒙太奇动画和结束偏移量。接着，我们启动 PlayMontageAndWait 任务，并等待其完成。当任务完成后，我们可以调用 OnTaskFinished() 函数来处理任务完成后的逻辑。
