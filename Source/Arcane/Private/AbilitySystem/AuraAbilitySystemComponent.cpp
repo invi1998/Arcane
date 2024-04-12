@@ -88,7 +88,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
             // 4：检测能力的输入标签是否与输入的标签相同，这里采用的是精确匹配
             if (Spec.DynamicAbilityTags.HasTagExact(InputTag))
             {
-                // 5：释放输入标签
+				// 5：释放输入标签
                 AbilitySpecInputReleased(Spec);    // 释放输入标签
             }
         }

@@ -6,6 +6,8 @@
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "AuraProjectileSpell.generated.h"
 
+class AAuraProjectile;
+
 /**
  * 投射（弹道类型）法术
  */

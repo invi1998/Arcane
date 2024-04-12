@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
-#include "Interaction/CombatInterface.h"
 #include "AuraCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ARCANE_API AAuraCharacter : public AAuraCharacterBase, public ICombatInterface
+class ARCANE_API AAuraCharacter : public AAuraCharacterBase
 {
 	GENERATED_BODY()
 

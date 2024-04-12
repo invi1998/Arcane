@@ -12,7 +12,7 @@
  * 
  */
 UCLASS()
-class ARCANE_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface, public ICombatInterface
+class ARCANE_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 {
 	GENERATED_BODY()
 

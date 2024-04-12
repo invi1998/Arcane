@@ -6,6 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
 class UAbilitySystemComponent;
@@ -14,7 +15,7 @@ class UGameplayEffect;
 class UAuraGameplayAbility;
 
 UCLASS(Abstract)	// 添加Abstract关键字，表示这个类是一个抽象类
-class ARCANE_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface
+class ARCANE_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -34,7 +35,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName WeaponTipSocketName;	// 武器尖端插槽名称
 
-	virtual FVector GetCombatSocketLocation() const;	// 获取战斗插槽位置
+	virtual FVector GetCombatSocketLocation() const override;	// 获取战斗插槽位置
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;	// 能力系统组件

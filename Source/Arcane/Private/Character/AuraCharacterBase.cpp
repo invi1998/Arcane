@@ -32,6 +32,7 @@ void AAuraCharacterBase::BeginPlay()
 
 FVector AAuraCharacterBase::GetCombatSocketLocation() const
 {
+	checkf(Weapon, TEXT("Weapon is nullptr!"));	// ¼ì²éÎäÆ÷ÊÇ·ñÎª¿Õ
 	// »ñÈ¡ÎäÆ÷¼â¶Ë²å²ÛµÄÎ»ÖÃ
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
 }
