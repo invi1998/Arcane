@@ -103,7 +103,7 @@ void AAuraPlayerController::AutoRun()
 
 void AAuraPlayerController::CursorTrace()
 {
-	FHitResult CursorHitResult;	// 创建一个碰撞结果
+	
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);	// 获取鼠标光标下的碰撞结果，ECC_Visibility表示只检测可见性通道，false表示不检测复杂碰撞，CursorHitResult是碰撞结果
 
 	if (!CursorHitResult.bBlockingHit) return;
@@ -253,8 +253,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 		FollowTime += GetWorld()->GetDeltaSeconds();	// 跟随时间增加
 
 		// 前往目标位置，所以这里需要获取鼠标光标下的碰撞结果
-		FHitResult CursorHitResult;	// 创建一个碰撞结果
-		if (GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult))	// 获取鼠标光标下的碰撞结果，ECC_Visibility表示只检测可见性通道，false表示不检测复杂碰撞，CursorHitResult是碰撞结果
+		if (CursorHitResult.bBlockingHit)	// 获取鼠标光标下的碰撞结果，ECC_Visibility表示只检测可见性通道，false表示不检测复杂碰撞，CursorHitResult是碰撞结果
 		{
 			CashedDestination = CursorHitResult.ImpactPoint;	// 缓存目标位置,ImpactPoint是碰撞点
 		}

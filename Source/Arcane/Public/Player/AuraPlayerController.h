@@ -33,6 +33,8 @@ protected:
 
 	void CursorTrace();	// 光标追踪，追踪鼠标指向的物体
 
+	FHitResult CursorHitResult;	// 创建一个碰撞结果
+
 private:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputMappingContext> AuraContext;	// 输入映射上下文
