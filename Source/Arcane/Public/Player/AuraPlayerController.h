@@ -27,6 +27,8 @@ public:
 	AAuraPlayerController();
 	virtual void PlayerTick(float DeltaTime) override;
 
+	FHitResult GetCursorHitResult() const;	// 获取光标碰撞结果
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;	// 该函数在控制器被创建时调用，用于设置输入组件

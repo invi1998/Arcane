@@ -31,6 +31,11 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	AutoRun();	// 自动奔跑
 }
 
+FHitResult AAuraPlayerController::GetCursorHitResult() const
+{
+	return CursorHitResult;	// 返回碰撞结果
+}
+
 void AAuraPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
