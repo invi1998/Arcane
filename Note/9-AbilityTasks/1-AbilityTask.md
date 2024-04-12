@@ -101,3 +101,50 @@ MyPlayMontageAndWaitTask->WaitForTaskCompletion();
 然后继续，我们回到东湖蒙太奇，去创建通知，通知类型选择我们新建的这个animNotify，然后指定TAG
 
 ![image-20240412160454863](.\image-20240412160454863.png)
+
+现在。有个问题是，因为我们的火球生成是在C++ 的ActivateAbility就创建的，这个正式我们蓝图中EventActivedAbility这个事件节点。所以，为了通过动画通知，我们将火球生成新建一个蓝图可调用函数里
+
+```c++
+void UAuraProjectileSpell::SpawnProjectile()
+{
+	
+	// 投射物生成，我们希望他是在服务端生成，然后在客户端同步
+	const bool bIsServer = GetOwningActorFromActorInfo()->HasAuthority();
+	if (!bIsServer) return;
+
+	// 生成位置，我不希望简单使用角色的位置，而是使用施法者武器上的插槽位置
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+
+	// TODO: 设置投射物旋转，比如朝向目标
+
+	if (CombatInterface)
+	{
+		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
+
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(SocketLocation);		// 使用武器插槽位置
+
+		// SpawnActorDeferred 异步生成Actor 是因为我们希望在生成之前设置一些属性，比如伤害，速度等
+		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+			ProjectileClass,	// 投射物类
+			SpawnTransform,		// 生成位置
+			GetOwningActorFromActorInfo(),	// 拥有者
+			Cast<APawn>(GetOwningActorFromActorInfo()),	// 控制者
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn	// 碰撞处理方式, 总是生成
+		);
+
+		// TODO: 设置投射物属性，比如伤害，速度等
+
+		Projectile->FinishSpawning(SpawnTransform);	// 完成生成
+	}
+
+}
+
+```
+
+然后再蓝图的通知到达节点，调用它即可
+
+![image-20240412162239871](.\image-20240412162239871.png)
+
+![image-20240412162144785](.\image-20240412162144785.png)
+

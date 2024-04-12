@@ -13,10 +13,14 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Activate Projectile Spell"), true, false, FLinearColor::Red, 1.0f);
+	
+}
 
+void UAuraProjectileSpell::SpawnProjectile()
+{
+	
 	// 投射物生成，我们希望他是在服务端生成，然后在客户端同步
-	const bool bIsServer = HasAuthority(&ActivationInfo);
+	const bool bIsServer = GetOwningActorFromActorInfo()->HasAuthority();
 	if (!bIsServer) return;
 
 	// 生成位置，我不希望简单使用角色的位置，而是使用施法者武器上的插槽位置
