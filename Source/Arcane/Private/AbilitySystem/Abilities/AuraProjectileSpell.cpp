@@ -31,6 +31,7 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SocketLocation);		// 使用武器插槽位置
 
+		// SpawnActorDeferred 异步生成Actor 是因为我们希望在生成之前设置一些属性，比如伤害，速度等
 		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
 			ProjectileClass,	// 投射物类
 			SpawnTransform,		// 生成位置
