@@ -208,7 +208,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				{
 					Spline->AddSplinePoint(PathPoint, ESplineCoordinateSpace::World);	// 添加样条曲线点
 					// 绘制调试线
-					DrawDebugSphere(GetWorld(), PathPoint, 10.f, 12, FColor::Green, false, 5.1f);	// 绘制调试球体
+					// DrawDebugSphere(GetWorld(), PathPoint, 10.f, 12, FColor::Green, false, 5.1f);	// 绘制调试球体
 				}
 				// 缓存目标位置，这里是路径的最后一个点，这样做是为了避免出现我们鼠标点击的位置不可达，而导致我们的角色无法到达目标位置
 				// 因为我们样条曲线的点是路径的点，是一定可达的

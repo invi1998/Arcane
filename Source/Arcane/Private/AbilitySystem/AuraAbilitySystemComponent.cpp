@@ -13,12 +13,11 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
     // 一但主角或者Enemy的AbilityActorInfo被设置，就代表他们的AbilitySystemComponent已经被初始化了，这时候我们就可以绑定EffectApplied委托了
 
     // 绑定EffectApplied委托，该委托在效果应用到目标时调用
-    OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
+    OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::ClientEffectApplied);
 
-    const FAuraGameplayTags& GameplayTag = FAuraGameplayTags::Get();
+    // 这个委托只会在服务端被调用，如果我们想在客户端也能调用，那么我们需要将这个委托声明为Client，Reliable
+    // 客户端RPC被设计成在服务端调用，然后服务端再广播到所有客户端，在客户端执行
 
-	// 打印 GameplayTag.Attributes_Secondary_Armor.ToString();
-    // GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, GameplayTag.Attributes_Secondary_Armor.ToString());
 }
 
 void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities)
@@ -122,10 +121,10 @@ void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
     }
 }
 
-void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,
-                                                const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
+void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,
+	const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
-	FGameplayTagContainer AssetTagContainer;    // 创建一个GameplayTagContainer
+    FGameplayTagContainer AssetTagContainer;    // 创建一个GameplayTagContainer
     // 通过绑定委托，获取到GameplayTag，然后将其添加到AbilitySystemComponent的AssetTags中
     EffectSpec.GetAllAssetTags(AssetTagContainer);
 
@@ -133,7 +132,7 @@ void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* Ability
 
     for (const FGameplayTag& Tag : AssetTagContainer)
     {
-	    // TODO: 广播这些Tag到UI
+        // TODO: 广播这些Tag到UI
         // UKismetSystemLibrary::PrintString(this, Tag.ToString(), true, true, FLinearColor::Gray, 5.0f);
     }
 }
