@@ -26,3 +26,58 @@ AAuraProjectile::AAuraProjectile()
 }
 ```
 
+
+
+我们希望火球是通过法杖顶端生成，所以在战斗组件中，提供一个虚函数，用来获取插槽位置
+
+```c++
+virtual FVector GetCombatSocketLocation() const;	// 获取战斗插槽位置
+```
+
+然后因为武器是挂载在角色上的，所以在角色这里也添加一个获取武器插槽的函数
+
+```c++
+FVector AAuraCharacterBase::GetCombatSocketLocation() const
+{
+	// 获取武器尖端插槽的位置
+	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
+```
+
+然后，就是将我们武器插槽位置作为火球生成位置，进行法术生成
+
+```c++
+void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+                                           const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+                                           const FGameplayEventData* TriggerEventData)
+{
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	// 投射物生成，我们希望他是在服务端生成，然后在客户端同步
+	const bool bIsServer = HasAuthority(&ActivationInfo);
+	if (!bIsServer) return;
+
+	// 生成位置，我不希望简单使用角色的位置，而是使用施法者武器上的插槽位置
+	// 等价于 Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(ActorInfo->AvatarActor);
+
+	if (CombatInterface)
+	{
+		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
+
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(SocketLocation);		// 使用武器插槽位置
+
+		GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+			ProjectileClass,	// 投射物类
+			SpawnTransform,		// 生成位置
+			GetOwningActorFromActorInfo(),	// 拥有者
+			Cast<APawn>(GetOwningActorFromActorInfo()),	// 控制者
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn	// 碰撞处理方式, 总是生成
+		);
+	}
+
+}
+
+```
+

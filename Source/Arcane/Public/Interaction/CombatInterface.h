@@ -22,4 +22,6 @@ class ARCANE_API ICombatInterface
 	
 public:
 	virtual int32 GetPlayerLevel() const;
+
+	virtual FVector GetCombatSocketLocation() const;	// 获取战斗插槽位置
 };
