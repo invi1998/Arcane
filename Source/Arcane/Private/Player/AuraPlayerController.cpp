@@ -173,6 +173,10 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 		bAutoRunning = false;	// 取消自动寻路
 	}
 
+	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LeftMouseButton))	// 如果输入标签匹配左键点击标签
+	{
+		bTargeting = ThisActor != nullptr;
+	}
 	
 }
 

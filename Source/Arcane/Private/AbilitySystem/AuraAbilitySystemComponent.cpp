@@ -80,10 +80,9 @@ void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
     if (InputTag.IsValid())
     {
         // 2：获取所有的激活的能力(激活的能力是指那些可以被激活的能力) 这取决于AbilitySystemComponent的激活策略
-        TArray<FGameplayAbilitySpec> AbilitiesOfTheActivatable = GetActivatableAbilities();
 
         // 3：遍历所有的激活的能力
-        for (FGameplayAbilitySpec& Spec : AbilitiesOfTheActivatable)
+        for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
         {
             // 4：检测能力的输入标签是否与输入的标签相同，这里采用的是精确匹配
             if (Spec.DynamicAbilityTags.HasTagExact(InputTag))
