@@ -42,10 +42,17 @@ private:
 	TObjectPtr<UInputMappingContext> AuraContext;	// 输入映射上下文
 
 	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> ShiftAction;	// Shit动作
+
+	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> MoveAction;	// 移动动作
 
 	// 有了移动动作，我们还需要一个输入处理函数
 	void Move(const FInputActionValue& Value);	// 移动函数
+
+	void ShiftPressed() { bShiftKeyDown = true; }	// Shift按下
+	void ShiftReleased() { bShiftKeyDown = false; }	// Shift释放
+	bool bShiftKeyDown = false;
 
 	IEnemyInterface* LastActor;		// 上一个命中的Actor
 	IEnemyInterface* ThisActor;		// 当前命中的Actor
