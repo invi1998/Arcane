@@ -24,6 +24,23 @@ void UTargetDataUnderMouse::Activate()
 	else
 	{
 		// TODO: 在服务端，监听客户端的MouseTargetData
+
+		const FGameplayAbilitySpecHandle AbilitySpecHandle = GetAbilitySpecHandle();	// 获取AbilitySpecHandle, 用于标识Ability
+		const FPredictionKey ActivationPredictionKey = GetActivationPredictionKey();	// 获取ActivationPredictionKey, 用于标识Ability的激活预测
+
+		// 这里我们可以使用AbilitySystemComponent.Get()->AbilityTargetDataSetDelegate()来监听客户端的MouseTargetData
+		AbilitySystemComponent.Get()->AbilityTargetDataSetDelegate(AbilitySpecHandle, ActivationPredictionKey).AddUObject(this, &UTargetDataUnderMouse::OnTargetDataReplicatedCallback);	// 添加一个委托，当客户端广播MouseTargetData时，就会调用OnTargetDataReplicatedCallback函数
+
+		// 一旦服务器上调用了激活，服务器就可以将其回调绑定到这个委托上，这样当客户端广播MouseTargetData时，就会调用OnTargetDataReplicatedCallback函数
+
+		// 但是如果我们已经来不及，目标数据已经被广播了，那么这种情况下，我们依然应该调用该回调
+		// 所以，有一种方法可以检查或者至少可以在已经接收到目标数据时调用该目标的数据委托，所以我们可以通过CallReplicatedTargetDataDelegatesIfSet来检查是否已经接收到目标数据，如果我们没有调用这个委托，那就意味着它还没有到达服务器，所以我们需要继续等待
+		const bool bCalledDelegate = AbilitySystemComponent.Get()->CallReplicatedTargetDataDelegatesIfSet(AbilitySpecHandle, ActivationPredictionKey);		// 如果已经接收到目标数据，那么就调用该目标的数据委托
+		if (!bCalledDelegate)
+		{
+			// 如果没有接收到目标数据，那么就继续等待
+			SetWaitingOnRemotePlayerData();
+		}
 	}
 
 }
@@ -64,4 +81,26 @@ void UTargetDataUnderMouse::SendMouseTargetData()
 		// 这样我们就能继续通过广播传递整个DataHandle，可以获取命中结果和目标数据中包含的任何其他内容，然后在Ability中通过委托的回调函数中获取DataHandle
 		ValidData.Broadcast(DataHandle);
 	}
+}
+
+void UTargetDataUnderMouse::OnTargetDataReplicatedCallback(const FGameplayAbilityTargetDataHandle& DataHandle,
+	FGameplayTag ActivationTag)
+{
+	// 一旦进入这个函数，就意味着我们已经接收到了 replicated 目标数据，而且我们知道，replicated 只会从服务端到客户端，
+	// 但是在GAS中，你会发现，客户端也可以发送 replicated 目标数据，这里就是一个例子，我们在客户端发送了 replicated 目标数据，然后服务端接收到了这个数据
+	// 所以，当接收到 replicated 目标数据时，此函数将在服务端调用
+
+	// 所以，我们需要在这里广播目标数据，但是，我们同时还需要确保ASC（AbilitySystemComponent）已经知道这个数据被接收到了
+	// 因为当服务器接收到Replicated目标数据时，他会将数据存储在ASC的AbilityTargetDataMap中，
+	// 所以这个时候，我们就可以告诉ASC我们已经接收到了目标数据，调用ASC的ConsumeClientReplicatedTargetData函数，传递AbilitySpecHandle和ActivationPredictionKey
+	// 让ASC不必再存储这个数据
+	AbilitySystemComponent->ConsumeClientReplicatedTargetData(GetAbilitySpecHandle(), GetActivationPredictionKey());	// 告诉ASC我们已经接收到了目标数据
+
+	// 然后我们就可以广播目标数据了
+	// 一样的，广播之前，还应该判断是否有合法的目标数据，比如如果能力已经不再激活，那么就不需要广播了
+	if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		ValidData.Broadcast(DataHandle);
+	}
+
 }

@@ -332,3 +332,181 @@ void UTargetDataUnderMouse::SendMouseTargetData()
 
 
 现在，客户端已经能自行预测Ability，下一步就是让服务端去处理好客户端监听任务
+
+
+
+# Receiving Target Data
+
+当TargetData到达服务器时，会有一个委托广播（FAbilityTargetDataSetDelegate），我们可以通过AbilitySystemComponent来获取。
+
+确切的说，是AbilitySystemComponent->Get().AbilityTargetDataSetDelegate()
+
+AbilityTargetDataSetDelegate 是一个事件委托，用于在 Ability System 中设置 Target Data。当 Ability System 设置了新的 Target Data 时，它会触发这个委托。
+
+这个委托的签名如下：
+
+```cpp
+1DECLARE_DELEGATE_OneParam(FAbilityTargetDataSetDelegate, const FGameplayAbilityTargetData* const)
+```
+
+他会返回目标数据集代理，但是，正如我们上面写的，我们广播的是 {给定能力：预测} 的键值对代理，换句话说，这里需要知道与这个TargetData相光联的预测键，因此，为了获取这些信息，我们在此调用的函数需要改特定任务的相关的SpecHandle.
+
+## 
+
+```c++
+// Copyright INVI1998
+
+
+#include "AbilitySystem/AbilityTasks/TargetDataUnderMouse.h"
+
+#include "AbilitySystemComponent.h"
+#include "Player/AuraPlayerController.h"
+
+UTargetDataUnderMouse* UTargetDataUnderMouse::CreateTargetDataUnderMouse(UGameplayAbility* OwningAbility)
+{
+	// 创建一个UTargetDataUnderMouse*类型的指针
+	UTargetDataUnderMouse* MyObj = NewObject<UTargetDataUnderMouse>(OwningAbility);
+	// 返回这个指针
+	return MyObj;
+}
+
+void UTargetDataUnderMouse::Activate()
+{
+	const bool bIsLocallyControlled = Ability->GetCurrentActorInfo()->IsLocallyControlled();
+	if (bIsLocallyControlled)
+	{
+		SendMouseTargetData();
+	}
+	else
+	{
+		// TODO: 在服务端，监听客户端的MouseTargetData
+
+		const FGameplayAbilitySpecHandle AbilitySpecHandle = GetAbilitySpecHandle();	// 获取AbilitySpecHandle, 用于标识Ability
+		const FPredictionKey ActivationPredictionKey = GetActivationPredictionKey();	// 获取ActivationPredictionKey, 用于标识Ability的激活预测
+
+		// 这里我们可以使用AbilitySystemComponent.Get()->AbilityTargetDataSetDelegate()来监听客户端的MouseTargetData
+		AbilitySystemComponent.Get()->AbilityTargetDataSetDelegate(AbilitySpecHandle, ActivationPredictionKey).AddUObject(this, &UTargetDataUnderMouse::OnTargetDataReplicatedCallback);	// 添加一个委托，当客户端广播MouseTargetData时，就会调用OnTargetDataReplicatedCallback函数
+
+		// 一旦服务器上调用了激活，服务器就可以将其回调绑定到这个委托上，这样当客户端广播MouseTargetData时，就会调用OnTargetDataReplicatedCallback函数
+
+		// 但是如果我们已经来不及，目标数据已经被广播了，那么这种情况下，我们依然应该调用该回调
+		// 所以，有一种方法可以检查或者至少可以在已经接收到目标数据时调用该目标的数据委托，所以我们可以通过CallReplicatedTargetDataDelegatesIfSet来检查是否已经接收到目标数据，如果我们没有调用这个委托，那就意味着它还没有到达服务器，所以我们需要继续等待
+		const bool bCalledDelegate = AbilitySystemComponent.Get()->CallReplicatedTargetDataDelegatesIfSet(AbilitySpecHandle, ActivationPredictionKey);		// 如果已经接收到目标数据，那么就调用该目标的数据委托
+		if (!bCalledDelegate)
+		{
+			// 如果没有接收到目标数据，那么就继续等待
+			SetWaitingOnRemotePlayerData();
+		}
+	}
+
+}
+
+void UTargetDataUnderMouse::SendMouseTargetData()
+{
+	// 创建一个FScopedPredictionWindow对象，用于管理预测窗口，这个对象会在作用域结束时自动销毁，他需要传递一个AbilitySystemComponent指针，以及一个是否使用预测的布尔值，这里我们使用预测，所以传递true（默认值）
+	FScopedPredictionWindow ScopedPrediction(AbilitySystemComponent.Get());
+
+	// 当前作用域内的代码将使用预测，这意味着我们可以在客户端上执行这些代码，而不会等待服务器的响应，
+	// 当服务端得知这个预测时，它会在服务端上执行相同的代码，然后比较结果，如果结果不同，那么服务端会纠正客户端的预测，这样就保证了客户端和服务端的一致性
+
+	// 这个类继承自 FGameplayAbilityTargetData，它是用于描述 Ability 系统中目标选择和定位信息的基本结构
+	FGameplayAbilityTargetData_SingleTargetHit* Data = new FGameplayAbilityTargetData_SingleTargetHit();	// 创建一个新的FGameplayAbilityTargetData_SingleTargetHit对象
+
+	FGameplayAbilityTargetDataHandle DataHandle;	// 创建一个FGameplayAbilityTargetDataHandle对象
+
+	AAuraPlayerController* PC = Cast<AAuraPlayerController>(Ability->GetCurrentActorInfo()->PlayerController.Get());	// 获取玩家控制器
+	Data->HitResult = PC->GetCursorHitResult();	// 获取玩家控制器的光标命中结果
+	DataHandle.Add(Data);	// 将Data添加到DataHandle中
+
+	FGameplayTag ApplicationTag;
+
+	// 客户端调用ServerSetReplicatedTargetData，将DataHandle传递给服务端
+	AbilitySystemComponent->ServerSetReplicatedTargetData(
+		GetAbilitySpecHandle(),		// 获取AbilitySpecHandle, 用于标识Ability
+		GetActivationPredictionKey(),	// 获取ActivationPredictionKey, 用于标识Ability的激活预测
+		DataHandle,		// 传递DataHandle, 用于传递目标数据，这里是光标命中结果（所以上面的DataHandle.Add(Data);
+		ApplicationTag,		// 传递ApplicationTag, 用于标识Ability的应用标签
+		AbilitySystemComponent->ScopedPredictionKey	// 传递ScopedPredictionKey, 用于标识Ability的预测键，Scoped意味着这个预测键只在这个Ability中有效，它仅限于我们创建的这个ScopedPrediction对象的生命周期
+	);
+
+	// 广播能力系统的目标数据
+	// 但是广播之前，需要先判断是否有合法的目标数据，比如如果能力已经不再激活，那么就不需要广播了
+	if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		// 这里Broadcast需要传递一个FVector类型的参数，但是这里我想改为传递DataHandle，所以我在UTargetDataUnderMouse.h中改变了ValidData的类型为FGameplayAbilityTargetDataHandle
+		// 这样我们就能继续通过广播传递整个DataHandle，可以获取命中结果和目标数据中包含的任何其他内容，然后在Ability中通过委托的回调函数中获取DataHandle
+		ValidData.Broadcast(DataHandle);
+	}
+}
+
+void UTargetDataUnderMouse::OnTargetDataReplicatedCallback(const FGameplayAbilityTargetDataHandle& DataHandle,
+	FGameplayTag ActivationTag)
+{
+	// 一旦进入这个函数，就意味着我们已经接收到了 replicated 目标数据，而且我们知道，replicated 只会从服务端到客户端，
+	// 但是在GAS中，你会发现，客户端也可以发送 replicated 目标数据，这里就是一个例子，我们在客户端发送了 replicated 目标数据，然后服务端接收到了这个数据
+	// 所以，当接收到 replicated 目标数据时，此函数将在服务端调用
+
+	// 所以，我们需要在这里广播目标数据，但是，我们同时还需要确保ASC（AbilitySystemComponent）已经知道这个数据被接收到了
+	// 因为当服务器接收到Replicated目标数据时，他会将数据存储在ASC的AbilityTargetDataMap中，
+	// 所以这个时候，我们就可以告诉ASC我们已经接收到了目标数据，调用ASC的ConsumeClientReplicatedTargetData函数，传递AbilitySpecHandle和ActivationPredictionKey
+	// 让ASC不必再存储这个数据
+	AbilitySystemComponent->ConsumeClientReplicatedTargetData(GetAbilitySpecHandle(), GetActivationPredictionKey());	// 告诉ASC我们已经接收到了目标数据
+
+	// 然后我们就可以广播目标数据了
+	// 一样的，广播之前，还应该判断是否有合法的目标数据，比如如果能力已经不再激活，那么就不需要广播了
+	if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		ValidData.Broadcast(DataHandle);
+	}
+
+}
+
+```
+
+
+
+# UAbilitySystemGlobals::Get().InitGlobalData() 
+
+在 Unreal Engine 5 (UE5) 中，UAbilitySystemGlobals::Get().InitGlobalData() 是一个函数，用于初始化 Ability System 的全局数据。这个函数通常在游戏启动时调用，以确保 Ability System 的全局数据被正确地初始化。
+
+具体来说，UAbilitySystemGlobals::Get().InitGlobalData() 函数主要做了以下几件事：
+
+1. **创建 Ability System 组件**：在 UAbilitySystemGlobals 类中，创建一个 Ability System 组件，并将其设置为全局的。
+
+2. **初始化 Ability System 组件**：对全局的 Ability System 组件进行初始化，包括设置一些默认的属性和状态。
+
+3. **创建 Ability System 资源**：创建一些 Ability System 所需的资源，例如 Ability System 的事件蓝图、事件蓝图的实例等。
+
+4. **设置 Ability System 的默认属性**：设置一些 Ability System 的默认属性，例如 Ability System 的默认属性集、默认属性集的实例等。
+
+5. **设置 Ability System 的默认状态**：设置一些 Ability System 的默认状态，例如 Ability System 的默认状态集、默认状态集的实例等。
+
+6. **设置 Ability System 的默认组件**：设置一些 Ability System 的默认组件，例如 Ability System 的默认组件集、默认组件集的实例等。
+
+7. **设置 Ability System 的默认 Target Data**：设置一些 Ability System 的默认 Target Data，例如 Ability System 的默认 Target Data 集、默认 Target Data 集的实例等。
+
+总之，UAbilitySystemGlobals::Get().InitGlobalData() 函数主要用于初始化 Ability System 的全局数据，包括 Ability System 的组件、资源、属性、状态、组件和 Target Data。这个函数通常在游戏启动时调用，以确保 Ability System 的全局数据被正确地初始化。
+
+
+
+所以，注意：因为我们上面的程序用到了 ASC的AbilityTargetDataMap，所以，需要再程序启动之前，就对这个进行初始化，调用的也正式 UAbilitySystemGlobals::Get().InitGlobalData() ，所以，我们在我们自己写的资产管理的初始化函数里，去调用这个函数
+
+```c++
+
+void UAuraAssetManager::StartInitialLoading()
+{
+	Super::StartInitialLoading();
+
+	FAuraGameplayTags::InitializeNativeGameplayTags();	// 初始化游戏标签
+	
+    // 对于使用AbilitySystem（Target Data）的项目，我们需要初始化全局数据，这是很有必要的
+	UAbilitySystemGlobals::Get().InitGlobalData();	// 初始化全局数据，
+
+	// 现在要做的最后一步，就是将这个AssetManager注册到GEngine中，设置为我们的项目的资产管理器
+}
+
+```
+
+这点，很重要，否则在游戏进程运行时，你会遇到`ScriptStructCache`相关的错误且客户端将从服务器断开连接。在项目中这个方法只需要调用一次。
+
+>实际上，在 5.3 版本中不需要。5.3及后续版本，已经自动调用了

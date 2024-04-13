@@ -38,5 +38,7 @@ private:
 	virtual void Activate() override;	// 重写Activate函数，激活任务
 
 	void SendMouseTargetData();	// 声明一个函数，用于发送鼠标位置数据
+
+	void OnTargetDataReplicatedCallback(const FGameplayAbilityTargetDataHandle& DataHandle, FGameplayTag ActivationTag);	// 声明一个函数，用于处理数据复制回调, 它主要处理两个事情，一个是广播目标数据并处理，一个是与广播相关联的激活标签
 	
 };
