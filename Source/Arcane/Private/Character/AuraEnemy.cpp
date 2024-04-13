@@ -30,6 +30,8 @@ void AAuraEnemy::InitAbilityActorInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);	// 初始化能力系统组件，设置拥有者和所有者
 
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();	// 设置技能Actor信息
+
+	InitializeDefaultAttributes();
 }
 
 void AAuraEnemy::HighlightActor()

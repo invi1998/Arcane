@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffectTypes.h"
 #include "GameFramework/Actor.h"
 #include "AuraProjectile.generated.h"
 
@@ -21,6 +22,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;	// 投射物移动组件
+
+	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))	// ExposeOnSpawn 表示可以在创建实例时设置该属性
+	FGameplayEffectSpecHandle DamageEffectSpecHandle;	// 伤害效果句柄
 
 protected:
 	// Called when the game starts or when spawned
