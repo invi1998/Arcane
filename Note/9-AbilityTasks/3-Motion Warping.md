@@ -107,3 +107,25 @@ public:
 
 ```
 
+> 只让Capsule和Mesh网格中的一个生成重叠事件，避免重叠事件重复，照成类似以二次伤害的问题
+>
+> ```c++
+> 
+> AAuraCharacterBase::AAuraCharacterBase()
+> {
+> 	PrimaryActorTick.bCanEverTick = false;
+> 
+> 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);	// 设置胶囊体碰撞响应
+> 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);		// 只让Capsule和Mesh网格中的一个生成重叠事件，避免重叠事件重复，照成类似以二次伤害的问题
+> 
+> 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);	// 设置Mesh碰撞响应
+> 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
+> 	GetMesh()->SetGenerateOverlapEvents(true);	// 设置Mesh生成重叠事件
+> 
+> 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("Weapon"));	// 创建武器组件
+> 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));		// 设置武器组件的父组件（Mesh）和挂载点
+> 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// 设置武器组件的碰撞状态
+> }
+> ```
+>
+> 
