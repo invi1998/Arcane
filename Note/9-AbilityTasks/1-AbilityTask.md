@@ -164,3 +164,171 @@ void UAuraProjectileSpell::SpawnProjectile()
 
 3. **数据验证问题**：由于网络延迟和数据同步问题的存在，服务器接收到的客户端激活信号和数据可能与客户端实际发送的信号和数据不同。服务器需要对这些数据进行验证，以确保数据的一致性和有效性。
 
+![image-20240413013932288](.\image-20240413013932288.png)
+
+面对这种情况，GAS（GameplayAbilitySystem）通过以下方式解决了Target Data的问题：
+
+1. **Target Set Delegates**: 在服务器端，当Target Set发生变化时，会触发一个名为`FAbilityTargetDataSetDelegate`的Delegate。这个Delegate会广播到所有已连接的客户端，通知他们Target Set发生了变化。
+
+2. **Target Data Map**: 在服务器端，有一个`AbilityTargetDataMap`，用于存储所有的Target Data。每个Target Data都有一个对应的Ability Spec，用于关联到具体的Ability。
+
+3. **Server Set Replicated Target Data**: 当服务器需要将Target Data复制到客户端时，会调用`ServerSetReplicatedTargetData()`函数。这个函数会将Target Data从服务器复制到客户端，并更新客户端的Ability Target Data Map。
+
+4. **Ability Target Data Map**: 在客户端，也有一个`AbilityTargetDataMap`，用于存储所有的Target Data。当服务器将Target Data复制到客户端时，客户端的`AbilityTargetDataMap`会被更新。
+
+5. **Ability Spec to Target Data**: 在客户端，每个Ability Spec都关联着一个Target Data。当客户端的`AbilityTargetDataMap`被更新时，客户端的Ability Spec会自动更新其关联的Target Data。
+
+通过这种方式，GAS实现了服务器和客户端之间Target Data的同步。当服务器的Target Data发生变化时，客户端会通过Delegate通知及时更新自己的Target Data Map，从而保证了Target Data的一致性。
+
+![image-20240413014431044](.\image-20240413014431044.png)
+
+在图中所示的Target Data方案中，Ability Task使用Target Data来确定目标。为了处理服务器Activate花费的时间epsilon小于delta（RPC到达的时间）以及RPC先到达这两种情况，可以采取以下策略：
+
+1. **Activate和RPC的顺序**：
+   - 如果服务器Activate花费的时间epsilon小于delta，这意味着服务器Activate指令先于RPC到达客户端。
+   - 如果RPC先到达，这意味着客户端已经收到了服务器Activate指令，但是服务器Activate指令还未到达。
+
+2. **处理策略**：
+   - 对于服务器Activate花费的时间epsilon小于delta的情况，可以在服务器Activate后立即调用`CallReplicatedTargetDataDelegateIfSet()`函数，将Target Data广播给所有已连接的客户端。
+   - 对于RPC先到达的情况，可以在客户端接收到RPC后，调用`ServerSetReplicatedTargetData()`函数，将Target Data复制到客户端的Ability Target Data Map中。
+
+3. **时间差处理**：
+   - 时间差处理主要涉及如何确保客户端和服务器之间的Target Data保持同步。
+   - 一种方法是在服务器Activate后立即调用`CallReplicatedTargetDataDelegateIfSet()`函数，这样可以确保客户端在接收到Activate指令的同时也接收到了最新的Target Data。
+   - 另一种方法是在客户端接收到Activate指令后，立即调用`ServerSetReplicatedTargetData()`函数，将Target Data复制到客户端的Ability Target Data Map中。
+
+通过上述策略，可以有效地处理服务器Activate花费的时间epsilon小于delta以及RPC先到达这两种情况，确保客户端和服务器之间的Target Data保持同步。
+
+# FGameplayAbilityTargetData_SingleTargetHit
+
+在Unreal Engine 5 (UE5) 中，FGameplayAbilityTargetData_SingleTargetHit 是一个特定类型的 Target Data 类型，它表示对单个目标进行命中检测的结果。这个类继承自 FGameplayAbilityTargetData，它是用于描述 Ability 系统中目标选择和定位信息的基本结构。
+
+FGameplayAbilityTargetData_SingleTargetHit 包含以下关键属性：
+
+- `HitResult`: 这是一个 FHitResult 结构体，包含了命中检测的结果。它包括了被命中的物体、碰撞点、碰撞法线等信息。
+
+- `HitActor`: 命中检测中所击中的 Actor。
+
+- `HitComponent`: 命中检测中所击中的 Component。
+
+- `HitLocation`: 命中检测中所击中的位置。
+
+- `HitNormal`: 命中检测中所击中的法线方向。
+
+- `HitTime`: 命中检测发生的时间。
+
+- `HitChannel`: 命中检测发生的 Channel。
+
+- `HitProxy`: 命中检测的 Proxy。
+
+- `HitProxyId`: 命中检测的 Proxy 的 ID。
+
+- `HitProxyWorldPosition`: 命中检测的 Proxy 在世界空间的位置。
+
+- `HitProxyWorldNormal`: 命中检测的 Proxy 在世界空间的法线方向。
+
+- `HitProxyWorldTangent`: 命中检测的 Proxy 在世界空间的切线方向。
+
+- `HitProxyWorldBinormal`: 命中检测的 Proxy 在世界空间的副切线方向。
+
+- `HitProxyLocalPosition`: 命中检测的 Proxy 在本地空间的位置。
+
+- `HitProxyLocalNormal`: 命中检测的 Proxy 在本地空间的法线方向。
+
+- `HitProxyLocalTangent`: 命中检测的 Proxy 在本地空间的切线方向。
+
+- `HitProxyLocalBinormal`: 命中检测的 Proxy 在本地空间的副切线方向。
+
+FGameplayAbilityTargetData_SingleTargetHit 主要用于描述对单个目标进行命中检测的结果，通常在需要精确打击或技能命中反馈的 Ability 中使用。例如，一个角色释放技能攻击敌人时，可以通过这个 Target Data 类型来获取命中检测的结果，以便在游戏中正确地显示命中效果和伤害计算。
+
+
+
+# FScopedPredictionWindow
+
+在 Unreal Engine 5 (UE5) 中，FScopedPredictionWindow 是一个用于控制预测窗口的类。预测窗口是指在客户端模拟游戏行为时，允许客户端提前模拟一段时间，以减少网络延迟对游戏体验的影响。
+
+FScopedPredictionWindow 提供了一种方便的方法来管理预测窗口，使得在代码中可以轻松地指定预测窗口的开始和结束。它的工作原理如下：
+
+1. **创建预测窗口**：当你创建一个新的 FScopedPredictionWindow 对象时，它会记录下当前的时间戳，作为预测窗口的开始时间。
+
+2. **模拟预测**：在预测窗口内，客户端可以模拟游戏行为，例如移动、攻击等。这些操作会在本地进行模拟，然后在预测窗口结束后再与服务器进行同步。
+
+3. **关闭预测窗口**：当你销毁 FScopedPredictionWindow 对象时，它会计算出预测窗口的持续时间，并将这个时间传递给 Ability System，以便 Ability System 能够正确地处理预测窗口内的操作。
+
+通过使用 FScopedPredictionWindow，你可以更方便地控制预测窗口的开始和结束，从而更好地优化游戏的网络性能和游戏体验。
+
+
+
+所以，使用客户端预测，我们将代码改为如下形式
+
+```c++
+#include "AbilitySystem/AbilityTasks/TargetDataUnderMouse.h"
+
+#include "AbilitySystemComponent.h"
+#include "Player/AuraPlayerController.h"
+
+UTargetDataUnderMouse* UTargetDataUnderMouse::CreateTargetDataUnderMouse(UGameplayAbility* OwningAbility)
+{
+	// 创建一个UTargetDataUnderMouse*类型的指针
+	UTargetDataUnderMouse* MyObj = NewObject<UTargetDataUnderMouse>(OwningAbility);
+	// 返回这个指针
+	return MyObj;
+}
+
+void UTargetDataUnderMouse::Activate()
+{
+	const bool bIsLocallyControlled = Ability->GetCurrentActorInfo()->IsLocallyControlled();
+	if (bIsLocallyControlled)
+	{
+		SendMouseTargetData();
+	}
+	else
+	{
+		// TODO: 在服务端，监听客户端的MouseTargetData
+	}
+
+}
+
+void UTargetDataUnderMouse::SendMouseTargetData()
+{
+	// 创建一个FScopedPredictionWindow对象，用于管理预测窗口，这个对象会在作用域结束时自动销毁，他需要传递一个AbilitySystemComponent指针，以及一个是否使用预测的布尔值，这里我们使用预测，所以传递true（默认值）
+	FScopedPredictionWindow ScopedPrediction(AbilitySystemComponent.Get());
+
+	// 当前作用域内的代码将使用预测，这意味着我们可以在客户端上执行这些代码，而不会等待服务器的响应，
+	// 当服务端得知这个预测时，它会在服务端上执行相同的代码，然后比较结果，如果结果不同，那么服务端会纠正客户端的预测，这样就保证了客户端和服务端的一致性
+
+	// 这个类继承自 FGameplayAbilityTargetData，它是用于描述 Ability 系统中目标选择和定位信息的基本结构
+	FGameplayAbilityTargetData_SingleTargetHit* Data = new FGameplayAbilityTargetData_SingleTargetHit();	// 创建一个新的FGameplayAbilityTargetData_SingleTargetHit对象
+
+	FGameplayAbilityTargetDataHandle DataHandle;	// 创建一个FGameplayAbilityTargetDataHandle对象
+
+	AAuraPlayerController* PC = Cast<AAuraPlayerController>(Ability->GetCurrentActorInfo()->PlayerController.Get());	// 获取玩家控制器
+	Data->HitResult = PC->GetCursorHitResult();	// 获取玩家控制器的光标命中结果
+	DataHandle.Add(Data);	// 将Data添加到DataHandle中
+
+	FGameplayTag ApplicationTag;
+
+	// 客户端调用ServerSetReplicatedTargetData，将DataHandle传递给服务端
+	AbilitySystemComponent->ServerSetReplicatedTargetData(
+		GetAbilitySpecHandle(),		// 获取AbilitySpecHandle, 用于标识Ability
+		GetActivationPredictionKey(),	// 获取ActivationPredictionKey, 用于标识Ability的激活预测
+		DataHandle,		// 传递DataHandle, 用于传递目标数据，这里是光标命中结果（所以上面的DataHandle.Add(Data);
+		ApplicationTag,		// 传递ApplicationTag, 用于标识Ability的应用标签
+		AbilitySystemComponent->ScopedPredictionKey	// 传递ScopedPredictionKey, 用于标识Ability的预测键，Scoped意味着这个预测键只在这个Ability中有效，它仅限于我们创建的这个ScopedPrediction对象的生命周期
+	);
+
+	// 广播能力系统的目标数据
+	// 但是广播之前，需要先判断是否有合法的目标数据，比如如果能力已经不再激活，那么就不需要广播了
+	if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		// 这里Broadcast需要传递一个FVector类型的参数，但是这里我想改为传递DataHandle，所以我在UTargetDataUnderMouse.h中改变了ValidData的类型为FGameplayAbilityTargetDataHandle
+		// 这样我们就能继续通过广播传递整个DataHandle，可以获取命中结果和目标数据中包含的任何其他内容，然后在Ability中通过委托的回调函数中获取DataHandle
+		ValidData.Broadcast(DataHandle);
+	}
+}
+
+```
+
+
+
+现在，客户端已经能自行预测Ability，下一步就是让服务端去处理好客户端监听任务

@@ -7,7 +7,7 @@
 #include "TargetDataUnderMouse.generated.h"
 
 // 广播委托，广播内容为鼠标位置，参数为FVector类型
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMouseTargetDataSignature, const FVector&, Data);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMouseTargetDataSignature, const FGameplayAbilityTargetDataHandle&, DataHandle);
 
 /**
  * 
@@ -36,5 +36,7 @@ public:
 
 private:
 	virtual void Activate() override;	// 重写Activate函数，激活任务
+
+	void SendMouseTargetData();	// 声明一个函数，用于发送鼠标位置数据
 	
 };
