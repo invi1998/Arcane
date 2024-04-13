@@ -38,9 +38,10 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 
             // 将能力添加到AbilitySystemComponent中
             GiveAbility(AbilitySpec);   // 添加能力
+            // GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活能力
         }
 
-        // GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活能力
+       
 	}
 }
 
@@ -61,9 +62,14 @@ void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
                // 5： 判断能力是否已经激活
                 if (!Spec.IsActive())
                 {
+                    UKismetSystemLibrary::PrintString(this, "Ability is not active", true, true, FLinearColor::Green, 5.0f);
                 	// 6：尝试激活能力
 					TryActivateAbility(Spec.Handle);    // 尝试激活能力
 				}
+                else
+                {
+	                UKismetSystemLibrary::PrintString(this, "Ability is already active", true, true, FLinearColor::Red, 5.0f);
+                }
             }
 		}
 	}

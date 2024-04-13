@@ -13,8 +13,9 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                            const FGameplayEventData* TriggerEventData)
 {
-
+	UKismetSystemLibrary::PrintString(this, TEXT("ActivateAbility 1"), true, false, FLinearColor::Red, 5.f);
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	UKismetSystemLibrary::PrintString(this, TEXT("ActivateAbility 2"), true, false, FLinearColor::Red, 5.f);
 
 }
 
