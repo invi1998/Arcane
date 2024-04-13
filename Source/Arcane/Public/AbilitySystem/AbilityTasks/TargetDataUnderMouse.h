@@ -35,6 +35,7 @@ public:
 	FMouseTargetDataSignature ValidData;	// 声明一个委托，委托内容为FVector类型，这将成为节点上的输出执行引脚
 
 private:
+	// 当委托已经被设置好之后，该函数被用来触发实际的任务。
 	virtual void Activate() override;	// 重写Activate函数，激活任务
 
 	void SendMouseTargetData();	// 声明一个函数，用于发送鼠标位置数据

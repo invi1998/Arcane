@@ -10,6 +10,7 @@ UTargetDataUnderMouse* UTargetDataUnderMouse::CreateTargetDataUnderMouse(UGamepl
 {
 	// 创建一个UTargetDataUnderMouse*类型的指针
 	UTargetDataUnderMouse* MyObj = NewObject<UTargetDataUnderMouse>(OwningAbility);
+
 	// 返回这个指针
 	return MyObj;
 }

@@ -24,28 +24,23 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 {
 	for (TSubclassOf<UGameplayAbility> Ability : StartupAbilities)
 	{
-		if (Ability)
-		{
-            // 创建能力
-            FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability.GetDefaultObject(), 1, 0);
+        // 创建能力
+        FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability.GetDefaultObject(), 1);
 
-            if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
-            {
-                // 如果是AuraGameplayAbility，那么设置StartupInputTag
-                AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupInputTag);
-                // DynamicAbilityTags是一个标签集合，它包含了一些标签，这些标签可以在运行时动态添加或移除。
-                // 在这个上下文中，DynamicAbilityTags是AbilitySpec的一个成员变量，用于存储与Ability相关的标签。
-                // 简单来说，就是比如我在开始的时候给一个角色添加了一个能力，这个能力可以被左键点击触发，所以我将左键输入标签添加到了这个能力的DynamicAbilityTags中。
-                // 然后在游戏运行过程中，我可以卸载或者更换这个输入标签，改为右键输入标签，这样这个能力就可以被右键点击触发了。
+        if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
+        {
+            // 如果是AuraGameplayAbility，那么设置StartupInputTag
+            AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupInputTag);
+            // DynamicAbilityTags是一个标签集合，它包含了一些标签，这些标签可以在运行时动态添加或移除。
+            // 在这个上下文中，DynamicAbilityTags是AbilitySpec的一个成员变量，用于存储与Ability相关的标签。
+            // 简单来说，就是比如我在开始的时候给一个角色添加了一个能力，这个能力可以被左键点击触发，所以我将左键输入标签添加到了这个能力的DynamicAbilityTags中。
+            // 然后在游戏运行过程中，我可以卸载或者更换这个输入标签，改为右键输入标签，这样这个能力就可以被右键点击触发了。
 
-                // 将能力添加到AbilitySystemComponent中
-				GiveAbility(AbilitySpec);   // 添加能力
-            }
+            // 将能力添加到AbilitySystemComponent中
+            GiveAbility(AbilitySpec);   // 添加能力
+        }
 
-            
-			// GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活能力
-            
-		}
+        // GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活能力
 	}
 }
 
