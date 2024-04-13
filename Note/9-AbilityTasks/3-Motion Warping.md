@@ -85,3 +85,25 @@ public:
 ![image-20240413191511798](.\image-20240413191511798.png)
 
 这样，主要继承了CombatInterface接口的角色，就都能使用这个FaceTarget功能了
+
+
+
+
+
+# 自定义碰撞通道
+
+现在，还有一个问题就是我们的弹道会和比如场景中的药水碰撞，和这些静态物体碰撞是我们不希望看见的，所以这里新增一个碰撞通道
+
+![image-20240413213603583](.\image-20240413213603583.png)
+
+项目头文件（Arcane.h）
+
+```c++
+#include "CoreMinimal.h"
+
+#define CUSTOM_DEPTH_STENCIL_RED 250	// 红色自定义深度缓冲值
+
+#define ECC_Projectile ECollisionChannel::ECC_GameTraceChannel1	// 子弹碰撞频道
+
+```
+
