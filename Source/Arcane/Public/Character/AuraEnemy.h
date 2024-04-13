@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
-#include "Interaction/CombatInterface.h"
 #include "Interaction/EnemyInterface.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"
 
 class UWidgetComponent;
@@ -29,6 +29,12 @@ public:
 	/** CombatInterface begin */
 	virtual int32 GetPlayerLevel() const override;
 	/** CombatInterface end */
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangeSignature OnHealthChanged;	// 怪物生命值改变
+
+	UPROPERTY(BlueprintAssignable)
+	FOnAttributeChangeSignature OnMaxHealthChanged;	// 怪物最大生命值改变
 
 protected:
 	virtual void BeginPlay() override;

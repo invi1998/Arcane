@@ -7,6 +7,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Arcane/Arcane.h"
 #include "Components/WidgetComponent.h"
+#include "UI/Widget/AuraUserWidget.h"
 
 AAuraEnemy::AAuraEnemy()
 {
@@ -28,6 +29,35 @@ void AAuraEnemy::BeginPlay()
 	Super::BeginPlay();
 	
 	InitAbilityActorInfo();	// 初始化能力系统组件，设置拥有者和所有者
+
+	// 将血条组件的WidgetController设置为Actor本身
+	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
+	{
+		// 这样，WidgetController就是拥有这个Widget的Actor本身，为什么可以这样设置呢？
+		// 因为UAuraUserWidgetController继承自UObject，而UObject是一个基类，任何继承自UObject的类都可以设置为WidgetController
+		// 在UE里，任何类都继承自UObject，所以我们可以设置任何类为WidgetController
+		AuraUserWidget->SetWidgetController(this);
+	}
+
+	if (const UAuraAttributeSet* AuraAS = Cast<UAuraAttributeSet>(AttributeSet))
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAS->GetHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)->void
+			{
+				OnHealthChanged.Broadcast(Data.NewValue);	// 广播生命值改变
+			}
+		);	// 添加生命值改变委托
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAS->GetMaxHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)->void
+			{
+				OnMaxHealthChanged.Broadcast(Data.NewValue);	// 广播最大生命值改变
+			}
+		);	// 添加最大生命值改变委托
+
+		// 直接在这里广播一次，作为血条的初始化
+		OnHealthChanged.Broadcast(AuraAS->GetHealth());	// 广播生命值改变
+		OnMaxHealthChanged.Broadcast(AuraAS->GetMaxHealth());	// 广播最大生命值改变
+	}
 }
 
 void AAuraEnemy::InitAbilityActorInfo()
