@@ -35,3 +35,49 @@ Motion Warping 技术在 UE5 中得到了进一步增强，提供了更多的灵
 然后回到GA_FireBolt蓝图中，在播放蒙太奇动画节点之前，插入这段获取并朝向目标的蓝图，这样我们就能看到角色在施法的时候，正确的朝向了施法目标了。
 
 ![image-20240413184457269](.\image-20240413184457269.png)
+
+# 更灵活的接口
+
+这种方式其实写死了只能角色使用，但是如果我想要让怪物施法也有这个朝向功能，是不是又得来该蓝图，所以，更灵活的选择是使用接口
+
+记得将接口类型设置为蓝图类型，因为我们要在蓝图中使用它，我们需要将Actor在蓝图中Cast到CombatInterface对象，所以需要保证我们的UCombatInterface是一个蓝图类型
+
+```c++
+#include "CoreMinimal.h"
+#include "UObject/Interface.h"
+#include "CombatInterface.generated.h"
+
+// This class does not need to be modified.
+UINTERFACE(MinimalAPI, BlueprintType)	// 将接口类型设置为蓝图类型
+class UCombatInterface : public UInterface
+{
+	GENERATED_BODY()
+};
+
+/**
+ * 
+ */
+class ARCANE_API ICombatInterface
+{
+	GENERATED_BODY()
+	
+public:
+	virtual int32 GetPlayerLevel() const;
+
+	virtual FVector GetCombatSocketLocation() const;	// 获取战斗插槽位置
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)		// 蓝图实现，同时蓝图可调用
+	void UpdateFacingTarget(const FVector& Target);	//更新面向目标
+};
+
+```
+
+然后，回到蓝图中，替换掉之前的自定义事件
+
+![image-20240413190653183](.\image-20240413190653183.png)
+
+然后回到GA_FireBolt蓝图中，修改节点
+
+![image-20240413191511798](.\image-20240413191511798.png)
+
+这样，主要继承了CombatInterface接口的角色，就都能使用这个FaceTarget功能了
