@@ -5,6 +5,9 @@
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AAuraProjectile::AAuraProjectile()
@@ -26,8 +29,8 @@ AAuraProjectile::AAuraProjectile()
 	// 创建投射物移动组件，并设置为球形碰撞体的移动组件
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovement->SetUpdatedComponent(Sphere);	// 设置更新组件
-	ProjectileMovement->InitialSpeed = 550.f;	// 初始速度
-	ProjectileMovement->MaxSpeed = 550.f;	// 最大速度
+	ProjectileMovement->InitialSpeed = 1550.f;	// 初始速度
+	ProjectileMovement->MaxSpeed = 1550.f;	// 最大速度
 	ProjectileMovement->ProjectileGravityScale = 0.f;	// 投射物重力缩放
 
 }
@@ -37,12 +40,56 @@ void AAuraProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 设置火球的生命周期
+	SetLifeSpan(LifeSpan);
+
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AAuraProjectile::OnSphereOverlap);
+
+	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());	// 播放循环声音,并绑定到根组件
 	
 }
 
-void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AAuraProjectile::Destroyed()
 {
+	if (!bHit && !HasAuthority())
+	{
+		// 停止飞行音效
+		LoopingSoundComponent->Stop();
+
+		// 播放声音
+		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
+
+		// 播放特效
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), FRotator::ZeroRotator, FVector(1.f));
+
+	}
+	Super::Destroyed();
+}
+
+void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// 停止飞行音效
+	LoopingSoundComponent->Stop();
+
+	// 播放声音
+	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
+
+	// 播放特效
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), FRotator::ZeroRotator, FVector(1.f));
+
+	if (HasAuthority())
+	{
+		Destroy();
+		// 当然，如果是客户端，我们希望客户端被销毁之前，我可以设置某个bool变量，说，服务端已经销毁了，
+		// 然后客户端接收到销毁行为，我们可以检测这个bool，看看客户端是否已经播放过特效了，如果没有，我们在客户端播放一次
+	}
+	else
+	{
+		bHit = true;
+	}
+
+	
+
 }
 
