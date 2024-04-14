@@ -55,7 +55,10 @@ void UAuraAbilitySystemLibrary::InitCharacterAttributesByClassAndLevel(const UOb
 	{
 		const FCharacterClassDefaultInfo ClassDefaultInfo = AuraGameMode->CharacterClassInfo->GetCharacterClassDefaultInfo(CharacterClass);	// 获取角色初始化信息
 
-		const FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();	// 创建效果上下文
+		const AActor* SourceActor = ASC->GetAvatarActor();
+
+		FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();	// 创建效果上下文
+		EffectContext.AddSourceObject(SourceActor);	// 添加源对象
 
 		// PrimaryAttributes
 		const FGameplayEffectSpecHandle PrimaryAttrSpecHandle = ASC->MakeOutgoingSpec(ClassDefaultInfo.PrimaryAttributes,  Level, EffectContext);	// 创建效果规格

@@ -29,6 +29,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void InitializeDefaultAttributes() const;		// 初始化能力
+
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;		// 武器
 
@@ -57,7 +59,7 @@ protected:
 	TSubclassOf<UGameplayEffect> DefaultVitalGameplayEffectClass;		// 默认重要游戏效果类
 
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, float Level) const;	// 对自己应用效果
-	void InitializeDefaultAttributes() const;		// 初始化能力
+	
 
 	/*
 	 * Ability
