@@ -12,17 +12,12 @@ UTargetDataUnderMouse* UTargetDataUnderMouse::CreateTargetDataUnderMouse(UGamepl
 	// 创建一个UTargetDataUnderMouse*类型的指针
 	UTargetDataUnderMouse* MyObj = NewAbilityTask<UTargetDataUnderMouse>(OwningAbility);
 
-	UKismetSystemLibrary::PrintString(OwningAbility, TEXT("UTargetDataUnderMouse::CreateTargetDataUnderMouse()"), true, false, FLinearColor::Red, 5.f);
-
 	// 返回这个指针
 	return MyObj;
 }
 
 void UTargetDataUnderMouse::Activate()
 {
-
-	UKismetSystemLibrary::PrintString(this, TEXT("UTargetDataUnderMouse::Activate()"), true, false, FLinearColor::Red, 5.f);
-
 	const bool bIsLocallyControlled = Ability->GetCurrentActorInfo()->IsLocallyControlled();
 	if (bIsLocallyControlled)
 	{
