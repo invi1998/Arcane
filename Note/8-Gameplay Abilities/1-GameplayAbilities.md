@@ -56,6 +56,34 @@
 - GAS支持异步运行能力，允许多个能力同时处于激活状态。
 - Ability Tasks是异步执行的操作，可以在能力激活期间或之后异步执行。
 
+```c++
+
+void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, float Level) const
+{
+	checkf(IsValid(GetAbilitySystemComponent()), TEXT("AbilitySystemComponent is nullptr!"));	// 检查AbilitySystemComponent是否为空
+	checkf(EffectClass, TEXT("EffectClass is nullptr!"));	// 检查EffectClass是否为空
+
+	// 1：获取上下文
+	FGameplayEffectContextHandle EffectContext = GetAbilitySystemComponent()->MakeEffectContext();
+	// 2：设置SourceObject
+	EffectContext.AddSourceObject(this);
+	// 3：创建效果
+	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, Level, EffectContext);
+	// 4：应用效果到目标
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+}
+```
+
+>1：获取Ability上下文 FGameplayEffectContextHandle EffectContext = GetAbilitySystemComponent()->MakeEffectContext();
+>
+>2：设置SourceObject EffectContext.AddSourceObject(this);	// this如果是在角色内初始化的直接传，不是的话就传赋予能力的对象指针
+>
+>3：创建效果句柄 FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, Level, EffectContext);
+>
+>4：应用效果到目标
+>
+>GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+
 # Granting Abilities (授予能力)
 
 首先，我希望角色的能力（技能）信息存放在角色上，所以我在角色基类这里添加一个能力指针数组。UAuraGameplayAbility 表明，这里我是基于GameplayAbility创建的一个自己的Ability类，后续我们会对这个类做很多自定义的事情。
