@@ -157,4 +157,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Input Tag for the 0 Key")
 	);
 
+	/*
+	* Offensive Spells
+	*/
+
+
 }

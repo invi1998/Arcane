@@ -150,6 +150,93 @@ void UAuraProjectileSpell::SpawnProjectile()
 
 ![image-20240413012219326](.\image-20240413012219326.png)
 
+## PlayMontageAndWait 源码
+
+![image-20240414103537652](.\image-20240414103537652.png)
+
+```c++
+UAbilityTask_PlayMontageAndWait* UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(UGameplayAbility* OwningAbility,
+	FName TaskInstanceName, UAnimMontage *MontageToPlay, float Rate, FName StartSection, bool bStopWhenAbilityEnds, float AnimRootMotionTranslationScale, float StartTimeSeconds, bool bAllowInterruptAfterBlendOut)
+{
+
+	UAbilitySystemGlobals::NonShipping_ApplyGlobalAbilityScaler_Rate(Rate);
+
+	UAbilityTask_PlayMontageAndWait* MyObj = NewAbilityTask<UAbilityTask_PlayMontageAndWait>(OwningAbility, TaskInstanceName);
+	MyObj->MontageToPlay = MontageToPlay;
+	MyObj->Rate = Rate;
+	MyObj->StartSection = StartSection;
+	MyObj->AnimRootMotionTranslationScale = AnimRootMotionTranslationScale;
+	MyObj->bStopWhenAbilityEnds = bStopWhenAbilityEnds;
+	MyObj->bAllowInterruptAfterBlendOut = bAllowInterruptAfterBlendOut;
+	MyObj->StartTimeSeconds = StartTimeSeconds;
+	
+	return MyObj;
+}
+
+void UAbilityTask_PlayMontageAndWait::Activate()
+{
+	if (Ability == nullptr)
+	{
+		return;
+	}
+
+	bool bPlayedMontage = false;
+
+	if (UAbilitySystemComponent* ASC = AbilitySystemComponent.Get())
+	{
+		const FGameplayAbilityActorInfo* ActorInfo = Ability->GetCurrentActorInfo();
+		UAnimInstance* AnimInstance = ActorInfo->GetAnimInstance();
+		if (AnimInstance != nullptr)
+		{
+			if (ASC->PlayMontage(Ability, Ability->GetCurrentActivationInfo(), MontageToPlay, Rate, StartSection, StartTimeSeconds) > 0.f)
+			{
+				// Playing a montage could potentially fire off a callback into game code which could kill this ability! Early out if we are  pending kill.
+				if (ShouldBroadcastAbilityTaskDelegates() == false)
+				{
+					return;
+				}
+
+				InterruptedHandle = Ability->OnGameplayAbilityCancelled.AddUObject(this, &UAbilityTask_PlayMontageAndWait::OnGameplayAbilityCancelled);
+
+				BlendingOutDelegate.BindUObject(this, &UAbilityTask_PlayMontageAndWait::OnMontageBlendingOut);
+				AnimInstance->Montage_SetBlendingOutDelegate(BlendingOutDelegate, MontageToPlay);
+
+				MontageEndedDelegate.BindUObject(this, &UAbilityTask_PlayMontageAndWait::OnMontageEnded);
+				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, MontageToPlay);
+
+				ACharacter* Character = Cast<ACharacter>(GetAvatarActor());
+				if (Character && (Character->GetLocalRole() == ROLE_Authority ||
+								  (Character->GetLocalRole() == ROLE_AutonomousProxy && Ability->GetNetExecutionPolicy() == EGameplayAbilityNetExecutionPolicy::LocalPredicted)))
+				{
+					Character->SetAnimRootMotionTranslationScale(AnimRootMotionTranslationScale);
+				}
+
+				bPlayedMontage = true;
+			}
+		}
+		else
+		{
+			ABILITY_LOG(Warning, TEXT("UAbilityTask_PlayMontageAndWait call to PlayMontage failed!"));
+		}
+	}
+	else
+	{
+		ABILITY_LOG(Warning, TEXT("UAbilityTask_PlayMontageAndWait called on invalid AbilitySystemComponent"));
+	}
+
+	if (!bPlayedMontage)
+	{
+		ABILITY_LOG(Warning, TEXT("UAbilityTask_PlayMontageAndWait called in Ability %s failed to play montage %s; Task Instance Name %s."), *Ability->GetName(), *GetNameSafe(MontageToPlay),*InstanceName.ToString());
+		if (ShouldBroadcastAbilityTaskDelegates())
+		{
+			OnCancelled.Broadcast();
+		}
+	}
+
+	SetWaitingOnAvatar();
+}
+```
+
 
 
 # Target Data

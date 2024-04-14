@@ -25,7 +25,7 @@ public:
 	 */
 	// UFUNCTION，蓝图调用的函数，返回一个UTargetDataUnderMouse*类型的指针，分类为"Ability|Tasks"，
 	// DisplayName为"TargetDataNuderMouse"，表示在蓝图中显示的名称为"TargetDataNuderMouse"
-	// 隐藏Pin为OwningAbility，表示不在蓝图中显示OwningAbility这个Pin（引脚）
+	// 隐藏Pin为OwningAbility，表示不在蓝图中显示OwningAbility这个Pin（引脚），另外一方面，也是因为我们希望从GameplayAbility内部调用此函数时，OwningAbility参数是self，也就是正在调用此游戏任务的的GameplayAbility
 	// DefaultToSelf为OwningAbility，表示默认值为OwningAbility
 	// BlueprintInternalUseOnly为true，表示只能在蓝图中使用
 	UFUNCTION(BlueprintCallable, Category = "Ability|Tasks", meta = (DisplayName="TargetDataNuderMouse", HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "true"))
