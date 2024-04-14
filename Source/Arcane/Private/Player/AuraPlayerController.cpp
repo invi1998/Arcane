@@ -178,11 +178,6 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 	{
 		bTargeting = ThisActor != nullptr;
 	}
-
-	if (GetASC())
-	{
-		GetASC()->AbilityInputTagPressed(InputTag);	// 调用能力系统组件的技能输入标签按下函数
-	}
 	
 }
 
