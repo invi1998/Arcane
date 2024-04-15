@@ -36,7 +36,6 @@ UAttributeSet* AAuraCharacterBase::GetAttributeSet() const
 void AAuraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 FVector AAuraCharacterBase::GetCombatSocketLocation() const

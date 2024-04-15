@@ -63,6 +63,11 @@ public:
 	 */
 	FGameplayTag Damage;						// 元标签：受到伤害
 
+	/*
+	 * Effect Tags
+	 */
+	FGameplayTag Effect_HitReact;				// 效果：受击反应
+
 
 protected:
 

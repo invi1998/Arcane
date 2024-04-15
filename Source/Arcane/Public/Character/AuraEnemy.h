@@ -37,6 +37,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangeSignature OnMaxHealthChanged;	// 怪物最大生命值改变
 
+
+	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);	//	受击反应标签改变
+
 protected:
 	virtual void BeginPlay() override;
 

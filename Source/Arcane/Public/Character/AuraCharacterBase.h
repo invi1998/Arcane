@@ -66,6 +66,13 @@ protected:
 	 */
 	void AddCharacterAbilities();	// 添加角色能力
 
+
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	bool bIsHitReact = false;	// 是否受击
+
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	float BaseWalkSpeed = 250.f;	// 基础行走速度
+
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TArray<TSubclassOf<UAuraGameplayAbility>> StartupAbilities;	// 默认能力

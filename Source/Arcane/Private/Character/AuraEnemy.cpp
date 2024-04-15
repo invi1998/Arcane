@@ -8,6 +8,8 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Arcane/Arcane.h"
 #include "Components/WidgetComponent.h"
+#include "AuraGameplayTags.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "UI/Widget/AuraUserWidget.h"
 
 AAuraEnemy::AAuraEnemy()
@@ -28,6 +30,8 @@ AAuraEnemy::AAuraEnemy()
 void AAuraEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;	// 设置最大行走速度
 	
 	InitAbilityActorInfo();	// 初始化能力系统组件，设置拥有者和所有者
 
@@ -54,11 +58,21 @@ void AAuraEnemy::BeginPlay()
 				OnMaxHealthChanged.Broadcast(Data.NewValue);	// 广播最大生命值改变
 			}
 		);	// 添加最大生命值改变委托
+		
+		AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Effect_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AAuraEnemy::HitReactTagChanged);	// 注册死亡标签改变委托
 
 		// 直接在这里广播一次，作为血条的初始化
 		OnHealthChanged.Broadcast(AuraAS->GetHealth());	// 广播生命值改变
 		OnMaxHealthChanged.Broadcast(AuraAS->GetMaxHealth());	// 广播最大生命值改变
 	}
+}
+
+void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bIsHitReact = NewCount > 0;	// 是否受击反应
+
+	// 受击，停止移动
+	GetCharacterMovement()->MaxWalkSpeed = bIsHitReact ? 0.f : BaseWalkSpeed;	// 如果受击，速度为0，否则为原来的速度
 }
 
 void AAuraEnemy::InitAbilityActorInfo()
