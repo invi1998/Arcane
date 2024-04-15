@@ -58,6 +58,10 @@ public:
 	FGameplayTag InputTag_9;									// 输入：9
 	FGameplayTag InputTag_0;									// 输入：0
 
+	/*
+	 * Meta Tags
+	 */
+	FGameplayTag Damage;						// 元标签：受到伤害
 
 
 protected:

@@ -158,8 +158,12 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	);
 
 	/*
-	* Offensive Spells
+	* Meta Tags
 	*/
+	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage"),
+		FString("Damage")
+	);
 
 
 }

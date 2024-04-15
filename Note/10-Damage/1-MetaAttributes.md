@@ -89,3 +89,106 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 ![image-20240415104704615](.\image-20240415104704615.png)
 
+
+
+# Set By Caler Magitude
+
+1：新增Tag，Damage
+
+```c++
+	/*
+	 * Meta Tags
+	 */
+	FGameplayTag Damage;						// 元标签：受到伤害
+
+-----
+    	/*
+	* Meta Tags
+	*/
+	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage"),
+		FString("Damage")
+	);
+```
+
+然后，拿火球术来举例，我们将伤害标签，添加
+
+```c++
+void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation)
+{
+	
+	// 投射物生成，我们希望他是在服务端生成，然后在客户端同步
+	const bool bIsServer = GetOwningActorFromActorInfo()->HasAuthority();
+	if (!bIsServer) return;
+
+	// 生成位置，我不希望简单使用角色的位置，而是使用施法者武器上的插槽位置
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
+
+	// TODO: 设置投射物旋转，比如朝向目标
+
+	if (CombatInterface)
+	{
+		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
+		FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();	// 获取朝向目标的旋转
+		// 此时，如果怪物身高高于或者低于角色，那么投射物的朝向可能会有问题，我们需要调整一下
+		// 因为我们希望投射物能尽可能平行，所以这里把Pith调整为0
+		Rotation.Pitch = 0.f;
+		
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(SocketLocation);		// 使用武器插槽位置
+		SpawnTransform.SetRotation(Rotation.Quaternion());	// 设置旋转(这里需要传入四元数）
+
+		// SpawnActorDeferred 异步生成Actor 是因为我们希望在生成之前设置一些属性，比如伤害，速度等
+		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+			ProjectileClass,	// 投射物类
+			SpawnTransform,		// 生成位置
+			GetOwningActorFromActorInfo(),	// 拥有者
+			Cast<APawn>(GetOwningActorFromActorInfo()),	// 控制者
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn	// 碰撞处理方式, 总是生成
+		);
+
+		// TODO: 设置投射物属性，比如伤害，速度等
+		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwningActorFromActorInfo());	// 获取施法者的ASC
+		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());	// 生成效果
+
+		FAuraGameplayTags GameTags = FAuraGameplayTags::Get();	// 获取游戏标签
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameTags.Damage, 50.f);	// 设置伤害
+
+		Projectile->DamageEffectSpecHandle = SpecHandle;	// 设置效果句柄
+
+		Projectile->FinishSpawning(SpawnTransform);	// 完成生成
+	}
+
+}
+```
+
+```c++
+		FAuraGameplayTags GameTags = FAuraGameplayTags::Get();	// 获取游戏标签
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameTags.Damage, 50.f);	// 设置伤害
+```
+
+"AssignTagSetByCallerMagnitude"是一种在虚幻引擎（Unreal Engine）中使用Gameplay Attribute System (GAS) 的一种配置。这个配置通常用于在游戏效果（GameEffect）中添加一个标签集（Tag Set），并允许调用者（通常是游戏中的某个对象或者系统）来设定标签集的幅度（Magnitude）。
+
+在Gameplay Attribute System中，标签集是一种特殊的属性，它允许游戏开发者为游戏中的对象添加一组标签。这些标签可以用于标识对象的属性、状态、行为等，从而实现更复杂的逻辑和交互。
+
+"AssignTagSetByCallerMagnitude"的具体工作原理如下：
+
+1. 在"Attribute"下拉框中选择要影响的标签集。在这个例子中，选择的是"Tag Set"属性。
+
+2. 在"Modifier Op"下拉框中选择操作类型。常见的操作类型包括Add（添加）、Subtract（移除）、Replace（替换）等。
+
+3. 在"Magnitude Calculation Type"下拉框中选择幅度计算类型。在这个例子中，选择了"Set by Caller"，表示幅度由调用者设定。
+
+4. 如果选择了"Set by Caller"，则需要在"Set by Caller Magnitude"部分配置相关的信息。在这个界面中，可以看到"Data Name"和"Data Tag"两个选项，这两个选项通常用于指定数据的来源。例如，你可以从某个变量或者标签中获取数据，然后将其作为标签集的幅度。
+
+5. 根据需要，可以添加多个标签集，以实现更复杂的效果。例如，你可以添加一个减伤的标签集，当受到伤害时，根据减伤幅度减少实际受到的伤害。
+
+6. 最后，将这个GameEffect应用到游戏中的某个对象或者系统中，使其产生预期的效果。
+
+需要注意的是，这个界面中的设置需要结合具体的编程代码才能生效。在虚幻引擎中，这些设置通常会被序列化成JSON格式的数据，然后在游戏中通过运行时的逻辑来解析和应用。因此，理解这些设置的含义和作用，对于编写高效且灵活的游戏逻辑至关重要。
+
+所以，这里我们第二个参数选择我们的Damage标签，这里硬编码传入50伤害。
+
+> AssignTagSetByCallerMagnitude 这里需要设置一个键值对，键是伤害标签，值是伤害数值，然后GE在修饰符中，只需要根据键（Tag）去找数值就行
+
+![image-20240415111741399](.\image-20240415111741399.png)
