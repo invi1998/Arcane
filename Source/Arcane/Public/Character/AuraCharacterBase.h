@@ -89,6 +89,27 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;	// 受击反应动画
 
+	/*
+	 * Dissolve Effect 溶解效果
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;	// 溶解材质实例
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;	// 武器溶解材质实例
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> BowWeaponDissolveMaterialInstance;	// 弓箭武器溶解材质实例
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> BowArrowDissolveMaterialInstance;		// 箭溶解材质实例
+
+	void Dissolve();	// 溶解
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// 开始溶解时间轴
+
+
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TArray<TSubclassOf<UAuraGameplayAbility>> StartupAbilities;	// 默认能力

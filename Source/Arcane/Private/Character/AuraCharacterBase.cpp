@@ -77,6 +77,8 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// 设置胶囊体碰撞状态
 
+	Dissolve();	// 溶解
+
 }
 
 void AAuraCharacterBase::BeginPlay()
@@ -126,6 +128,36 @@ void AAuraCharacterBase::AddCharacterAbilities()
 
 	AuraASC->AddCharacterAbilities(StartupAbilities);
 
+}
+
+void AAuraCharacterBase::Dissolve()
+{
+	if (IsValid(DissolveMaterialInstance))
+	{
+		// 创建动态材质实例
+		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(DissolveMaterialInstance, this);
+		// 设置动态材质实例的参数
+		GetMesh()->SetMaterial(0, MID);
+		StartDissolveTimeline(MID);
+	}
+	if (IsValid(Weapon) && IsValid(WeaponDissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
+		Weapon->SetMaterial(0, MID);
+		StartDissolveTimeline(MID);
+	}
+	if (IsValid(BowWeapon) && IsValid(BowWeaponDissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(BowWeaponDissolveMaterialInstance, this);
+		BowWeapon->SetMaterial(0, MID);
+		StartDissolveTimeline(MID);
+	}
+	if (IsValid(BowArrow) && IsValid(BowArrowDissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(BowArrowDissolveMaterialInstance, this);
+		BowArrow->SetMaterial(0, MID);
+		StartDissolveTimeline(MID);
+	}
 }
 
 
