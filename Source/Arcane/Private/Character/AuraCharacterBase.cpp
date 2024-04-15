@@ -21,6 +21,15 @@ AAuraCharacterBase::AAuraCharacterBase()
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("Weapon"));	// 创建武器组件
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));		// 设置武器组件的父组件（Mesh）和挂载点
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// 设置武器组件的碰撞状态
+
+	BowWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("BowWeapon"));	// 创建弓箭武器组件
+	BowWeapon->SetupAttachment(GetMesh(), FName("SKT_Bow"));		// 设置武器组件的父组件（Mesh）和挂载点
+	BowWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// 设置武器组件的碰撞状态
+
+	BowArrow = CreateDefaultSubobject<USkeletalMeshComponent>(FName("BowArrow"));	// 创建箭组件
+	BowArrow->SetupAttachment(GetMesh(), FName("SKT_Arrow"));		// 设置武器组件的父组件（Mesh）和挂载点
+	BowArrow->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// 设置武器组件的碰撞状态
+
 }
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const

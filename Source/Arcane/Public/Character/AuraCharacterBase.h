@@ -38,6 +38,12 @@ protected:
 	TObjectPtr<USkeletalMeshComponent> Weapon;		// ÎäÆ÷
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
+	TObjectPtr<USkeletalMeshComponent> BowWeapon;		// ¹­¼ıÎäÆ÷
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TObjectPtr<USkeletalMeshComponent> BowArrow;			// ¼ı
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName WeaponTipSocketName;	// ÎäÆ÷¼â¶Ë²å²ÛÃû³Æ
 
 	virtual FVector GetCombatSocketLocation() const override;	// »ñÈ¡Õ½¶·²å²ÛÎ»ÖÃ
