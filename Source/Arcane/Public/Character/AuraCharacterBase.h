@@ -13,6 +13,7 @@ class UAbilitySystemComponent;
 class UAttributeSet;
 class UGameplayEffect;
 class UAuraGameplayAbility;
+class UAnimMontage;
 
 UCLASS(Abstract)	// 添加Abstract关键字，表示这个类是一个抽象类
 class ARCANE_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -24,6 +25,8 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const;
+
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;	// 获取受击反应动画
 
 
 protected:
@@ -72,6 +75,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	float BaseWalkSpeed = 250.f;	// 基础行走速度
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TObjectPtr<UAnimMontage> HitReactMontage;	// 受击反应动画
 
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")

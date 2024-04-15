@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+class UAnimMontage;
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI, BlueprintType)	// 将接口类型设置为蓝图类型
 class UCombatInterface : public UInterface
@@ -27,4 +29,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)		// 蓝图实现，同时蓝图可调用
 	void UpdateFacingTarget(const FVector& Target);	//更新面向目标
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)	// 蓝图原生事件，蓝图可以重写
+	UAnimMontage* GetHitReactMontage();	// 获取受击反应动画
+	
 };

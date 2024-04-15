@@ -118,3 +118,37 @@ AvatarActor对象：
 AvatarActor对象是专门用于表示玩家角色或AI控制的非玩家角色（NPC）的Actor子类。它通常包含一个AvatarAsset组件，用于加载和播放角色的动画序列。AvatarActor对象还包含了与玩家输入相关的逻辑，如移动、跳跃、攻击等。AvatarActor对象通常具有更复杂的动画系统和行为树，以支持更丰富的角色动画和智能行为。
 
 总结来说，Actor对象是UE5中所有可交互游戏对象的通用基础类，而AvatarActor对象则是专门用于表示玩家角色或AI控制的非玩家角色的Actor子类。AvatarActor对象通常具有更复杂的动画系统和行为树，以支持更丰富的角色动画和智能行为。
+
+
+
+# BlueprintNativeEvent
+
+在虚幻引擎（Unreal Engine）中，BlueprintNativeEvent 是一种特殊的函数声明，用于指示蓝图类中的函数可以被 C++ 类继承。这种函数声明通常用于将蓝图类的功能扩展到 C++ 类中，以便在 C++ 类中实现更多的功能。
+
+具体来说，BlueprintNativeEvent 函数声明通常包含以下几个部分：
+
+1. 函数签名：包括函数名、参数列表和返回类型等信息。
+
+2. BlueprintNativeEvent 关键字：用于指示该函数是一个蓝图原生事件，可以被 C++ 类继承。
+
+3. 属性：用于指定该函数是否可以被重写，以及是否需要实现默认的 C++ 实现。
+
+例如，以下是一个简单的 BlueprintNativeEvent 函数声明的例子：
+
+```cpp
+UFUNCTION(BlueprintNativeEvent)
+void NotifyPlayerDamaged(float DamageAmount);
+```
+
+在这个例子中，函数名为 NotifyPlayerDamaged，参数为 float DamageAmount。关键字 BlueprintNativeEvent 表示这是一个蓝图原生事件，可以被 C++ 类继承。属性部分可以指定该函数是否可以被重写，以及是否需要实现默认的 C++ 实现。
+
+在 C++ 类中，可以继承这个蓝图原生事件，并实现自己的 C++ 版本的 NotifyPlayerDamaged 函数。这样，当蓝图类中的 NotifyPlayerDamaged 函数被调用时，C++ 类中的实现也会被调用，从而实现了蓝图类和 C++ 类之间的功能扩展。
+
+我们知道，在UE里，如果一个函数被指定为在蓝图中进行实现，那么这个函数是无法成为虚函数的，
+
+```c++
+UFUNCTION(BlueprintImplementableEvent)
+```
+
+但是，如果我们在接口类中，需要提供一个可被子类重写的函数，但是又希望该哈数是一个蓝图实现函数，这种情况，我们就应该使用BlueprintNativeEvent声明。
+
