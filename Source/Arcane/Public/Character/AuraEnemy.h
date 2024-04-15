@@ -31,14 +31,18 @@ public:
 	virtual int32 GetPlayerLevel() const override;
 	/** CombatInterface end */
 
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category="Combat")
 	FOnAttributeChangeSignature OnHealthChanged;	// 怪物生命值改变
 
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintAssignable, Category = "Combat")
 	FOnAttributeChangeSignature OnMaxHealthChanged;	// 怪物最大生命值改变
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Default")
+	float LifeSpan = 5.0f;	// 生命周期
 
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);	//	受击反应标签改变
+
+	virtual void Die() override;
 
 protected:
 	virtual void BeginPlay() override;

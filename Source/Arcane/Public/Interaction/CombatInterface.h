@@ -32,5 +32,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)	// 蓝图原生事件，蓝图可以重写
 	UAnimMontage* GetHitReactMontage();	// 获取受击反应动画
+
+	virtual void Die() = 0;	// 死亡
 	
 };

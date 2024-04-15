@@ -28,6 +28,10 @@ public:
 
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;	// 获取受击反应动画
 
+	virtual void Die() override;	// 死亡
+
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastHandleDeath();	// 多播处理死亡
 
 protected:
 	virtual void BeginPlay() override;

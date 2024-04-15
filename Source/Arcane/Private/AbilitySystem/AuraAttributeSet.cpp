@@ -9,6 +9,7 @@
 #include "GameplayEffectExtension.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "Net/UnrealNetwork.h"
@@ -89,7 +90,19 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			const bool bFatal = GetHealth() <= 0.0f;	// 是否致命
 
 			// 如果不是致命的，那么就激活这个Ability
-			if (!bFatal)
+			if (bFatal)
+			{
+				//// 创建一个TagContainer，将Effect_Fatal标签添加进去
+				//FGameplayTagContainer FatalTagContainer;
+				//FatalTagContainer.AddTag(FAuraGameplayTags::Get().Effect_Fatal);	// 添加致命标签
+				//EffectProperties.TargetASC->TryActivateAbilitiesByTag(FatalTagContainer);	// 尝试激活标签的能力
+				ICombatInterface* CombatInterface = Cast<ICombatInterface>(EffectProperties.TargetAvatarActor);	// 获取战斗接口
+				if (CombatInterface)
+				{
+					CombatInterface->Die();	// 死亡
+				}
+			}
+			else
 			{
 				// 创建一个TagContainer，将Effect_HitReact标签添加进去
 				FGameplayTagContainer HitReactTagContainer;
