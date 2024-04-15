@@ -7,6 +7,7 @@
 #include "CharacterClassInfo.generated.h"
 
 class UGameplayEffect;
+class UGameplayAbility;
 
 // 角色职业枚举
 UENUM(BlueprintType)
@@ -46,5 +47,8 @@ public:
 	TSubclassOf<UGameplayEffect> VitalAttributes;		// 重要属性效果, 用于所有职业
 
 	FCharacterClassDefaultInfo GetCharacterClassDefaultInfo(ECharacterClass CharacterClass) const;	// 获取角色职业默认信息
+
+	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults")
+	TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;	// 能力
 
 };

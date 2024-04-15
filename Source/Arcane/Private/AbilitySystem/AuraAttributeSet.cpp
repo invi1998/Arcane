@@ -87,6 +87,15 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			SetHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
 
 			const bool bFatal = GetHealth() <= 0.0f;	// 是否致命
+
+			// 如果不是致命的，那么就激活这个Ability
+			if (!bFatal)
+			{
+				// 创建一个TagContainer，将Effect_HitReact标签添加进去
+				FGameplayTagContainer HitReactTagContainer;
+				HitReactTagContainer.AddTag(FAuraGameplayTags::Get().Effect_HitReact);	// 添加受击标签
+				EffectProperties.TargetASC->TryActivateAbilitiesByTag(HitReactTagContainer);	// 尝试激活标签的能力
+			}
 		}
 	}
 
