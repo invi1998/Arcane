@@ -229,6 +229,13 @@ public:
 	UFUNCTION()
 	void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const;	// 魔法恢复回调函数
 
+	/*
+	 * Meta Attributes 元属性, 用于描述角色的特性
+	 */
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")	// 蓝图只读，分类为Meta Attributes（元属性）, 元属性不需要复制
+	FGameplayAttributeData IncomingDamage;	// 元属性：受到的伤害
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
 
 private:
 	void SetEffectsProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;	// 设置效果属性

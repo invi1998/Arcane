@@ -27,3 +27,65 @@ Meta Attributes主要用于描述 Gameplay Attributes的行为特性或者管理
 ![image-20240415101515657](.\image-20240415101515657.png)
 
 普通的游戏属性在多人游戏中会需要网络同步，进行网络复制，而元数据不需要进行网络同步，它仅仅作为一种占位符，被允许参与到计算中，用于计算其他GameplayEffect或者属性。
+
+
+
+# Damage Meta Attributes
+
+![image-20240415102811727](.\image-20240415102811727.png)
+
+可以看到，我们目前的伤害是直接硬编码10点伤害，完全没有任何的属性计算的参与。
+
+所以，这里新增一个DamageMetaAttributes，回到属性集中（AttributeSet）
+
+```c++
+
+	/*
+	 * Meta Attributes 元属性, 用于描述角色的特性
+	 */
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")	// 蓝图只读，分类为Meta Attributes（元属性）, 元属性不需要复制
+	FGameplayAttributeData IncomingDamage;	// 元属性：受到的伤害
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+```
+
+然后在PostEffect（效果执行后的处理）中，执行Meta
+
+```c++
+void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
+{
+	Super::PostGameplayEffectExecute(Data);
+
+	FEffectProperties EffectProperties;
+	SetEffectsProperties(Data, EffectProperties);	// 设置效果属性
+
+	// Clamp
+	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
+	{
+		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+	}
+	else if (Data.EvaluatedData.Attribute == GetManaAttribute())
+	{
+		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
+	}
+	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+	{
+		const float LocalIncomingDamage = GetIncomingDamage();
+		SetIncomingDamage(0.0f);
+		if (LocalIncomingDamage > 0.0f)
+		{
+			// Apply the damage to the target
+			// 造成伤害
+			const float NewHealth = GetHealth() - LocalIncomingDamage;
+			SetHealth(FMath::Clamp(NewHealth, 0.0f, GetMaxHealth()));
+
+			const bool bFatal = GetHealth() <= 0.0f;	// 是否致命
+		}
+	}
+
+}
+```
+
+然后回到，蓝图，我们这次GE_Damage不再是直接修改Health，按照代码里的说法，应该传入伤害，通过伤害去间接修改Health，如下
+
+![image-20240415104704615](.\image-20240415104704615.png)
+
