@@ -54,8 +54,9 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwningActorFromActorInfo());	// 获取施法者的ASC
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());	// 生成效果
 
-		FAuraGameplayTags GameTags = FAuraGameplayTags::Get();	// 获取游戏标签
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameTags.Damage, 50.f);	// 设置伤害
+		const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());	// 获取技能伤害（根据等级，从ScalableFloat中获取）
+		const FAuraGameplayTags GameTags = FAuraGameplayTags::Get();	// 获取游戏标签
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameTags.Damage, ScaledDamage);	// 设置伤害
 
 		Projectile->DamageEffectSpecHandle = SpecHandle;	// 设置效果句柄
 

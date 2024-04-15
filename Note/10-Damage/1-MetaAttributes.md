@@ -192,3 +192,66 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 > AssignTagSetByCallerMagnitude 这里需要设置一个键值对，键是伤害标签，值是伤害数值，然后GE在修饰符中，只需要根据键（Tag）去找数值就行
 
 ![image-20240415111741399](.\image-20240415111741399.png)
+
+
+
+# Ability Damage 
+
+现在，我们的伤害都是硬编码的固定伤害，我们希望我们的伤害能依据等级或者其他属性有差异化的变化，所以，我们给GameplayAbility新增一个Damage属性，这个属性是FScalableFloat类型
+
+> 在虚幻引擎（Unreal Engine）中，FScalableFloat 是一种特殊的数据类型，用于表示可以缩放的浮点数。这种数据类型通常用于游戏中的数值系统，例如游戏效果（GameEffect）、属性系统（Attribute System）等，以便支持游戏中的数值调整和动态变化。
+>
+> FScalableFloat 包含以下几个主要部分：
+>
+> 1. 基础数值（Base Value）：这是 FScalableFloat 的原始数值，通常是一个浮点数。
+>
+> 2. 缩放因子（Scaling Factor）：这是一个浮点数，用于表示基础数值应该被缩放多少倍。缩放因子通常是一个变量，可以在运行时动态调整。
+>
+> 3. 最大值（Max Value）：这是一个浮点数，表示 FScalableFloat 的最大可能值。这个值通常是一个常量，用于限制 FScalableFloat 的范围。
+>
+> 4. 最小值（Min Value）：这是一个浮点数，表示 FScalableFloat 的最小可能值。这个值通常是一个常量，用于限制 FScalableFloat 的范围。
+>
+> FScalableFloat 的计算公式为：
+>
+> ```
+> FinalValue = BaseValue * ScalingFactor
+> ```
+>
+> 其中 FinalValue 是最终的数值，BaseValue 是基础数值，ScalingFactor 是缩放因子。
+>
+> 使用 FScalableFloat 的优点是可以动态调整数值，并且可以限制数值的范围，避免数值过大或过小导致的问题。此外，FScalableFloat 还可以与其他数值系统（如属性系统）集成，实现更复杂的游戏逻辑。
+
+```c++
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Abilities/GameplayAbility.h"
+#include "AuraGameplayAbility.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANE_API UAuraGameplayAbility : public UGameplayAbility
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	FGameplayTag StartupInputTag;	// 启动输入标签
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Damage")
+	FScalableFloat Damage;	// 伤害
+	
+};
+
+```
+
+![image-20240415113535821](.\image-20240415113535821.png)
+
+```c++
+	const float FinalDamage = Damage.GetValueAtLevel(GetAbilityLevel());	// 获取最终伤害（根据等级，从ScalableFloat中获取）
+	const FAuraGameplayTags GameTags = FAuraGameplayTags::Get();	// 获取游戏标签
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameTags.Damage, FinalDamage);	// 设置伤害
+```
