@@ -14,6 +14,7 @@ class IEnemyInterface;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
 class USplineComponent;		// 样条曲线组件
+class UDamageTextComponent;
 
 /**
  * 
@@ -28,6 +29,9 @@ public:
 	virtual void PlayerTick(float DeltaTime) override;
 
 	FHitResult GetCursorHitResult() const;	// 获取光标碰撞结果
+
+	UFUNCTION(Client, Reliable)
+	void ShowDamageText(float Damage, ACharacter* Target);	// 显示伤害文本
 
 protected:
 	virtual void BeginPlay() override;
@@ -89,5 +93,11 @@ private:
 	TObjectPtr<USplineComponent> Spline;	// 样条曲线组件
 
 	void AutoRun();	// 自动寻路
+
+	/*
+	 * Damage Text
+	 */
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
 
 };

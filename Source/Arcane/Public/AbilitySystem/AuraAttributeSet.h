@@ -239,4 +239,6 @@ public:
 
 private:
 	void SetEffectsProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;	// 设置效果属性
+
+	void ShowFloatingText(const FEffectProperties Props, float Damage) const;	// 显示浮动文字
 };

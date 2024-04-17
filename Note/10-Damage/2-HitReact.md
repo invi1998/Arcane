@@ -175,3 +175,39 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 ```
 
 这里判断是否是致命伤，如果不是，才添加受伤的受击tag，然后通过TryActivateAbilitiesByTag，依据tag激活能力实现受击动画
+
+
+
+# Showing Damage Text  显示伤害文本
+
+准备好一个UI组件，然后在控制器中添加该组件
+
+```c++
+	/*
+	 * Damage Text
+	 */
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
+```
+
+然后创建组件，设置组件连接在受伤害的角色的根组件上，然后再将组件从角色身上分离出来，然后保持世界位置
+
+```c++
+
+
+void AAuraPlayerController::ShowDamageText_Implementation(float Damage, ACharacter* Target)
+{
+	// 为什么这里要判断IsValid(Target)而不对DamageTextComponentClass使用IsValid?
+	// IsValid除了判断指针是否为空外，还会判断指针是否有效，判断这个指针是否等待销毁（Pending Kill）
+	// IsValid(Target)是为了确保我们的目标是有效的，因为我们的目标是一个角色，而角色是可以销毁的，如果我们的目标销毁了，那么我们就不应该再显示伤害文本了
+	if (IsValid(Target) && DamageTextComponentClass)
+	{
+		UDamageTextComponent* DamageTextComponent = NewObject<UDamageTextComponent>(Target, DamageTextComponentClass);	// 创建伤害文本组件，这里是创建一个新的伤害文本组件，Target是伤害文本组件的Outer，DamageTextComponentClass是伤害文本组件的类
+		DamageTextComponent->RegisterComponent();	// 注册组件（通常来说，我们创建的组件都需要注册，而之前我们使用CreateDefaultSubobject创建的组件是不需要注册的，因为在CreateDefaultSubobject的时候已经注册了）
+		DamageTextComponent->AttachToComponent(Target->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);	// 将组件附加到目标的根组件上
+		DamageTextComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);	// 解除附加，这里是解除附加到目标的根组件上，然后保持世界位置，这样我们的伤害文本就不会跟随目标移动了
+		DamageTextComponent->SetDamageText(Damage);	// 设置伤害文本
+	}
+}
+```
+

@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 
 #include "Net/UnrealNetwork.h"
+#include "Player/AuraPlayerController.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -109,6 +110,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				HitReactTagContainer.AddTag(FAuraGameplayTags::Get().Effect_HitReact);	// 添加受击标签
 				EffectProperties.TargetASC->TryActivateAbilitiesByTag(HitReactTagContainer);	// 尝试激活标签的能力
 			}
+
+			ShowFloatingText(EffectProperties, LocalIncomingDamage);	// 显示伤害文本
 		}
 	}
 
@@ -150,6 +153,18 @@ void UAuraAttributeSet::SetEffectsProperties(const FGameplayEffectModCallbackDat
 		EffectProperties.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(EffectProperties.TargetAvatarActor);	// 获取目标的能力系统组件
 	}
 
+}
+
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties Props, float Damage) const
+{
+	if (Props.TargetCharacter)
+	{
+		AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.TargetCharacter, 0));
+		if (AuraPlayerController)
+		{
+			AuraPlayerController->ShowDamageText(Damage, Props.TargetCharacter);	// 显示伤害文本
+		}
+	}
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
