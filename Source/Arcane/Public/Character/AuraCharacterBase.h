@@ -109,6 +109,15 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// 开始溶解时间轴
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartWeaponDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// 开始溶解时间轴
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartBowDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// 开始溶解时间轴
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartArrowDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// 开始溶解时间轴
+
 
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")

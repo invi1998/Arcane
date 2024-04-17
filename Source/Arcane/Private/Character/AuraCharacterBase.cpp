@@ -144,19 +144,19 @@ void AAuraCharacterBase::Dissolve()
 	{
 		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
 		Weapon->SetMaterial(0, MID);
-		StartDissolveTimeline(MID);
+		StartWeaponDissolveTimeline(MID);
 	}
 	if (IsValid(BowWeapon) && IsValid(BowWeaponDissolveMaterialInstance))
 	{
 		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(BowWeaponDissolveMaterialInstance, this);
 		BowWeapon->SetMaterial(0, MID);
-		StartDissolveTimeline(MID);
+		StartBowDissolveTimeline(MID);
 	}
 	if (IsValid(BowArrow) && IsValid(BowArrowDissolveMaterialInstance))
 	{
 		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(BowArrowDissolveMaterialInstance, this);
 		BowArrow->SetMaterial(0, MID);
-		StartDissolveTimeline(MID);
+		StartArrowDissolveTimeline(MID);
 	}
 }
 
