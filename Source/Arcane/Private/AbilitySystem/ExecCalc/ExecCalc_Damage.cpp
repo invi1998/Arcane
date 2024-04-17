@@ -104,7 +104,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	TargetArmor *= (1 - TargetArmorReal);	// »¤¼×¼õÉÙ
 	TargetArmor = FMath::Max(0.f, TargetArmor);
 
-	UKismetSystemLibrary::PrintString(SourceAvatar, FString::Printf(TEXT("TargetArmor: %f, TargetLevel: %d, SourceLevel: %d"), TargetArmor, TargetLevel, SourceLevel), true, false, FLinearColor::Red, 1.f);
+	// UKismetSystemLibrary::PrintString(SourceAvatar, FString::Printf(TEXT("TargetArmor: %f, TargetLevel: %d, SourceLevel: %d"), TargetArmor, TargetLevel, SourceLevel), true, false, FLinearColor::Red, 1.f);
 
 	const FRealCurve* ArmorEffectCurve = SourceClassInfo->DamageCalculationCurveTable->FindCurve(FName("EffectiveArmor"), FString());
 	const float SourceArmorPenetrationRate = ArmorEffectCurve ? ArmorEffectCurve->Eval(SourceLevel) : 1.f;
