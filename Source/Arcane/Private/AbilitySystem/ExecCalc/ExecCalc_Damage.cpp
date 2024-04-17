@@ -5,6 +5,10 @@
 
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
+#include "Interaction/CombatInterface.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 UExecCalc_Damage::UExecCalc_Damage()
 {
@@ -23,6 +27,13 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// 获取Avatar
 	const AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
 	const AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
+
+	const ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
+	const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
+
+	// 获取等级
+	const int32 SourceLevel = SourceCombatInterface ? SourceCombatInterface->GetPlayerLevel() : 1;
+	const int32 TargetLevel = TargetCombatInterface ? TargetCombatInterface->GetPlayerLevel() : 1;
 
 	// 获取GameplayEffect
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
@@ -45,12 +56,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// 捕获护甲(受击者护甲)
 	float TargetArmor = 0.f;	// 捕获护甲
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().ArmorDef, EvaluationParameters, TargetArmor);
-	TargetArmor = FMath::Max(0.f, TargetArmor);
 
 	// 捕获穿甲 (攻击者穿甲) 百分比穿甲
 	float SourceArmorPenetration = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().ArmorPenetrationDef, EvaluationParameters, SourceArmorPenetration);
-	SourceArmorPenetration = FMath::Max(0.f, SourceArmorPenetration);
+	
 
 	// 判断是否格挡（百分比）
 	if (FMath::RandRange(0, 100) <= TargetBlockChance)
@@ -59,7 +69,22 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		Damage *= 0.5f;
 	}
 
-	const float EffectTargetArmor = TargetArmor *= (100 - SourceArmorPenetration * 0.25f) / 100.f;	// 穿甲减少护甲
+	const UCharacterClassInfo* SourceClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(SourceAvatar);
+	// const UCharacterClassInfo* TargetClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(TargetAvatar);
+
+	const FRealCurve* ArmorPenetrationCurve = SourceClassInfo->DamageCalculationCurveTable->FindCurve(FName("ArmorPenetration"), FString());
+	const float TargetArmorReal = ArmorPenetrationCurve ? ArmorPenetrationCurve->Eval(TargetLevel) : 1.f;
+	TargetArmor *= (1 - TargetArmorReal);	// 护甲减少
+	TargetArmor = FMath::Max(0.f, TargetArmor);
+
+	// UKismetSystemLibrary::PrintString(SourceAvatar, FString::Printf(TEXT("TargetArmor: %f"), TargetArmor), true, false, FLinearColor::Red, 1.f);
+
+	const FRealCurve* ArmorEffectCurve = SourceClassInfo->DamageCalculationCurveTable->FindCurve(FName("EffectiveArmor"), FString());
+	const float SourceArmorPenetrationRate = ArmorEffectCurve ? ArmorEffectCurve->Eval(SourceLevel) : 1.f;
+	SourceArmorPenetration *= (1 - SourceArmorPenetrationRate);	// 穿甲减少
+	SourceArmorPenetration = FMath::Max(0.f, SourceArmorPenetration);
+
+	const float EffectTargetArmor =  TargetArmor * (100 - SourceArmorPenetration) / 100.f;	// 效果护甲
 
 	// 最终伤害 = 格挡后的伤害 - 护甲 + 穿甲
 	Damage = FMath::Max(0.f, Damage * (100 - EffectTargetArmor) / 100.f);
