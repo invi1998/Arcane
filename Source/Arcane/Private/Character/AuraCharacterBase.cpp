@@ -54,35 +54,35 @@ UAnimMontage* AAuraCharacterBase::GetDeathMontage_Implementation()
 
 void AAuraCharacterBase::Die()
 {
-	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除武器组件的挂载
-	BowWeapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除弓箭武器组件的挂载
-	BowArrow->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除箭组件的挂载
+	//Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除武器组件的挂载
+	//BowWeapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除弓箭武器组件的挂载
+	//BowArrow->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除箭组件的挂载
 	MulticastHandleDeath();
 }
 
 void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 {
-	Weapon->SetSimulatePhysics(true);	// 设置武器组件模拟物理
-	Weapon->SetEnableGravity(true);		// 设置武器组件启用重力
-	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置武器组件碰撞状态,只有物理
+	//Weapon->SetSimulatePhysics(true);	// 设置武器组件模拟物理
+	//Weapon->SetEnableGravity(true);		// 设置武器组件启用重力
+	//Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置武器组件碰撞状态,只有物理
 
-	BowWeapon->SetSimulatePhysics(true);	// 设置弓箭武器组件模拟物理
-	BowWeapon->SetEnableGravity(true);		// 设置弓箭武器组件启用重力
-	BowWeapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置弓箭武器组件碰撞状态,只有物理
+	//BowWeapon->SetSimulatePhysics(true);	// 设置弓箭武器组件模拟物理
+	//BowWeapon->SetEnableGravity(true);		// 设置弓箭武器组件启用重力
+	//BowWeapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置弓箭武器组件碰撞状态,只有物理
 
-	BowArrow->SetSimulatePhysics(true);	// 设置箭组件模拟物理
-	BowArrow->SetEnableGravity(true);		// 设置箭组件启用重力
-	BowArrow->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置箭组件碰撞状态,只有物理
+	//BowArrow->SetSimulatePhysics(true);	// 设置箭组件模拟物理
+	//BowArrow->SetEnableGravity(true);		// 设置箭组件启用重力
+	//BowArrow->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置箭组件碰撞状态,只有物理
 
-	GetMesh()->SetEnableGravity(true);	// 设置Mesh启用重力
-	GetMesh()->SetSimulatePhysics(true);	// 设置Mesh模拟物理
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置Mesh碰撞状态,只有物理
+	//GetMesh()->SetEnableGravity(true);	// 设置Mesh启用重力
+	//GetMesh()->SetSimulatePhysics(true);	// 设置Mesh模拟物理
+	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置Mesh碰撞状态,只有物理
 
-	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);	// 设置Mesh碰撞响应
-
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// 设置胶囊体碰撞状态
+	//GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);	// 设置Mesh碰撞响应
 
 	Dissolve();	// 溶解
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// 设置胶囊体碰撞状态
 
 }
 

@@ -38,7 +38,7 @@ public:
 	FOnAttributeChangeSignature OnMaxHealthChanged;	// 怪物最大生命值改变
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Default")
-	float LifeSpan = 5.0f;	// 生命周期
+	float LifeSpan = 3.0f;	// 生命周期
 
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);	//	受击反应标签改变
 
