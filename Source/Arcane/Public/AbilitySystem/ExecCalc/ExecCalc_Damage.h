@@ -4,7 +4,30 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 #include "ExecCalc_Damage.generated.h"
+
+// 该结构体用于存储捕获的属性（该结构体作为一个原生结构体，不会用于蓝图）
+struct AuraDamageStatics
+{
+	// 该宏用于声明一个捕获属性的结构体，其中包含了捕获的属性的指针，以及捕获的属性的名称
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);		// 护甲
+	DECLARE_ATTRIBUTE_CAPTUREDEF(ArmorPenetration);	// 护甲穿透
+
+	AuraDamageStatics()
+	{
+		// 该函数用于捕获属性
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);	// 捕获目标的护甲属性，不捕获快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Source, false);	// 捕获来源的护甲穿透属性，不捕获快照
+	}
+};
+
+// 该静态函数将在每次调用时返回一个AuraDamageStatics的实例，返回值每次调用都是相同的
+static const AuraDamageStatics& GetAuraDamageStatics()
+{
+	static AuraDamageStatics AuraStatics;
+	return AuraStatics;
+}
 
 /**
  * 

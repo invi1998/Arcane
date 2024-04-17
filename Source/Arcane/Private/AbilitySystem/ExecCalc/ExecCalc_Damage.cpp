@@ -7,6 +7,7 @@
 
 UExecCalc_Damage::UExecCalc_Damage()
 {
+	RelevantAttributesToCapture.Add(AuraDamageStatics().ArmorDef);	// 捕获护甲
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -22,6 +23,46 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	// 获取GameplayEffect
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
+
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
+	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+
+	FAggregatorEvaluateParameters EvaluationParameters;
+	EvaluationParameters.SourceTags = SourceTags;
+	EvaluationParameters.TargetTags = TargetTags;
+
+	float Armor = 0.f;
+
+	// 获取属性值
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		AuraDamageStatics().ArmorDef,
+		EvaluationParameters,
+		Armor
+		);
+
+	Armor = FMath::Max(0.f, Armor);
+
+	float ArmorPenetration = 0.0f;	// 护甲穿透
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		AuraDamageStatics().ArmorPenetrationDef,
+		EvaluationParameters,
+		ArmorPenetration
+		);
+
+	// 护穿叠过高，也最只能穿透100%的护甲
+	ArmorPenetration = FMath::Max(0.f, FMath::Min(Armor, ArmorPenetration));
+
+	FGameplayModifierEvaluatedData DamageData(AuraDamageStatics().ArmorProperty, EGameplayModOp::Additive, -Armor);
+	FGameplayModifierEvaluatedData ArmorPenetrationData(AuraDamageStatics().ArmorPenetrationProperty, EGameplayModOp::Additive, ArmorPenetration);
+
+	// 最终伤害 减去护甲
+	OutExecutionOutput.AddOutputModifier(
+		DamageData
+	);
+
+	// 加上护甲穿透
+	OutExecutionOutput.AddOutputModifier(
+		ArmorPenetrationData
+	);
 
 }
