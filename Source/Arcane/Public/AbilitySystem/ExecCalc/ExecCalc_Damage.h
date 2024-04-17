@@ -13,12 +13,14 @@ struct AuraDamageStatics
 	// 该宏用于声明一个捕获属性的结构体，其中包含了捕获的属性的指针，以及捕获的属性的名称
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);		// 护甲
 	DECLARE_ATTRIBUTE_CAPTUREDEF(ArmorPenetration);	// 护甲穿透
+	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);	// 格挡几率
 
 	AuraDamageStatics()
 	{
 		// 该函数用于捕获属性
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);	// 捕获目标的护甲属性，不捕获快照
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Source, false);	// 捕获来源的护甲穿透属性，不捕获快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);	// 捕获目标的护甲属性，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Source, false);	// 捕获来源的护甲穿透属性，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);		// 捕获目标的格挡几率属性，不拍快照
 	}
 };
 

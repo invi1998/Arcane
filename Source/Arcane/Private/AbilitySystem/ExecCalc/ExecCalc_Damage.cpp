@@ -4,10 +4,13 @@
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 
 UExecCalc_Damage::UExecCalc_Damage()
 {
 	RelevantAttributesToCapture.Add(AuraDamageStatics().ArmorDef);	// 捕获护甲
+	RelevantAttributesToCapture.Add(AuraDamageStatics().ArmorPenetrationDef);	// 捕获穿甲
+	RelevantAttributesToCapture.Add(AuraDamageStatics().BlockChanceDef);	// 捕获格挡
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -31,38 +34,34 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
 
-	float Armor = 0.f;
+	// 通过Caller Magnitude（调用者的属性值）获取伤害
+	float Damage = Spec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Damage);
+	
+	// 捕获格挡(敌人格挡几率)
+	float TargetBlockChance = UAuraAttributeSet().GetBlockChance();
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().BlockChanceDef, EvaluationParameters, TargetBlockChance);
+	TargetBlockChance = FMath::Max(0.f, TargetBlockChance);
 
-	// 获取属性值
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
-		AuraDamageStatics().ArmorDef,
-		EvaluationParameters,
-		Armor
-		);
-
+	float Armor = UAuraAttributeSet().GetArmor();	// 捕获护甲
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().ArmorDef, EvaluationParameters, Armor);
 	Armor = FMath::Max(0.f, Armor);
 
-	float ArmorPenetration = 0.0f;	// 护甲穿透
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
-		AuraDamageStatics().ArmorPenetrationDef,
-		EvaluationParameters,
-		ArmorPenetration
-		);
-
-	// 护穿叠过高，也最只能穿透100%的护甲
+	// 捕获穿甲
+	float ArmorPenetration = UAuraAttributeSet().GetArmorPenetration();
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().ArmorPenetrationDef, EvaluationParameters, ArmorPenetration);
 	ArmorPenetration = FMath::Max(0.f, FMath::Min(Armor, ArmorPenetration));
 
-	FGameplayModifierEvaluatedData DamageData(AuraDamageStatics().ArmorProperty, EGameplayModOp::Additive, -Armor);
-	FGameplayModifierEvaluatedData ArmorPenetrationData(AuraDamageStatics().ArmorPenetrationProperty, EGameplayModOp::Additive, ArmorPenetration);
+	// 判断是否格挡（百分比）
+	if (FMath::RandRange(0, 100) <= TargetBlockChance)
+	{
+		// 伤害减少
+		Damage *= 0.5f;
+	}
 
-	// 最终伤害 减去护甲
-	OutExecutionOutput.AddOutputModifier(
-		DamageData
-	);
+	// 最终伤害 = 格挡后的伤害 - 护甲 + 穿甲
+	Damage = FMath::Max(0.f, Damage + ArmorPenetration - Armor);
 
-	// 加上护甲穿透
-	OutExecutionOutput.AddOutputModifier(
-		ArmorPenetrationData
-	);
+	const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
+	OutExecutionOutput.AddOutputModifier(EvaluatedData);
 
 }
