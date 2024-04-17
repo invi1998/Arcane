@@ -15,6 +15,10 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(AuraDamageStatics().ArmorDef);	// 捕获护甲
 	RelevantAttributesToCapture.Add(AuraDamageStatics().ArmorPenetrationDef);	// 捕获穿甲
 	RelevantAttributesToCapture.Add(AuraDamageStatics().BlockChanceDef);	// 捕获格挡
+	RelevantAttributesToCapture.Add(AuraDamageStatics().CriticalHitChanceDef);	// 暴击几率
+	RelevantAttributesToCapture.Add(AuraDamageStatics().CriticalHitDamageDef);	// 暴击伤害
+	RelevantAttributesToCapture.Add(AuraDamageStatics().CriticalHitResistanceDef);	// 暴击抗性
+
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -47,6 +51,32 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	// 通过Caller Magnitude（调用者的属性值）获取伤害
 	float Damage = Spec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Damage);
+
+	const UCharacterClassInfo* SourceClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(SourceAvatar);
+	// const UCharacterClassInfo* TargetClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(TargetAvatar);
+
+	// 捕获暴击几率(攻击者暴击几率)
+	float SourceCriticalHitChance = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().CriticalHitChanceDef, EvaluationParameters, SourceCriticalHitChance);
+
+	if (FMath::RandRange(0, 100) <= SourceCriticalHitChance)
+	{
+		// 暴击伤害
+		float CriticalHitDamage = 0.f;
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().CriticalHitDamageDef, EvaluationParameters, CriticalHitDamage);
+		CriticalHitDamage = FMath::Max(0.f, CriticalHitDamage);
+
+		const FRealCurve* CriticalHitResistanceRateCurve = SourceClassInfo->DamageCalculationCurveTable->FindCurve(FName("CriticalHitResistance"), FString());
+		const float CriticalHitResistanceRate = CriticalHitResistanceRateCurve ? CriticalHitResistanceRateCurve->Eval(TargetLevel) : 1.f;
+
+		// 暴击抗性
+		float CriticalHitResistance = 0.f;
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().CriticalHitResistanceDef, EvaluationParameters, CriticalHitResistance);
+
+		const float EffectiveCriticalHitDamage = CriticalHitDamage * (1 - CriticalHitResistanceRate);
+
+		Damage = EffectiveCriticalHitDamage + 2.f * Damage;
+	}
 	
 	// 捕获格挡(受击者格挡几率)
 	float TargetBlockChance = 0.f;
@@ -69,15 +99,12 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		Damage *= 0.5f;
 	}
 
-	const UCharacterClassInfo* SourceClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(SourceAvatar);
-	// const UCharacterClassInfo* TargetClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(TargetAvatar);
-
 	const FRealCurve* ArmorPenetrationCurve = SourceClassInfo->DamageCalculationCurveTable->FindCurve(FName("ArmorPenetration"), FString());
 	const float TargetArmorReal = ArmorPenetrationCurve ? ArmorPenetrationCurve->Eval(TargetLevel) : 1.f;
 	TargetArmor *= (1 - TargetArmorReal);	// 护甲减少
 	TargetArmor = FMath::Max(0.f, TargetArmor);
 
-	// UKismetSystemLibrary::PrintString(SourceAvatar, FString::Printf(TEXT("TargetArmor: %f"), TargetArmor), true, false, FLinearColor::Red, 1.f);
+	UKismetSystemLibrary::PrintString(SourceAvatar, FString::Printf(TEXT("TargetArmor: %f, TargetLevel: %d, SourceLevel: %d"), TargetArmor, TargetLevel, SourceLevel), true, false, FLinearColor::Red, 1.f);
 
 	const FRealCurve* ArmorEffectCurve = SourceClassInfo->DamageCalculationCurveTable->FindCurve(FName("EffectiveArmor"), FString());
 	const float SourceArmorPenetrationRate = ArmorEffectCurve ? ArmorEffectCurve->Eval(SourceLevel) : 1.f;

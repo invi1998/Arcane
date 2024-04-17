@@ -14,6 +14,9 @@ struct AuraDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);		// 护甲
 	DECLARE_ATTRIBUTE_CAPTUREDEF(ArmorPenetration);	// 护甲穿透
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);	// 格挡几率
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitChance);	// 暴击几率
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitDamage);	// 暴击伤害
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitResistance);	// 暴击抗性
 
 	AuraDamageStatics()
 	{
@@ -21,6 +24,9 @@ struct AuraDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);	// 捕获目标的护甲属性，不拍快照
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Source, false);	// 捕获来源的护甲穿透属性，不拍快照
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);		// 捕获目标的格挡几率属性，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitChance, Source, false);	// 捕获来源的暴击几率属性，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitDamage, Source, false);	// 捕获来源的暴击伤害属性，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitResistance, Target, false);	// 捕获目标的暴击抗性属性，不拍快照
 	}
 };
 

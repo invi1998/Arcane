@@ -39,7 +39,7 @@ protected:
 
 private:
 	UPROPERTY(ReplicatedUsing= OnRep_Level, EditAnywhere, Category="Attributes")
-	int32 Level = 1;		// 玩家等级
+	int32 Level = 40;		// 玩家等级
 
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);	// 当玩家等级被复制时调用
