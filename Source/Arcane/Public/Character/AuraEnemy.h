@@ -42,6 +42,8 @@ public:
 
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);	//	受击反应标签改变
 
+	// void DeathTagChanged(const FGameplayTag CallbackTag, int32 NewCount);	//	死亡标签改变
+
 	virtual void Die() override;
 
 protected:

@@ -28,6 +28,8 @@ public:
 
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;	// 获取受击反应动画
 
+	virtual UAnimMontage* GetDeathMontage_Implementation() override;	// 获取死亡动画
+
 	virtual void Die() override;	// 死亡
 
 	UFUNCTION(NetMulticast, Reliable)
@@ -88,6 +90,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;	// 受击反应动画
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TObjectPtr<UAnimMontage> DeathMontage;	// 死亡动画
 
 	/*
 	 * Dissolve Effect 溶解效果

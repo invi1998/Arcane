@@ -67,6 +67,7 @@ public:
 	 * Effect Tags
 	 */
 	FGameplayTag Effect_HitReact;				// 效果：受击反应
+	FGameplayTag Effect_DeathReact;				// 效果：死亡反应
 
 
 protected:

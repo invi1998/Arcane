@@ -173,5 +173,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Hit granted when Hit Reacting")		// 受击反应
 	);
 
+	GameplayTags.Effect_DeathReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effect.DeathReact"),
+		FString("Hit granted when Death Reacting")		// 死亡反应
+	);
 
 }

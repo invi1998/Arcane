@@ -47,6 +47,11 @@ UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 	return HitReactMontage;
 }
 
+UAnimMontage* AAuraCharacterBase::GetDeathMontage_Implementation()
+{
+	return DeathMontage;
+}
+
 void AAuraCharacterBase::Die()
 {
 	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除武器组件的挂载

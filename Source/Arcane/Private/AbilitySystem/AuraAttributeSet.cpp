@@ -92,10 +92,10 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			// 如果不是致命的，那么就激活这个Ability
 			if (bFatal)
 			{
-				//// 创建一个TagContainer，将Effect_Fatal标签添加进去
-				//FGameplayTagContainer FatalTagContainer;
-				//FatalTagContainer.AddTag(FAuraGameplayTags::Get().Effect_Fatal);	// 添加致命标签
-				//EffectProperties.TargetASC->TryActivateAbilitiesByTag(FatalTagContainer);	// 尝试激活标签的能力
+				// 创建一个TagContainer，将Effect_Fatal标签添加进去
+				FGameplayTagContainer FatalTagContainer;
+				FatalTagContainer.AddTag(FAuraGameplayTags::Get().Effect_DeathReact);	// 添加致命标签
+				EffectProperties.TargetASC->TryActivateAbilitiesByTag(FatalTagContainer);	// 尝试激活标签的能力
 				ICombatInterface* CombatInterface = Cast<ICombatInterface>(EffectProperties.TargetAvatarActor);	// 获取战斗接口
 				if (CombatInterface)
 				{

@@ -58,7 +58,7 @@ void AAuraProjectile::Destroyed()
 	if (!bHit && !HasAuthority())
 	{
 		// 停止飞行音效
-		LoopingSoundComponent->Stop();
+		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
 
 		// 播放声音
 		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
@@ -74,7 +74,7 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// 停止飞行音效
-	LoopingSoundComponent->Stop();
+	if (LoopingSoundComponent) LoopingSoundComponent->Stop();
 
 	// 播放声音
 	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
