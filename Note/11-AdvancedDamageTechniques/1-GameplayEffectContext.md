@@ -718,3 +718,127 @@ FGameplayEffectContext* UAuraAbilitySystemGlobals::AllocGameplayEffectContext() 
 
 然后，清理缓存，中间文件，重新生成项目，编译运行
 
+
+
+# Using a Custom Effect Context
+
+设置暴击和格挡
+
+```c++
+void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
+	FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+{
+...
+	// 获取GameplayEffect
+	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
+
+	FGameplayEffectContextHandle ContextHandle = Spec.GetContext();		// 获取GameplayEffectContextHandle
+	FGameplayEffectContext* Context = ContextHandle.Get();				// 获取GameplayEffectContext
+	FAuraGameplayEffectContext* AuraContext = static_cast<FAuraGameplayEffectContext*>(Context);	// 将其转换为自定义的GameplayEffectContext
+
+...
+
+	if (FMath::RandRange(0, 100) <= SourceCriticalHitChance)
+	{
+		AuraContext->SetCriticalHit(true);	// 设置暴击
+...
+	}
+	
+...
+
+	// 判断是否格挡（百分比）
+	if (FMath::RandRange(0, 100) <= TargetBlockChance)
+	{
+		AuraContext->SetBlockedHit(true);	// 设置格挡
+		// 伤害减少
+		Damage *= 0.5f;
+	}
+
+...
+
+}
+```
+
+
+
+我们在蓝图库中添加4个函数，用来获取和设置暴击和格挡信息
+
+```c++
+	// 从AuraGampelayEffectContext中获取格挡信息
+	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static bool IsBlockedHit(const FGameplayEffectContextHandle& ContextHandle);
+
+	// 从AuraGampelayEffectContext中获取暴击信息
+	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static bool IsCriticalHit(const FGameplayEffectContextHandle& ContextHandle);
+
+	// 设置暴击信息
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static void SetCriticalHit(FGameplayEffectContextHandle& ContextHandle, bool bCriticalHit);
+
+	// 设置格挡信息
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static void SetBlockedHit(FGameplayEffectContextHandle& ContextHandle, bool bBlockedHit);
+
+```
+
+```c++
+
+bool UAuraAbilitySystemLibrary::IsBlockedHit(const FGameplayEffectContextHandle& ContextHandle)
+{
+	const FAuraGameplayEffectContext* AuraContext = static_cast<const FAuraGameplayEffectContext*>(ContextHandle.Get());
+
+	return AuraContext && AuraContext->IsBlockedHit();
+}
+
+bool UAuraAbilitySystemLibrary::IsCriticalHit(const FGameplayEffectContextHandle& ContextHandle)
+{
+	const FAuraGameplayEffectContext* AuraContext = static_cast<const FAuraGameplayEffectContext*>(ContextHandle.Get());
+
+	return AuraContext && AuraContext->IsCriticalHit();
+}
+
+
+void UAuraAbilitySystemLibrary::SetCriticalHit(FGameplayEffectContextHandle& ContextHandle, bool bCriticalHit)
+{
+	if (FAuraGameplayEffectContext* AuraContext = static_cast<FAuraGameplayEffectContext*>(ContextHandle.Get()))
+	{
+		AuraContext->SetCriticalHit(bCriticalHit);
+	}
+}
+
+void UAuraAbilitySystemLibrary::SetBlockedHit(FGameplayEffectContextHandle& ContextHandle, bool bBlockedHit)
+{
+	if (FAuraGameplayEffectContext* AuraContext = static_cast<FAuraGameplayEffectContext*>(ContextHandle.Get()))
+	{
+		AuraContext->SetBlockedHit(bBlockedHit);
+	}
+}
+
+
+```
+
+![image-20240418182426092](.\image-20240418182426092.png)
+
+因为我们设置暴击，设置格挡这两个函数，他们需要更改传入的GameplayEffectContext，所以在函数声明这里，就没有const，但是，这样随之而来的一个问题就是，如下所示，我们在蓝图中调用这个函数，发现，我们的输入参数ContextHandle在蓝图节点中变成了一个输出引脚。
+
+这是因为如果一个函数输入是非const引用，那么意味着它通常是一个输出参数，所以，如果我们希望这分非const引用是一个输入引脚，那么我们必须执行一个重要的步骤去告诉蓝图，我们想要这个参数成为一个输入引脚。
+
+我们需要在函数声明中，在我们希望成为输入引脚的非const 引用前，加入`UPARAM(ref)`前缀声明，告诉蓝图，这个参数是一个输入而不是一个输出
+
+```c++
+
+	// 设置暴击信息
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static void SetCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, bool bCriticalHit);
+
+	// 设置格挡信息
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static void SetBlockedHit(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, bool bBlockedHit);
+
+```
+
+![image-20240418183513100](.\image-20240418183513100.png)
+
+
+

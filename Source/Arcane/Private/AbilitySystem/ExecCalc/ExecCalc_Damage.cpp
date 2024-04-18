@@ -4,6 +4,7 @@
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraAbilityTypes.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
@@ -42,6 +43,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// 获取GameplayEffect
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 
+	FGameplayEffectContextHandle ContextHandle = Spec.GetContext();		// 获取GameplayEffectContextHandle
+
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
@@ -61,6 +64,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	if (FMath::RandRange(0, 100) <= SourceCriticalHitChance)
 	{
+		UAuraAbilitySystemLibrary::SetCriticalHit(ContextHandle, true);	// 设置暴击
 		// 暴击伤害
 		float CriticalHitDamage = 0.f;
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().CriticalHitDamageDef, EvaluationParameters, CriticalHitDamage);
@@ -76,6 +80,10 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		const float EffectiveCriticalHitDamage = CriticalHitDamage * (1 - CriticalHitResistanceRate);
 
 		Damage = EffectiveCriticalHitDamage + 2.f * Damage;
+	}
+	else
+	{
+		UAuraAbilitySystemLibrary::SetCriticalHit(ContextHandle, false);	// 设置非暴击
 	}
 	
 	// 捕获格挡(受击者格挡几率)
@@ -95,8 +103,13 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// 判断是否格挡（百分比）
 	if (FMath::RandRange(0, 100) <= TargetBlockChance)
 	{
+		UAuraAbilitySystemLibrary::SetBlockedHit(ContextHandle, true);	// 设置格挡
 		// 伤害减少
 		Damage *= 0.5f;
+	}
+	else
+	{
+		UAuraAbilitySystemLibrary::SetBlockedHit(ContextHandle, false);	// 设置非格挡
 	}
 
 	const FRealCurve* ArmorPenetrationCurve = SourceClassInfo->DamageCalculationCurveTable->FindCurve(FName("ArmorPenetration"), FString());
