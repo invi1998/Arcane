@@ -94,6 +94,36 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Maximum amount of Mana obtainable")
 	);
 
+	GameplayTags.Attributes_Secondary_Resistance_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Secondary.Resistance.Fire"),
+		FString("Reduces Fire Damage taken")
+	);
+
+	GameplayTags.Attributes_Secondary_Resistance_Ice = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Secondary.Resistance.Ice"),
+		FString("Reduces Ice Damage taken")
+	);
+
+	GameplayTags.Attributes_Secondary_Resistance_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Secondary.Resistance.Lightning"),
+		FString("Reduces Lightning Damage taken")
+	);
+
+	GameplayTags.Attributes_Secondary_Resistance_Poison = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Secondary.Resistance.Poison"),
+		FString("Reduces Poison Damage taken")
+	);
+
+	GameplayTags.Attributes_Secondary_Resistance_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Secondary.Resistance.Arcane"),
+		FString("Reduces Arcane Damage taken")
+	);
+
+	GameplayTags.Attributes_Secondary_Resistance_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Secondary.Resistance.Physical"),
+		FString("Reduces Physical Damage taken")
+	);
+
 	/*
 	 * Input ∞¥º¸ ‰»Î
 	 */
@@ -158,7 +188,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	);
 
 	/*
-	* Meta Tags
+	* Damage Types
 	*/
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Damage"),
@@ -170,7 +200,40 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Fire Damage")
 	);
 
-	GameplayTags.DamageTypes.Add(GameplayTags.Damage_Fire);
+	GameplayTags.Damage_Ice = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Ice"),
+		FString("Ice Damage")
+	);
+
+	GameplayTags.Damage_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Lightning"),
+		FString("Lightning Damage")
+	);
+
+	GameplayTags.Damage_Poison = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Poison"),
+		FString("Poison Damage")
+	);
+
+	GameplayTags.Damage_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Arcane"),
+		FString("Arcane Damage")
+	);
+
+	GameplayTags.Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Physical"),
+		FString("Physical Damage")
+	);
+
+	/*
+	 *
+	 */
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Fire, GameplayTags.Attributes_Secondary_Resistance_Fire);
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Ice, GameplayTags.Attributes_Secondary_Resistance_Ice);
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Lightning, GameplayTags.Attributes_Secondary_Resistance_Lightning);
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Poison, GameplayTags.Attributes_Secondary_Resistance_Poison);
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Arcane, GameplayTags.Attributes_Secondary_Resistance_Arcane);
+	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Physical, GameplayTags.Attributes_Secondary_Resistance_Physical);
 
 	/*
 	 * Effect Tags

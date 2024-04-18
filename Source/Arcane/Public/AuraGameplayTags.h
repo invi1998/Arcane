@@ -42,6 +42,13 @@ public:
 	FGameplayTag Attributes_Secondary_HealthRegeneration;	// 二级属性: 生命回复
 	FGameplayTag Attributes_Secondary_ManaRegeneration;		// 二级属性: 法力回复
 
+	FGameplayTag Attributes_Secondary_Resistance_Fire;		// 二级属性：火焰抗性
+	FGameplayTag Attributes_Secondary_Resistance_Ice;		// 二级属性：冰霜抗性
+	FGameplayTag Attributes_Secondary_Resistance_Lightning;	// 二级属性：闪电抗性
+	FGameplayTag Attributes_Secondary_Resistance_Poison;	// 二级属性：毒素抗性
+	FGameplayTag Attributes_Secondary_Resistance_Arcane;	// 二级属性：奥术抗性
+	FGameplayTag Attributes_Secondary_Resistance_Physical;	// 二级属性：物理抗性
+
 	/*
 	 * Input
 	 */
@@ -64,8 +71,13 @@ public:
 	FGameplayTag Damage;						// 元标签：受到伤害
 
 	FGameplayTag Damage_Fire;					// 火焰伤害
+	FGameplayTag Damage_Ice;					// 冰霜伤害
+	FGameplayTag Damage_Lightning;				// 闪电伤害
+	FGameplayTag Damage_Poison;					// 毒素伤害
+	FGameplayTag Damage_Arcane;					// 奥术伤害
+	FGameplayTag Damage_Physical;				// 物理伤害
 
-	TArray<FGameplayTag> DamageTypes;			// 伤害类型
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;	// 伤害类型对应抗性
 
 	/*
 	 * Effect Tags
