@@ -1,10 +1,5 @@
 #include "AuraAbilityTypes.h"
 
-UScriptStruct* FAuraGameplayEffectContext::GetScriptStruct() const
-{
-	return FGameplayEffectContext::GetScriptStruct();
-}
-
 bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bool& bOutSuccess)
 {
 	uint32 RepBits = 0;

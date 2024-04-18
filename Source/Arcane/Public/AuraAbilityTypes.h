@@ -18,8 +18,25 @@ public:
 	void SetCriticalHit(bool bInIsCriticalHit) { bIsCriticalHit = bInIsCriticalHit; }
 	void SetBlockedHit(bool bInIsBlockedHit) { bIsBlockedHit = bInIsBlockedHit; }
 
-	// 获取脚本结构
-	virtual UScriptStruct* GetScriptStruct() const override;
+
+	/** Returns the actual struct used for serialization, subclasses must override this! */
+	virtual UScriptStruct* GetScriptStruct() const
+	{
+		return StaticStruct();
+	}
+
+	/** Creates a copy of this context, used to duplicate for later modifications */
+	virtual FAuraGameplayEffectContext* Duplicate() const
+	{
+		FAuraGameplayEffectContext* NewContext = new FAuraGameplayEffectContext();
+		*NewContext = *this;
+		if (GetHitResult())
+		{
+			// Does a deep copy of the hit result
+			NewContext->AddHitResult(*GetHitResult(), true);
+		}
+		return NewContext;
+	}
 
 	// 网络序列化。这里决定了这个结构体在网络中如何序列化
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
@@ -32,4 +49,15 @@ protected:
 	UPROPERTY()
 	bool bIsCriticalHit = false;	// 是否暴击
 	
+};
+
+// 如果我们需要自定义GameplayEffectContext, 那么我们需要在这里注册GameplayEffectContext的操作类型
+template<>
+struct TStructOpsTypeTraits<FAuraGameplayEffectContext> : public TStructOpsTypeTraitsBase2<FAuraGameplayEffectContext>
+{
+	enum
+	{
+		WithNetSerializer = true,
+		WithCopy = true,
+	};
 };

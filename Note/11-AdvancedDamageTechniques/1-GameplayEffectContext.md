@@ -340,3 +340,156 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 
 
 
+# Struct Ops Type Traits
+
+![image-20240418163014380](.\image-20240418163014380.png)
+
+TStructOpsTypeTraitsBase2源码如下
+
+<img src=".\image-20240418163501407.png" alt="image-20240418163501407" style="zoom:200%;" />
+
+```c++
+/** type traits to cover the custom aspects of a script struct **/
+template <class CPPSTRUCT>
+struct TStructOpsTypeTraitsBase2
+{
+	enum
+	{
+		WithZeroConstructor            = false,                         // struct can be constructed as a valid object by filling its memory footprint with zeroes.
+		WithNoInitConstructor          = false,                         // struct has a constructor which takes an EForceInit parameter which will force the constructor to perform initialization, where the default constructor performs 'uninitialization'.
+		WithNoDestructor               = false,                         // struct will not have its destructor called when it is destroyed.
+		WithCopy                       = !TIsPODType<CPPSTRUCT>::Value, // struct can be copied via its copy assignment operator.
+		WithIdenticalViaEquality       = false,                         // struct can be compared via its operator==.  This should be mutually exclusive with WithIdentical.
+		WithIdentical                  = false,                         // struct can be compared via an Identical(const T* Other, uint32 PortFlags) function.  This should be mutually exclusive with WithIdenticalViaEquality.
+		WithExportTextItem             = false,                         // struct has an ExportTextItem function used to serialize its state into a string.
+		WithImportTextItem             = false,                         // struct has an ImportTextItem function used to deserialize a string into an object of that class.
+		WithAddStructReferencedObjects = false,                         // struct has an AddStructReferencedObjects function which allows it to add references to the garbage collector.
+		WithSerializer                 = false,                         // struct has a Serialize function for serializing its state to an FArchive.
+		WithStructuredSerializer       = false,                         // struct has a Serialize function for serializing its state to an FStructuredArchive.
+		WithPostSerialize              = false,                         // struct has a PostSerialize function which is called after it is serialized
+		WithNetSerializer              = false,                         // struct has a NetSerialize function for serializing its state to an FArchive used for network replication.
+		WithNetDeltaSerializer         = false,                         // struct has a NetDeltaSerialize function for serializing differences in state from a previous NetSerialize operation.
+		WithSerializeFromMismatchedTag = false,                         // struct has a SerializeFromMismatchedTag function for converting from other property tags.
+		WithStructuredSerializeFromMismatchedTag = false,               // struct has an FStructuredArchive-based SerializeFromMismatchedTag function for converting from other property tags.
+		WithPostScriptConstruct        = false,                         // struct has a PostScriptConstruct function which is called after it is constructed in blueprints
+		WithNetSharedSerialization     = false,                         // struct has a NetSerialize function that does not require the package map to serialize its state.
+		WithGetPreloadDependencies     = false,                         // struct has a GetPreloadDependencies function to return all objects that will be Preload()ed when the struct is serialized at load time.
+		WithPureVirtual                = false,                         // struct has PURE_VIRTUAL functions and cannot be constructed when CHECK_PUREVIRTUALS is true
+		WithFindInnerPropertyInstance  = false,							// struct has a FindInnerPropertyInstance function that can provide an FProperty and data pointer when given a property FName
+		WithCanEditChange			   = false,							// struct has an editor-only CanEditChange function that can conditionally make child properties read-only in the details panel (same idea as UObject::CanEditChange)
+	};
+
+	static constexpr EPropertyObjectReferenceType WithSerializerObjectReferences = EPropertyObjectReferenceType::Conservative; // struct's Serialize method(s) may serialize object references of these types - default Conservative means unknown and object reference collector archives should serialize this struct 
+};
+```
+
+
+
+1. `WithZeroConstructor`: 结构体可以通过填充其内存足迹为零来构造为一个有效的对象。
+2. `WithNoInitConstructor`: 结构体具有一个构造器，该构造器采用一个EForceInit参数，该参数将强制构造器执行初始化，而不是默认的构造器执行“未初始化”。
+3. `WithNoDestructor`: 结构体将没有析构函数，当它被销毁时。
+4. `WithCopy`: 结构体可以通过其赋值运算符进行复制。这应该与WithIdenticalViaEquality互斥。
+5. `WithIdenticalViaEquality`: 结构体可以通过其相等运算符进行比较。这应该与WithIdentical互斥。
+6. `WithIdentical`: 结构体可以通过一个Identical(const T * Other, uint32 PortFlags)函数进行比较。这应该与WithIdenticalViaEquality互斥。
+7. `WithExportTextItem`: 结构体具有一个ExportTextItem函数用于将状态序列化为字符串。
+8. `WithAddStructReferencedObjects`: 结构体具有AddStructReferencedObjects函数，允许它将引用添加到垃圾收集器。
+9. `WithSerializer`: 结构体具有一个Serialize函数用于将状态序列化到一个FArchive。
+10. `WithStructuredSerializer`: 结构体具有一个Serialize函数用于将状态序列化到一个FStructuredArchive。
+11. `WithPostSerialize`: 结构体具有一个PostSerialize函数，在其被序列化后被调用。
+12. `WithNetSerializer`: 结构体具有一个NetSerialize函数，用于将状态序列化到一个FArchive用于网络复制。
+13. `WithNetDeltaSerializer`: 结构体具有一个NetDeltaSerialize函数，用于序列化状态的差异。
+14. `WithSerializerFromPrevious`: 结构体具有一个SerializeFromPrevious函数，用于从以前的序列化状态转换。
+15. `WithStructuredSerializerFromPrevious`: 结构体具有一个StructuredSerializeFromPrevious函数，用于从以前的序列化状态转换。
+16. `WithPreLoadDependencies`: 结构体具有一个GetPreLoadDependencies函数，返回所有将在加载时预加载的包。
+17. `WithPureVirtual`: 结构体的所有纯虚拟函数不能被调用。
+18. `WithFindInnerPropertyInstance`: 结构体具有一个FindInnerPropertyInstance函数，可以根据给定的属性名称提供属性实例和数据指针。
+19. `WithCanEditChange`: 结构体具有一个CanEditChange函数，可以在编辑器中有条件地使子属性只读。
+20. `WithSerializerObjectReferences`: 结构体的Serialize方法可能序列化这些类型的对象引用 - 默认的Conservative意味着未知的对象引用收集器档案应该序列化这个结构体。
+
+TStructOpsTypeTraitsBase2模板类用于描述结构体的特性，这些特性会影响结构体如何被序列化和使用。
+
+
+
+所以，我们还需要在FAuraGameplayEffectContext下文中补充完整操作类型注册
+
+```c++
+
+// 如果我们需要自定义GameplayEffectContext, 那么我们需要在这里注册GameplayEffectContext的操作类型
+template<>
+struct TStructOpsTypeTraits<FAuraGameplayEffectContext> : public TStructOpsTypeTraitsBase2<FAuraGameplayEffectContext>
+{
+	enum
+	{
+		WithNetSerializer = true,
+		WithCopy = true,
+	};
+};
+```
+
+
+
+```c++
+#include "GameplayEffectTypes.h"
+#include "AuraAbilityTypes.generated.h"
+
+class UAuraAbilitySystemComponent;
+
+USTRUCT(BlueprintType)
+struct FAuraGameplayEffectContext : public FGameplayEffectContext
+{
+	GENERATED_BODY()
+
+public:
+	
+	bool IsCriticalHit() const { return bIsCriticalHit; }
+	bool IsBlockedHit() const { return bIsBlockedHit; }
+
+	void SetCriticalHit(bool bInIsCriticalHit) { bIsCriticalHit = bInIsCriticalHit; }
+	void SetBlockedHit(bool bInIsBlockedHit) { bIsBlockedHit = bInIsBlockedHit; }
+
+
+	/** Returns the actual struct used for serialization, subclasses must override this! */
+	virtual UScriptStruct* GetScriptStruct() const
+	{
+		return StaticStruct();
+	}
+
+	/** Creates a copy of this context, used to duplicate for later modifications */
+	virtual FAuraGameplayEffectContext* Duplicate() const
+	{
+		FAuraGameplayEffectContext* NewContext = new FAuraGameplayEffectContext();
+		*NewContext = *this;
+		if (GetHitResult())
+		{
+			// Does a deep copy of the hit result
+			NewContext->AddHitResult(*GetHitResult(), true);
+		}
+		return NewContext;
+	}
+
+	// 网络序列化。这里决定了这个结构体在网络中如何序列化
+	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
+
+protected:
+
+	UPROPERTY()
+	bool bIsBlockedHit = false;		// 是否格挡
+
+	UPROPERTY()
+	bool bIsCriticalHit = false;	// 是否暴击
+	
+};
+
+// 如果我们需要自定义GameplayEffectContext, 那么我们需要在这里注册GameplayEffectContext的操作类型
+template<>
+struct TStructOpsTypeTraits<FAuraGameplayEffectContext> : public TStructOpsTypeTraitsBase2<FAuraGameplayEffectContext>
+{
+	enum
+	{
+		WithNetSerializer = true,
+		WithCopy = true,
+	};
+};
+
+```
+
