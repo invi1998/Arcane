@@ -52,7 +52,17 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 
 		// TODO: 设置投射物属性，比如伤害，速度等
 		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwningActorFromActorInfo());	// 获取施法者的ASC
-		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());	// 生成效果
+		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();	// 生成效果上下文
+		EffectContextHandle.SetAbility(this);	// 设置技能
+		EffectContextHandle.AddSourceObject(Projectile);	// 添加来源对象
+		TArray<TWeakObjectPtr<AActor>> Actors;	// 生成一个Actor数组
+		Actors.Add(Projectile);	// 添加投射物
+		EffectContextHandle.AddActors(Actors);	// 添加Actor
+		FHitResult HitResult;	// 生成一个命中结果
+		HitResult.Location = ProjectileTargetLocation;	// 设置命中位置
+		EffectContextHandle.AddHitResult(HitResult);	// 添加命中结果
+
+		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);	// 生成效果
 
 		const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());	// 获取技能伤害（根据等级，从ScalableFloat中获取）
 		const FAuraGameplayTags GameTags = FAuraGameplayTags::Get();	// 获取游戏标签
