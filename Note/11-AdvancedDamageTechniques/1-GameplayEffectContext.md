@@ -217,3 +217,126 @@ FArchive 是虚幻引擎（Unreal Engine）中一个用于读取和写入数据�
 在写入数据时，FArchive 使用 << 运算符来将数据写入到一个对象中。例如，如果一个对象有一个整数属性值，FArchive 可以使用 << 运算符来将这个属性值写入到对象中。在这个过程中，FArchive 会将数据从缓冲区中读取出来，并将数据写入到对象中。
 
 需要注意的是，FArchive 使用 << 运算符的方式取决于上下文。在保存数据时，FArchive 通常使用 << 运算符来将数据从对象中读取出来，并将数据写入到一个缓冲区中。在加载数据时，FArchive 通常使用 << 运算符来将数据从缓冲区中读取出来，并将数据写入到对象中。
+
+
+
+##  Implementing Net Serialize
+
+对于基类中的FGameplayEffectContext::NetSerialize()序列化函数，因为我们新增了两个变量，所以原本的7位序列化就不够用了，所以需要我们在子类中重写覆盖NetSerialize，这里我将其扩展为32位
+
+```c++
+	UPROPERTY()
+	bool bIsBlockedHit = false;		// 是否格挡
+
+	UPROPERTY()
+	bool bIsCriticalHit = false;	// 是否暴击
+```
+
+```c++
+bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bool& bOutSuccess)
+{
+	uint32 RepBits = 0;
+	if (Ar.IsSaving())
+	{
+		if (bReplicateInstigator && Instigator.IsValid())
+		{
+			RepBits |= 1 << 0;
+		}
+		if (bReplicateEffectCauser && EffectCauser.IsValid())
+		{
+			RepBits |= 1 << 1;
+		}
+		if (AbilityCDO.IsValid())
+		{
+			RepBits |= 1 << 2;
+		}
+		if (bReplicateSourceObject && SourceObject.IsValid())
+		{
+			RepBits |= 1 << 3;
+		}
+		if (Actors.Num() > 0)
+		{
+			RepBits |= 1 << 4;
+		}
+		if (HitResult.IsValid())
+		{
+			RepBits |= 1 << 5;
+		}
+		if (bHasWorldOrigin)
+		{
+			RepBits |= 1 << 6;
+		}
+		if (bIsBlockedHit)	// 是否格挡
+		{
+			RepBits |= 1 << 7;
+		}
+		if (bIsCriticalHit)	// 是否暴击
+		{
+			RepBits |= 1 << 8;
+		}
+	}
+
+	Ar.SerializeBits(&RepBits, 9);
+
+	if (RepBits & (1 << 0))
+	{
+		Ar << Instigator;
+	}
+	if (RepBits & (1 << 1))
+	{
+		Ar << EffectCauser;
+	}
+	if (RepBits & (1 << 2))
+	{
+		Ar << AbilityCDO;
+	}
+	if (RepBits & (1 << 3))
+	{
+		Ar << SourceObject;
+	}
+	if (RepBits & (1 << 4))
+	{
+		SafeNetSerializeTArray_Default<31>(Ar, Actors);
+	}
+	if (RepBits & (1 << 5))
+	{
+		if (Ar.IsLoading())
+		{
+			if (!HitResult.IsValid())
+			{
+				HitResult = TSharedPtr<FHitResult>(new FHitResult());
+			}
+		}
+		HitResult->NetSerialize(Ar, Map, bOutSuccess);
+	}
+	if (RepBits & (1 << 6))
+	{
+		Ar << WorldOrigin;
+		bHasWorldOrigin = true;
+	}
+	else
+	{
+		bHasWorldOrigin = false;
+	}
+
+	if (RepBits & (1 << 7))
+	{
+		Ar << bIsBlockedHit;
+	}
+	if (RepBits & (1 << 8))
+	{
+		Ar << bIsCriticalHit;
+	}
+
+	if (Ar.IsLoading())
+	{
+		AddInstigator(Instigator.Get(), EffectCauser.Get()); // Just to initialize InstigatorAbilitySystemComponent
+	}
+
+	bOutSuccess = true;
+	return true;
+}
+```
+
+
+
