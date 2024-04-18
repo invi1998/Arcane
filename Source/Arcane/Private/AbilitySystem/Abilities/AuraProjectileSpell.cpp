@@ -64,9 +64,13 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);	// 生成效果
 
-		const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());	// 获取技能伤害（根据等级，从ScalableFloat中获取）
-		const FAuraGameplayTags GameTags = FAuraGameplayTags::Get();	// 获取游戏标签
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, GameTags.Damage, ScaledDamage);	// 设置伤害
+		for (auto& DamagePair : DamageType)	// 遍历伤害类型
+		{
+			const FGameplayTag& DamageTag = DamagePair.Key;	// 获取伤害标签
+			const FScalableFloat& DamageValue = DamagePair.Value;	// 获取伤害值
+			const float ScaledDamageValue = DamageValue.GetValueAtLevel(GetAbilityLevel());	// 获取伤害值（根据等级，从ScalableFloat中获取）
+			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, DamageTag, ScaledDamageValue);	// 设置伤害
+		}
 
 		Projectile->DamageEffectSpecHandle = SpecHandle;	// 设置效果句柄
 

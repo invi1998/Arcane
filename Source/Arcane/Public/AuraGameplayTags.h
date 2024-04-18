@@ -63,11 +63,16 @@ public:
 	 */
 	FGameplayTag Damage;						// 元标签：受到伤害
 
+	FGameplayTag Damage_Fire;					// 火焰伤害
+
+	TArray<FGameplayTag> DamageTypes;			// 伤害类型
+
 	/*
 	 * Effect Tags
 	 */
 	FGameplayTag Effect_HitReact;				// 效果：受击反应
 	FGameplayTag Effect_DeathReact;				// 效果：死亡反应
+	
 
 
 protected:
