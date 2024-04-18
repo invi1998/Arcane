@@ -7,6 +7,7 @@
 #include "AuraGameplayTags.h"
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interaction/CombatInterface.h"
@@ -111,7 +112,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				EffectProperties.TargetASC->TryActivateAbilitiesByTag(HitReactTagContainer);	// 尝试激活标签的能力
 			}
 
-			ShowFloatingText(EffectProperties, LocalIncomingDamage);	// 显示伤害文本
+			ShowFloatingText(
+				EffectProperties, 
+				LocalIncomingDamage,
+				UAuraAbilitySystemLibrary::IsBlockedHit(EffectProperties.EffectContextHandle),
+				UAuraAbilitySystemLibrary::IsCriticalHit(EffectProperties.EffectContextHandle));	// 显示浮动文字
 		}
 	}
 
@@ -155,14 +160,13 @@ void UAuraAttributeSet::SetEffectsProperties(const FGameplayEffectModCallbackDat
 
 }
 
-void UAuraAttributeSet::ShowFloatingText(const FEffectProperties Props, float Damage) const
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties Props, float Damage, bool bBlockedHit, bool bCriticalHit) const
 {
 	if (Props.TargetCharacter)
 	{
-		AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.TargetCharacter, 0));
-		if (AuraPlayerController)
+		if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.TargetCharacter, 0)))
 		{
-			AuraPlayerController->ShowDamageText(Damage, Props.TargetCharacter);	// 显示伤害文本
+			AuraPlayerController->ShowDamageText(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);	// 显示伤害文本
 		}
 	}
 }

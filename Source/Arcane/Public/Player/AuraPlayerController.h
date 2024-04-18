@@ -31,7 +31,7 @@ public:
 	FHitResult GetCursorHitResult() const;	// 获取光标碰撞结果
 
 	UFUNCTION(Client, Reliable)
-	void ShowDamageText(float Damage, ACharacter* Target);	// 显示伤害文本
+	void ShowDamageText(float Damage, ACharacter* Target, bool bBlockedHit, bool bCriticalHit);	// 显示伤害文本
 
 protected:
 	virtual void BeginPlay() override;

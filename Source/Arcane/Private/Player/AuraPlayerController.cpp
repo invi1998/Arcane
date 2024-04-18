@@ -147,7 +147,7 @@ void AAuraPlayerController::CursorTrace()
 
 }
 
-void AAuraPlayerController::ShowDamageText_Implementation(float Damage, ACharacter* Target)
+void AAuraPlayerController::ShowDamageText_Implementation(float Damage, ACharacter* Target, bool bBlockedHit, bool bCriticalHit)
 {
 	// 为什么这里要判断IsValid(Target)而不对DamageTextComponentClass使用IsValid?
 	// IsValid除了判断指针是否为空外，还会判断指针是否有效，判断这个指针是否等待销毁（Pending Kill）

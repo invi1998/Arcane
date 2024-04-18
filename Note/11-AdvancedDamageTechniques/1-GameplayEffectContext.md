@@ -818,6 +818,10 @@ void UAuraAbilitySystemLibrary::SetBlockedHit(FGameplayEffectContextHandle& Cont
 
 ```
 
+
+
+# UPARAM(ref)
+
 ![image-20240418182426092](.\image-20240418182426092.png)
 
 因为我们设置暴击，设置格挡这两个函数，他们需要更改传入的GameplayEffectContext，所以在函数声明这里，就没有const，但是，这样随之而来的一个问题就是，如下所示，我们在蓝图中调用这个函数，发现，我们的输入参数ContextHandle在蓝图节点中变成了一个输出引脚。
