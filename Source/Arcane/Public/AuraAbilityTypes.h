@@ -57,7 +57,7 @@ struct TStructOpsTypeTraits<FAuraGameplayEffectContext> : public TStructOpsTypeT
 {
 	enum
 	{
-		WithNetSerializer = true,
-		WithCopy = true,
+		WithNetSerializer = true,	// Necessary so that FGameplayEffectContext can be serialized over the network（必要的，以便FGameplayEffectContext可以在网络上序列化）
+		WithCopy = true,	// Necessary so that TSharedPtr<FHitResult> Data is copied around（必要的，以便在各个地方复制TSharedPtr<FHitResult>数据）
 	};
 };

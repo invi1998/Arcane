@@ -646,3 +646,75 @@ struct TStructOpsTypeTraits<FAuraGameplayEffectContext> : public TStructOpsTypeT
 
 ```
 
+
+
+# Aura Ability System Globals
+
+至此，我们已经成功创建了我们自己的GameplayEffectContext，并添加好我们需要的两个成员变量，下一步就是如何在项目里使用这个Context。一种方法就是定义我们自己的ASG（AbilitySystemGlobals）全局类
+
+所以我们首先基于AbilitySystemGlobals新建一个子类，在子类中，我们只需要做一件事，重写AllocGameplayEffectContext函数
+
+```c++
+// Copyright INVI1998
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "AbilitySystemGlobals.h"
+#include "AuraAbilitySystemGlobals.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANE_API UAuraAbilitySystemGlobals : public UAbilitySystemGlobals
+{
+	GENERATED_BODY()
+
+	virtual FGameplayEffectContext* AllocGameplayEffectContext() const override;
+};
+
+// cpp
+    
+FGameplayEffectContext* UAuraAbilitySystemGlobals::AllocGameplayEffectContext() const
+{
+	return new FAuraGameplayEffectContext();
+}
+
+```
+
+> 这个函数，其实就是我们创建GameplayEffectContext的地方，拿代码里随便一处创建EffectContext的地方来说：
+>
+> ```c++
+> FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();	// 生成效果上下文
+> ```
+>
+> 然后继续，在MakeEffectContext源码里
+>
+> ```c++
+> FGameplayEffectContextHandle UAbilitySystemComponent::MakeEffectContext() const
+> {
+> 	FGameplayEffectContextHandle Context = FGameplayEffectContextHandle(UAbilitySystemGlobals::Get().AllocGameplayEffectContext());
+> 	// By default use the owner and avatar as the instigator and causer
+> 	check(AbilityActorInfo.IsValid());
+> 	
+> 	Context.AddInstigator(AbilityActorInfo->OwnerActor.Get(), AbilityActorInfo->AvatarActor.Get());
+> 	return Context;
+> }
+> ```
+>
+> 可以看到，所有MakeEffectContext都是调用的AllocGameplayEffectContext函数来创建的Context，所以我们只需要重写`FGameplayEffectContext* AllocGameplayEffectContext()`，将对象转为我们新写的`FAuraGameplayEffectContext`，就能在项目中使用我们的上下文对象了
+>
+> 
+
+下一步，就是配置项目，让项目使用我们的UAuraAbilitySystemGlobals。
+
+在配置文件 `DefaultGame.ini`中，添加如下配置项（注意，指定类名的时候，不要加上U前缀）
+
+```ini
+[/Script/GameplayAbilities.AbilitySystemGlobals]
++AbilitySystemGlobalsClassName="/Script/Arcane.AuraAbilitySystemGlobals"
+```
+
+然后，清理缓存，中间文件，重新生成项目，编译运行
+
