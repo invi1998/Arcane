@@ -67,3 +67,153 @@ protected:
 
 ```
 
+
+
+## NetSerialize
+
+```c++
+bool FGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
+{
+	uint8 RepBits = 0;
+	if (Ar.IsSaving())
+	{
+		if (bReplicateInstigator && Instigator.IsValid())
+		{
+			RepBits |= 1 << 0;
+		}
+		if (bReplicateEffectCauser && EffectCauser.IsValid() )
+		{
+			RepBits |= 1 << 1;
+		}
+		if (AbilityCDO.IsValid())
+		{
+			RepBits |= 1 << 2;
+		}
+		if (bReplicateSourceObject && SourceObject.IsValid())
+		{
+			RepBits |= 1 << 3;
+		}
+		if (Actors.Num() > 0)
+		{
+			RepBits |= 1 << 4;
+		}
+		if (HitResult.IsValid())
+		{
+			RepBits |= 1 << 5;
+		}
+		if (bHasWorldOrigin)
+		{
+			RepBits |= 1 << 6;
+		}
+	}
+
+	Ar.SerializeBits(&RepBits, 7);
+
+	if (RepBits & (1 << 0))
+	{
+		Ar << Instigator;
+	}
+	if (RepBits & (1 << 1))
+	{
+		Ar << EffectCauser;
+	}
+	if (RepBits & (1 << 2))
+	{
+		Ar << AbilityCDO;
+	}
+	if (RepBits & (1 << 3))
+	{
+		Ar << SourceObject;
+	}
+	if (RepBits & (1 << 4))
+	{
+		SafeNetSerializeTArray_Default<31>(Ar, Actors);
+	}
+	if (RepBits & (1 << 5))
+	{
+		if (Ar.IsLoading())
+		{
+			if (!HitResult.IsValid())
+			{
+				HitResult = TSharedPtr<FHitResult>(new FHitResult());
+			}
+		}
+		HitResult->NetSerialize(Ar, Map, bOutSuccess);
+	}
+	if (RepBits & (1 << 6))
+	{
+		Ar << WorldOrigin;
+		bHasWorldOrigin = true;
+	}
+	else
+	{
+		bHasWorldOrigin = false;
+	}
+
+	if (Ar.IsLoading())
+	{
+		AddInstigator(Instigator.Get(), EffectCauser.Get()); // Just to initialize InstigatorAbilitySystemComponent
+	}	
+	
+	bOutSuccess = true;
+	return true;
+}
+```
+
+这是FGameplayEffectContext基类中的NetSerialize实现。
+
+`FGameplayEffectContext::NetSerialize` 是虚幻引擎（Unreal Engine）中一个用于网络序列化的函数，它在游戏效果上下文（Gameplay Effect Context）类中定义。这个函数的主要作用是在网络传输中序列化和反序列化游戏效果上下文的数据。
+
+在游戏效果上下文中，`NetSerialize` 函数通常用于在网络传输中序列化和反序列化游戏效果上下文的数据。这个函数接收一个 `FArchive` 对象作为参数，这个对象负责读取和写入数据。此外，还需要一个 `UPackageMap` 对象，用于映射游戏对象和网络包之间的关系。最后，一个布尔值 `bOutSuccess` 用于指示是否成功完成了序列化和反序列化。
+
+在函数内部，`NetSerialize` 会遍历游戏效果上下文中的各个成员变量，并根据需要进行序列化和反序列化。具体来说，它会检查每个成员变量是否有 `net` 标记，如果有，则表示这个成员变量需要在网络传输中进行序列化和反序列化。
+
+在序列化过程中，`NetSerialize` 会将游戏效果上下文的数据写入到 `FArchive` 对象中。在反序列化过程中，它会从 `FArchive` 对象中读取数据，并将这些数据赋值给游戏效果上下文的成员变量。
+
+需要注意的是，`NetSerialize` 函数通常在游戏效果上下文的网络传输过程中使用，而不是在游戏逻辑中使用。在游戏逻辑中，通常使用其他函数来获取和设置游戏效果上下文的数据。
+
+## UPackageMap
+
+`UPackageMap` 是虚幻引擎（Unreal Engine）中一个用于管理游戏对象和网络包之间关系的类。在游戏网络传输过程中，`UPackageMap` 负责将游戏对象转换为网络包，以及将网络包转换回游戏对象。
+
+在游戏网络传输过程中，`UPackageMap` 主要用于以下几个方面：
+
+1. **游戏对象到网络包的转换**：在发送游戏对象时，`UPackageMap` 将游戏对象转换为网络包，以便在网络中传输。这个过程通常涉及将游戏对象的属性值转换为网络格式，并将游戏对象的引用转换为网络包的索引。
+
+2. **网络包到游戏对象的转换**：在接收网络包时，`UPackageMap` 将网络包转换为游戏对象，以便在游戏中使用。这个过程通常涉及将网络包中的属性值转换为游戏对象的属性值，并将网络包中的引用转换为游戏对象的引用。
+
+3. **网络包的管理**：`UPackageMap` 还负责管理网络包的生命周期，包括分配和释放网络包的内存，以及更新网络包的状态。
+
+在游戏网络传输过程中，`UPackageMap` 通常与 `FArchive` 对象一起使用。`FArchive` 对象负责读取和写入数据，而 `UPackageMap` 则负责将这些数据转换为网络包或游戏对象。
+
+需要注意的是，`UPackageMap` 是一个比较底层的类，通常由虚幻引擎的网络系统自动调用。在游戏逻辑中，通常不需要直接使用 `UPackageMap`。
+
+## FArchive
+
+`FArchive` 是虚幻引擎（Unreal Engine）中一个用于读取和写入数据的类。在虚幻引擎中，`FArchive` 通常用于网络传输、文件存储、内存操作等场景。
+
+`FArchive` 类的主要功能包括：
+
+1. **数据读取和写入**：`FArchive` 提供了一系列的读取和写入函数，用于读取和写入各种类型的数据，如整数、浮点数、字符串、向量等。
+
+2. **数据压缩和解压缩**：`FArchive` 还支持数据的压缩和解压缩，以减少网络传输的大小。
+
+3. **数据流控制**：`FArchive` 可以控制数据的读取和写入，包括跳过某些数据、读取指定长度的数据等。
+
+4. **数据验证**：`FArchive` 还可以验证读取和写入的数据，以确保数据的完整性和正确性。
+
+在游戏网络传输过程中，`FArchive` 通常与 `UPackageMap` 类一起使用。`UPackageMap` 负责将游戏对象转换为网络包，而 `FArchive` 则负责读取和写入这些网络包中的数据。
+
+需要注意的是，`FArchive` 类通常在游戏网络传输过程中使用，而在游戏逻辑中，通常使用其他函数来获取和设置游戏对象的属性值。
+
+![image-20240418121617090](.\image-20240418121617090.png)
+
+FArchive 是虚幻引擎（Unreal Engine）中一个用于读取和写入数据的类。在游戏网络传输过程中，FArchive 通常与 `UPackageMap` 类一起使用，用于将游戏对象转换为网络包，以及将网络包转换回游戏对象。
+
+在游戏网络传输过程中，FArchive 通常使用移位运算符（<<）来读取和写入数据。具体来说，FArchive 使用 << 运算符来将数据从一个对象中读取出来，或者将数据写入到一个对象中。
+
+在读取数据时，FArchive 使用 << 运算符来将数据从一个对象中读取出来。例如，如果一个对象有一个整数属性值，FArchive 可以使用 << 运算符来读取这个属性值。在这个过程中，FArchive 会将数据从对象中读取出来，并将数据写入到一个缓冲区中。
+
+在写入数据时，FArchive 使用 << 运算符来将数据写入到一个对象中。例如，如果一个对象有一个整数属性值，FArchive 可以使用 << 运算符来将这个属性值写入到对象中。在这个过程中，FArchive 会将数据从缓冲区中读取出来，并将数据写入到对象中。
+
+需要注意的是，FArchive 使用 << 运算符的方式取决于上下文。在保存数据时，FArchive 通常使用 << 运算符来将数据从对象中读取出来，并将数据写入到一个缓冲区中。在加载数据时，FArchive 通常使用 << 运算符来将数据从缓冲区中读取出来，并将数据写入到对象中。
