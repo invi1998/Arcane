@@ -158,7 +158,7 @@ void AAuraPlayerController::ShowDamageText_Implementation(float Damage, ACharact
 		DamageTextComponent->RegisterComponent();	// 注册组件（通常来说，我们创建的组件都需要注册，而之前我们使用CreateDefaultSubobject创建的组件是不需要注册的，因为在CreateDefaultSubobject的时候已经注册了）
 		DamageTextComponent->AttachToComponent(Target->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);	// 将组件附加到目标的根组件上
 		DamageTextComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);	// 解除附加，这里是解除附加到目标的根组件上，然后保持世界位置，这样我们的伤害文本就不会跟随目标移动了
-		DamageTextComponent->SetDamageText(Damage);	// 设置伤害文本
+		DamageTextComponent->SetDamageText(Damage, bBlockedHit, bCriticalHit);	// 设置伤害文本
 	}
 }
 
