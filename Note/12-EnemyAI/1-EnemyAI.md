@@ -103,3 +103,42 @@
 >
 > 
 
+# Behavior Tree Service （行为树服务）
+
+Behavior Tree Service 是一个用于实现复杂 AI 行为的框架，它提供了一种结构化的方式来组织和执行 AI 的行为。在虚幻引擎中，Behavior Tree Service 被广泛应用于游戏中的各种 AI 行为，包括敌人的 AI 控制器、NPC 的行为等。
+
+Behavior Tree Service 的核心思想是将复杂的 AI 行为分解为一系列简单的决策和动作，然后通过行为树（Behavior Tree）的形式来组织和执行这些决策和动作。行为树由一系列节点组成，每个节点代表一个决策或动作。节点之间通过连接线相连，表示它们之间的逻辑关系。这种结构化的组织方式使得 AI 的行为逻辑更加清晰易懂，同时也使得 AI 的行为更加灵活和可定制。
+
+在虚幻引擎中，Behavior Tree Service 提供了一系列内置的节点，包括条件节点、动作节点、复合节点等。开发者可以根据需要，通过组合这些节点来实现复杂的 AI 行为。同时，Behavior Tree Service 还提供了可视化编辑器，使得开发者可以方便地创建和编辑行为树。
+
+总之，Behavior Tree Service 是一个强大的工具，可以帮助开发者实现复杂 AI 行为，提高游戏 AI 的表现力和智能程度。
+
+```c++
+// Copyright INVI1998
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "BehaviorTree/Services/BTService_BlueprintBase.h"
+#include "BTService_FindNearestPlayer.generated.h"
+
+/**
+ * 寻找最近的玩家
+ */
+UCLASS()
+class ARCANE_API UBTService_FindNearestPlayer : public UBTService_BlueprintBase
+{
+	GENERATED_BODY()
+
+public:
+
+protected:
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+	
+};
+
+```
+
+然后，在行为树的Selector节点中，添加上这个服务（寻找最近的玩家），这样，我们就为我们的行为树添加一个功能节点，接下来就是要具体实现这个寻敌逻辑了
+
+![image-20240419202049942](.\image-20240419202049942.png)
