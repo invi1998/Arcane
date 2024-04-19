@@ -9,6 +9,9 @@
 #include "Arcane/Arcane.h"
 #include "Components/WidgetComponent.h"
 #include "AuraGameplayTags.h"
+#include "AI/AuraAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "UI/Widget/AuraUserWidget.h"
 
@@ -25,6 +28,21 @@ AAuraEnemy::AAuraEnemy()
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));	// 创建血条
 	HealthBar->SetupAttachment(GetRootComponent());	// 设置父级
 
+}
+
+void AAuraEnemy::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (HasAuthority())
+	{
+		AuraAIController = Cast<AAuraAIController>(NewController);	// 设置AI控制器
+
+		AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);	// 初始化黑板
+
+		AuraAIController->RunBehaviorTree(BehaviorTree);	// 运行行为树
+	}
+	
 }
 
 void AAuraEnemy::BeginPlay()
