@@ -18,5 +18,11 @@ public:
 
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FBlackboardKeySelector TargetToFollowSelector;		// 要跟随的目标
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FBlackboardKeySelector DistanceToTargetSelector;	// 距离目标的距离
 	
 };

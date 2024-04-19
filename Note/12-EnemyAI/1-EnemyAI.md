@@ -142,3 +142,50 @@ protected:
 然后，在行为树的Selector节点中，添加上这个服务（寻找最近的玩家），这样，我们就为我们的行为树添加一个功能节点，接下来就是要具体实现这个寻敌逻辑了
 
 ![image-20240419202049942](.\image-20240419202049942.png)
+
+
+
+# Blackboard Keys
+
+在虚幻引擎中，Blackboard Keys 是行为树组件中 Blackboard 组件的一部分，用于存储和管理行为树所需的数据。Blackboard Keys 是一组键值对，用于在 Blackboard 组件中存储和检索数据。
+
+Blackboard Keys 的工作原理如下：
+
+1. **创建 Blackboard Keys**：在 Blackboard 组件中，开发者可以创建任意数量的 Blackboard Keys。每个 Blackboard Key 都有一个唯一的键名和一个数据类型。
+
+2. **设置 Blackboard Keys 的值**：在行为树中，开发者可以使用 Blackboard Set Value 节点来设置 Blackboard Keys 的值。Blackboard Set Value 节点需要指定一个 Blackboard Key 的键名和一个数据值。
+
+3. **读取 Blackboard Keys 的值**：在行为树中，开发者可以使用 Blackboard Get Value 节点来读取 Blackboard Keys 的值。Blackboard Get Value 节点需要指定一个 Blackboard Key 的键名，并返回该键的值。
+
+4. **使用 Blackboard Keys 的值**：在行为树中，开发者可以使用其他节点来使用 Blackboard Keys 的值。例如，如果一个节点需要知道敌人的当前位置，它可以使用 Blackboard Get Value 节点来获取该位置的值。
+
+通过这种方式，Blackboard Keys 可以为行为树提供动态的数据支持，使得行为树可以根据游戏中的实际情况做出相应的决策和动作。
+
+
+
+![image-20240419204211519](.\image-20240419204211519.png)
+
+这里我们在行为树的黑板里添加两个变量，一个用来存储我们要NPC跟随（寻找）的Actor，一个是跟随距离。
+
+TargetToFollow 本是一个Object类型的变量，因为我们本意是想寻找Actor，所以将基类改为Actor更合适
+
+然后，回到C++中，我们为这两个变量创建两个选择器
+
+```c++
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FBlackboardKeySelector TargetToFollowSelector;		// 要跟随的目标
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	FBlackboardKeySelector DistanceToTargetSelector;	// 距离目标的距离
+```
+
+为了区分玩家和怪物，这里我们给Character添加两个标签，就简单的在蓝图中设置就行
+
+![image-20240419205438844](.\image-20240419205438844.png)
+
+![image-20240419205507713](.\image-20240419205507713.png)
+
+然后通过Pawn 的 ActorHasTag 成员函数就能获取到标签内容
+
+`UGameplayStatics::GetAllActorsWithTag`能获取到场景中所有拥有指定Tag的Actor
