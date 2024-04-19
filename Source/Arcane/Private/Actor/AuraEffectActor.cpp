@@ -25,31 +25,12 @@ void AAuraEffectActor::BeginPlay()
 
 void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
 {
-	//IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(Target);	// 将目标转换为IAbilitySystemInterface接口
-
-	//// 如果目标实现了IAbilitySystemInterface接口，表示目标是一个拥有能力系统的角色
-
-	//if (AbilitySystemInterface)
-	//{
-	//	UAbilitySystemComponent* TargetAbilitySystemComponent = AbilitySystemInterface->GetAbilitySystemComponent();	// 获取目标的能力系统组件
-
-	//	if (TargetAbilitySystemComponent)
-	//	{
-	//		FGameplayEffectContextHandle EffectContext = TargetAbilitySystemComponent->MakeEffectContext();	// 创建效果上下文
-	//		EffectContext.AddSourceObject(this);	// 添加源对象
-
-	//		FGameplayEffectSpecHandle NewHandle = TargetAbilitySystemComponent->MakeOutgoingSpec(GameplayEffectClass, 1.f, EffectContext);	// 创建新的效果规格
-	//		if (NewHandle.IsValid())
-	//		{
-	//			TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*NewHandle.Data.Get());	// 将效果规格应用到自己
-	//		}
-	//	}
-	//}
-
 	// 当然，不是所有的目标都会实现IAbilitySystemInterface接口，所以我们可以直接获取目标的能力系统组件
 	// 我们可以调用AbilitySystemBlueprintLibrary::GetAbilitySystemComponent函数来获取目标的能力系统组件
 	// ，这个函数会自动判断目标是否实现了IAbilitySystemInterface接口，如果实现了，就会返回目标的能力系统组件，
 	// 如果没有实现，他会查找目标的所有者是否实现了IAbilitySystemInterface接口，如果实现了，就会返回所有者的能力系统组件
+
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bApplyEffectToEnemies) return;	// 如果目标是敌人，但是我们不希望应用效果到敌人，就直接返回
 
 	// 获取目标的能力系统组件
 	if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor))
@@ -63,15 +44,17 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 
 		// 创建效果规格，用于应用效果。参数分别是效果类，等级，效果上下文。
 		const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, EffectContext);
+
+		// 获取效果的持续时间类型，判断效果是否是无限持续的。
+		const bool bIsInfinite = EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
+
 		// 如果效果规格有效，就应用效果规格到自己。
 		if (EffectSpecHandle.IsValid())
 		{
 			// 应用效果规格到自己。
 			const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 
-			// 获取效果的持续时间类型，判断效果是否是无限持续的。
-			const bool bIsInfinite = EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
-
+			
 			// 只有效果是无限持续的，并且我们希望在结束重叠时移除效果时，我们才将效果句柄和能力系统组件存储到映射表中。
 			if (bIsInfinite && InfiniteEffectRemovePolicy == EEffectRemovePolicy::RemoveOnEndOverlap)
 			{
@@ -79,12 +62,21 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 				ActiveGameplayEffectsMap.Add(ActiveEffectHandle, TargetASC);
 			}
 		}
+
+		if (!bIsInfinite)
+		{
+			// 如果是在效果应用后销毁，并且效果是瞬时的，就销毁自己。
+			Destroy();
+		}
+
 	}
 
 }
 
 void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 {
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bApplyEffectToEnemies) return;	// 如果目标是敌人，但是我们不希望应用效果到敌人，就直接返回
+
 	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
 	{
 		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
@@ -101,6 +93,8 @@ void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 
 void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 {
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bApplyEffectToEnemies) return;	// 如果目标是敌人，但是我们不希望应用效果到敌人，就直接返回
+
 	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
 	{
 		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);

@@ -39,7 +39,7 @@ protected:
 	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);	// 将效果应用到目标，传入目标和GameplayEffect类
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura Effect")
-	bool bDestroyOnRemoveEffect = false;	// 移除效果时是否销毁Actor
+	bool bDestroyOnEffectApplication = false;	// 是否在效果应用后销毁
 
 	/*
 	 * 游戏中的效果分为三种：瞬时效果、持续效果和永久效果
@@ -88,6 +88,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura Effect")
 	float ActorLevel = 1.f;	// Actor等级
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura Effect")
+	bool bApplyEffectToEnemies = false;	// 是否将效果应用到敌人
 
 private:
 };
