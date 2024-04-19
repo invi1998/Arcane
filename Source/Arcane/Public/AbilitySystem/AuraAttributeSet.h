@@ -199,6 +199,30 @@ public:
 	FGameplayAttributeData ManaRegeneration;		// 魔法恢复
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
 
+	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_FireResistance)	// 蓝图只读，分类为Secondary Attributes（次要属性）和Resistance Attributes（抗性属性）
+	FGameplayAttributeData FireResistance;		// 火焰抗性
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, FireResistance)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_IceResistance)	// 蓝图只读，分类为Secondary Attributes（次要属性）和Resistance Attributes（抗性属性）
+	FGameplayAttributeData IceResistance;		// 冰霜抗性
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IceResistance)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_LightningResistance)	// 蓝图只读，分类为Secondary Attributes（次要属性）和Resistance Attributes（抗性属性）
+	FGameplayAttributeData LightningResistance;		// 闪电抗性
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, LightningResistance)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_PoisonResistance)	// 蓝图只读，分类为Secondary Attributes（次要属性）和Resistance Attributes（抗性属性）
+	FGameplayAttributeData PoisonResistance;		// 毒素抗性
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, PoisonResistance)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_ArcaneResistance)	// 蓝图只读，分类为Secondary Attributes（次要属性）和Resistance Attributes（抗性属性）
+	FGameplayAttributeData ArcaneResistance;		// 奥术抗性
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArcaneResistance)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
+	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_PhysicalResistance)	// 蓝图只读，分类为Secondary Attributes（次要属性）和Resistance Attributes（抗性属性）
+	FGameplayAttributeData PhysicalResistance;		// 物理抗性
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, PhysicalResistance)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
 	UFUNCTION()
 	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;	// 最大生命值回调函数
 
@@ -228,6 +252,24 @@ public:
 
 	UFUNCTION()
 	void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const;	// 魔法恢复回调函数
+
+	UFUNCTION()
+	void OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance) const;	// 火焰抗性回调函数
+
+	UFUNCTION()
+	void OnRep_IceResistance(const FGameplayAttributeData& OldIceResistance) const;	// 冰霜抗性回调函数
+
+	UFUNCTION()
+	void OnRep_LightningResistance(const FGameplayAttributeData& OldLightningResistance) const;	// 闪电抗性回调函数
+
+	UFUNCTION()
+	void OnRep_PoisonResistance(const FGameplayAttributeData& OldPoisonResistance) const;	// 毒素抗性回调函数
+
+	UFUNCTION()
+	void OnRep_ArcaneResistance(const FGameplayAttributeData& OldArcaneResistance) const;	// 奥术抗性回调函数
+
+	UFUNCTION()
+	void OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance) const;	// 物理抗性回调函数
 
 	/*
 	 * Meta Attributes 元属性, 用于描述角色的特性
