@@ -272,3 +272,41 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 4. **中断装饰器**（Interruptable Decorator）：中断装饰器用于允许下面的行为树节点在运行时被中断。常见的中断装饰器包括 Allow Interrupting Decorator 和 Prevent Interrupting Decorator。
 
 通过使用装饰器节点，开发者可以控制行为树的执行流程，使得行为树能够根据游戏中的实际情况做出相应的决策和动作。
+
+
+
+# Attack Behavior Tree Task （自定义行为树任务-攻击行为）
+
+![image-20240420000720770](.\image-20240420000720770.png)
+
+如上，我们已经可以利用行为树做到简单的AI跟随效果，但是，对于像攻击这类复杂行为，是没有现成的节点，所以，接下来我们需要自定义Behavior Task
+
+蓝图实现的话，可以通过这里新建任务
+
+![image-20240420001105884](.\image-20240420001105884.png)
+
+### C++添加
+
+```c++
+// Copyright INVI1998
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "BehaviorTree/Tasks/BTTask_BlueprintBase.h"
+#include "BTTask_Attack.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class ARCANE_API UBTTask_Attack : public UBTTask_BlueprintBase
+{
+	GENERATED_BODY()
+
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;	// 执行任务
+	
+};
+
+```
+
