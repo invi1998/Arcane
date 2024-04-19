@@ -19,6 +19,12 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(AuraDamageStatics().CriticalHitChanceDef);	// 暴击几率
 	RelevantAttributesToCapture.Add(AuraDamageStatics().CriticalHitDamageDef);	// 暴击伤害
 	RelevantAttributesToCapture.Add(AuraDamageStatics().CriticalHitResistanceDef);	// 暴击抗性
+	RelevantAttributesToCapture.Add(AuraDamageStatics().FireResistanceDef);	// 火焰抗性
+	RelevantAttributesToCapture.Add(AuraDamageStatics().IceResistanceDef);	// 寒冷抗性
+	RelevantAttributesToCapture.Add(AuraDamageStatics().LightningResistanceDef);	// 闪电抗性
+	RelevantAttributesToCapture.Add(AuraDamageStatics().PoisonResistanceDef);	// 毒素抗性
+	RelevantAttributesToCapture.Add(AuraDamageStatics().ArcaneResistanceDef);	// 奥术抗性
+	RelevantAttributesToCapture.Add(AuraDamageStatics().PhysicalResistanceDef);	// 物理抗性
 
 }
 
@@ -58,7 +64,22 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// key: 伤害类型 value: 伤害抗性类型
 	for (const TTuple<FGameplayTag, FGameplayTag>& pair : FAuraGameplayTags::Get().DamageTypesToResistance)
 	{
-		const float DamageTypeValue = Spec.GetSetByCallerMagnitude(pair.Key);
+		const FGameplayTag DamageTypeTag = pair.Key;		// 伤害类型
+		const FGameplayTag ResistanceTypeTag = pair.Value;	// 伤害抗性类型
+
+		checkf(AuraDamageStatics().TagsToCaptureDef.Contains(ResistanceTypeTag), TEXT("ResistanceTypeTag not found in TagsToCaptureDef"));	// 检查伤害类型是否存在
+
+		const FGameplayEffectAttributeCaptureDefinition DamageTypeCaptureDef = AuraDamageStatics().TagsToCaptureDef[ResistanceTypeTag];	// 获取捕获属性定义
+
+		float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag);
+
+		float ResistanceValue = 0.f;	// 伤害抗性值
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageTypeCaptureDef, EvaluationParameters, ResistanceValue);	// 计算捕获属性值
+		ResistanceValue = FMath::Clamp(ResistanceValue, 0.f, 100.f);	// 最小值为0
+
+		// 我们希望伤害抗性是百分比，它将以百分比减少伤害
+		DamageTypeValue *= (100 - ResistanceValue) / 100.f;
+
 		Damage += DamageTypeValue;
 	}
 

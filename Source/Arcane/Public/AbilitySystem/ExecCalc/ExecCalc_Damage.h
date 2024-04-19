@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AuraGameplayTags.h"
 #include "GameplayEffectExecutionCalculation.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "ExecCalc_Damage.generated.h"
@@ -18,6 +19,15 @@ struct AuraDamageStatics
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitDamage);	// 暴击伤害
 	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitResistance);	// 暴击抗性
 
+	DECLARE_ATTRIBUTE_CAPTUREDEF(FireResistance);	// 火焰抗性
+	DECLARE_ATTRIBUTE_CAPTUREDEF(IceResistance);	// 寒冷抗性
+	DECLARE_ATTRIBUTE_CAPTUREDEF(LightningResistance);	// 闪电抗性
+	DECLARE_ATTRIBUTE_CAPTUREDEF(PoisonResistance);	// 毒素抗性
+	DECLARE_ATTRIBUTE_CAPTUREDEF(ArcaneResistance);	// 奥术抗性
+	DECLARE_ATTRIBUTE_CAPTUREDEF(PhysicalResistance);	// 物理抗性
+
+	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDef;		// 用于存储捕获的属性
+
 	AuraDamageStatics()
 	{
 		// 该函数用于捕获属性
@@ -27,6 +37,30 @@ struct AuraDamageStatics
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitChance, Source, false);	// 捕获来源的暴击几率属性，不拍快照
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitDamage, Source, false);	// 捕获来源的暴击伤害属性，不拍快照
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitResistance, Target, false);	// 捕获目标的暴击抗性属性，不拍快照
+
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, FireResistance, Target, false);	// 捕获目标的火焰抗性属性，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, IceResistance, Target, false);	// 捕获目标的寒冷抗性属性，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, LightningResistance, Target, false);	// 捕获目标的闪电抗性属性，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, PoisonResistance, Target, false);	// 捕获目标的毒素抗性属性，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArcaneResistance, Target, false);	// 捕获目标的奥术抗性属性，不拍快照
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, PhysicalResistance, Target, false);	// 捕获目标的物理抗性属性，不拍快照
+
+		const FAuraGameplayTags& Tags = FAuraGameplayTags::Get();
+
+		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Armor, ArmorDef);
+		TagsToCaptureDef.Add(Tags.Attributes_Secondary_ArmorPenetration, ArmorPenetrationDef);
+		TagsToCaptureDef.Add(Tags.Attributes_Secondary_BlockChance, BlockChanceDef);
+		TagsToCaptureDef.Add(Tags.Attributes_Secondary_CriticalHitChance, CriticalHitChanceDef);
+		TagsToCaptureDef.Add(Tags.Attributes_Secondary_CriticalHitDamage, CriticalHitDamageDef);
+		TagsToCaptureDef.Add(Tags.Attributes_Secondary_CriticalHitResistance, CriticalHitResistanceDef);
+
+		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Resistance_Fire, FireResistanceDef);
+		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Resistance_Ice, IceResistanceDef);
+		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Resistance_Lightning, LightningResistanceDef);
+		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Resistance_Poison, PoisonResistanceDef);
+		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Resistance_Arcane, ArcaneResistanceDef);
+		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Resistance_Physical, PhysicalResistanceDef);
+
 	}
 };
 
