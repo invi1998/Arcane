@@ -257,3 +257,18 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 >
 > 
 
+# Behavior Tree Decorators（行为树装饰器）
+
+在虚幻引擎中，行为树装饰器（Behavior Tree Decorators）是一类特殊的节点，用于控制行为树的执行流程。装饰器节点通常位于行为树的顶部，用于决定是否执行下面的行为树节点。
+
+装饰器节点有以下几种类型：
+
+1. **条件装饰器**（Condition Decorator）：条件装饰器用于检查某个条件是否满足。如果条件满足，则执行下面的行为树节点；否则，跳过下面的行为树节点。
+
+2. **循环装饰器**（Loop Decorator）：循环装饰器用于重复执行下面的行为树节点，直到满足某个条件为止。常见的循环装饰器包括 While Loop Decorator 和 Until Loop Decorator。
+
+3. **优先级装饰器**（Priority Decorator）：优先级装饰器用于选择下面的哪个行为树节点来执行。常见的优先级装饰器包括 First Child Succeeds Decorator 和 First Child Fails Decorator。
+
+4. **中断装饰器**（Interruptable Decorator）：中断装饰器用于允许下面的行为树节点在运行时被中断。常见的中断装饰器包括 Allow Interrupting Decorator 和 Prevent Interrupting Decorator。
+
+通过使用装饰器节点，开发者可以控制行为树的执行流程，使得行为树能够根据游戏中的实际情况做出相应的决策和动作。

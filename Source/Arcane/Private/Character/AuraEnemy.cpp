@@ -47,8 +47,12 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 		AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);	// 初始化黑板
 
 		AuraAIController->RunBehaviorTree(BehaviorTree);	// 运行行为树
+
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("HitReacting", false);	// 设置黑板值, 是否受击反应
+
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("RangedAttacker", CharacterClass != ECharacterClass::Warrior);	// 设置黑板值, 是否远程攻击者
+
 	}
-	
 }
 
 void AAuraEnemy::BeginPlay()
@@ -99,6 +103,8 @@ void AAuraEnemy::BeginPlay()
 void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
 	bIsHitReact = NewCount > 0;	// 是否受击反应
+
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool("HitReacting", bIsHitReact);	// 设置黑板值，是否受击反应
 
 	// 受击，停止移动
 	GetCharacterMovement()->MaxWalkSpeed = bIsHitReact ? 0.f : BaseWalkSpeed;	// 如果受击，速度为0，否则为原来的速度
