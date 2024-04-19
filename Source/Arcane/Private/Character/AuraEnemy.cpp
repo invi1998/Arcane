@@ -35,7 +35,10 @@ void AAuraEnemy::BeginPlay()
 	
 	InitAbilityActorInfo();	// 初始化能力系统组件，设置拥有者和所有者
 
-	UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);	// 初始化能力
+	if (HasAuthority())
+	{
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);	// 初始化能力
+	}
 
 	// 将血条组件的WidgetController设置为Actor本身
 	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
@@ -89,7 +92,10 @@ void AAuraEnemy::InitAbilityActorInfo()
 
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();	// 设置技能Actor信息
 
-	InitializeDefaultAttributes();
+	if (HasAuthority())
+	{
+		InitializeDefaultAttributes();
+	}
 }
 
 void AAuraEnemy::InitializeDefaultAttributes() const

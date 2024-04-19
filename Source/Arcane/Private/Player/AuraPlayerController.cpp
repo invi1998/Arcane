@@ -152,7 +152,7 @@ void AAuraPlayerController::ShowDamageText_Implementation(float Damage, ACharact
 	// 为什么这里要判断IsValid(Target)而不对DamageTextComponentClass使用IsValid?
 	// IsValid除了判断指针是否为空外，还会判断指针是否有效，判断这个指针是否等待销毁（Pending Kill）
 	// IsValid(Target)是为了确保我们的目标是有效的，因为我们的目标是一个角色，而角色是可以销毁的，如果我们的目标销毁了，那么我们就不应该再显示伤害文本了
-	if (IsValid(Target) && DamageTextComponentClass)
+	if (IsValid(Target) && DamageTextComponentClass && IsLocalController())
 	{
 		UDamageTextComponent* DamageTextComponent = NewObject<UDamageTextComponent>(Target, DamageTextComponentClass);	// 创建伤害文本组件，这里是创建一个新的伤害文本组件，Target是伤害文本组件的Outer，DamageTextComponentClass是伤害文本组件的类
 		DamageTextComponent->RegisterComponent();	// 注册组件（通常来说，我们创建的组件都需要注册，而之前我们使用CreateDefaultSubobject创建的组件是不需要注册的，因为在CreateDefaultSubobject的时候已经注册了）
