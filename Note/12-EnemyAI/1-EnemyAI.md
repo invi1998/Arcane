@@ -239,3 +239,21 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 
 ![image-20240419213235726](.\image-20240419213235726.png)
 
+> 我发现,NPC在旋转的时候，很生硬，这里有个解决办法是，关闭NPC的Pawn转身，使用MovementComponet的控制器来控制转身，同时调整转身速率即可
+>
+> ![image-20240419215214450](.\image-20240419215214450.png)
+>
+> 当然，这种基本的东西，在C++里写好最好，在EnemyCharacter类中
+>
+> ```c++
+> 
+> 	bUseControllerRotationYaw = false;	// 关闭控制器旋转偏航
+> 	bUseControllerRotationPitch = false;	// 关闭控制器旋转俯仰
+> 	bUseControllerRotationRoll = false;	// 关闭控制器旋转翻滚
+> 
+> 	GetCharacterMovement()->bUseControllerDesiredRotation = true;	// 开启控制器期望旋转
+> 
+> ```
+>
+> 
+

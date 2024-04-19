@@ -28,6 +28,12 @@ AAuraEnemy::AAuraEnemy()
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));	// 创建血条
 	HealthBar->SetupAttachment(GetRootComponent());	// 设置父级
 
+	bUseControllerRotationYaw = false;	// 关闭控制器旋转偏航
+	bUseControllerRotationPitch = false;	// 关闭控制器旋转俯仰
+	bUseControllerRotationRoll = false;	// 关闭控制器旋转翻滚
+
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;	// 开启控制器期望旋转（移动组件会根据控制器的旋转来旋转）
+
 }
 
 void AAuraEnemy::PossessedBy(AController* NewController)
