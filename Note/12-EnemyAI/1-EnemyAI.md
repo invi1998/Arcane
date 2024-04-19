@@ -180,6 +180,10 @@ TargetToFollow 本是一个Object类型的变量，因为我们本意是想寻�
 	FBlackboardKeySelector DistanceToTargetSelector;	// 距离目标的距离
 ```
 
+然后，我们可以在编辑器中，将这些选择器和蓝图里的变量光临起来
+
+![image-20240419211010592](.\image-20240419211010592.png)
+
 为了区分玩家和怪物，这里我们给Character添加两个标签，就简单的在蓝图中设置就行
 
 ![image-20240419205438844](.\image-20240419205438844.png)
@@ -189,3 +193,49 @@ TargetToFollow 本是一个Object类型的变量，因为我们本意是想寻�
 然后通过Pawn 的 ActorHasTag 成员函数就能获取到标签内容
 
 `UGameplayStatics::GetAllActorsWithTag`能获取到场景中所有拥有指定Tag的Actor
+
+```c++
+void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+
+	const APawn* OwnerPawn = AIOwner->GetPawn();
+
+	// 获取所有玩家, 通过Tag来区分敌人和玩家
+	const FName TargetTag = OwnerPawn->ActorHasTag("Player") ? FName("Enemy") : FName("Player");
+
+	TArray<AActor*> ActorsWithTag;	// 用来存储所有拥有Tag的Actor
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), TargetTag, ActorsWithTag);	// 获取所有拥有Tag的Actor
+
+	float ClosestDistance = FLT_MAX;	// 最近的距离
+	AActor* ClosestActor = nullptr;		// 最近的Actor
+
+	// 遍历所有拥有Tag的Actor，找到最近的一个
+	for (AActor* Actor : ActorsWithTag)
+	{
+		if (!IsValid(Actor) || Actor == OwnerPawn)
+		{
+			continue;
+		}
+		const float Distance = OwnerPawn->GetDistanceTo(Actor);
+
+		if (Distance < ClosestDistance)
+		{
+			ClosestDistance = Distance;
+			ClosestActor = Actor;
+		}
+	}
+
+	// 设置黑板值（将最近的Actor设置为要跟随的目标）
+	UBTFunctionLibrary::SetBlackboardValueAsObject(this, TargetToFollowSelector, ClosestActor);
+	UBTFunctionLibrary::SetBlackboardValueAsFloat(this, DistanceToTargetSelector, ClosestDistance);
+
+}
+```
+
+然后，让怪物简单的做个向目标移动
+
+![image-20240419213151467](.\image-20240419213151467.png)
+
+![image-20240419213235726](.\image-20240419213235726.png)
+
