@@ -527,3 +527,7 @@ class ARCANE_API UBTTask_Attack : public UBTTask_BlueprintBase
 对于另外一种NPC，远程NPC，我们自然希望他能站远一点，同时也是可以看到玩家，所以我们将将得分因子改为正1，取距离最远的最优解的生成点。
 
 ![image-20240420143115069](.\image-20240420143115069.png)
+
+
+
+![image-20240420152256176](.\image-20240420152256176.png)
