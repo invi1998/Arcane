@@ -116,6 +116,16 @@ void AAuraEnemy::Die()
 	Super::Die();
 }
 
+void AAuraEnemy::SetCombatTarget_Implementation(AActor* NewTarget)
+{
+	CombatTarget = NewTarget;
+}
+
+AActor* AAuraEnemy::GetCombatTarget_Implementation() const
+{
+	return CombatTarget;
+}
+
 void AAuraEnemy::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);	// 初始化能力系统组件，设置拥有者和所有者

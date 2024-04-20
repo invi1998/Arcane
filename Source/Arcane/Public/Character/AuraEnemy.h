@@ -50,6 +50,12 @@ public:
 
 	virtual void Die() override;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Combat")
+	TObjectPtr<AActor> CombatTarget;	// ¹¥»÷Ä¿±ê
+
+	virtual void SetCombatTarget_Implementation(AActor* NewTarget) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
+
 protected:
 	virtual void BeginPlay() override;
 

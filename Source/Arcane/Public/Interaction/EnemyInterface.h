@@ -24,4 +24,10 @@ class ARCANE_API IEnemyInterface
 public:
 	virtual void HighlightActor() = 0;		// 高亮显示敌人
 	virtual void UnHighlightActor() = 0;	// 取消高亮显示敌人
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Enemy Interface")
+	void SetCombatTarget(AActor* InCombatTarget);	// 设置攻击目标
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Enemy Interface")
+	AActor* GetCombatTarget() const;	// 获取攻击目标
 };
