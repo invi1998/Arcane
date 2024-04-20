@@ -248,4 +248,12 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Hit granted when Death Reacting")		// À¿Õˆ∑¥”¶
 	);
 
+	/*
+	 * Ability Tags
+	 */
+	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Attack"),
+		FString("Attack Ability")
+	);
+
 }

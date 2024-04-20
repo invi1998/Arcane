@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AuraAbilityTypes.h"
 #include "Game/AuraGameModeBase.h"
+#include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
@@ -76,15 +77,26 @@ void UAuraAbilitySystemLibrary::InitCharacterAttributesByClassAndLevel(const UOb
 
 }
 
-void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
+void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass)
 {
-	if (const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	if (const UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject))
 	{
-		for (const TSubclassOf<UGameplayAbility>& AbilityClass : AuraGameMode->CharacterClassInfo->CommonAbilities)
+		for (const TSubclassOf<UGameplayAbility>& AbilityClass : CharacterClassInfo->CommonAbilities)
 		{
 			if (AbilityClass)
 			{
 				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass.GetDefaultObject(), 1);
+				ASC->GiveAbility(AbilitySpec);
+			}
+		}
+
+		const FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfo->GetCharacterClassDefaultInfo(CharacterClass);
+		const ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor());
+		for (TSubclassOf<UGameplayAbility> AbilityClass : ClassDefaultInfo.StartupAbilities)
+		{
+			if (AbilityClass && CombatInterface)
+			{
+				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass.GetDefaultObject(), CombatInterface->GetPlayerLevel());
 				ASC->GiveAbility(AbilitySpec);
 			}
 		}

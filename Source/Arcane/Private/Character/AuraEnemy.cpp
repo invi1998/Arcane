@@ -65,7 +65,7 @@ void AAuraEnemy::BeginPlay()
 
 	if (HasAuthority())
 	{
-		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);	// 初始化能力
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);	// 初始化能力
 	}
 
 	// 将血条组件的WidgetController设置为Actor本身
