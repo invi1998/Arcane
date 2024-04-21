@@ -66,6 +66,6 @@ public:
 
 	// 从TArray中随机选择一个Montage
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
-	UAnimMontage* GetRandomAttackMontage() const;
+	FTaggedMontage GetRandomAttackMontage() const;
 	
 };

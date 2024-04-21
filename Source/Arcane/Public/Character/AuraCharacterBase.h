@@ -40,7 +40,7 @@ public:
 	virtual bool IsDead_Implementation() const override;	// 是否死亡
 	virtual AActor* GetActor_Implementation() override;	// 获取角色
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() const override;	// 获取攻击动画
-	virtual UAnimMontage* GetRandomAttackMontage_Implementation() const override;
+	virtual FTaggedMontage GetRandomAttackMontage_Implementation() const override;
 	/* Combat Interface End*/
 
 	UPROPERTY(EditAnywhere, Category="Combat")

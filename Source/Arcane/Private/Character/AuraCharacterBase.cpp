@@ -197,13 +197,13 @@ TArray<FTaggedMontage> AAuraCharacterBase::GetAttackMontages_Implementation() co
 	return AttackMontages;
 }
 
-UAnimMontage* AAuraCharacterBase::GetRandomAttackMontage_Implementation() const
+FTaggedMontage AAuraCharacterBase::GetRandomAttackMontage_Implementation() const
 {
-	if (AttackMontages.Num() == 0) return nullptr;
+	if (AttackMontages.Num() == 0) return FTaggedMontage();
 
 	// 随机从攻击动画数组中获取一个动画
 	const int32 RandomIndex = FMath::RandRange(0, AttackMontages.Num() - 1);
-	return AttackMontages[RandomIndex].Montage;
+	return AttackMontages[RandomIndex];
 }
 
 
