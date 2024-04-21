@@ -170,3 +170,31 @@ void UAuraAbilitySystemLibrary::GetLivePlayerWithinRadius(const UObject* WorldCo
 	}
 
 }
+
+void UAuraAbilitySystemLibrary::GetLivePlayerWithinRaycast(const UObject* WorldContextObject,
+	TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Start, const FVector& End)
+{
+	FCollisionQueryParams LineParams;		// 碰撞查询参数
+	LineParams.AddIgnoredActors(IgnoreActors);	// 忽略的碰撞体
+
+	TArray<FHitResult> Hits;	// 碰撞结果
+
+	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		// 射线碰撞，下面这个函数会返回碰撞的对象
+		World->LineTraceMultiByChannel(Hits, Start, End, ECollisionChannel::ECC_Pawn, LineParams);
+		for (FHitResult& Hit : Hits)
+		{
+			if (AActor* HitActor = Hit.GetActor())
+			{
+				if (HitActor->Implements<UCombatInterface>())	// 如果实现了战斗接口
+				{
+					if (!ICombatInterface::Execute_IsDead(HitActor))	// 如果活着，为什么要用Execute_IsDead，因为IsDead是一个纯虚函数，所以我们需要用Execute_IsDead来调用它
+					{
+						OutPlayers.AddUnique(ICombatInterface::Execute_GetActor(HitActor));		// 添加到数组中
+					}
+				}
+			}
+		}
+	}
+}
