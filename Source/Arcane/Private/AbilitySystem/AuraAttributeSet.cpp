@@ -164,9 +164,18 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties Props, float Da
 {
 	if (Props.TargetCharacter)
 	{
+		// 如果目标角色的控制器是AAuraPlayerController（玩家控制器）
 		if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(Props.SourceCharacter->GetController()))
 		{
 			AuraPlayerController->ShowDamageText(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);	// 显示伤害文本
+			return;
+		}
+
+		// 如果目标角色的控制器是AAuraPlayerController ，NPC
+		if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(Props.TargetCharacter->GetController()))
+		{
+			AuraPlayerController->ShowDamageText(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);	// 显示伤害文本
+			return;
 		}
 	}
 }
