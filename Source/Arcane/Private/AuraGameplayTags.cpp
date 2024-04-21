@@ -255,6 +255,10 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Attack"),
 		FString("Attack Ability")
 	);
+	GameplayTags.Abilities_Swing = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Swing"),
+		FString("Swing Ability")
+	);
 
 	/*
 	 * Montage Tags
