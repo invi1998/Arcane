@@ -115,7 +115,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
 	bool bIsHitReact = false;	// 是否受击
 
-	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	float BaseWalkSpeed = 250.f;	// 基础行走速度
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
