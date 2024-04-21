@@ -101,11 +101,16 @@ FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation() const
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
 }
 
-FRotator AAuraCharacterBase::GetCombatSocketRotation_Implementation() const
+FVector AAuraCharacterBase::GetCombatSocketForward_Implementation() const
 {
 	checkf(Weapon, TEXT("Weapon is nullptr!"));	// 检查武器是否为空
 	// 获取武器尖端插槽的旋转
-	return Weapon->GetSocketRotation(WeaponTipSocketName);
+
+	// 根据插槽名字获取插槽
+	const FTransform SocketTransform = Weapon->GetSocketTransform(WeaponTipSocketName);
+	const FVector ForwardVector = SocketTransform.GetRotation().GetForwardVector();
+
+	return ForwardVector;
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo()
