@@ -192,4 +192,18 @@ AActor* AAuraCharacterBase::GetActor_Implementation()
 	return this;
 }
 
+TArray<FTaggedMontage> AAuraCharacterBase::GetAttackMontages_Implementation() const
+{
+	return AttackMontages;
+}
+
+UAnimMontage* AAuraCharacterBase::GetRandomAttackMontage_Implementation() const
+{
+	if (AttackMontages.Num() == 0) return nullptr;
+
+	// 随机从攻击动画数组中获取一个动画
+	const int32 RandomIndex = FMath::RandRange(0, AttackMontages.Num() - 1);
+	return AttackMontages[RandomIndex].Montage;
+}
+
 
