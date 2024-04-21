@@ -104,10 +104,14 @@ void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCou
 {
 	bIsHitReact = NewCount > 0;	// 是否受击反应
 
-	AuraAIController->GetBlackboardComponent()->SetValueAsBool("HitReacting", bIsHitReact);	// 设置黑板值，是否受击反应
-
 	// 受击，停止移动
 	GetCharacterMovement()->MaxWalkSpeed = bIsHitReact ? 0.f : BaseWalkSpeed;	// 如果受击，速度为0，否则为原来的速度
+
+	if (AuraAIController && AuraAIController->GetBlackboardComponent())
+	{
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("HitReacting", bIsHitReact);	// 设置黑板值，是否受击反应
+	}
+	
 }
 
 void AAuraEnemy::Die()
