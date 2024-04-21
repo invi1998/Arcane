@@ -39,10 +39,10 @@ public:
 	virtual int32 GetPlayerLevel() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
-	FVector GetCombatSocketLocation() const;	// 获取战斗插槽位置
+	FVector GetCombatSocketLocation(const FGameplayTag& MontageTag) const;	// 获取战斗插槽位置
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
-	FVector GetCombatSocketForward() const;	// 获取战斗插槽前向向量
+	FVector GetCombatSocketForward(const FGameplayTag& MontageTag) const;	// 获取战斗插槽前向向量
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)		// 蓝图实现，同时蓝图可调用
 	void UpdateFacingTarget(const FVector& Target);	//更新面向目标

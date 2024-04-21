@@ -3,6 +3,7 @@
 #include "Character/AuraCharacterBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Arcane/Arcane.h"
 #include "Components/CapsuleComponent.h"
@@ -96,23 +97,88 @@ void AAuraCharacterBase::BeginPlay()
 	Super::BeginPlay();
 }
 
-FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation() const
+FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const
 {
-	checkf(Weapon, TEXT("Weapon is nullptr!"));	// 检查武器是否为空
-	// 获取武器尖端插槽的位置
-	return Weapon->GetSocketLocation(WeaponTipSocketName);
+	const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_Weapon) && IsValid(Weapon))
+	{
+		// 获取武器尖端插槽的位置
+		return Weapon->GetSocketLocation(WeaponTipSocketName);
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_LeftWeaponLeftSwing) && IsValid(LeftWeapon))
+	{
+		// 获取左手武器插槽的位置
+		return LeftWeapon->GetSocketLocation(LeftWeaponTipSocketName);
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_LeftWeaponRightSwing) && IsValid(LeftWeapon))
+	{
+		// 获取左手武器插槽的位置
+		return LeftWeapon->GetSocketLocation(LeftWeaponTipSocketName);
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_RightWeaponLeftSwing) && IsValid(RightWeapon))
+	{
+		// 获取右手武器插槽的位置
+		return RightWeapon->GetSocketLocation(RightWeaponTipSocketName);
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_RightWeaponRightSwing) && IsValid(RightWeapon))
+	{
+		// 获取右手武器插槽的位置
+		return RightWeapon->GetSocketLocation(RightWeaponTipSocketName);
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_LeftUnarmed))
+	{
+		// 获取左手空手攻击插槽的位置
+		return GetMesh()->GetSocketLocation(LeftHandSocketName);
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_RightUnarmed))
+	{
+		// 获取右手空手攻击插槽的位置
+		return GetMesh()->GetSocketLocation(RightHandSocketName);
+	}
+
+	return FVector::ZeroVector;
 }
 
-FVector AAuraCharacterBase::GetCombatSocketForward_Implementation() const
+FVector AAuraCharacterBase::GetCombatSocketForward_Implementation(const FGameplayTag& MontageTag) const
 {
-	checkf(Weapon, TEXT("Weapon is nullptr!"));	// 检查武器是否为空
-	// 获取武器尖端插槽的旋转
+	const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_Weapon) && IsValid(Weapon))
+	{
+		// 获取武器尖端插槽的前向向量
+		return Weapon->GetSocketTransform(WeaponTipSocketName).GetRotation().GetForwardVector();
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_LeftWeaponLeftSwing) && IsValid(LeftWeapon))
+	{
+		// 获取左手武器插槽的前向向量
+		return LeftWeapon->GetSocketTransform(WeaponTipSocketName).GetRotation().GetForwardVector();
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_LeftWeaponRightSwing) && IsValid(LeftWeapon))
+	{
+		// 获取左手武器插槽的前向向量
+		return LeftWeapon->GetSocketTransform(WeaponTipSocketName).GetRotation().GetForwardVector();
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_RightWeaponLeftSwing) && IsValid(RightWeapon))
+	{
+		// 获取右手武器插槽的前向向量
+		return RightWeapon->GetSocketTransform(WeaponTipSocketName).GetRotation().GetForwardVector();
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_RightWeaponRightSwing) && IsValid(RightWeapon))
+	{
+		// 获取右手武器插槽的前向向量
+		return RightWeapon->GetSocketTransform(WeaponTipSocketName).GetRotation().GetForwardVector();
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_LeftUnarmed))
+	{
+		// 获取左手空手攻击插槽的前向向量
+		return GetMesh()->GetSocketTransform(LeftHandSocketName).GetRotation().GetForwardVector();
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_RightUnarmed))
+	{
+		// 获取右手空手攻击插槽的前向向量
+		return GetMesh()->GetSocketTransform(RightHandSocketName).GetRotation().GetForwardVector();
+	}
 
-	// 根据插槽名字获取插槽
-	const FTransform SocketTransform = Weapon->GetSocketTransform(WeaponTipSocketName);
-	const FVector ForwardVector = SocketTransform.GetRotation().GetForwardVector();
-
-	return ForwardVector;
+	return FVector::ZeroVector;
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo()

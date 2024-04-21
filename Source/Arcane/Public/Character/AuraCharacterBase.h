@@ -32,8 +32,8 @@ public:
 	/*
 	* Combat Interface begin
 	*/
-	virtual FVector GetCombatSocketLocation_Implementation() const override;	// 获取战斗插槽位置
-	virtual FVector GetCombatSocketForward_Implementation() const override;	// 获取战斗插槽前向向量
+	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const override;	// 获取战斗插槽位置
+	virtual FVector GetCombatSocketForward_Implementation(const FGameplayTag& MontageTag) const override;	// 获取战斗插槽前向向量
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;	// 获取受击反应动画
 	virtual UAnimMontage* GetDeathMontage_Implementation() override;	// 获取死亡动画
 	virtual void Die() override;	// 死亡
@@ -54,6 +54,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;		// 武器
 
+	UPROPERTY(EditAnywhere, Category="Combat")
+	TObjectPtr<USkeletalMeshComponent> LeftWeapon;		// 左手武器
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	TObjectPtr<USkeletalMeshComponent> RightWeapon;		// 右手武器
+
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> BowWeapon;		// 弓箭武器
 
@@ -62,6 +68,21 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName WeaponTipSocketName;	// 武器尖端插槽名称
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName BowArrowTipSocketName;		// 弓箭尖端插槽名称
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName LeftHandSocketName;	// 左手插槽名称
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName RightHandSocketName;	// 右手插槽名称
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName LeftWeaponTipSocketName;	// 左手武器尖端插槽名称
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	FName RightWeaponTipSocketName;	// 右手武器尖端插槽名称
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;	// 能力系统组件
