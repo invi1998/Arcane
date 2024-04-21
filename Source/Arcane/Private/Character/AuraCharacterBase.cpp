@@ -94,11 +94,18 @@ void AAuraCharacterBase::BeginPlay()
 	Super::BeginPlay();
 }
 
-FVector AAuraCharacterBase::GetCombatSocketLocation() const
+FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation() const
 {
 	checkf(Weapon, TEXT("Weapon is nullptr!"));	// ¼ì²éÎäÆ÷ÊÇ·ñÎª¿Õ
 	// »ñÈ¡ÎäÆ÷¼â¶Ë²å²ÛµÄÎ»ÖÃ
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
+
+FRotator AAuraCharacterBase::GetCombatSocketRotation_Implementation() const
+{
+	checkf(Weapon, TEXT("Weapon is nullptr!"));	// ¼ì²éÎäÆ÷ÊÇ·ñÎª¿Õ
+	// »ñÈ¡ÎäÆ÷¼â¶Ë²å²ÛµÄÐý×ª
+	return Weapon->GetSocketRotation(WeaponTipSocketName);
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo()
