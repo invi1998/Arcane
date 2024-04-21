@@ -83,6 +83,8 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 
 	//GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);	// ÉèÖÃMeshÅö×²ÏìÓ¦
 
+	bDead = true;	// ÉèÖÃËÀÍö×´Ì¬
+
 	Dissolve();	// ÈÜ½â
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// ÉèÖÃ½ºÄÒÌåÅö×²×´Ì¬
@@ -178,6 +180,16 @@ void AAuraCharacterBase::Dissolve()
 		BowArrow->SetMaterial(0, MID);
 		StartArrowDissolveTimeline(MID);
 	}
+}
+
+bool AAuraCharacterBase::IsDead_Implementation() const
+{
+	return bDead;
+}
+
+AActor* AAuraCharacterBase::GetActor_Implementation()
+{
+	return this;
 }
 
 

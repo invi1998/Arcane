@@ -141,3 +141,32 @@ void UAuraAbilitySystemLibrary::SetBlockedHit(FGameplayEffectContextHandle& Cont
 		AuraContext->SetBlockedHit(bBlockedHit);
 	}
 }
+
+void UAuraAbilitySystemLibrary::GetLivePlayerWithinRadius(const UObject* WorldContextObject,
+	TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Origin, float Radius)
+{
+	FCollisionQueryParams SphereParams;		// 碰撞查询参数
+	SphereParams.AddIgnoredActors(IgnoreActors);	// 忽略的碰撞体
+
+	TArray<FOverlapResult> Overlaps;	// 重叠结果
+
+	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		// 重叠多个对象，下面这个函数会返回重叠的对象
+		World->OverlapMultiByObjectType(Overlaps, Origin, FQuat::Identity, FCollisionObjectQueryParams::InitType::AllDynamicObjects, FCollisionShape::MakeSphere(Radius));
+		for (FOverlapResult& Overlap : Overlaps)
+		{
+			if (AActor* OverlapActor = Overlap.GetActor())
+			{
+				if (OverlapActor->Implements<UCombatInterface>())	// 如果实现了战斗接口
+				{
+					if (!ICombatInterface::Execute_IsDead(OverlapActor))	// 如果活着，为什么要用Execute_IsDead，因为IsDead是一个纯虚函数，所以我们需要用Execute_IsDead来调用它
+					{
+						OutPlayers.AddUnique(ICombatInterface::Execute_GetActor(OverlapActor));		// 添加到数组中
+					}
+				}
+			}
+		}
+	}
+
+}

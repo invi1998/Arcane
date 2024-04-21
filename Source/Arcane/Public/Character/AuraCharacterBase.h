@@ -26,12 +26,6 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet() const;
 
-	virtual UAnimMontage* GetHitReactMontage_Implementation() override;	// 获取受击反应动画
-
-	virtual UAnimMontage* GetDeathMontage_Implementation() override;	// 获取死亡动画
-
-	virtual void Die() override;	// 死亡
-
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath();	// 多播处理死亡
 
@@ -51,10 +45,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FName WeaponTipSocketName;	// 武器尖端插槽名称
-
-	virtual FVector GetCombatSocketLocation_Implementation() const override;	// 获取战斗插槽位置
-
-	virtual FVector GetCombatSocketForward_Implementation() const override;	// 获取战斗插槽前向向量
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;	// 能力系统组件
@@ -125,6 +115,20 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartArrowDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// 开始溶解时间轴
 
+	bool bDead = false;	// 是否死亡
+
+	/*
+	 * Combat Interface begin
+	 */
+
+	virtual FVector GetCombatSocketLocation_Implementation() const override;	// 获取战斗插槽位置
+	virtual FVector GetCombatSocketForward_Implementation() const override;	// 获取战斗插槽前向向量
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;	// 获取受击反应动画
+	virtual UAnimMontage* GetDeathMontage_Implementation() override;	// 获取死亡动画
+	virtual void Die() override;	// 死亡
+	virtual bool IsDead_Implementation() const override;	// 是否死亡
+	virtual AActor* GetActor_Implementation() override;	// 获取角色
+	/* Combat Interface End*/
 
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")

@@ -41,5 +41,11 @@ public:
 	UAnimMontage* GetDeathMontage();	// 获取死亡动画
 
 	virtual void Die() = 0;	// 死亡
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
+	bool IsDead() const;	// 是否死亡
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
+	AActor* GetActor();	// 获取Actor
 	
 };
