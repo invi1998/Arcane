@@ -34,6 +34,16 @@ AAuraCharacterBase::AAuraCharacterBase()
 	BowArrow->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// 设置武器组件的碰撞状态
 	BowArrow->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
+	LeftWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("LeftWeapon"));	// 创建左手武器组件
+	LeftWeapon->SetupAttachment(GetMesh(), FName("LeftWeaponSocket"));		// 设置左手武器组件的父组件（Mesh）和挂载点
+	LeftWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// 设置左手武器组件的碰撞状态
+	LeftWeapon->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
+	RightWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("RightWeapon"));	// 创建右手武器组件
+	RightWeapon->SetupAttachment(GetMesh(), FName("RightWeaponSocket"));		// 设置右手武器组件的父组件（Mesh）和挂载点
+	RightWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// 设置右手武器组件的碰撞状态
+	RightWeapon->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
 }
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
@@ -232,6 +242,18 @@ void AAuraCharacterBase::Dissolve()
 	{
 		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
 		Weapon->SetMaterial(0, MID);
+		StartWeaponDissolveTimeline(MID);
+	}
+	if (IsValid(LeftWeapon) && IsValid(WeaponDissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
+		LeftWeapon->SetMaterial(0, MID);
+		StartWeaponDissolveTimeline(MID);
+	}
+	if (IsValid(RightWeapon) && IsValid(WeaponDissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);
+		RightWeapon->SetMaterial(0, MID);
 		StartWeaponDissolveTimeline(MID);
 	}
 	if (IsValid(BowWeapon) && IsValid(BowWeaponDissolveMaterialInstance))
