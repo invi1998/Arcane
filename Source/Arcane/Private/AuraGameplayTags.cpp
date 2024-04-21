@@ -256,4 +256,57 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Attack Ability")
 	);
 
+	/*
+	 * Montage Tags
+	 */
+	GameplayTags.Montage_Attack_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.Weapon"),
+		FString("Attack Montage for Weapon")
+	);
+
+	GameplayTags.Montage_Attack_LeftWeapon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.LeftWeapon"),
+		FString("Attack Montage for Left Weapon")
+	);
+
+	GameplayTags.Montage_Attack_LeftWeaponLeftSwing = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.LeftWeaponLeftSwing"),
+		FString("Attack Montage for Left Weapon Left Swing")
+	);
+
+	GameplayTags.Montage_Attack_LeftWeaponRightSwing = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.LeftWeaponRightSwing"),
+		FString("Attack Montage for Left Weapon Right Swing")
+	);
+
+	GameplayTags.Montage_Attack_RightWeapon = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.RightWeapon"),
+		FString("Attack Montage for Right Weapon")
+	);
+
+	GameplayTags.Montage_Attack_RightWeaponLeftSwing = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.RightWeaponLeftSwing"),
+		FString("Attack Montage for Right Weapon Left Swing")
+	);
+
+	GameplayTags.Montage_Attack_RightWeaponRightSwing = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.RightWeaponRightSwing"),
+		FString("Attack Montage for Right Weapon Right Swing")
+	);
+
+	GameplayTags.Montage_Attack_Unarmed = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.Unarmed"),
+		FString("Attack Montage for Unarmed")
+	);
+
+	GameplayTags.Montage_Attack_LeftUnarmed = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.LeftUnarmed"),
+		FString("Attack Montage for Left Unarmed")
+	);
+
+	GameplayTags.Montage_Attack_RightUnarmed = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.RightUnarmed"),
+		FString("Attack Montage for Right Unarmed")
+	);
+
 }

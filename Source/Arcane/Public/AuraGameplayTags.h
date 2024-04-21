@@ -86,6 +86,17 @@ public:
 	 */
 	FGameplayTag Effect_HitReact;				// Ğ§¹û£ºÊÜ»÷·´Ó¦
 	FGameplayTag Effect_DeathReact;				// Ğ§¹û£ºËÀÍö·´Ó¦
+
+	FGameplayTag Montage_Attack_Weapon;				// ÃÉÌ«Ææ£ºÎäÆ÷¹¥»÷
+	FGameplayTag Montage_Attack_LeftWeapon;			// ÃÉÌ«Ææ£º×óÊÖÎäÆ÷¹¥»÷
+	FGameplayTag Montage_Attack_LeftWeaponLeftSwing;	// ÃÉÌ«Ææ£º×óÊÖÎäÆ÷×ó»Ó
+	FGameplayTag Montage_Attack_LeftWeaponRightSwing;	// ÃÉÌ«Ææ£º×óÊÖÎäÆ÷ÓÒ»Ó
+	FGameplayTag Montage_Attack_RightWeapon;		// ÃÉÌ«Ææ£ºÓÒÊÖÎäÆ÷¹¥»÷
+	FGameplayTag Montage_Attack_RightWeaponLeftSwing;	// ÃÉÌ«Ææ£ºÓÒÊÖÎäÆ÷×ó»Ó
+	FGameplayTag Montage_Attack_RightWeaponRightSwing;	// ÃÉÌ«Ææ£ºÓÒÊÖÎäÆ÷ÓÒ»Ó
+	FGameplayTag Montage_Attack_Unarmed;			// ÃÉÌ«Ææ£ºÍ½ÊÖ¹¥»÷
+	FGameplayTag Montage_Attack_LeftUnarmed;		// ÃÉÌ«Ææ£º×óÊÖÍ½ÊÖ¹¥»÷
+	FGameplayTag Montage_Attack_RightUnarmed;		// ÃÉÌ«Ææ£ºÓÒÊÖÍ½ÊÖ¹¥»÷
 	
 
 
