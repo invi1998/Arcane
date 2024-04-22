@@ -121,7 +121,11 @@ void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCou
 
 void AAuraEnemy::Die()
 {
-	AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsAlive", false);	// 设置黑板值, 是否存活
+	if (AuraAIController && AuraAIController->GetBlackboardComponent())
+	{
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsAlive", false);	// 设置黑板值, 是否存活
+	}
+	
 	SetLifeSpan(LifeSpan);
 	Super::Die();
 }
