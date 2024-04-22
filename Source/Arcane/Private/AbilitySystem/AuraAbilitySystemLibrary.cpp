@@ -198,3 +198,20 @@ void UAuraAbilitySystemLibrary::GetLivePlayerWithinRaycast(const UObject* WorldC
 		}
 	}
 }
+
+bool UAuraAbilitySystemLibrary::IsFriendly(AActor* FirstActor, AActor* SecondActor)
+{
+	// 通过判断ActorHasTag来判断是否是友方
+	const bool SelfIsPlayer = FirstActor->ActorHasTag("Player");
+	const bool TargetIsPlayer = SecondActor->ActorHasTag("Player");
+	if (SelfIsPlayer && TargetIsPlayer)
+	{
+		return true;
+	}
+	if (!SelfIsPlayer && !TargetIsPlayer)
+	{
+		return true;
+	}
+
+	return false;
+}

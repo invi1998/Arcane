@@ -65,4 +65,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
 	static void GetLivePlayerWithinRaycast(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Start, const FVector& End);
 
+	// 是否是友军（传入上下文对象，传入自己，传入目标）
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
+	static bool IsFriendly(AActor* FirstActor, AActor* SecondActor);
+
 };

@@ -162,6 +162,26 @@ void AAuraEnemy::HighlightActor()
 		Weapon->SetRenderCustomDepth(true);	// 设置自定义深度渲染
 		Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// 设置自定义深度值
 	}
+	if (LeftWeapon)
+	{
+		LeftWeapon->SetRenderCustomDepth(true);	// 设置自定义深度渲染
+		LeftWeapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// 设置自定义深度值
+	}
+	if (RightWeapon)
+	{
+		RightWeapon->SetRenderCustomDepth(true);	// 设置自定义深度渲染
+		RightWeapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// 设置自定义深度值
+	}
+	if (BowWeapon)
+	{
+		BowWeapon->SetRenderCustomDepth(true);	// 设置自定义深度渲染
+		BowWeapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// 设置自定义深度值
+	}
+	if (BowArrow)
+	{
+		BowArrow->SetRenderCustomDepth(true);	// 设置自定义深度渲染
+		BowArrow->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// 设置自定义深度值
+	}
 
 }
 
@@ -171,6 +191,22 @@ void AAuraEnemy::UnHighlightActor()
 	if (Weapon)
 	{
 		Weapon->SetRenderCustomDepth(false);	// 取消自定义深度渲染
+	}
+	if (LeftWeapon)
+	{
+		LeftWeapon->SetRenderCustomDepth(false);	// 设置自定义深度渲染
+	}
+	if (RightWeapon)
+	{
+		RightWeapon->SetRenderCustomDepth(false);	// 设置自定义深度渲染
+	}
+	if (BowWeapon)
+	{
+		BowWeapon->SetRenderCustomDepth(false);	// 设置自定义深度渲染
+	}
+	if (BowArrow)
+	{
+		BowArrow->SetRenderCustomDepth(false);	// 设置自定义深度渲染
 	}
 }
 
