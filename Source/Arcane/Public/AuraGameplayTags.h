@@ -99,6 +99,8 @@ public:
 	FGameplayTag Montage_Attack_LeftUnarmed;		// ÃÉÌ«Ææ£º×óÊÖÍ½ÊÖ¹¥»÷
 	FGameplayTag Montage_Attack_RightUnarmed;		// ÃÉÌ«Ææ£ºÓÒÊÖÍ½ÊÖ¹¥»÷
 	FGameplayTag Montage_Attack_Bow;				// ÃÉÌ«Ææ£º¹­¼ı¹¥»÷
+	FGameplayTag Montage_Attack_LichCall;			// ÃÉÌ«Ææ£ºÎ×ÑıÕÙ»½
+	FGameplayTag Montage_Attack_LichSpell;			// ÃÉÌ«Ææ£ºÎ×Ñı·¨Êõ
 	
 
 

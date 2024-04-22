@@ -318,4 +318,14 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Attack Montage for Bow")
 	);
 
+	GameplayTags.Montage_Attack_LichCall = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.LichCall"),
+		FString("Attack Montage for LichCall")
+	);
+
+	GameplayTags.Montage_Attack_LichSpell = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.LichSpell"),
+		FString("Attack Montage for LichSpell")
+	);
+
 }
