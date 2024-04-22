@@ -145,6 +145,11 @@ FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGamepl
 		// 获取右手空手攻击插槽的位置
 		return GetMesh()->GetSocketLocation(RightHandSocketName);
 	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_Bow))
+	{
+		// 获取弓箭尖端插槽的位置
+		return BowArrow->GetSocketLocation(BowArrowTipSocketName);
+	}
 
 	return FVector::ZeroVector;
 }
@@ -186,6 +191,11 @@ FVector AAuraCharacterBase::GetCombatSocketForward_Implementation(const FGamepla
 	{
 		// 获取右手空手攻击插槽的前向向量
 		return GetMesh()->GetSocketTransform(RightHandSocketName).GetRotation().GetForwardVector();
+	}
+	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_Bow))
+	{
+		// 获取弓箭尖端插槽的前向向量
+		return BowArrow->GetSocketTransform(BowArrowTipSocketName).GetRotation().GetForwardVector();
 	}
 
 	return FVector::ZeroVector;

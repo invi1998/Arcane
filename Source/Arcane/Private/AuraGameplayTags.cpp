@@ -313,4 +313,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Attack Montage for Right Unarmed")
 	);
 
+	GameplayTags.Montage_Attack_Bow = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Montage.Attack.Bow"),
+		FString("Attack Montage for Bow")
+	);
+
 }

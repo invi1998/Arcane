@@ -98,6 +98,7 @@ public:
 	FGameplayTag Montage_Attack_Unarmed;			// ÃÉÌ«Ææ£ºÍ½ÊÖ¹¥»÷
 	FGameplayTag Montage_Attack_LeftUnarmed;		// ÃÉÌ«Ææ£º×óÊÖÍ½ÊÖ¹¥»÷
 	FGameplayTag Montage_Attack_RightUnarmed;		// ÃÉÌ«Ææ£ºÓÒÊÖÍ½ÊÖ¹¥»÷
+	FGameplayTag Montage_Attack_Bow;				// ÃÉÌ«Ææ£º¹­¼ı¹¥»÷
 	
 
 
