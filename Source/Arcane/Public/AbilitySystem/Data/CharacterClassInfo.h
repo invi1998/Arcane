@@ -16,6 +16,7 @@ enum class ECharacterClass : uint8
 	Elementalist,		// 元素师
 	Warrior,			// 战士
 	Ranger,				// 游侠
+	Zombie,				// 丧尸
 };
 
 // 默认角色职业信息

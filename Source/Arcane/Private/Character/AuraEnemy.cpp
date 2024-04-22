@@ -50,7 +50,9 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool("HitReacting", false);	// 设置黑板值, 是否受击反应
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("RangedAttacker", CharacterClass != ECharacterClass::Warrior);	// 设置黑板值, 是否远程攻击者
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("RangedAttacker", CharacterClass == ECharacterClass::Ranger);	// 设置黑板值, 是否远程攻击者
+
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("ZombieAttacker", CharacterClass == ECharacterClass::Zombie);	// 设置黑板值, 是否远程攻击者
 
 	}
 }
