@@ -55,6 +55,8 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool("ZombieAttacker", CharacterClass == ECharacterClass::Zombie);	// 设置黑板值, 是否丧尸攻击者
 
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichAttacker", CharacterClass == ECharacterClass::Lich);	// 设置黑板值, 是否巫妖攻击者
+
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsAlive", true);	// 设置黑板值, 是否存活
 	}
 }
 
@@ -119,6 +121,7 @@ void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCou
 
 void AAuraEnemy::Die()
 {
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsAlive", false);	// 设置黑板值, 是否存活
 	SetLifeSpan(LifeSpan);
 	Super::Die();
 }
