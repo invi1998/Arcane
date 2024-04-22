@@ -51,37 +51,37 @@ protected:
 
 	virtual void InitializeDefaultAttributes() const;		// ³õÊ¼»¯ÄÜÁ¦
 
-	UPROPERTY(EditAnywhere, Category="Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;		// ÎäÆ÷
 
-	UPROPERTY(EditAnywhere, Category="Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	TObjectPtr<USkeletalMeshComponent> LeftWeapon;		// ×óÊÖÎäÆ÷
 
-	UPROPERTY(EditAnywhere, Category="Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	TObjectPtr<USkeletalMeshComponent> RightWeapon;		// ÓÒÊÖÎäÆ÷
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> BowWeapon;		// ¹­¼ıÎäÆ÷
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> BowArrow;			// ¼ı
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	FName WeaponTipSocketName;	// ÎäÆ÷¼â¶Ë²å²ÛÃû³Æ
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	FName BowArrowTipSocketName;		// ¹­¼ı¼â¶Ë²å²ÛÃû³Æ
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	FName LeftHandSocketName;	// ×óÊÖ²å²ÛÃû³Æ
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	FName RightHandSocketName;	// ÓÒÊÖ²å²ÛÃû³Æ
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	FName LeftWeaponTipSocketName;	// ×óÊÖÎäÆ÷¼â¶Ë²å²ÛÃû³Æ
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	FName RightWeaponTipSocketName;	// ÓÒÊÖÎäÆ÷¼â¶Ë²å²ÛÃû³Æ
 
 	UPROPERTY()
