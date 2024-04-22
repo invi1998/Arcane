@@ -17,6 +17,9 @@ enum class ECharacterClass : uint8
 	Warrior,			// 战士
 	Ranger,				// 游侠
 	Zombie,				// 丧尸
+	Lich,				// 巫妖
+	Ghoul,				// 食尸鬼
+	Goblin,				// 哥布林
 };
 
 // 默认角色职业信息
