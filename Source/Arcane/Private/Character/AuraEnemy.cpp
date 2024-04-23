@@ -56,7 +56,10 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichAttacker", CharacterClass == ECharacterClass::Lich);	// 设置黑板值, 是否巫妖攻击者
 
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("GhoulAttacker", CharacterClass == ECharacterClass::Ghoul);	// 设置黑板值, 是否食尸鬼攻击者
+
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsAlive", true);	// 设置黑板值, 是否存活
+
 	}
 }
 
