@@ -65,6 +65,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
 	static void GetLivePlayerWithinRaycast(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Start, const FVector& End);
 
+	// 获取立方体重叠检测内的所有存活玩家 （传入上下文对象，传出玩家数组，传入忽略的玩家数组，传入立方体中心，传入立方体尺寸）
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
+	static void GetLivePlayerWithinBoxOverlap(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Origin, const FVector& BoxExtent);
+
 	// 是否是友军（传入上下文对象，传入自己，传入目标）
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
 	static bool IsFriendly(AActor* FirstActor, AActor* SecondActor);
