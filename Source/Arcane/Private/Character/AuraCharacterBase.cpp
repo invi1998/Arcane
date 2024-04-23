@@ -310,4 +310,16 @@ UNiagaraSystem* AAuraCharacterBase::GetBloodEffect_Implementation()
 	return BloodEffect;
 }
 
+FTaggedMontage AAuraCharacterBase::GetMontageByTag_Implementation(const FGameplayTag& MontageTag) const
+{
+	for (const FTaggedMontage& TaggedMontage : AttackMontages)
+	{
+		if (TaggedMontage.MontageTag.MatchesTagExact(MontageTag))
+		{
+			return TaggedMontage;
+		}
+	}
+	return FTaggedMontage();
+}
+
 

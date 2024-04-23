@@ -42,6 +42,7 @@ public:
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() const override;	// 获取攻击动画
 	virtual FTaggedMontage GetRandomAttackMontage_Implementation() const override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;	// 获取血液特效
+	virtual FTaggedMontage GetMontageByTag_Implementation(const FGameplayTag& MontageTag) const override;	// 根据Tag获取MontageTag
 	/* Combat Interface End*/
 
 	UPROPERTY(EditAnywhere, Category="Combat")

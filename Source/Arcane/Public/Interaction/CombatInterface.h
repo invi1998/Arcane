@@ -77,5 +77,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
 	UNiagaraSystem* GetBloodEffect();
+
+	// 根据Tag获取MontageTag
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
+	FTaggedMontage GetMontageByTag(const FGameplayTag& MontageTag) const;
 	
 };
