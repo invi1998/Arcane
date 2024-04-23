@@ -249,6 +249,14 @@ void AAuraCharacterBase::Dissolve()
 		GetMesh()->SetMaterial(0, MID);
 		StartDissolveTimeline(MID);
 	}
+	if (IsValid(DissolveMaterialInstance2))
+	{
+		// 创建动态材质实例
+		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(DissolveMaterialInstance2, this);
+		// 设置动态材质实例的参数
+		GetMesh()->SetMaterial(1, MID);
+		StartDissolveTimeline(MID);
+	}
 	if (IsValid(Weapon) && IsValid(WeaponDissolveMaterialInstance))
 	{
 		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(WeaponDissolveMaterialInstance, this);

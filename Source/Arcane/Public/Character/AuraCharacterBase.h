@@ -133,6 +133,10 @@ protected:
 	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;	// 溶解材质实例
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> DissolveMaterialInstance2;	// 溶解材质实例(有些角色有两个溶解材质)
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;	// 武器溶解材质实例
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
