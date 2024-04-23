@@ -9,6 +9,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "NiagaraFunctionLibrary.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Arcane/Arcane.h"
 #include "Components/AudioComponent.h"
 
@@ -78,6 +79,9 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		// 如果是自己发出的投射物，就不处理
 		return;
 	}
+
+	// 如果是友军，不处理
+	if (UAuraAbilitySystemLibrary::IsFriendly(DamageEffectSpecHandle.Data.Get()->GetEffectContext().GetEffectCauser(), OtherActor)) return;
 
 	if (!bHit)
 	{
