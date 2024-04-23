@@ -41,6 +41,7 @@ public:
 	virtual AActor* GetActor_Implementation() override;	// 获取角色
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() const override;	// 获取攻击动画
 	virtual FTaggedMontage GetRandomAttackMontage_Implementation() const override;
+	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;	// 获取血液特效
 	/* Combat Interface End*/
 
 	UPROPERTY(EditAnywhere, Category="Combat")
@@ -154,6 +155,12 @@ protected:
 	void StartArrowDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// 开始溶解时间轴
 
 	bool bDead = false;	// 是否死亡
+
+	/*
+	 * Niagara Effect
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
+	UNiagaraSystem* BloodEffect;	// 血液特效
 
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")

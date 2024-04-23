@@ -7,6 +7,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Arcane/Arcane.h"
 #include "Components/CapsuleComponent.h"
+#include "NiagaraSystem.h"
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
@@ -302,6 +303,11 @@ FTaggedMontage AAuraCharacterBase::GetRandomAttackMontage_Implementation() const
 	// 随机从攻击动画数组中获取一个动画
 	const int32 RandomIndex = FMath::RandRange(0, AttackMontages.Num() - 1);
 	return AttackMontages[RandomIndex];
+}
+
+UNiagaraSystem* AAuraCharacterBase::GetBloodEffect_Implementation()
+{
+	return BloodEffect;
 }
 
 

@@ -8,6 +8,7 @@
 #include "CombatInterface.generated.h"
 
 class UAnimMontage;
+class UNiagaraSystem;
 
 USTRUCT(BlueprintType)
 struct FTaggedMontage
@@ -19,6 +20,12 @@ struct FTaggedMontage
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FGameplayTag MontageTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USoundBase* ImpactSound;	// 攻击声音
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UNiagaraSystem* ImpactEffect;	// 攻击特效
 };
 
 // This class does not need to be modified.
@@ -67,5 +74,8 @@ public:
 	// 从TArray中随机选择一个Montage
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
 	FTaggedMontage GetRandomAttackMontage() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
+	UNiagaraSystem* GetBloodEffect();
 	
 };
