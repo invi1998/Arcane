@@ -227,6 +227,41 @@ void UAuraAbilitySystemLibrary::GetLivePlayerWithinBoxOverlap(const UObject* Wor
 	}
 }
 
+void UAuraAbilitySystemLibrary::GetLivePlayerWithinForwardSector(const UObject* WorldContextObject,
+	TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Origin, const FVector& Forward,
+	float Angle, float Radius)
+{
+	FCollisionQueryParams SphereParams;		// 碰撞查询参数
+	SphereParams.AddIgnoredActors(IgnoreActors);	// 忽略的碰撞体
+
+	TArray<FOverlapResult> Overlaps;	// 重叠结果
+
+	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		// 重叠多个对象，下面这个函数会返回重叠的对象
+		World->OverlapMultiByObjectType(Overlaps, Origin, FQuat::Identity, FCollisionObjectQueryParams::InitType::AllDynamicObjects, FCollisionShape::MakeSphere(Radius), SphereParams);
+		for (FOverlapResult& Overlap : Overlaps)
+		{
+			if (AActor* OverlapActor = Overlap.GetActor())
+			{
+				if (OverlapActor->Implements<UCombatInterface>())	// 如果实现了战斗接口
+				{
+					if (!ICombatInterface::Execute_IsDead(OverlapActor))	// 如果活着，为什么要用Execute_IsDead，因为IsDead是一个纯虚函数，所以我们需要用Execute_IsDead来调用它
+					{
+						const FVector ToTarget = OverlapActor->GetActorLocation() - Origin;
+						const float Dot = FVector::DotProduct(ToTarget.GetSafeNormal(), Forward.GetSafeNormal());
+						const float AngleToTarget = FMath::Acos(Dot) * 180.f / PI;
+						if (AngleToTarget <= Angle)
+						{
+							OutPlayers.AddUnique(ICombatInterface::Execute_GetActor(OverlapActor));		// 添加到数组中
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 bool UAuraAbilitySystemLibrary::IsFriendly(AActor* FirstActor, AActor* SecondActor)
 {
 	// 通过判断ActorHasTag来判断是否是友方

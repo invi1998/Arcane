@@ -69,6 +69,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
 	static void GetLivePlayerWithinBoxOverlap(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Origin, const FVector& BoxExtent);
 
+	// 获取前方扇形内的所有存活玩家 （传入上下文对象，传出玩家数组，传入忽略的玩家数组，传入中心点，传入前方向，传入扇形角度，传入半径）
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
+	static void GetLivePlayerWithinForwardSector(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Origin, const FVector& Forward, float Angle, float Radius);
+
 	// 是否是友军（传入上下文对象，传入自己，传入目标）
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
 	static bool IsFriendly(AActor* FirstActor, AActor* SecondActor);
