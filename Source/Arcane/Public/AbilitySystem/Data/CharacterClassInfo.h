@@ -18,6 +18,9 @@ enum class ECharacterClass : uint8
 	Ranger,				// 游侠
 	Zombie,				// 丧尸
 	Lich,				// 巫妖
+	LichKing,			// 巫妖王
+	LichGuard,			// 巫妖卫士
+	LichQueen,			// 巫妖女王
 	Ghoul,				// 食尸鬼
 	Goblin,				// 哥布林
 };

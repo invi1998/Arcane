@@ -56,6 +56,18 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichAttacker", CharacterClass == ECharacterClass::Lich);	// 设置黑板值, 是否巫妖攻击者
 
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("GoblinAttacker", CharacterClass == ECharacterClass::Goblin);	// 设置黑板值, 是否哥布林攻击者
+
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("ElementalistAttacker", CharacterClass == ECharacterClass::Elementalist);	// 设置黑板值, 是否元素师攻击者
+
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("WarriorAttacker", CharacterClass == ECharacterClass::Warrior);	// 设置黑板值, 是否战士攻击者
+
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichKingAttacker", CharacterClass == ECharacterClass::LichKing);	// 设置黑板值, 是否巫妖王攻击者
+
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichGuardAttacker", CharacterClass == ECharacterClass::LichGuard);	// 设置黑板值, 是否巫妖卫士攻击者
+
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichQueenAttacker", CharacterClass == ECharacterClass::LichQueen);	// 设置黑板值, 是否巫妖女王攻击者
+
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool("GhoulAttacker", CharacterClass == ECharacterClass::Ghoul);	// 设置黑板值, 是否食尸鬼攻击者
 
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsAlive", true);	// 设置黑板值, 是否存活
