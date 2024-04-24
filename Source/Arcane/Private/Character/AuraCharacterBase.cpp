@@ -320,7 +320,7 @@ FTaggedMontage AAuraCharacterBase::GetRandomAttackMontage_Implementation(const F
 	if (MontageIndices.Num() == 0) return FTaggedMontage();
 	// 随机从攻击动画数组中获取一个动画
 	const int32 RandomIndex = FMath::RandRange(0, MontageIndices.Num() - 1);
-	return AttackMontages[RandomIndex];
+	return AttackMontages[MontageIndices[RandomIndex]];
 }
 
 UNiagaraSystem* AAuraCharacterBase::GetBloodEffect_Implementation()
