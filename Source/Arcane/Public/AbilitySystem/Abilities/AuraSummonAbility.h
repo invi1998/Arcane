@@ -26,10 +26,10 @@ public:
 	TArray<TSubclassOf<APawn>> MinionClasses;	// 召唤的类
 
 	UPROPERTY(EditAnywhere, Category = "Summoning")
-	float MinSpawnDistance = 100.f;		// 最小召唤距离
+	float MinSpawnDistance = 300.f;		// 最小召唤距离
 
 	UPROPERTY(EditAnywhere, Category = "Summoning")
-	float MaxSpawnDistance = 500.0f;	// 最大召唤距离
+	float MaxSpawnDistance = 600.0f;	// 最大召唤距离
 
 	UPROPERTY(EditAnywhere, Category = "Summoning")
 	float SpawnSpread = 100.0f;	// 召唤的散布(分布), 该值越大, 召唤物体的位置范围越大
