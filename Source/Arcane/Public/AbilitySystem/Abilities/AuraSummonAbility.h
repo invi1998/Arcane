@@ -16,9 +16,6 @@ class ARCANE_API UAuraSummonAbility : public UAuraGameplayAbility
 
 public:
 
-	UFUNCTION(BlueprintCallable, Category = "Summoning")
-	TArray<FVector> GetSpawnLocations();	// 获取召唤的位置
-
 	UPROPERTY(EditAnywhere, Category = "Summoning")
 	int32 NumMinions = 5;	// 召唤的数量
 
@@ -33,4 +30,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Summoning")
 	float SpawnSpread = 100.0f;	// 召唤的散布(分布), 该值越大, 召唤物体的位置范围越大
+
+	UFUNCTION(BlueprintCallable, Category = "Summoning")
+	TArray<FVector> GetSpawnLocations();	// 获取召唤的位置
+
+	UFUNCTION(BlueprintPure, Category = "Summoning")
+	TSubclassOf<APawn> GetRandomMinionClass();	// 获取随机的召唤物体类
 };
