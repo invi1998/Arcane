@@ -304,12 +304,22 @@ TArray<FTaggedMontage> AAuraCharacterBase::GetAttackMontages_Implementation() co
 	return AttackMontages;
 }
 
-FTaggedMontage AAuraCharacterBase::GetRandomAttackMontage_Implementation() const
+FTaggedMontage AAuraCharacterBase::GetRandomAttackMontage_Implementation(const FGameplayTag& AbilityTag) const
 {
 	if (AttackMontages.Num() == 0) return FTaggedMontage();
 
+	// 从AttackMontages数组中获取AbilityTag标签的Montage数组下标
+	TArray<int32> MontageIndices;
+	for (int32 i = 0; i < AttackMontages.Num(); i++)
+	{
+		if (AttackMontages[i].AbilityTag.MatchesTagExact(AbilityTag))
+		{
+			MontageIndices.Add(i);
+		}
+	}
+	if (MontageIndices.Num() == 0) return FTaggedMontage();
 	// 随机从攻击动画数组中获取一个动画
-	const int32 RandomIndex = FMath::RandRange(0, AttackMontages.Num() - 1);
+	const int32 RandomIndex = FMath::RandRange(0, MontageIndices.Num() - 1);
 	return AttackMontages[RandomIndex];
 }
 
@@ -318,11 +328,11 @@ UNiagaraSystem* AAuraCharacterBase::GetBloodEffect_Implementation()
 	return BloodEffect;
 }
 
-FTaggedMontage AAuraCharacterBase::GetMontageByTag_Implementation(const FGameplayTag& MontageTag) const
+FTaggedMontage AAuraCharacterBase::GetMontageByTag_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& MontageTag) const
 {
 	for (const FTaggedMontage& TaggedMontage : AttackMontages)
 	{
-		if (TaggedMontage.MontageTag.MatchesTagExact(MontageTag))
+		if (TaggedMontage.MontageTag.MatchesTagExact(MontageTag) && TaggedMontage.AbilityTag.MatchesTagExact(AbilityTag))
 		{
 			return TaggedMontage;
 		}

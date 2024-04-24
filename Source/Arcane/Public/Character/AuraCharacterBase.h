@@ -40,9 +40,9 @@ public:
 	virtual bool IsDead_Implementation() const override;	// 是否死亡
 	virtual AActor* GetActor_Implementation() override;	// 获取角色
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() const override;	// 获取攻击动画
-	virtual FTaggedMontage GetRandomAttackMontage_Implementation() const override;
+	virtual FTaggedMontage GetRandomAttackMontage_Implementation(const FGameplayTag& AbilityTag) const override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;	// 获取血液特效
-	virtual FTaggedMontage GetMontageByTag_Implementation(const FGameplayTag& MontageTag) const override;	// 根据Tag获取MontageTag
+	virtual FTaggedMontage GetMontageByTag_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& MontageTag) const override;	// 根据Tag获取MontageTag
 	/* Combat Interface End*/
 
 	UPROPERTY(EditAnywhere, Category="Combat")

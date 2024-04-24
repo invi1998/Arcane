@@ -78,7 +78,7 @@ public:
 	FGameplayTag Damage_Physical;				// 物理伤害
 
 	FGameplayTag Abilities_Attack;				// 能力：攻击
-	FGameplayTag Abilities_Swing;				// 能力：挥击
+	FGameplayTag Abilities_Call;				// 能力：召唤
 
 	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;	// 伤害类型对应抗性
 

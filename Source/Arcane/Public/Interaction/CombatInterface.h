@@ -16,6 +16,9 @@ struct FTaggedMontage
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag AbilityTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UAnimMontage* Montage;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -73,13 +76,13 @@ public:
 
 	// 从TArray中随机选择一个Montage
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
-	FTaggedMontage GetRandomAttackMontage() const;
+	FTaggedMontage GetRandomAttackMontage(const FGameplayTag& AbilityTag) const;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
 	UNiagaraSystem* GetBloodEffect();
 
 	// 根据Tag获取MontageTag
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
-	FTaggedMontage GetMontageByTag(const FGameplayTag& MontageTag) const;
+	FTaggedMontage GetMontageByTag(const FGameplayTag& AbilityTag, const FGameplayTag& MontageTag) const;
 	
 };
