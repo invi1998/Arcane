@@ -83,3 +83,8 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	}
 
 }
+
+void UAuraProjectileSpell::SetProjectileClass(TSubclassOf<AAuraProjectile> NewProjectileClass)
+{
+	ProjectileClass = NewProjectileClass;
+}

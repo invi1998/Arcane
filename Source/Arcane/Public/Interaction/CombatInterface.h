@@ -93,4 +93,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
 	void IncrementSummonCount(int32 Amount);
 
+	// 获取投射物类
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
+	TSubclassOf<AAuraProjectile> GetProjectileClass();
+
 };

@@ -25,7 +25,10 @@ protected:
 	UFUNCTION(BlueprintCallable, Category="Projectile")
 	void SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& Tag, bool bOverridePitch = false, float PitchOverride = 0.f);		// 生成投射物
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UFUNCTION(BlueprintCallable, Category="Projectile")
+	void SetProjectileClass(TSubclassOf<AAuraProjectile> NewProjectileClass);	// 设置投射物类
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AAuraProjectile> ProjectileClass;	// 投射物类
 
 };
