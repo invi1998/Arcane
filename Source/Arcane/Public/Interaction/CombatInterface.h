@@ -84,5 +84,9 @@ public:
 	// 根据Tag获取MontageTag
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
 	FTaggedMontage GetMontageByTag(const FGameplayTag& AbilityTag, const FGameplayTag& MontageTag) const;
-	
+
+	// 获取召唤物数量
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
+	int32 GetSummonCount();
+
 };

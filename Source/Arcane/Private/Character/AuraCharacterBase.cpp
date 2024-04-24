@@ -340,4 +340,9 @@ FTaggedMontage AAuraCharacterBase::GetMontageByTag_Implementation(const FGamepla
 	return FTaggedMontage();
 }
 
+int32 AAuraCharacterBase::GetSummonCount_Implementation()
+{
+	return NumMinions;
+}
+
 

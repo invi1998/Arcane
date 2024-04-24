@@ -43,6 +43,7 @@ public:
 	virtual FTaggedMontage GetRandomAttackMontage_Implementation(const FGameplayTag& AbilityTag) const override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;	// 获取血液特效
 	virtual FTaggedMontage GetMontageByTag_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& MontageTag) const override;	// 根据Tag获取MontageTag
+	virtual int32 GetSummonCount_Implementation() override;	// 获取召唤物数量
 	/* Combat Interface End*/
 
 	UPROPERTY(EditAnywhere, Category="Combat")
@@ -166,6 +167,12 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	UNiagaraSystem* BloodEffect;	// 血液特效
+
+	/*
+	 * Minions 召唤物
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
+	int32 NumMinions = 0;	// 召唤的数量
 
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")
