@@ -44,6 +44,7 @@ public:
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;	// 获取血液特效
 	virtual FTaggedMontage GetMontageByTag_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& MontageTag) const override;	// 根据Tag获取MontageTag
 	virtual int32 GetSummonCount_Implementation() override;	// 获取召唤物数量
+	virtual void IncrementSummonCount_Implementation(int32 Amount) override;	// 设置召唤物数量
 	/* Combat Interface End*/
 
 	UPROPERTY(EditAnywhere, Category="Combat")

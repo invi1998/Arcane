@@ -5,14 +5,19 @@
 
 #include "Kismet/KismetSystemLibrary.h"
 
-TArray<FVector> UAuraSummonAbility::GetSpawnLocations()
+TArray<FVector> UAuraSummonAbility::GetSpawnLocations(const FVector& TargetLocation)
 {
-	const FVector Forward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
+	// 计算前向向量，这里不应该用GetActorForwardVector，因为NPC转体需要时间，我们应该直接用Actor和Target的位置差
+	// const FVector Forward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
+	// Forward归一化
+	// FVector::Normalize(Forward);
 	const FVector Location = GetAvatarActorFromActorInfo()->GetActorLocation();
+	const FVector Forward = TargetLocation - Location;
+	const FVector NormalizedForwardToTargetDir = Forward.GetSafeNormal();
 	const float DeltaSpread = SpawnSpread / NumMinions;	// 计算每个召唤物体之间的间隔
 
-	const FVector LeftOfSpread = Forward.RotateAngleAxis(-SpawnSpread / 2.f, FVector::UpVector);	// 旋转SpawnSpread角度/2, 得到左边的向量
-	const FVector RightOfSpread = Forward.RotateAngleAxis(SpawnSpread / 2.f, FVector::UpVector);	// 旋转-SpawnSpread角度/2, 得到右边的向量
+	const FVector LeftOfSpread = NormalizedForwardToTargetDir.RotateAngleAxis(-SpawnSpread / 2.f, FVector::UpVector);	// 旋转SpawnSpread角度/2, 得到左边的向量
+	const FVector RightOfSpread = NormalizedForwardToTargetDir.RotateAngleAxis(SpawnSpread / 2.f, FVector::UpVector);	// 旋转-SpawnSpread角度/2, 得到右边的向量
 
 	//// debug DrawDebugArrow start
 	//UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Location, Location + LeftOfSpread * MaxSpawnDistance, 4.f, FColor::Purple, 10.f);

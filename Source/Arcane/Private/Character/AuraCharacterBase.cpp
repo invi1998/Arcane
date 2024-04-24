@@ -345,4 +345,9 @@ int32 AAuraCharacterBase::GetSummonCount_Implementation()
 	return NumMinions;
 }
 
+void AAuraCharacterBase::IncrementSummonCount_Implementation(int32 Amount)
+{
+	NumMinions += Amount;
+}
+
 

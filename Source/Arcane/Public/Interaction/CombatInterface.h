@@ -89,4 +89,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
 	int32 GetSummonCount();
 
+	// 设置召唤物数量
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
+	void IncrementSummonCount(int32 Amount);
+
 };
