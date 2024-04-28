@@ -170,6 +170,18 @@ FGameplayTag UAuraAbilitySystemComponent::GetAbilityInputTagBySpec(const FGamepl
 	return FGameplayTag();    // 返回一个空的标签
 }
 
+void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
+{
+	Super::OnRep_ActivateAbilities();
+
+    if (!bStartupAbilitiesGiven)
+	{
+        bStartupAbilitiesGiven = true;
+    	AbilitiesGivenDelegate.Broadcast(this);
+	}
+   
+}
+
 void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,
                                                                      const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
