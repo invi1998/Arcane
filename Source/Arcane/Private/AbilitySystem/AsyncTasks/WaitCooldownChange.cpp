@@ -4,9 +4,9 @@
 #include "AbilitySystem/AsyncTasks/WaitCooldownChange.h"
 
 #include "AbilitySystemComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
-UWaitCooldownChange* UWaitCooldownChange::WaitCooldownChange(UAbilitySystemComponent* AbilitySystemComponent,
-                                                             const FGameplayTag& InCooldownTag)
+UWaitCooldownChange* UWaitCooldownChange::WaitCooldownChange(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag& InCooldownTag)
 {
 	UWaitCooldownChange* WaitForCooldownChange = NewObject<UWaitCooldownChange>();
 	WaitForCooldownChange->ASC = AbilitySystemComponent;
@@ -21,7 +21,7 @@ UWaitCooldownChange* UWaitCooldownChange::WaitCooldownChange(UAbilitySystemCompo
 	// 冷却何时结束（CooldownTag何时被移除）
 	// 我们可以通过订阅RegiterGameplayTagEvent来监听CooldownTag的变化
 	// 注意：以为这是一个静态函数，没有this指针，所以我们需要使用上面创建的WaitForCooldownChange对象来AddUObject
-	AbilitySystemComponent->RegisterGameplayTagEvent(InCooldownTag, EGameplayTagEventType::NewOrRemoved).AddUObject(WaitForCooldownChange, &UWaitCooldownChange::CooldownChanged);
+	AbilitySystemComponent->RegisterGameplayTagEvent(InCooldownTag, EGameplayTagEventType::NewOrRemoved).AddUObject(WaitForCooldownChange, &UWaitCooldownChange::CooldownTagChanged);
 
 	// 冷却何时开始，（当添加一个新的基于持续时间的GameplayEffect时）
 	// 每当添加一个新的基于持续时间的GameplayEffect时，客户端和服务器都会调用此委托
@@ -42,7 +42,7 @@ void UWaitCooldownChange::EndTask()
 	MarkAsGarbage();		// 标记为垃圾，等待GC回收
 }
 
-void UWaitCooldownChange::CooldownChanged(const FGameplayTag InCooldownTag, int32 NewCount)
+void UWaitCooldownChange::CooldownTagChanged(const FGameplayTag InCooldownTag, int32 NewCount)
 {
 	if (NewCount == 0)	// 如果冷却时间为0，结束任务
 	{
@@ -75,7 +75,7 @@ void UWaitCooldownChange::OnActiveEffectAdded(UAbilitySystemComponent* AbilitySy
 			{
 				CooldownTime = FMath::Max(CooldownTime, TimeRemainingArray[i]);
 			}
-			CooldownEnd.Broadcast(CooldownTime);
+			CooldownStart.Broadcast(CooldownTime);
 		}
 	}
 }

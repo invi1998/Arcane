@@ -44,7 +44,7 @@ protected:
 	UPROPERTY()
 	FGameplayTag CooldownTag;
 
-	void CooldownChanged(const FGameplayTag InCooldownTag, int32 NewCount);	// 冷却时间改变时调用
+	void CooldownTagChanged(const FGameplayTag InCooldownTag, int32 NewCount);	// 冷却时间改变时调用
 
 	void OnActiveEffectAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveHandle);	// 添加冷却效果时调用
 
