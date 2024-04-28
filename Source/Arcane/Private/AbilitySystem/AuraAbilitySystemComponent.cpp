@@ -7,6 +7,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Arcane/ArcaneLogChannels.h"
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -121,8 +122,56 @@ void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
     }
 }
 
+void UAuraAbilitySystemComponent::ForEachAbility(const FForEachAbility& Delegate)
+{
+    FScopedAbilityListLock AbilityLock(*this);	// 创建一个作用域锁，锁住AbilitySystemComponent的能力列表
+    // 该锁的作用是在作用域结束时自动解锁，这样就不用担心忘记解锁了
+    // 而且在作用域内，锁住了AbilitySystemComponent的能力列表，这样就不会有其他线程对其进行修改
+
+	// 2：遍历所有的激活的能力
+	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	{
+		// 3：调用委托
+		if (!Delegate.ExecuteIfBound(Spec))
+		{
+			UE_LOG(LogArcane, Error, TEXT("Failed to execute delegate in %hs"), __FUNCTION__);
+		}
+	}
+}
+
+FGameplayTag UAuraAbilitySystemComponent::GetAbilityTagBySpec(const FGameplayAbilitySpec& Spec)
+{
+    if (Spec.Ability)
+	{
+		for (const FGameplayTag& Tag : Spec.Ability.Get()->AbilityTags)
+		{
+            // 如果能力的标签包含了"Abilities"，那么返回这个标签
+			if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Abilities"))))
+			{
+				return Tag;
+			}
+		}
+	}
+
+    return FGameplayTag();    // 返回一个空的标签
+}
+
+FGameplayTag UAuraAbilitySystemComponent::GetAbilityInputTagBySpec(const FGameplayAbilitySpec& Spec)
+{
+	for (const FGameplayTag& Tag : Spec.DynamicAbilityTags)
+	{
+		// 如果能力的标签包含了"Input"，那么返回这个标签
+		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("InputTag"))))
+		{
+			return Tag;
+		}
+	}
+
+	return FGameplayTag();    // 返回一个空的标签
+}
+
 void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,
-	const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
+                                                                     const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
     FGameplayTagContainer AssetTagContainer;    // 创建一个GameplayTagContainer
     // 通过绑定委托，获取到GameplayTag，然后将其添加到AbilitySystemComponent的AssetTags中

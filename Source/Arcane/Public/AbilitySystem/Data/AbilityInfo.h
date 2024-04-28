@@ -8,7 +8,7 @@
 #include "AbilityInfo.generated.h"
 
 USTRUCT(BlueprintType)
-struct FAuraAbility
+struct FAuraAbilityInfo
 {
 	GENERATED_BODY()
 
@@ -37,9 +37,9 @@ class ARCANE_API UAbilityInfo : public UDataAsset
 public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AbilityInformation")
-	TArray<FAuraAbility> AbilitiesInformation;						// 技能列表
+	TArray<FAuraAbilityInfo> AbilitiesInformation;						// 技能列表
 
 
-	FAuraAbility FindAbilityInfoByTag(const FGameplayTag& AbilityTag, bool bLogNotFound = false) const;
+	FAuraAbilityInfo FindAbilityInfoByTag(const FGameplayTag& AbilityTag, bool bLogNotFound = false) const;
 	
 };

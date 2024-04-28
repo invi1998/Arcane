@@ -6,6 +6,7 @@
 #include "AttributeSet.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 #include "Fonts/UnicodeBlockRange.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -89,5 +90,23 @@ void UOverlayWidgetController::OnInitializedStartupAbilities(UAuraAbilitySystemC
 {
 	// 获取所有给定Abilities的信息，查找他们的AbilityInfo并进行广播给Widget
 	if (!AuraASC || !AuraASC->bStartupAbilitiesGiven) return;	// 如果AuraASC为空或者bStartupAbilitiesGiven为false，返回
+
+	FForEachAbility BroadcastAbilityDelegate;
+	BroadcastAbilityDelegate.BindLambda(
+		[this, AuraASC](const FGameplayAbilitySpec& AbilitySpec)->void
+		{
+			// 通过AbilityTag获取AbilityInfo
+			const FGameplayTag tag = AuraASC->GetAbilityTagBySpec(AbilitySpec);
+			FAuraAbilityInfo AbilityInfo = AbilityInformation->FindAbilityInfoByTag(tag);	// 通过Tag查找AbilityInfo
+
+			// 获取输入Tag
+			const FGameplayTag inputTag = AuraASC->GetAbilityInputTagBySpec(AbilitySpec);
+			AbilityInfo.InputTag = inputTag;	// 设置输入Tag
+
+			// 广播委托
+			AbilityInfoDelegate.Broadcast(AbilityInfo);	// 广播能力信息
+		}
+	);
+	AuraASC->ForEachAbility(BroadcastAbilityDelegate);	// 对每个能力进行广播
 }
 

@@ -11,6 +11,7 @@ class UAuraGameplayAbility;
 // 定义一个委托，用于在效果应用到目标时调用，该委托用于广播效果的标签
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /* Asset Tags */);
 DECLARE_MULTICAST_DELEGATE_OneParam(FAbilitiesGiven, UAuraAbilitySystemComponent*);	// 定义一个委托，用于在给角色添加能力时调用
+DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);	// 为每个能力定义一个委托
 
 /**
  * 
@@ -36,6 +37,11 @@ public:
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);	// 技能输入标签释放
 
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);	// 技能输入标签按住
+
+	void ForEachAbility(const FForEachAbility& Delegate);	// 为每个能力调用一个委托)
+
+	static FGameplayTag GetAbilityTagBySpec(const FGameplayAbilitySpec& Spec);	// 通过AbilitySpec获取能力标签
+	static FGameplayTag GetAbilityInputTagBySpec(const FGameplayAbilitySpec& Spec);	// 通过AbilitySpec获取能力输入标签
 
 protected:
 	// 在效果应用到目标时调用

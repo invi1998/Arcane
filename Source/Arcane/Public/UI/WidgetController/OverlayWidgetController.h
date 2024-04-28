@@ -10,6 +10,7 @@
 struct FOnAttributeChangeData;		// 属性改变数据
 class UAbilityInfo;
 class UAuraAbilitySystemComponent;
+struct FAuraAbilityInfo;
 
 // 这结构体用于存储UI小部件行的数据，用来在屏幕上显示消息
 USTRUCT(BlueprintType)		// 设置为蓝图类型
@@ -37,6 +38,8 @@ struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableRowBase
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangeSignature, float, NewValue);		// 属性改变委托，接收一个float类型的新值
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, MessageWidgetRow);		// 消息小部件行，一个参数是消息小部件行
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, AbilityInfo);		// 能力信息委托，一个参数是能力信息)
 
 /**
  * OverlayWidgetController, 叠加层控件控制器, 设置为BlueprintType, Blueprintable，是因为我们希望在蓝图中使用它
@@ -69,6 +72,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="GAS|Message")		// 设置为蓝图可分配，分类为GAS下的Attributes
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;		// 消息小部件 行委托
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Abilities")		// 设置为蓝图可分配，分类为GAS下的Abilities
+	FAbilityInfoSignature AbilityInfoDelegate;		// 能力信息委托
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Widget Data")		// 设置为可编辑的任何地方，蓝图可读
