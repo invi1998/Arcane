@@ -84,6 +84,11 @@ public:
 	FGameplayTag Abilities_Call;				// 能力：召唤
 	FGameplayTag Abilities_Fire_FireBolt;				// 能力: 火焰：火球
 
+	/*
+	 * Cooldown Tags
+	 */
+	FGameplayTag Cooldown_Fire_FireBolt;		// 冷却：火焰：火球
+
 	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;	// 伤害类型对应抗性
 
 	/*
