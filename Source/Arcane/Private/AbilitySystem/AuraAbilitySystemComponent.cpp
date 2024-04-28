@@ -40,9 +40,9 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
             GiveAbility(AbilitySpec);   // 添加能力
             // GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活能力
         }
-
-       
 	}
+    bStartupAbilitiesGiven = true;    // 标记已经添加了能力
+    AbilitiesGivenDelegate.Broadcast(this);    // 广播给UI，告诉UI能力已经添加，可以显示了
 }
 
 void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)

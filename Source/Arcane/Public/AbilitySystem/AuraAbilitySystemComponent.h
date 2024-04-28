@@ -10,6 +10,7 @@ class UAuraGameplayAbility;
 
 // 定义一个委托，用于在效果应用到目标时调用，该委托用于广播效果的标签
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /* Asset Tags */);
+DECLARE_MULTICAST_DELEGATE_OneParam(FAbilitiesGiven, UAuraAbilitySystemComponent*);	// 定义一个委托，用于在给角色添加能力时调用
 
 /**
  * 
@@ -24,8 +25,11 @@ public:
 	void AbilityActorInfoSet();
 
 	FEffectAssetTags EffectAssetTags;	// 定义一个委托，用于在效果应用到目标时调用，该委托用于广播效果的标签
+	FAbilitiesGiven AbilitiesGivenDelegate;	// 定义一个委托，用于在给角色添加能力时调用
 
 	void AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities);		// 添加角色的能力，这些能力在角色创建时就会被添加
+
+	bool bStartupAbilitiesGiven = false;	// 是否已经添加了角色的能力
 
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);	// 技能输入标签按下
 

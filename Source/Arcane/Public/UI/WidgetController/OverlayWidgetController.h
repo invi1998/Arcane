@@ -7,6 +7,10 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
+struct FOnAttributeChangeData;		// 属性改变数据
+class UAbilityInfo;
+class UAuraAbilitySystemComponent;
+
 // 这结构体用于存储UI小部件行的数据，用来在屏幕上显示消息
 USTRUCT(BlueprintType)		// 设置为蓝图类型
 struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableRowBase
@@ -29,9 +33,6 @@ struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableRowBase
 	UTexture2D* BackgroundIcon = nullptr;		// 消息背景
 
 };
-
-struct FOnAttributeChangeData;		// 属性改变数据
-class UAbilityInfo;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangeSignature, float, NewValue);		// 属性改变委托，接收一个float类型的新值
 
@@ -75,6 +76,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Widget Data")		// 设置为可编辑的任何地方，蓝图可读
 	TObjectPtr<UAbilityInfo> AbilityInformation;		// 能力信息
+
+	void OnInitializedStartupAbilities(UAuraAbilitySystemComponent* AuraASC);		// 当初始化启动能力完成时
 
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag) const;		// 通过标签获取数据表行

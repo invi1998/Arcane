@@ -48,24 +48,46 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 			OnMaxManaChanged.Broadcast(Data.NewValue);	// 广播最大法力值改变
 		});	// 添加最大法力值改变的委托)
 
-	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
-		[this](const FGameplayTagContainer& AssertTags)
-		{
-			for (const FGameplayTag& Tag : AssertTags)
+	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		AuraASC->EffectAssetTags.AddLambda(
+			[this](const FGameplayTagContainer& AssertTags)
 			{
-				// 这里我们只要MessageTag
-				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));	// 获取Message
-				if (Tag.MatchesTag(MessageTag))
+				for (const FGameplayTag& Tag : AssertTags)
 				{
-					// UKismetSystemLibrary::PrintString(GEngine->GetWorld(), Tag.ToString(), true, true, FLinearColor::Green, 5.0f);	// 打印Tag
+					// 这里我们只要MessageTag
+					FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));	// 获取Message
+					if (Tag.MatchesTag(MessageTag))
+					{
+						// UKismetSystemLibrary::PrintString(GEngine->GetWorld(), Tag.ToString(), true, true, FLinearColor::Green, 5.0f);	// 打印Tag
 
-					const FUIWidgetRow* WidgetRow = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);	// 通过Tag获取数据表行
-					// 我们希望通过Tag来获取数据表行，然后使用这些数据来更新UI，比如使用它里面的一些资产来显示内容
+						const FUIWidgetRow* WidgetRow = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);	// 通过Tag获取数据表行
+						// 我们希望通过Tag来获取数据表行，然后使用这些数据来更新UI，比如使用它里面的一些资产来显示内容
 
-					MessageWidgetRowDelegate.Broadcast(*WidgetRow);	// 广播消息小部件行
+						MessageWidgetRowDelegate.Broadcast(*WidgetRow);	// 广播消息小部件行
+					}
 				}
 			}
+		);
+
+		// 我们必须考虑到在初始化时，我们可能还没有给予能力，所以我们需要检查是否已经给予了能力
+		if (AuraASC->bStartupAbilitiesGiven)
+		{
+			// 如果已经给予了能力，我们就可以直接调用OnInitializedStartupAbilities
+			OnInitializedStartupAbilities(AuraASC);	// 初始化启动能力
 		}
-	);
+		else
+		{
+			// 如果没有给予能力，我们就需要添加一个委托，以便在给予能力时调用OnInitializedStartupAbilities
+			AuraASC->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::OnInitializedStartupAbilities);
+		}
+	}
+
+}
+
+void UOverlayWidgetController::OnInitializedStartupAbilities(UAuraAbilitySystemComponent* AuraASC)
+{
+	// 获取所有给定Abilities的信息，查找他们的AbilityInfo并进行广播给Widget
+	if (!AuraASC || !AuraASC->bStartupAbilitiesGiven) return;	// 如果AuraASC为空或者bStartupAbilitiesGiven为false，返回
 }
 
