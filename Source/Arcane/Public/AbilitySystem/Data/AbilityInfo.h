@@ -19,6 +19,9 @@ struct FAuraAbilityInfo
 	FGameplayTag InputTag = FGameplayTag::EmptyTag;			// 输入标签（用于绑定输入），该值蓝图不可编辑，通过代码逻辑设置
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag CooldownTag = FGameplayTag::EmptyTag;		// 冷却标签
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UTexture2D> Icon = nullptr;					// 技能图标
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
