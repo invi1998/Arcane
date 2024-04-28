@@ -77,8 +77,12 @@ public:
 	FGameplayTag Damage_Arcane;					// 奥术伤害
 	FGameplayTag Damage_Physical;				// 物理伤害
 
+	/*
+	 * Ability Tags
+	 */
 	FGameplayTag Abilities_Attack;				// 能力：攻击
 	FGameplayTag Abilities_Call;				// 能力：召唤
+	FGameplayTag Abilities_Fire_FireBolt;				// 能力: 火焰：火球
 
 	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;	// 伤害类型对应抗性
 

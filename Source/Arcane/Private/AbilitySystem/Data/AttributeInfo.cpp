@@ -2,6 +2,7 @@
 
 
 #include "AbilitySystem/Data/AttributeInfo.h"
+#include "Arcane/ArcaneLogChannels.h"
 
 FAuraAttributeInfo UAttributeInfo::GetAttributeInfo(const FGameplayTag AttributeTag, bool bLogNotFound) const
 {
@@ -16,7 +17,7 @@ FAuraAttributeInfo UAttributeInfo::GetAttributeInfo(const FGameplayTag Attribute
 
 	if (bLogNotFound)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AttributeInfo for %s not found in %s"), *AttributeTag.ToString(), *GetName());
+		UE_LOG(LogArcane, Error, TEXT("AttributeInfo for %s not found in %s"), *AttributeTag.ToString(), *GetName());
 	}
 
 	return FAuraAttributeInfo();

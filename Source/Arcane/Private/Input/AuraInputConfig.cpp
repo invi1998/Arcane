@@ -2,6 +2,7 @@
 
 
 #include "Input/AuraInputConfig.h"
+#include "Arcane/ArcaneLogChannels.h"
 
 const UInputAction* UAuraInputConfig::GetInputActionByTag(const FGameplayTag& Tag, bool bLogNotGet) const
 {
@@ -15,7 +16,7 @@ const UInputAction* UAuraInputConfig::GetInputActionByTag(const FGameplayTag& Ta
 
 	if (bLogNotGet)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("InputAction with Tag %s not found in %s"), *Tag.ToString(), *GetName());
+		UE_LOG(LogArcane, Warning, TEXT("InputAction with Tag %s not found in %s"), *Tag.ToString(), *GetName());
 	}
 
 	return nullptr;

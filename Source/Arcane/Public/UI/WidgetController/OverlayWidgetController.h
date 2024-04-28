@@ -31,6 +31,7 @@ struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableRowBase
 };
 
 struct FOnAttributeChangeData;		// 属性改变数据
+class UAbilityInfo;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangeSignature, float, NewValue);		// 属性改变委托，接收一个float类型的新值
 
@@ -71,6 +72,9 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Widget Data")		// 设置为可编辑的任何地方，蓝图可读
 	TObjectPtr<UDataTable> MessageWidgetDataTable;		// 消息小部件数据表
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Widget Data")		// 设置为可编辑的任何地方，蓝图可读
+	TObjectPtr<UAbilityInfo> AbilityInformation;		// 能力信息
 
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag) const;		// 通过标签获取数据表行
