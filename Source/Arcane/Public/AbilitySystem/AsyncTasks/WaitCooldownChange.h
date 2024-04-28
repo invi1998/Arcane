@@ -16,7 +16,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCooldownChangeSignature, float, C
 /**
  * 技能冷却时间异步任务
  */
-UCLASS()
+UCLASS(BlueprintType, meta=(ExposedAsyncProxy="AsyncTask"))	// 蓝图类型，暴露异步代理
 class ARCANE_API UWaitCooldownChange : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
