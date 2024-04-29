@@ -25,4 +25,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void AddToEXP(int32 EXP);
 
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void LevelUp(int32 Lv);
 };

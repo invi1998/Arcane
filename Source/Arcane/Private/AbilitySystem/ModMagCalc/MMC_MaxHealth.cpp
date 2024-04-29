@@ -37,10 +37,14 @@ float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffec
 
 	// 同时，我们希望玩家的最大生命值不仅取决于体质（vigor），还取决于其他因素，比如等级，所以我们需要一个公式来计算最大生命值
 	// 这也是我们创建这个修饰符的原因，因为我们在这里可以始终获取到这个效果的来源和目标，所以我们可以根据来源和目标的属性来计算最大生命值
-
-	const ICombatInterface* SourceActor = Cast<ICombatInterface>(Spec.GetEffectContext().GetSourceObject());	// 来源角色
-	const int32 Level = SourceActor ? SourceActor->GetCharacterLevel() : 1;	// 等级
-
+	int32 Level = 1;
+	if (Spec.GetContext().GetSourceObject() && Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
+	{
+		if (const ICombatInterface* SourceActor = Cast<ICombatInterface>(Spec.GetEffectContext().GetSourceObject()))
+		{
+			Level = SourceActor->Execute_GetCharacterLevel(Spec.GetEffectContext().GetSourceObject());	// 获取角色等级
+		}
+	}
 	return 80.f + Level * 10.5f + Vigor * 2.5f;	// 返回最大生命值
 
 }

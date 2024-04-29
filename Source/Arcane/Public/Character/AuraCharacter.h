@@ -22,11 +22,12 @@ public:
 	virtual void OnRep_PlayerState() override;		// 当角色的PlayerState被复制时调用
 
 	/* Combat Interface */
-	virtual int32 GetCharacterLevel() const override;	// 获取等级
+	virtual int32 GetCharacterLevel_Implementation() const override;	// 获取等级
 	/* Combat Interface End*/
 
 	/* Player Interface Start*/
 	void AddToEXP_Implementation(int32 EXP) override;	// 添加经验
+	void LevelUp_Implementation(int32 Lv) override;	// 升级
 	/* Player Interface End*/
 
 

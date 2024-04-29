@@ -35,8 +35,14 @@ float UMMC_MaxMana::CalculateBaseMagnitude_Implementation(const FGameplayEffectS
 	Intelligence = FMath::Max<float>(Intelligence, 0.f);
 
 	// 5: get the player level （获取玩家等级）
-	const ICombatInterface* SourceActor = Cast<ICombatInterface>(Spec.GetEffectContext().GetSourceObject());
-	const int32 Level = SourceActor ? SourceActor->GetCharacterLevel() : 1;
+	int32 Level = 1;
+	if (Spec.GetContext().GetSourceObject() && Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
+	{
+		if (const ICombatInterface* SourceActor = Cast<ICombatInterface>(Spec.GetEffectContext().GetSourceObject()))
+		{
+			Level = SourceActor->Execute_GetCharacterLevel(Spec.GetEffectContext().GetSourceObject());
+		}
+	}
 
 	// 6：Return the max mana （返回最大法力值）
 	return 50.f + Level * 15.5f + Intelligence * 2.5f;

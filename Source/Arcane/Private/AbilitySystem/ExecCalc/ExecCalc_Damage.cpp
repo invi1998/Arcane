@@ -39,12 +39,12 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	const AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
 	const AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
 
-	const ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
-	const ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
+	const ICombatInterface* SourceCombatInterface = SourceAvatar->Implements<UCombatInterface>() ? Cast<ICombatInterface>(SourceAvatar) : nullptr;
+	const ICombatInterface* TargetCombatInterface = TargetAvatar->Implements<UCombatInterface>() ? Cast<ICombatInterface>(TargetAvatar) : nullptr;
 
 	// 获取等级
-	const int32 SourceLevel = SourceCombatInterface ? SourceCombatInterface->GetCharacterLevel() : 1;
-	const int32 TargetLevel = TargetCombatInterface ? TargetCombatInterface->GetCharacterLevel() : 1;
+	const int32 SourceLevel = SourceCombatInterface ? SourceCombatInterface->Execute_GetCharacterLevel(SourceAvatar) : 1;
+	const int32 TargetLevel = TargetCombatInterface ? TargetCombatInterface->Execute_GetCharacterLevel(TargetAvatar) : 1;
 
 	// 获取GameplayEffect
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();

@@ -31,7 +31,7 @@ public:
 	/*end Enemy ½Ó¿Ú*/
 
 	/** CombatInterface begin */
-	virtual int32 GetCharacterLevel() const override;
+	virtual int32 GetCharacterLevel_Implementation() const override;
 	/** CombatInterface end */
 
 	UPROPERTY(BlueprintAssignable, Category="Combat")
