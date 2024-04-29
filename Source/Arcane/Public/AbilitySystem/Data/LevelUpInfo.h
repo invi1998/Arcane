@@ -42,5 +42,9 @@ public:
 
 	int32 GetAttributePointRewardByLevel(int32 Level);	// 获取属性点奖励
 
+	int32 GetTotalAttributePointRewardInLevel(int32 Level);	// 获取等级内的总属性点奖励
+
 	int32 GetSkillPointRewardByLevel(int32 Level);		// 获取技能点奖励
+
+	int32 GetTotalSkillPointRewardInLevel(int32 Level);	// 获取等级内的总技能点奖励
 };

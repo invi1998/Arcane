@@ -57,6 +57,26 @@ int32 ULevelUpInfo::GetAttributePointRewardByLevel(int32 Level)
 	return 0;
 }
 
+int32 ULevelUpInfo::GetTotalAttributePointRewardInLevel(int32 Level)
+{
+	int32 totalAttributePoints = 0;
+	for (int32 i = 0; i < Level; i++)
+	{
+		totalAttributePoints += LevelUpInformation[i].AttributePoints;
+	}
+	return totalAttributePoints;
+}
+
+int32 ULevelUpInfo::GetTotalSkillPointRewardInLevel(int32 Level)
+{
+	int32 totalSkillPoints = 0;
+	for (int32 i = 0; i < Level; i++)
+	{
+		totalSkillPoints += LevelUpInformation[i].SkillPoints;
+	}
+	return totalSkillPoints;
+}
+
 int32 ULevelUpInfo::GetSkillPointRewardByLevel(int32 Level)
 {
 	if (LevelUpInformation.IsValidIndex(Level-1))
