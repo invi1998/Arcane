@@ -15,6 +15,7 @@
 
 #include "Net/UnrealNetwork.h"
 #include "Player/AuraPlayerController.h"
+#include "Player/AuraPlayerState.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -117,6 +118,19 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				LocalIncomingDamage,
 				UAuraAbilitySystemLibrary::IsBlockedHit(EffectProperties.EffectContextHandle),
 				UAuraAbilitySystemLibrary::IsCriticalHit(EffectProperties.EffectContextHandle));	// 显示浮动文字
+		}
+	}
+
+	if (Data.EvaluatedData.Attribute == GetRewardExperienceAttribute())
+	{
+		const float LocalRewardExperience = GetRewardExperience();
+		SetRewardExperience(0.0f);
+		if (LocalRewardExperience > 0.0f)
+		{
+			// 奖励经验
+			AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(EffectProperties.TargetController->PlayerState);
+
+			AuraPlayerState->AddEXP(LocalRewardExperience);	// 增加经验
 		}
 	}
 

@@ -278,6 +278,10 @@ public:
 	FGameplayAttributeData IncomingDamage;	// 元属性：受到的伤害
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
 
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")	// 蓝图只读，分类为Meta Attributes（元属性）, 元属性不需要复制
+	FGameplayAttributeData RewardExperience;	// 元属性：奖励经验
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, RewardExperience)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
+
 
 private:
 	void SetEffectsProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;	// 设置效果属性
