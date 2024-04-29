@@ -41,6 +41,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidge
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, AbilityInfo);		// 能力信息委托，一个参数是能力信息)
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangeSignature, int32, NewValue);		// 玩家状态改变委托，一个参数是新值（等级，属性点，技能点）
+
 /**
  * OverlayWidgetController, 叠加层控件控制器, 设置为BlueprintType, Blueprintable，是因为我们希望在蓝图中使用它
  */
@@ -73,6 +75,15 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "GAS|EXP")
 	FOnAttributeChangeSignature OnExpPercentChangedDelegate;		// 经验改变
 
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Stat")
+	FOnPlayerStatChangeSignature OnLevelChangedDelegate;		// 等级改变
+
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Stat")
+	FOnPlayerStatChangeSignature OnAttributePointsChangedDelegate;		// 属性点改变
+
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Stat")
+	FOnPlayerStatChangeSignature OnSkillPointsChangedDelegate;		// 技能点改变
+
 	UPROPERTY(BlueprintAssignable, Category="GAS|Message")		// 设置为蓝图可分配，分类为GAS下的Attributes
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;		// 消息小部件 行委托
 
@@ -92,6 +103,12 @@ protected:
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag) const;		// 通过标签获取数据表行
 
 	void OnExpChanged(int32 NewExp) const;		// 当经验改变时
+
+	void OnPlayerLevelChanged(int32 NewLevel) const;		// 当玩家等级改变时
+
+	void OnAttributePointsChanged(int32 NewAttributePoints) const;		// 当属性点改变时
+
+	void OnSkillPointsChanged(int32 NewSkillPoints) const;		// 当技能点改变时
 
 };
 

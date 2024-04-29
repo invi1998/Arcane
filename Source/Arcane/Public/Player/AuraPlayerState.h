@@ -35,6 +35,8 @@ public:
 
 	FOnplayerStatChanged OnExpChangedDelegate;		// 经验改变事件
 	FOnplayerStatChanged OnLevelChangedDelegate;	// 等级改变事件
+	FOnplayerStatChanged OnAttributePointChangedDelegate;	// 属性点改变事件
+	FOnplayerStatChanged OnSkillPointChangedDelegate;		// 技能点改变事件
 
 	FORCEINLINE int32 GetPlayerLevel() const { return Level; }		// 获取等级
 	FORCEINLINE int32 GetPlayerEXP() const { return EXP; }			// 获取经验
@@ -65,5 +67,17 @@ private:
 
 	UFUNCTION()
 	void OnRep_EXP(int32 OldEXP);	// 当玩家经验被复制时调用
+
+	UPROPERTY(ReplicatedUsing = OnRep_AttributePoint, EditAnywhere, Category = "PlayerStat")
+	int32 AttributePoints = 0;		// 属性点
+
+	UFUNCTION()
+	void OnRep_AttributePoint(int32 OldAttributePoint);	// 当属性点被复制时调用
+
+	UPROPERTY(ReplicatedUsing = OnRep_SkillPoint, EditAnywhere, Category = "PlayerStat")
+	int32 SkillPoints = 0;		// 技能点
+
+	UFUNCTION()
+	void OnRep_SkillPoint(int32 OldSkillPoint);	// 当技能点被复制时调用
 
 };

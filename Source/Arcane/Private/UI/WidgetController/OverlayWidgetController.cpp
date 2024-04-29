@@ -29,6 +29,9 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(this->PlayerState);	// 将PlayerState转换为AAuraPlayerState
 
 	AuraPlayerState->OnExpChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnExpChanged);	// 添加经验改变的委托
+	AuraPlayerState->OnLevelChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnPlayerLevelChanged);	// 添加等级改变的委托
+	AuraPlayerState->OnAttributePointChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnAttributePointsChanged);	// 添加属性点改变的委托
+	AuraPlayerState->OnSkillPointChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnSkillPointsChanged);	// 添加技能点改变的委托
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute()).AddLambda( 
 		[this](const FOnAttributeChangeData& Data)->void
@@ -133,5 +136,32 @@ void UOverlayWidgetController::OnExpChanged(int32 NewExp) const
 	const float ExpPercent = static_cast<float>(NewExp - CurrentLevelExp) / static_cast<float>(NextLevelExp);	// 计算经验百分比
 
 	OnExpPercentChangedDelegate.Broadcast(ExpPercent);	// 广播经验百分比
+}
+
+void UOverlayWidgetController::OnPlayerLevelChanged(int32 NewLevel) const
+{
+	const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(this->PlayerState);	// 将PlayerState转换为AAuraPlayerState
+
+	checkf(AuraPlayerState->LevelUpInfo, TEXT("LevelUpInfo is not set in AuraPlayerState"));	// 检查LevelUpInfo是否为空
+
+	OnLevelChangedDelegate.Broadcast(NewLevel);	// 广播等级改变
+}
+
+void UOverlayWidgetController::OnAttributePointsChanged(int32 NewAttributePoints) const
+{
+	const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(this->PlayerState);	// 将PlayerState转换为AAuraPlayerState
+
+	checkf(AuraPlayerState->LevelUpInfo, TEXT("LevelUpInfo is not set in AuraPlayerState"));	// 检查LevelUpInfo是否为空
+
+	OnAttributePointsChangedDelegate.Broadcast(NewAttributePoints);	// 广播属性点改变
+}
+
+void UOverlayWidgetController::OnSkillPointsChanged(int32 NewSkillPoints) const
+{
+	const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(this->PlayerState);	// 将PlayerState转换为AAuraPlayerState
+
+	checkf(AuraPlayerState->LevelUpInfo, TEXT("LevelUpInfo is not set in AuraPlayerState"));	// 检查LevelUpInfo是否为空
+
+	OnSkillPointsChangedDelegate.Broadcast(NewSkillPoints);	// 广播技能点改变
 }
 

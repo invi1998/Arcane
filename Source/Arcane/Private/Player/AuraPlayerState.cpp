@@ -124,3 +124,13 @@ void AAuraPlayerState::OnRep_EXP(int32 OldEXP)
 {
 	OnExpChangedDelegate.Broadcast(EXP);
 }
+
+void AAuraPlayerState::OnRep_AttributePoint(int32 OldAttributePoint)
+{
+	OnAttributePointChangedDelegate.Broadcast(AttributePoints);
+}
+
+void AAuraPlayerState::OnRep_SkillPoint(int32 OldSkillPoint)
+{
+	OnSkillPointChangedDelegate.Broadcast(SkillPoints);
+}
