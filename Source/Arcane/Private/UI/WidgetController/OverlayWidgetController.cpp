@@ -140,28 +140,16 @@ void UOverlayWidgetController::OnExpChanged(int32 NewExp) const
 
 void UOverlayWidgetController::OnPlayerLevelChanged(int32 NewLevel) const
 {
-	const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(this->PlayerState);	// 将PlayerState转换为AAuraPlayerState
-
-	checkf(AuraPlayerState->LevelUpInfo, TEXT("LevelUpInfo is not set in AuraPlayerState"));	// 检查LevelUpInfo是否为空
-
 	OnLevelChangedDelegate.Broadcast(NewLevel);	// 广播等级改变
 }
 
 void UOverlayWidgetController::OnAttributePointsChanged(int32 NewAttributePoints) const
 {
-	const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(this->PlayerState);	// 将PlayerState转换为AAuraPlayerState
-
-	checkf(AuraPlayerState->LevelUpInfo, TEXT("LevelUpInfo is not set in AuraPlayerState"));	// 检查LevelUpInfo是否为空
-
 	OnAttributePointsChangedDelegate.Broadcast(NewAttributePoints);	// 广播属性点改变
 }
 
 void UOverlayWidgetController::OnSkillPointsChanged(int32 NewSkillPoints) const
 {
-	const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(this->PlayerState);	// 将PlayerState转换为AAuraPlayerState
-
-	checkf(AuraPlayerState->LevelUpInfo, TEXT("LevelUpInfo is not set in AuraPlayerState"));	// 检查LevelUpInfo是否为空
-
 	OnSkillPointsChangedDelegate.Broadcast(NewSkillPoints);	// 广播技能点改变
 }
 
