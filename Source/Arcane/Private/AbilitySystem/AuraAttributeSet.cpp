@@ -99,11 +99,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				FGameplayTagContainer FatalTagContainer;
 				FatalTagContainer.AddTag(FAuraGameplayTags::Get().Effect_DeathReact);	// 添加致命标签
 				EffectProperties.TargetASC->TryActivateAbilitiesByTag(FatalTagContainer);	// 尝试激活标签的能力
-				ICombatInterface* CombatInterface = Cast<ICombatInterface>(EffectProperties.TargetAvatarActor);	// 获取战斗接口
-				if (CombatInterface)
+				if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(EffectProperties.TargetAvatarActor))
 				{
 					CombatInterface->Die();	// 死亡
 				}
+				SendEXPEvent(EffectProperties);	// 发送经验事件
 			}
 			else
 			{
@@ -191,6 +191,35 @@ void UAuraAttributeSet::ShowFloatingText(const FEffectProperties Props, float Da
 			AuraPlayerController->ShowDamageText(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);	// 显示伤害文本
 			return;
 		}
+	}
+}
+
+void UAuraAttributeSet::SendEXPEvent(const FEffectProperties& Props) const
+{
+	if (Props.TargetCharacter)
+	{
+		// 获取Combat
+		if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
+		{
+			// `CombatInterface->GetCharacterClass(), CombatInterface->GetPlayerLevel()`这个地方，通过Combat接口获取角色职业，我们不能直接调用它的原始版本的函数，
+			// 因为这个接口被定义为蓝图原生事件（BlueprintNative）,所以我们要调用的他的执行版本（Execute_GetCharacterClass），
+			// 而GetPlayerLevel()是一个普通的虚函数，所以正常调用就行
+			const ECharacterClass CharacterClass = CombatInterface->Execute_GetCharacterClass(Props.SourceAvatarActor);	// 获取角色职业
+			// 获取NPC经验奖励
+			int32 EXP = UAuraAbilitySystemLibrary::GetMonsterEXPRewardByClassAndLv(this, CharacterClass, CombatInterface->GetPlayerLevel());
+
+			const FAuraGameplayTags& AuraGameplayTags = FAuraGameplayTags::Get();	// 获取标签
+
+			// 创建Payload
+			FGameplayEventData Payload;
+			Payload.EventTag = AuraGameplayTags.Attributes_Meta_RewardExperience;
+			Payload.EventMagnitude = EXP;
+
+			// 发送游戏事件
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, AuraGameplayTags.Attributes_Meta_RewardExperience, Payload);
+		}
+
+	
 	}
 }
 

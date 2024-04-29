@@ -119,3 +119,59 @@ void AAuraCharacterBase::AddCharacterAbilities()
 ```
 
 ![image-20240429182730390](.\image-20240429182730390.png)
+
+
+
+# Send EXP Events
+
+现在，我们的蓝图已经准备好了Ability，也可以进行事件监听，下一步，就是在击杀怪物的时候，发送经验奖励事件，事件里，我们只需要组装好经验事件需要的参数（Payload：tag和经验值）
+
+```c++
+
+void UAuraAttributeSet::SendEXPEvent(const FEffectProperties& Props) const
+{
+	if (Props.TargetCharacter)
+	{
+		// 获取Combat
+		if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
+		{
+			// 获取NPC经验奖励
+			int32 EXP = UAuraAbilitySystemLibrary::GetMonsterEXPRewardByClassAndLv(this, CombatInterface->GetCharacterClass(), CombatInterface->GetPlayerLevel());
+
+			const FAuraGameplayTags& AuraGameplayTags = FAuraGameplayTags::Get();	// 获取标签
+
+			// 创建Payload
+			FGameplayEventData Payload;
+			Payload.EventTag = AuraGameplayTags.Attributes_Meta_RewardExperience;
+			Payload.EventMagnitude = EXP;
+
+			// 发送游戏事件
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, AuraGameplayTags.Attributes_Meta_RewardExperience, Payload);
+		}
+
+	
+	}
+}
+```
+
+> 注意：上面的代码有一处错误。
+>
+> ```c++
+> // 获取角色职业
+> UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
+> ECharacterClass GetCharacterClass() const;
+> 
+> virtual int32 GetPlayerLevel() const;
+> ```
+>
+> `CombatInterface->GetCharacterClass(), CombatInterface->GetPlayerLevel()`这个地方，通过Combat接口获取角色职业，我们不能直接调用它的原始版本的函数，因为这个接口被定义为蓝图原生事件（BlueprintNative）,所以我们要调用的他的执行版本（Execute_GetCharacterClass），而GetPlayerLevel()是一个普通的虚函数，所以正常调用就行
+>
+> ```c++
+> // 获取角色职业
+> const ECharacterClass CharacterClass = CombatInterface->Execute_GetCharacterClass(Props.SourceAvatarActor);
+> // 获取NPC经验奖励
+> int32 EXP = UAuraAbilitySystemLibrary::GetMonsterEXPRewardByClassAndLv(this, CharacterClass, CombatInterface->GetPlayerLevel());
+> 
+> ```
+>
+> 

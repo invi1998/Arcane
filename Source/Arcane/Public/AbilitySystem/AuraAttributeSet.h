@@ -287,4 +287,6 @@ private:
 	void SetEffectsProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;	// 设置效果属性
 
 	void ShowFloatingText(const FEffectProperties Props, float Damage, bool bBlockedHit, bool bCriticalHit) const;	// 显示浮动文字，用于显示伤害，格挡，暴击等信息
+
+	void SendEXPEvent(const FEffectProperties& Props) const;	// 发送经验给玩家
 };
