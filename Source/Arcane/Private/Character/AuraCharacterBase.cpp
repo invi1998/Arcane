@@ -350,4 +350,9 @@ void AAuraCharacterBase::IncrementSummonCount_Implementation(int32 Amount)
 	NumMinions += Amount;
 }
 
+ECharacterClass AAuraCharacterBase::GetCharacterClass_Implementation() const
+{
+	return CharacterClass;
+}
+
 

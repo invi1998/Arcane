@@ -278,3 +278,14 @@ bool UAuraAbilitySystemLibrary::IsFriendly(AActor* FirstActor, AActor* SecondAct
 
 	return false;
 }
+
+int32 UAuraAbilitySystemLibrary::GetMonsterEXPRewardByClassAndLv(const UObject* WorldContextObject,
+	ECharacterClass CharacterClass, int32 CharacterLv)
+{
+	if (const UCharacterClassInfo* CharacterClassInfo = GetCharacterClassInfo(WorldContextObject))
+	{
+		const FCharacterClassDefaultInfo ClassDefaultInfo = CharacterClassInfo->GetCharacterClassDefaultInfo(CharacterClass);
+		return static_cast<int32>(ClassDefaultInfo.EXPReward.GetValueAtLevel(CharacterLv));
+	}
+	return 0;
+}

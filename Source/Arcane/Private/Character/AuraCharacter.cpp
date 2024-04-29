@@ -20,6 +20,8 @@ AAuraCharacter::AAuraCharacter()
 	bUseControllerRotationPitch = false;	// 关闭控制器旋转俯仰, 这样我们就不能抬起或者低下头部，只能左右旋转，这对于俯视角游戏来说是很好的
 	bUseControllerRotationYaw = false;	// 关闭控制器旋转偏航, 这样我们就不能左右旋转
 	bUseControllerRotationRoll = false;	// 关闭控制器旋转翻滚, 这样我们就不能翻滚
+
+	CharacterClass = ECharacterClass::Elementalist;	// 设置角色职业
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)

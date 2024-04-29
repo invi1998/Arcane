@@ -77,4 +77,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
 	static bool IsFriendly(AActor* FirstActor, AActor* SecondActor);
 
+	// 获取怪物的经验奖励（传入上下文对象，传入怪物等级， 怪物职业）
+	static int32 GetMonsterEXPRewardByClassAndLv(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLv);
+
 };

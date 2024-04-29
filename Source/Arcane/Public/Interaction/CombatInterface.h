@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "UObject/Interface.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "CombatInterface.generated.h"
 
 class UAnimMontage;
@@ -96,5 +97,9 @@ public:
 	// 获取投射物类
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
 	TSubclassOf<AAuraProjectile> GetProjectileClass();
+
+	// 获取角色职业
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
+	ECharacterClass GetCharacterClass() const;
 
 };

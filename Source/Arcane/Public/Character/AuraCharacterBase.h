@@ -7,6 +7,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AuraCharacterBase.generated.h"
 
 class UAbilitySystemComponent;
@@ -45,6 +46,7 @@ public:
 	virtual FTaggedMontage GetMontageByTag_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& MontageTag) const override;	// 根据Tag获取MontageTag
 	virtual int32 GetSummonCount_Implementation() override;	// 获取召唤物数量
 	virtual void IncrementSummonCount_Implementation(int32 Amount) override;	// 设置召唤物数量
+	virtual ECharacterClass GetCharacterClass_Implementation() const override;	// 获取角色类别
 	/* Combat Interface End*/
 
 	UPROPERTY(EditAnywhere, Category="Combat")
@@ -174,6 +176,10 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	int32 NumMinions = 0;	// 召唤的数量
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Default")
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;	// 敌人职业
 
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")
