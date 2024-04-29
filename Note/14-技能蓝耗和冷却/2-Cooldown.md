@@ -213,3 +213,4 @@ class ARCANE_API UWaitCooldownChange : public UBlueprintAsyncActionBase
 现在，我们进入蓝图查看节点如何使用。如图，我们在开始任务之前，先检查这个任务对象是否存在，如果存在，先调用它的成员函数EndTask，我们在上面可以看到EndTask就是做些清除代理和内存释放功能，这样能避免内存泄漏
 
 ![image-20240428215123952](.\image-20240428215123952.png)
+
