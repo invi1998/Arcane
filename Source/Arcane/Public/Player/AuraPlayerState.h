@@ -9,6 +9,7 @@
 
 class UAbilitySystemComponent;
 class UAttributeSet;
+class ULevelUpInfo;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnplayerStatChanged, int32/*状态值（exp，level..)*/);
 
@@ -28,6 +29,9 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;		// 获取能力系统组件
 	UAttributeSet* GetAttributeSet() const;												// 获取属性集
+
+	UPROPERTY(EditDefaultsOnly, Category="Attributes")
+	TObjectPtr<ULevelUpInfo> LevelUpInfo;		// 等级升级信息
 
 	FOnplayerStatChanged OnExpChangedDelegate;		// 经验改变事件
 	FOnplayerStatChanged OnLevelChangedDelegate;	// 等级改变事件

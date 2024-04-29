@@ -70,6 +70,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// 设置为蓝图可分配，分类为GAS下的Attributes
 	FOnAttributeChangeSignature OnMaxManaChanged;		// 最大法力值改变
 
+	UPROPERTY(BlueprintAssignable, Category = "GAS|EXP")
+	FOnAttributeChangeSignature OnExpPercentChangedDelegate;		// 经验改变
+
 	UPROPERTY(BlueprintAssignable, Category="GAS|Message")		// 设置为蓝图可分配，分类为GAS下的Attributes
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;		// 消息小部件 行委托
 
@@ -87,6 +90,8 @@ protected:
 
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag) const;		// 通过标签获取数据表行
+
+	void OnExpChanged(int32 NewExp) const;		// 当经验改变时
 
 };
 

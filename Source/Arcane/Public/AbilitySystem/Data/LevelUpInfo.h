@@ -36,6 +36,8 @@ public:
 
 	int32 GetLevelUpRequiredExp(int32 Level) const;		// 获取升级所需经验
 
+	int32 GetCurrentLevelTotalExp(int32 Level) const;	// 获取当前等级总经验
+
 	int32 GetLevelByExp(int32 Exp) const;				// 根据经验获取等级
 
 };

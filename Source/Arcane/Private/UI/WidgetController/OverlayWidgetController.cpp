@@ -7,8 +7,10 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
+#include "AbilitySystem/Data/LevelUpInfo.h"
 #include "Fonts/UnicodeBlockRange.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Player/AuraPlayerState.h"
 
 
 void UOverlayWidgetController::BroadcastInitialValues(const FGameplayTag& Tag)
@@ -24,6 +26,9 @@ void UOverlayWidgetController::BroadcastInitialValues(const FGameplayTag& Tag)
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	const UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(this->AttributeSet);	// 将AttributeSet转换为UAuraAttributeSet
+	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(this->PlayerState);	// 将PlayerState转换为AAuraPlayerState
+
+	AuraPlayerState->OnExpChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnExpChanged);	// 添加经验改变的委托
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute()).AddLambda( 
 		[this](const FOnAttributeChangeData& Data)->void
@@ -108,5 +113,25 @@ void UOverlayWidgetController::OnInitializedStartupAbilities(UAuraAbilitySystemC
 		}
 	);
 	AuraASC->ForEachAbility(BroadcastAbilityDelegate);	// 对每个能力进行广播
+}
+
+void UOverlayWidgetController::OnExpChanged(int32 NewExp) const
+{
+	const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(this->PlayerState);	// 将PlayerState转换为AAuraPlayerState
+
+	checkf(AuraPlayerState->LevelUpInfo, TEXT("LevelUpInfo is not set in AuraPlayerState"));	// 检查LevelUpInfo是否为空
+
+	// 获取玩家等级
+	int32 PlayerLevel = AuraPlayerState->LevelUpInfo->GetLevelByExp(NewExp);	// 获取玩家等级
+	PlayerLevel = FMath::Clamp(PlayerLevel, 1, AuraPlayerState->LevelUpInfo->LevelUpInformation.Num());	// 限制玩家等级
+
+	// 传入的是玩家的总经验，我们需要得到当前等级的经验
+	const int32 CurrentLevelExp = AuraPlayerState->LevelUpInfo->GetCurrentLevelTotalExp(PlayerLevel);	// 获取当前等级的总经验
+
+	const int32 NextLevelExp = AuraPlayerState->LevelUpInfo->GetLevelUpRequiredExp(PlayerLevel + 1);	// 获取下一级的总经验
+
+	const float ExpPercent = static_cast<float>(NewExp - CurrentLevelExp) / static_cast<float>(NextLevelExp);	// 计算经验百分比
+
+	OnExpPercentChangedDelegate.Broadcast(ExpPercent);	// 广播经验百分比
 }
 

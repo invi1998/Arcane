@@ -5,11 +5,25 @@
 
 int32 ULevelUpInfo::GetLevelUpRequiredExp(int32 Level) const
 {
-	if (LevelUpInformation.IsValidIndex(Level - 1))
+	if (LevelUpInformation.IsValidIndex(Level-1))
 	{
 		return LevelUpInformation[Level - 1].LevelUpRequiredExp;
 	}
 	return 0;
+}
+
+int32 ULevelUpInfo::GetCurrentLevelTotalExp(int32 Level) const
+{
+	int32 totalExp = 0;
+	if (Level <= 0 || LevelUpInformation.Num() <= 1)
+	{
+		return totalExp;
+	}
+	for (int32 i = 0; i < Level; i++)
+	{
+		totalExp += LevelUpInformation[i].LevelUpRequiredExp;
+	}
+	return totalExp;
 }
 
 int32 ULevelUpInfo::GetLevelByExp(int32 Exp) const
