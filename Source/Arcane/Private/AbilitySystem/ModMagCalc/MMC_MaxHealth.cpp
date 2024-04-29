@@ -39,7 +39,7 @@ float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffec
 	// 这也是我们创建这个修饰符的原因，因为我们在这里可以始终获取到这个效果的来源和目标，所以我们可以根据来源和目标的属性来计算最大生命值
 
 	const ICombatInterface* SourceActor = Cast<ICombatInterface>(Spec.GetEffectContext().GetSourceObject());	// 来源角色
-	const int32 Level = SourceActor ? SourceActor->GetPlayerLevel() : 1;	// 等级
+	const int32 Level = SourceActor ? SourceActor->GetCharacterLevel() : 1;	// 等级
 
 	return 80.f + Level * 10.5f + Vigor * 2.5f;	// 返回最大生命值
 

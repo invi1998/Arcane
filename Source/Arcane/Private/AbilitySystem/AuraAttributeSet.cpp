@@ -201,12 +201,12 @@ void UAuraAttributeSet::SendEXPEvent(const FEffectProperties& Props) const
 		// 获取Combat
 		if (const ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter))
 		{
-			// `CombatInterface->GetCharacterClass(), CombatInterface->GetPlayerLevel()`这个地方，通过Combat接口获取角色职业，我们不能直接调用它的原始版本的函数，
+			// `CombatInterface->GetCharacterClass(), CombatInterface->GetCharacterLevel()`这个地方，通过Combat接口获取角色职业，我们不能直接调用它的原始版本的函数，
 			// 因为这个接口被定义为蓝图原生事件（BlueprintNative）,所以我们要调用的他的执行版本（Execute_GetCharacterClass），
 			// 而GetPlayerLevel()是一个普通的虚函数，所以正常调用就行
 			const ECharacterClass CharacterClass = CombatInterface->Execute_GetCharacterClass(Props.SourceAvatarActor);	// 获取角色职业
 			// 获取NPC经验奖励
-			int32 EXP = UAuraAbilitySystemLibrary::GetMonsterEXPRewardByClassAndLv(this, CharacterClass, CombatInterface->GetPlayerLevel());
+			int32 EXP = UAuraAbilitySystemLibrary::GetMonsterEXPRewardByClassAndLv(this, CharacterClass, CombatInterface->GetCharacterLevel());
 
 			const FAuraGameplayTags& AuraGameplayTags = FAuraGameplayTags::Get();	// 获取标签
 

@@ -47,7 +47,7 @@ class ARCANE_API ICombatInterface
 	GENERATED_BODY()
 	
 public:
-	virtual int32 GetPlayerLevel() const;
+	virtual int32 GetCharacterLevel() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
 	FVector GetCombatSocketLocation(const FGameplayTag& MontageTag) const;	// 获取战斗插槽位置
