@@ -47,3 +47,21 @@ int32 ULevelUpInfo::GetLevelByExp(int32 Exp) const
 	}
 	return level;
 }
+
+int32 ULevelUpInfo::GetAttributePointRewardByLevel(int32 Level)
+{
+	if (LevelUpInformation.IsValidIndex(Level-1))
+	{
+		return LevelUpInformation[Level - 1].AttributePoints;
+	}
+	return 0;
+}
+
+int32 ULevelUpInfo::GetSkillPointRewardByLevel(int32 Level)
+{
+	if (LevelUpInformation.IsValidIndex(Level-1))
+	{
+		return LevelUpInformation[Level - 1].SkillPoints;
+	}
+	return 0;
+}

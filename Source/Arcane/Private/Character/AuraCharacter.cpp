@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/Data/LevelUpInfo.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
@@ -68,6 +69,44 @@ void AAuraCharacter::LevelUp_Implementation(int32 Lv)
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 	AuraPlayerState->AddLevel(Lv);
+}
+
+int32 AAuraCharacter::GetEXP_Implementation() const
+{
+	const AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	return AuraPlayerState->GetPlayerEXP();
+}
+
+int32 AAuraCharacter::GetLevelByEXP_Implementation(int32 EXP) const
+{
+	const AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	return AuraPlayerState->LevelUpInfo->GetLevelByExp(EXP);
+}
+
+int32 AAuraCharacter::GetAttributePointReward_Implementation() const
+{
+	const AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	return AuraPlayerState->LevelUpInfo->GetAttributePointRewardByLevel(AuraPlayerState->GetPlayerLevel());
+}
+
+int32 AAuraCharacter::GetSkillPointReward_Implementation() const
+{
+	const AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	return AuraPlayerState->LevelUpInfo->GetSkillPointRewardByLevel(AuraPlayerState->GetPlayerLevel());
+}
+
+void AAuraCharacter::AddAttributePoint_Implementation(int32 Point)
+{
+	// TODO: 添加属性点
+}
+
+void AAuraCharacter::AddSkillPoint_Implementation(int32 Point)
+{
+	// TODO: 添加技能点
 }
 
 void AAuraCharacter::InitAbilityActorInfo()

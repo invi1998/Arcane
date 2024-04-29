@@ -40,4 +40,7 @@ public:
 
 	int32 GetLevelByExp(int32 Exp) const;				// 根据经验获取等级
 
+	int32 GetAttributePointRewardByLevel(int32 Level);	// 获取属性点奖励
+
+	int32 GetSkillPointRewardByLevel(int32 Level);		// 获取技能点奖励
 };

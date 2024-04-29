@@ -28,6 +28,12 @@ public:
 	/* Player Interface Start*/
 	void AddToEXP_Implementation(int32 EXP) override;	// 添加经验
 	void LevelUp_Implementation(int32 Lv) override;	// 升级
+	int32 GetEXP_Implementation() const override;	// 获取经验
+	int32 GetLevelByEXP_Implementation(int32 EXP) const override;	// 通过经验获取等级
+	int32 GetAttributePointReward_Implementation() const override;	// 获取属性点奖励
+	int32 GetSkillPointReward_Implementation() const override;	// 获取技能点奖励
+	void AddAttributePoint_Implementation(int32 Point) override;	// 属性加点
+	void AddSkillPoint_Implementation(int32 Point) override;	// 技能加点
 	/* Player Interface End*/
 
 

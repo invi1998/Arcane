@@ -25,7 +25,24 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void AddToEXP(int32 EXP);
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	int32 GetEXP() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void LevelUp(int32 Lv);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	int32 GetLevelByEXP(int32 EXP) const;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	int32 GetAttributePointReward() const;	// 获取属性点奖励
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	int32 GetSkillPointReward() const;		// 获取技能点奖励
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void AddAttributePoint(int32 Point);	// 属性加点
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void AddSkillPoint(int32 Point);		// 技能加点
 };
