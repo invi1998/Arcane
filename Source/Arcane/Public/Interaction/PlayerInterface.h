@@ -26,10 +26,16 @@ public:
 	void AddToEXP(int32 EXP);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SetEXP(int32 EXP);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	int32 GetEXP() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void LevelUp(int32 Lv);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SetLevel(int32 Lv);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	int32 GetLevelByEXP(int32 EXP) const;

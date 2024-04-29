@@ -7,6 +7,10 @@
 #include "Interaction/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
+class UNiagaraComponent;
+class UCameraComponent;
+class USpringArmComponent;
+
 /**
  * 
  */
@@ -27,7 +31,9 @@ public:
 
 	/* Player Interface Start*/
 	void AddToEXP_Implementation(int32 EXP) override;	// 添加经验
+	void SetEXP_Implementation(int32 EXP) override;	// 设置经验
 	void LevelUp_Implementation(int32 Lv) override;	// 升级
+	void SetLevel_Implementation(int32 Lv) override;	// 设置等级
 	int32 GetEXP_Implementation() const override;	// 获取经验
 	int32 GetLevelByEXP_Implementation(int32 EXP) const override;	// 通过经验获取等级
 	int32 GetAttributePointReward_Implementation() const override;	// 获取属性点奖励
@@ -36,8 +42,21 @@ public:
 	void AddSkillPoint_Implementation(int32 Point) override;	// 技能加点
 	/* Player Interface End*/
 
+	// 角色升级特效
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Effects")
+	TObjectPtr<UNiagaraComponent> LevelUpEffect;
+
 
 private:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCameraComponent> TopDownCameraComponent;	// 顶部相机组件
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USpringArmComponent> CameraBoom;	// 相机摇臂
+
 	virtual void InitAbilityActorInfo() override;	// 初始化能力Actor信息
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastLevelUpEffect() const;	// 多播升级特效
 	
 };

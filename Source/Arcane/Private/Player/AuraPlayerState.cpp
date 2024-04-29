@@ -47,11 +47,6 @@ UAttributeSet* AAuraPlayerState::GetAttributeSet() const
 void AAuraPlayerState::AddEXP(int32 Value)
 {
 	EXP += Value;
-	const int32 MatchedLevel = LevelUpInfo->GetLevelByExp(EXP);
-	if (MatchedLevel > Level)
-	{
-		AddLevel(MatchedLevel - Level);
-	}
 	OnExpChangedDelegate.Broadcast(EXP);
 }
 
@@ -70,49 +65,12 @@ void AAuraPlayerState::AddLevel(int32 Value)
 {
 	Level += Value;
 	OnLevelChangedDelegate.Broadcast(Level);
-
-	if (GetOwner()->Implements<UPlayerInterface>())
-	{
-		// 获取奖励的属性点数
-		const int32 CulAttributePoints = LevelUpInfo->GetAttributePointRewardByLevel(Level);
-		if (CulAttributePoints > 0)
-		{
-			// 添加属性点
-			IPlayerInterface::Execute_AddAttributePoint(GetOwner(), CulAttributePoints);
-		}
-		// 获取奖励的技能点数
-		const int32 CulSkillPoints = LevelUpInfo->GetSkillPointRewardByLevel(Level);
-		if (CulSkillPoints > 0)
-		{
-			// 添加技能点
-			IPlayerInterface::Execute_AddSkillPoint(GetOwner(), CulSkillPoints);
-		}
-	}
-
 }
 
 void AAuraPlayerState::SetLevel(int32 Value)
 {
 	Level = Value;
 	OnLevelChangedDelegate.Broadcast(Level);
-
-	if (GetOwner()->Implements<UPlayerInterface>())
-	{
-		// 获取奖励的属性点数
-		const int32 TotalAttributePoints = LevelUpInfo->GetTotalAttributePointRewardInLevel(Level);
-		if (TotalAttributePoints > 0)
-		{
-			// 添加属性点
-			IPlayerInterface::Execute_AddAttributePoint(GetOwner(), TotalAttributePoints);
-		}
-		// 获取奖励的技能点数
-		const int32 TotalSkillPoints = LevelUpInfo->GetTotalSkillPointRewardInLevel(Level);
-		if (TotalSkillPoints > 0)
-		{
-			// 添加技能点
-			IPlayerInterface::Execute_AddSkillPoint(GetOwner(), TotalSkillPoints);
-		}
-	}
 }
 
 void AAuraPlayerState::OnRep_Level(int32 OldLevel)

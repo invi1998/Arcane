@@ -9,10 +9,23 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
+#include "NiagaraComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "UI/HUD/AuraHUD.h"
 
 AAuraCharacter::AAuraCharacter()
 {
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));	// 创建相机摇臂
+	CameraBoom->SetupAttachment(RootComponent);	// 设置相机摇臂附加到根组件
+	CameraBoom->SetUsingAbsoluteRotation(true);	// 设置使用绝对旋转
+	CameraBoom->bDoCollisionTest = false;	// 关闭碰撞测试
+
+	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCameraComponent"));	// 创建顶视摄像机组件
+	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);	// 设置顶视摄像机组件附加到相机摇臂
+	TopDownCameraComponent->bUsePawnControlRotation = false;	// 关闭使用Pawn控制旋转
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;	// 开启移动时旋转
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 400.0f, 0.0f);	// 设置旋转速率
 	GetCharacterMovement()->bConstrainToPlane = true;	// 开启限制移动到平面，这样我们就可以在水平面上移动，而不是在空中移动
@@ -23,6 +36,10 @@ AAuraCharacter::AAuraCharacter()
 	bUseControllerRotationRoll = false;	// 关闭控制器旋转翻滚, 这样我们就不能翻滚
 
 	CharacterClass = ECharacterClass::Elementalist;	// 设置角色职业
+
+	LevelUpEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LevelUpEffect"));	// 创建升级特效
+	LevelUpEffect->SetupAttachment(RootComponent);	// 设置特效附加到根组件
+	LevelUpEffect->bAutoActivate = false;	// 关闭自动激活
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
@@ -62,6 +79,53 @@ void AAuraCharacter::AddToEXP_Implementation(int32 EXP)
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 	AuraPlayerState->AddEXP(EXP);
+	const int32 Level = AuraPlayerState->GetPlayerLevel();
+	const int32 TotalEXP = AuraPlayerState->GetPlayerEXP();
+	const int32 MatchedLevel = AuraPlayerState->LevelUpInfo->GetLevelByExp(TotalEXP);
+	if (MatchedLevel > Level)
+	{
+		LevelUp_Implementation(MatchedLevel - Level);	// 升级
+	}
+}
+
+void AAuraCharacter::SetEXP_Implementation(int32 EXP)
+{
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	AuraPlayerState->SetEXP(EXP);
+	const int32 Level = AuraPlayerState->GetPlayerLevel();
+	const int32 TotalEXP = AuraPlayerState->GetPlayerEXP();
+	const int32 MatchedLevel = AuraPlayerState->LevelUpInfo->GetLevelByExp(TotalEXP);
+	if (MatchedLevel != Level)
+	{
+		SetLevel_Implementation(MatchedLevel);	// 设置等级
+	}
+}
+
+void AAuraCharacter::SetLevel_Implementation(int32 Lv)
+{
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	AuraPlayerState->SetLevel(Lv);
+	if (Lv > 0)
+	{
+		MulticastLevelUpEffect();	// 多播升级特效
+
+		const int32 MatchedLevel = AuraPlayerState->GetPlayerLevel();
+		// 获取奖励的属性点数
+		const int32 CulAttributePoints = AuraPlayerState->LevelUpInfo->GetTotalAttributePointRewardInLevel(MatchedLevel);
+		if (CulAttributePoints > 0)
+		{
+			AddAttributePoint_Implementation(CulAttributePoints);
+		}
+
+		// 获取奖励的技能点数
+		const int32 CulSkillPoints = AuraPlayerState->LevelUpInfo->GetTotalSkillPointRewardInLevel(MatchedLevel);
+		if (CulSkillPoints > 0)
+		{
+			AddSkillPoint_Implementation(CulSkillPoints);
+		}
+	}
 }
 
 void AAuraCharacter::LevelUp_Implementation(int32 Lv)
@@ -69,6 +133,27 @@ void AAuraCharacter::LevelUp_Implementation(int32 Lv)
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 	AuraPlayerState->AddLevel(Lv);
+
+	if (Lv > 0)
+	{
+		MulticastLevelUpEffect();	// 多播升级特效
+
+		const int32 MatchedLevel = AuraPlayerState->GetPlayerLevel();
+		// 获取奖励的属性点数
+		const int32 CulAttributePoints = AuraPlayerState->LevelUpInfo->GetAttributePointRewardByLevel(MatchedLevel);
+		if (CulAttributePoints > 0)
+		{
+			AddAttributePoint_Implementation(CulAttributePoints);
+		}
+
+		// 获取奖励的技能点数
+		const int32 CulSkillPoints = AuraPlayerState->LevelUpInfo->GetSkillPointRewardByLevel(MatchedLevel);
+		if (CulSkillPoints > 0)
+		{
+			AddSkillPoint_Implementation(CulSkillPoints);
+		}
+
+	}
 }
 
 int32 AAuraCharacter::GetEXP_Implementation() const
@@ -133,3 +218,17 @@ void AAuraCharacter::InitAbilityActorInfo()
 	InitializeDefaultAttributes();	// 初始化主要能力
 
 }
+
+void AAuraCharacter::MulticastLevelUpEffect_Implementation() const
+{
+	if (IsValid(LevelUpEffect))
+	{
+		const FVector CameraLocation = TopDownCameraComponent->GetComponentLocation();	// 获取相机位置
+		const FVector NiagaraLocation = LevelUpEffect->GetComponentLocation();	// 获取特效位置
+		// 让特效朝向摄像机
+		const FRotator LookAtRotator = FRotationMatrix::MakeFromX(CameraLocation - NiagaraLocation).Rotator();
+		LevelUpEffect->SetWorldRotation(LookAtRotator);	// 设置特效旋转
+		LevelUpEffect->Activate(true);	// 激活特效
+	}
+}
+

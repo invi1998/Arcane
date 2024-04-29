@@ -128,11 +128,6 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		SetRewardExperience(0.0f);
 		if (LocalRewardExperience > 0.0f)
 		{
-			// 奖励经验
-			AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(EffectProperties.TargetController->PlayerState);
-
-			AuraPlayerState->AddEXP(LocalRewardExperience);	// 增加经验
-
 			if (EffectProperties.SourceCharacter->Implements<UPlayerInterface>())	// 如果施法者实现了IPlayerInterface接口
 			{
 				IPlayerInterface::Execute_AddToEXP(EffectProperties.SourceCharacter, LocalRewardExperience);
