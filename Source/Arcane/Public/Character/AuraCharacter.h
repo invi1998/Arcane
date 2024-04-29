@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
+#include "Interaction/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ARCANE_API AAuraCharacter : public AAuraCharacterBase
+class ARCANE_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface
 {
 	GENERATED_BODY()
 
@@ -23,6 +24,11 @@ public:
 	/* Combat Interface */
 	virtual int32 GetCharacterLevel() const override;	// 获取等级
 	/* Combat Interface End*/
+
+	/* Player Interface Start*/
+	void AddToEXP_Implementation(int32 EXP) override;	// 添加经验
+	/* Player Interface End*/
+
 
 private:
 	virtual void InitAbilityActorInfo() override;	// 初始化能力Actor信息

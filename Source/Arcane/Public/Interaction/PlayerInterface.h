@@ -22,4 +22,7 @@ class ARCANE_API IPlayerInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void AddToEXP(int32 EXP);
+
 };

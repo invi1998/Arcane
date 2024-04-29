@@ -5,6 +5,8 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/Data/LevelUpInfo.h"
+#include "Interaction/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
 
 AAuraPlayerState::AAuraPlayerState()
@@ -45,12 +47,22 @@ UAttributeSet* AAuraPlayerState::GetAttributeSet() const
 void AAuraPlayerState::AddEXP(int32 Value)
 {
 	EXP += Value;
+	const int32 MatchedLevel = LevelUpInfo->GetLevelByExp(EXP);
+	if (MatchedLevel > Level)
+	{
+		AddLevel(MatchedLevel - Level);
+	}
 	OnExpChangedDelegate.Broadcast(EXP);
 }
 
 void AAuraPlayerState::SetEXP(int32 Value)
 {
 	EXP = Value;
+	const int32 MatchedLevel = LevelUpInfo->GetLevelByExp(EXP);
+	if (MatchedLevel != Level)
+	{
+		SetLevel(MatchedLevel);
+	}
 	OnExpChangedDelegate.Broadcast(EXP);
 }
 

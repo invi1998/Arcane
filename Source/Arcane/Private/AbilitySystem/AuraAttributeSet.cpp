@@ -11,6 +11,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interaction/CombatInterface.h"
+#include "Interaction/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 #include "Net/UnrealNetwork.h"
@@ -131,6 +132,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 			AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(EffectProperties.TargetController->PlayerState);
 
 			AuraPlayerState->AddEXP(LocalRewardExperience);	// 增加经验
+
+			if (EffectProperties.SourceCharacter->Implements<UPlayerInterface>())	// 如果施法者实现了IPlayerInterface接口
+			{
+				IPlayerInterface::Execute_AddToEXP(EffectProperties.SourceCharacter, LocalRewardExperience);
+			}
 		}
 	}
 
