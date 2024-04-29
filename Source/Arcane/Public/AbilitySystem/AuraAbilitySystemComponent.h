@@ -30,6 +30,8 @@ public:
 
 	void AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities);		// 添加角色的能力，这些能力在角色创建时就会被添加
 
+	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities);	// 添加角色的被动能力，这些能力在角色创建时就会被添加
+
 	bool bStartupAbilitiesGiven = false;	// 是否已经添加了角色的能力
 
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);	// 技能输入标签按下

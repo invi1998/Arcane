@@ -49,6 +49,8 @@ public:
 	FGameplayTag Attributes_Secondary_Resistance_Arcane;	// 二级属性：奥术抗性
 	FGameplayTag Attributes_Secondary_Resistance_Physical;	// 二级属性：物理抗性
 
+	FGameplayTag Attributes_Meta_RewardExperience;			// 元属性：奖励经验
+
 	/*
 	 * Input
 	 */

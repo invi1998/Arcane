@@ -46,6 +46,16 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
     AbilitiesGivenDelegate.Broadcast(this);    // 广播给UI，告诉UI能力已经添加，可以显示了
 }
 
+void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(
+	const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities)
+{
+	for (TSubclassOf<UGameplayAbility> Ability : StartupAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability.GetDefaultObject(), 1);
+		GiveAbilityAndActivateOnce(AbilitySpec);   // 添加能力并激活一次
+	}
+}
+
 void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
     // 1：检测输入的标签是否有效

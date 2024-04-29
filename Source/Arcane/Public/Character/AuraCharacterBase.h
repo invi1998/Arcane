@@ -185,4 +185,7 @@ private:
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TArray<TSubclassOf<UAuraGameplayAbility>> StartupAbilities;	// 默认能力
 
+
+	UPROPERTY(EditAnywhere, Category="Abilities")
+	TArray<TSubclassOf<UAuraGameplayAbility>> StartupPassiveAbilities;	// 默认被动能力
 };

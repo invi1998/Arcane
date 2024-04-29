@@ -124,6 +124,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Reduces Physical Damage taken")
 	);
 
+	GameplayTags.Attributes_Meta_RewardExperience = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Attributes.Meta.RewardExperience"),
+		FString("Experience Reward")
+	);
+
 	/*
 	 * Input ∞¥º¸ ‰»Î
 	 */
