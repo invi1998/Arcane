@@ -40,6 +40,8 @@ public:
 
 	FORCEINLINE int32 GetPlayerLevel() const { return Level; }		// 获取等级
 	FORCEINLINE int32 GetPlayerEXP() const { return EXP; }			// 获取经验
+	FORCEINLINE int32 GetAttributePoints() const { return AttributePoints; }	// 获取属性点
+	FORCEINLINE int32 GetSkillPoints() const { return SkillPoints; }		// 获取技能点
 
 	void AddEXP(int32 Value);		// 增加经验
 	void SetEXP(int32 Value);		// 设置经验

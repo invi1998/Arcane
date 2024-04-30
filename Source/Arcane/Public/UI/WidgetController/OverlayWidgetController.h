@@ -35,8 +35,6 @@ struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableRowBase
 
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangeSignature, float, NewValue);		// 属性改变委托，接收一个float类型的新值
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, MessageWidgetRow);		// 消息小部件行，一个参数是消息小部件行
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, AbilityInfo);		// 能力信息委托，一个参数是能力信息)

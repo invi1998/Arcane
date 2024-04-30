@@ -8,6 +8,7 @@
 
 struct FAuraAttributeInfo;
 class UAttributeInfo;
+struct FGameplayAttribute;
 
 // 创建一个能广播AuraAttributeSet属性值的委托
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAttributeInfoSignature, const FAuraAttributeInfo&, Info);
@@ -28,6 +29,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "gas|Attributes")		// 蓝图可调用的委托
 	FAttributeInfoSignature AttributeInfoDelegate;	// 属性信息委托
+
+	UPROPERTY(BlueprintAssignable, Category = "gas|Attributes")		// 蓝图可调用的委托
+	FOnAttributeChangeSignature AttributePointChangeDelegate;	// 属性点改变委托
 
 protected:
 	UPROPERTY(EditDefaultsOnly)

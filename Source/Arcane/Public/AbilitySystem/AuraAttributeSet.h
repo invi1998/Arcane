@@ -93,6 +93,7 @@ public:
 
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;	// 重写PostGameplayEffectExecute函数，用于效果执行后的处理
 
+	// 当前项目没有使用该属性进行Tag和属性的映射
 	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;	// GamplayTag和一个静态函数指针的映射，用于将GamplayTag映射到属性，或者后续用于绑定其他的回调函数
 
 	/*
