@@ -31,7 +31,7 @@ public:
 	FAttributeInfoSignature AttributeInfoDelegate;	// 属性信息委托
 
 	UPROPERTY(BlueprintAssignable, Category = "gas|Attributes")		// 蓝图可调用的委托
-	FOnAttributeChangeSignature AttributePointChangeDelegate;	// 属性点改变委托
+	FOnPlayerStatChangeSignatureInt AttributePointChangeDelegate;	// 属性点改变委托
 
 protected:
 	UPROPERTY(EditDefaultsOnly)

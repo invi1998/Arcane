@@ -7,6 +7,7 @@
 #include "AuraWidgetController.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangeSignature, float, NewValue);		// 属性改变委托，接收一个float类型的新值
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangeSignatureInt, int32, NewValue);		// 玩家状态改变委托，接收一个int32类型的新值
 
 USTRUCT(BlueprintType)
 struct FWidgetControllerParams

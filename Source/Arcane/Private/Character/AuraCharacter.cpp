@@ -186,8 +186,6 @@ int32 AAuraCharacter::GetSkillPointReward_Implementation() const
 
 void AAuraCharacter::AddAttributePoint_Implementation(int32 Point)
 {
-	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("AddAttributePoint: %d"), Point), true, false, FLinearColor::Green, 5.0f);
-	// TODO: 添加属性点
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 	AuraPlayerState->AddAttributePoint(Point);
@@ -195,8 +193,6 @@ void AAuraCharacter::AddAttributePoint_Implementation(int32 Point)
 
 void AAuraCharacter::AddSkillPoint_Implementation(int32 Point)
 {
-	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("AddSkillPoint: %d"), Point), true, false, FLinearColor::Green, 5.0f);
-	// TODO: 添加技能点
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 	AuraPlayerState->AddSkillPoint(Point);

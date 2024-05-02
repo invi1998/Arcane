@@ -6,11 +6,12 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/Data/AttributeInfo.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Player/AuraPlayerState.h"
 
 void UAttributeMenuWidgetController::BroadcastInitialValues(const FGameplayTag& Tag)
 {
-	UAuraAttributeSet* AS = CastChecked<UAuraAttributeSet>(AttributeSet);
+	// UAuraAttributeSet* AS = CastChecked<UAuraAttributeSet>(AttributeSet);
 
 	checkf(AuraAttributeInfo, TEXT("AuraAttributeInfo is not set!"));	// 需要保证我们在蓝图中设置了数据资产
 
@@ -20,18 +21,12 @@ void UAttributeMenuWidgetController::BroadcastInitialValues(const FGameplayTag& 
 	}
 
 	AAuraPlayerState* PS = CastChecked<AAuraPlayerState>(PlayerState);
-	PS->OnAttributePointChangedDelegate.AddLambda(
-		[this](int32 Points)->void
-		{
-			AttributePointChangeDelegate.Broadcast(Points);
-		}
-	);
-
+	AttributePointChangeDelegate.Broadcast(PS->GetAttributePoints());
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 {
-	UAuraAttributeSet* AS = CastChecked<UAuraAttributeSet>(AttributeSet);
+	// UAuraAttributeSet* AS = CastChecked<UAuraAttributeSet>(AttributeSet);
 	checkf(AuraAttributeInfo, TEXT("AuraAttributeInfo is not set!"));	// 需要保证我们在蓝图中设置了数据资产
 
 	for (const FAuraAttributeInfo& Tag : AuraAttributeInfo.Get()->AttributeInformation)
@@ -45,7 +40,13 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 	}
 
 	AAuraPlayerState* PS = CastChecked<AAuraPlayerState>(PlayerState);
-	AttributePointChangeDelegate.Broadcast(PS->GetAttributePoints());
+	PS->OnAttributePointChangedDelegate.AddLambda(
+		[this](int32 Points)->void
+		{
+			AttributePointChangeDelegate.Broadcast(Points);
+		}
+	);
+	
 }
 
 void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& Tag)

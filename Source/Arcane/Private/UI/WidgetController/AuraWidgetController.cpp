@@ -13,7 +13,8 @@ void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerPar
 
 void UAuraWidgetController::BroadcastInitialValues(const FGameplayTag& Tag)
 {
-	// Do nothing
+	// π„≤•≥ı º÷µ
+	
 }
 
 void UAuraWidgetController::BindCallbacksToDependencies()
