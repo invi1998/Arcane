@@ -180,6 +180,11 @@ FGameplayTag UAuraAbilitySystemComponent::GetAbilityInputTagBySpec(const FGamepl
 	return FGameplayTag();    // 返回一个空的标签
 }
 
+void UAuraAbilitySystemComponent::UpgradeAttribute(FGameplayTag AttributeTag)
+{
+
+}
+
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
 {
 	Super::OnRep_ActivateAbilities();

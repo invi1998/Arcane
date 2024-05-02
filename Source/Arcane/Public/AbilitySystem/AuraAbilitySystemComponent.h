@@ -42,10 +42,10 @@ public:
 
 	void ForEachAbility(const FForEachAbility& Delegate);	// 为每个能力调用一个委托)
 
-	
-
 	static FGameplayTag GetAbilityTagBySpec(const FGameplayAbilitySpec& Spec);	// 通过AbilitySpec获取能力标签
 	static FGameplayTag GetAbilityInputTagBySpec(const FGameplayAbilitySpec& Spec);	// 通过AbilitySpec获取能力输入标签
+
+	void UpgradeAttribute(FGameplayTag AttributeTag);	// 升级属性
 
 protected:
 	// 在效果应用到目标时调用
