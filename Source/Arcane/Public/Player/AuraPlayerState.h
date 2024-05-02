@@ -49,6 +49,12 @@ public:
 	void AddLevel(int32 Value);		// 增加等级
 	void SetLevel(int32 Value);		// 设置等级
 
+	void AddAttributePoint(int32 Value);		// 增加属性点
+	void SetAttributePoint(int32 Value);		// 设置属性点
+
+	void AddSkillPoint(int32 Value);		// 增加技能点
+	void SetSkillPoint(int32 Value);		// 设置技能点
+
 protected:
 
 	UPROPERTY(VisibleAnywhere)

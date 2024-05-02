@@ -73,6 +73,30 @@ void AAuraPlayerState::SetLevel(int32 Value)
 	OnLevelChangedDelegate.Broadcast(Level);
 }
 
+void AAuraPlayerState::AddAttributePoint(int32 Value)
+{
+	AttributePoints += Value;
+	OnAttributePointChangedDelegate.Broadcast(AttributePoints);
+}
+
+void AAuraPlayerState::SetAttributePoint(int32 Value)
+{
+	AttributePoints = Value;
+	OnAttributePointChangedDelegate.Broadcast(AttributePoints);
+}
+
+void AAuraPlayerState::AddSkillPoint(int32 Value)
+{
+	SkillPoints += Value;
+	OnSkillPointChangedDelegate.Broadcast(SkillPoints);
+}
+
+void AAuraPlayerState::SetSkillPoint(int32 Value)
+{
+	SkillPoints = Value;
+	OnSkillPointChangedDelegate.Broadcast(SkillPoints);
+}
+
 void AAuraPlayerState::OnRep_Level(int32 OldLevel)
 {
 	OnLevelChangedDelegate.Broadcast(Level);
