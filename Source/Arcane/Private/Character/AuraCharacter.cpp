@@ -10,6 +10,7 @@
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "NiagaraComponent.h"
+#include "AbilitySystem/AuraAttributeSet.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -84,6 +85,12 @@ void AAuraCharacter::AddToEXP_Implementation(int32 EXP)
 	const int32 MatchedLevel = AuraPlayerState->LevelUpInfo->GetLevelByExp(TotalEXP);
 	if (MatchedLevel > Level)
 	{
+		if (IsValid(AttributeSet))
+		{
+			UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
+			AuraAttributeSet->SetTopOfHealth(true);	// 设置满血
+			AuraAttributeSet->SetTopOfMana(true);	// 设置满蓝
+		}
 		LevelUp_Implementation(MatchedLevel - Level);	// 升级
 	}
 }
@@ -132,12 +139,9 @@ void AAuraCharacter::LevelUp_Implementation(int32 Lv)
 {
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
-	AuraPlayerState->AddLevel(Lv);
-
-	if (Lv > 0)
+	for (int32 i = 0; i < Lv; i++)
 	{
-		MulticastLevelUpEffect();	// 多播升级特效
-
+		AuraPlayerState->AddLevel(1);
 		const int32 MatchedLevel = AuraPlayerState->GetPlayerLevel();
 		// 获取奖励的属性点数
 		const int32 CulAttributePoints = AuraPlayerState->LevelUpInfo->GetAttributePointRewardByLevel(MatchedLevel);
@@ -152,7 +156,11 @@ void AAuraCharacter::LevelUp_Implementation(int32 Lv)
 		{
 			AddSkillPoint_Implementation(CulSkillPoints);
 		}
+	}
 
+	if (Lv > 0)
+	{
+		MulticastLevelUpEffect();	// 多播升级特效
 	}
 }
 

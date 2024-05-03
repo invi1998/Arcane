@@ -93,6 +93,8 @@ public:
 
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;	// 重写PostGameplayEffectExecute函数，用于效果执行后的处理
 
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;	// 重写PostAttributeChange函数，用于属性改变后的处理
+
 	// 当前项目没有使用该属性进行Tag和属性的映射
 	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;	// GamplayTag和一个静态函数指针的映射，用于将GamplayTag映射到属性，或者后续用于绑定其他的回调函数
 
@@ -283,6 +285,10 @@ public:
 	FGameplayAttributeData RewardExperience;	// 元属性：奖励经验
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, RewardExperience)	// 生成属性的Getter函数，属性的Setter函数，属性的初始化函数
 
+	FORCEINLINE bool IsTopOfHealth() const { return bTopOfHealth; }	// 是否在生命值最大值改变
+	FORCEINLINE bool IsTopOfMana() const { return bTopOfMana; }	// 是否在魔法值最大值改变
+	FORCEINLINE void SetTopOfHealth(bool bTop) { bTopOfHealth = bTop; }	// 设置是否在生命值最大值改变
+	FORCEINLINE void SetTopOfMana(bool bTop) { bTopOfMana = bTop; }	// 设置是否在魔法值最大值改变
 
 private:
 	void SetEffectsProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;	// 设置效果属性
@@ -290,4 +296,7 @@ private:
 	void ShowFloatingText(const FEffectProperties Props, float Damage, bool bBlockedHit, bool bCriticalHit) const;	// 显示浮动文字，用于显示伤害，格挡，暴击等信息
 
 	void SendEXPEvent(const FEffectProperties& Props) const;	// 发送经验给玩家
+
+	bool bTopOfHealth = false;	// 是否在生命值最大值
+	bool bTopOfMana = false;	// 是否在魔法值最大值
 };

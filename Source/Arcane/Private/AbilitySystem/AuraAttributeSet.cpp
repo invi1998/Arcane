@@ -137,6 +137,23 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 }
 
+void UAuraAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+
+	// 如果是最大生命值或者最大法力值，同时该改变还是在升级节点引起的（也就是说，我们希望升级时回蓝回血），那么就更新生命值或者法力值
+	if (Attribute == GetMaxHealthAttribute() && bTopOfHealth)
+	{
+		SetHealth(GetMaxHealth());
+		bTopOfHealth = false;
+	}
+	else if (Attribute == GetMaxManaAttribute() && bTopOfMana)
+	{
+		SetMana( GetMaxMana());
+		bTopOfMana = false;
+	}
+}
+
 void UAuraAttributeSet::SetEffectsProperties(const FGameplayEffectModCallbackData& Data,
                                              FEffectProperties& EffectProperties) const
 {
