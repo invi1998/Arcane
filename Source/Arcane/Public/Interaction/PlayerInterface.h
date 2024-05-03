@@ -51,4 +51,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void AddSkillPoint(int32 Point);		// 技能加点
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	int32 GetAttributePoint() const;		// 获取属性点
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	int32 GetSkillPoint() const;			// 获取技能点
 };

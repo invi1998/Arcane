@@ -30,16 +30,18 @@ public:
 	/* Combat Interface End*/
 
 	/* Player Interface Start*/
-	void AddToEXP_Implementation(int32 EXP) override;	// 添加经验
-	void SetEXP_Implementation(int32 EXP) override;	// 设置经验
-	void LevelUp_Implementation(int32 Lv) override;	// 升级
-	void SetLevel_Implementation(int32 Lv) override;	// 设置等级
-	int32 GetEXP_Implementation() const override;	// 获取经验
-	int32 GetLevelByEXP_Implementation(int32 EXP) const override;	// 通过经验获取等级
-	int32 GetAttributePointReward_Implementation() const override;	// 获取属性点奖励
-	int32 GetSkillPointReward_Implementation() const override;	// 获取技能点奖励
-	void AddAttributePoint_Implementation(int32 Point) override;	// 属性加点
-	void AddSkillPoint_Implementation(int32 Point) override;	// 技能加点
+	virtual void AddToEXP_Implementation(int32 EXP) override;	// 添加经验
+	virtual void SetEXP_Implementation(int32 EXP) override;	// 设置经验
+	virtual void LevelUp_Implementation(int32 Lv) override;	// 升级
+	virtual void SetLevel_Implementation(int32 Lv) override;	// 设置等级
+	virtual int32 GetEXP_Implementation() const override;	// 获取经验
+	virtual int32 GetLevelByEXP_Implementation(int32 EXP) const override;	// 通过经验获取等级
+	virtual int32 GetAttributePointReward_Implementation() const override;	// 获取属性点奖励
+	virtual int32 GetSkillPointReward_Implementation() const override;	// 获取技能点奖励
+	virtual void AddAttributePoint_Implementation(int32 Point) override;	// 属性加点
+	virtual void AddSkillPoint_Implementation(int32 Point) override;	// 技能加点
+	virtual int32 GetAttributePoint_Implementation() const override;	// 获取属性点
+	virtual int32 GetSkillPoint_Implementation() const override;	// 获取技能点
 	/* Player Interface End*/
 
 	// 角色升级特效

@@ -3,11 +3,13 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Arcane/ArcaneLogChannels.h"
+#include "Interaction/PlayerInterface.h"
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 {
@@ -180,9 +182,32 @@ FGameplayTag UAuraAbilitySystemComponent::GetAbilityInputTagBySpec(const FGamepl
 	return FGameplayTag();    // 返回一个空的标签
 }
 
-void UAuraAbilitySystemComponent::UpgradeAttribute(FGameplayTag AttributeTag)
+void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGameplayTag& AttributeTag)
 {
+	FGameplayEventData Payload;
+    Payload.EventTag = AttributeTag;    // 设置事件标签
+    Payload.EventMagnitude = 1;    // 设置事件幅度
+    
+    UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActor(), AttributeTag, Payload);    // 发送游戏事件到Actor
 
+    if (GetAvatarActor()->Implements<UPlayerInterface>())
+    {
+    	IPlayerInterface::Execute_AddAttributePoint(GetAvatarActor(), -1);    // 减少一个属性点
+	}
+}
+
+void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& AttributeTag)
+{
+    // 判断角色是否拥有可分配的属性点
+    if (GetAvatarActor()->Implements<UPlayerInterface>())
+    {
+	    const int32 AttrPoints = IPlayerInterface::Execute_GetAttributePoint(GetAvatarActor());
+		if (AttrPoints > 0)
+		{
+            // 如果存在可分配的属性点，那么就可以升级属性，但是该操作只能在服务端进行
+            ServerUpgradeAttribute(AttributeTag);	// 服务端升级属性
+		}
+    }
 }
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()

@@ -45,7 +45,10 @@ public:
 	static FGameplayTag GetAbilityTagBySpec(const FGameplayAbilitySpec& Spec);	// 通过AbilitySpec获取能力标签
 	static FGameplayTag GetAbilityInputTagBySpec(const FGameplayAbilitySpec& Spec);	// 通过AbilitySpec获取能力输入标签
 
-	void UpgradeAttribute(FGameplayTag AttributeTag);	// 升级属性
+	void UpgradeAttribute(const FGameplayTag& AttributeTag);	// 升级属性
+
+	UFUNCTION(Server, Reliable)
+	void ServerUpgradeAttribute(const FGameplayTag& AttributeTag);	// 服务端升级属性
 
 protected:
 	// 在效果应用到目标时调用
