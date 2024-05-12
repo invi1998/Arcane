@@ -23,7 +23,7 @@ class ARCANE_API UAttributeMenuWidgetController : public UAuraWidgetController
 	GENERATED_BODY()
 
 public:
-	virtual void BroadcastInitialValues(const FGameplayTag& Tag) override;
+	virtual void BroadcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;	// 绑定回调函数到依赖项
 
 	void BroadcastAttributeInfo(const FGameplayTag& Tag);	// 广播属性信息

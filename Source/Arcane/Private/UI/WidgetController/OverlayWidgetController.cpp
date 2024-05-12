@@ -13,7 +13,7 @@
 #include "Player/AuraPlayerState.h"
 
 
-void UOverlayWidgetController::BroadcastInitialValues(const FGameplayTag& Tag)
+void UOverlayWidgetController::BroadcastInitialValues()
 {
 	OnHealthChanged.Broadcast(GetAuraAS()->GetHealth());			// 广播生命值改变
 	OnMaxHealthChanged.Broadcast(GetAuraAS()->GetMaxHealth());		// 广播最大生命值改变

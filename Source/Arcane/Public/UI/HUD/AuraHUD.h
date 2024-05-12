@@ -12,6 +12,7 @@ class UOverlayWidgetController;
 class UAbilitySystemComponent;
 class UAttributeSet;
 class UAttributeMenuWidgetController;
+class USpellMenuWidgetController;
 
 /**
  * 
@@ -25,6 +26,7 @@ public:
 	
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& WCParams);
 	UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const FWidgetControllerParams& WCParams);
+	USpellMenuWidgetController* GetSpellMenuWidgetController(const FWidgetControllerParams& WCParams);
 
 	void InitOverlay(APlayerController* PlayerController, APlayerState* PlayerState, UAbilitySystemComponent* AbilitySystemComponent, UAttributeSet* AttributeSet);
 
@@ -48,4 +50,11 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UAttributeMenuWidgetController> AttributeMenuWidgetControllerClass;	// 属性菜单的控制器类
+
+	UPROPERTY()
+	TObjectPtr<USpellMenuWidgetController> SpellMenuWidgetController;	// 技能菜单的控制器
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<USpellMenuWidgetController> SpellMenuWidgetControllerClass;	// 技能菜单的控制器类
+
 };

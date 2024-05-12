@@ -7,6 +7,7 @@
 #include "UI/Widget/AuraUserWidget.h"
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
+#include "UI/WidgetController/SpellMenuWidgetController.h"
 
 UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetControllerParams& WCParams)
 {
@@ -33,6 +34,18 @@ UAttributeMenuWidgetController* AAuraHUD::GetAttributeMenuWidgetController(const
 	return AttributeMenuWidgetController;
 }
 
+USpellMenuWidgetController* AAuraHUD::GetSpellMenuWidgetController(const FWidgetControllerParams& WCParams)
+{
+	if (!SpellMenuWidgetController)
+	{
+		checkf(SpellMenuWidgetControllerClass, TEXT("SpellMenuWidgetControllerClass is nullptr! please fill out BP_AuraHUD"));		// 如果SpellMenuWidgetControllerClass为空，那么就会报错
+		SpellMenuWidgetController = NewObject<USpellMenuWidgetController>(this, SpellMenuWidgetControllerClass);
+		SpellMenuWidgetController->SetWidgetControllerParams(WCParams);
+		SpellMenuWidgetController->BindCallbacksToDependencies();		// 绑定回调函数到依赖项
+	}
+	return SpellMenuWidgetController;
+}
+
 void AAuraHUD::InitOverlay(APlayerController* PlayerController, APlayerState* PlayerState, UAbilitySystemComponent* AbilitySystemComponent, UAttributeSet* AttributeSet)
 {
 	checkf(OverlayWidgetClass, TEXT("OverlayWidgetClass is nullptr! please fill out BP_AuraHUD"));		// 如果OverlayWidgetClass为空，那么就会报错
@@ -46,7 +59,7 @@ void AAuraHUD::InitOverlay(APlayerController* PlayerController, APlayerState* Pl
 
 	OverlayWidget->SetWidgetController(TempController);	// 设置OverlayWidget的控制器
 
-	TempController->BroadcastInitialValues({});	// 广播初始值
+	TempController->BroadcastInitialValues();	// 广播初始值
 
 	OverlayWidget->AddToViewport();
 }

@@ -10,7 +10,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Player/AuraPlayerState.h"
 
-void UAttributeMenuWidgetController::BroadcastInitialValues(const FGameplayTag& Tag)
+void UAttributeMenuWidgetController::BroadcastInitialValues()
 {
 	checkf(AuraAttributeInfo, TEXT("AuraAttributeInfo is not set!"));	// 需要保证我们在蓝图中设置了数据资产
 

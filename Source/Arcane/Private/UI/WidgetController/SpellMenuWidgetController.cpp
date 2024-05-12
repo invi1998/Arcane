@@ -3,9 +3,9 @@
 
 #include "UI/WidgetController/SpellMenuWidgetController.h"
 
-void USpellMenuWidgetController::BroadcastInitialValues(const FGameplayTag& Tag)
+void USpellMenuWidgetController::BroadcastInitialValues()
 {
-	Super::BroadcastInitialValues(Tag);
+	Super::BroadcastInitialValues();
 }
 
 void USpellMenuWidgetController::BindCallbacksToDependencies()
