@@ -6,8 +6,21 @@
 #include "UObject/NoExportTypes.h"
 #include "AuraWidgetController.generated.h"
 
+class UAbilityInfo;
+
+class APlayerController;
+class APlayerState;
+class UAbilitySystemComponent;
+class UAttributeSet;
+
+class AAuraPlayerController;
+class AAuraPlayerState;
+class UAuraAbilitySystemComponent;
+class UAuraAttributeSet;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangeSignature, float, NewValue);		// 属性改变委托，接收一个float类型的新值
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangeSignatureInt, int32, NewValue);		// 玩家状态改变委托，接收一个int32类型的新值
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, AbilityInfo);		// 能力信息委托，一个参数是能力信息)
 
 USTRUCT(BlueprintType)
 struct FWidgetControllerParams
@@ -15,20 +28,20 @@ struct FWidgetControllerParams
 	GENERATED_BODY()
 
 	FWidgetControllerParams() {}
-	FWidgetControllerParams(class APlayerController* InPlayerController, class APlayerState* InPlayerState, class UAbilitySystemComponent* InAbilitySystemComponent, class UAttributeSet* InAttributeSet)
+	FWidgetControllerParams(APlayerController* InPlayerController, APlayerState* InPlayerState, UAbilitySystemComponent* InAbilitySystemComponent, UAttributeSet* InAttributeSet)
 		: PlayerController(InPlayerController), PlayerState(InPlayerState), AbilitySystemComponent(InAbilitySystemComponent), AttributeSet(InAttributeSet) {}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<class APlayerController> PlayerController = nullptr;		// 玩家控制器
+	TObjectPtr<APlayerController> PlayerController = nullptr;		// 玩家控制器
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<class APlayerState> PlayerState = nullptr;		// 玩家状态
+	TObjectPtr<APlayerState> PlayerState = nullptr;		// 玩家状态
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<class UAbilitySystemComponent> AbilitySystemComponent = nullptr;		// 能力系统组件
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent = nullptr;		// 能力系统组件
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<class UAttributeSet> AttributeSet = nullptr;		// 属性集
+	TObjectPtr<UAttributeSet> AttributeSet = nullptr;		// 属性集
 };
 
 /**
@@ -48,18 +61,44 @@ public:
 
 	virtual void BindCallbacksToDependencies();	// 绑定回调到依赖项
 
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Abilities")		// 设置为蓝图可分配，分类为GAS下的Abilities
+	FAbilityInfoSignature AbilityInfoDelegate;		// 能力信息委托
+
+	void BroadcastAbilityInfo();		// 广播能力信息
 
 protected:
-	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
-	TObjectPtr<class APlayerController> PlayerController;		// 玩家控制器
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Widget Data")		// 设置为可编辑的任何地方，蓝图可读
+	TObjectPtr<UAbilityInfo> AbilityInformation;		// 能力信息
 
 	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
-	TObjectPtr<class APlayerState> PlayerState;		// 玩家状态
+	TObjectPtr<APlayerController> PlayerController;		// 玩家控制器
 
 	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
-	TObjectPtr<class UAbilitySystemComponent> AbilitySystemComponent;		// 能力系统组件
+	TObjectPtr<APlayerState> PlayerState;		// 玩家状态
 
 	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
-	TObjectPtr<class UAttributeSet> AttributeSet;		// 属性集
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;		// 能力系统组件
+
+	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
+	TObjectPtr<UAttributeSet> AttributeSet;		// 属性集
+
+	// 项目类型的玩家控制器，玩家状态，能力系统组件，属性集
+	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
+	TObjectPtr<AAuraPlayerController> AuraPlayerController;
+
+	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
+	TObjectPtr<AAuraPlayerState> AuraPlayerState;		// 玩家状态
+
+	UPROPERTY(BlueprintReadOnly, Category="WidgetController")
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
+
+	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
+	TObjectPtr<UAuraAttributeSet> AuraAttributeSet;		// 属性集
+
+	AAuraPlayerController* GetAuraPC();		// 获取Aura玩家控制器
+	AAuraPlayerState* GetAuraPS();		// 获取Aura玩家状态
+	UAuraAbilitySystemComponent* GetAuraASC();		// 获取Aura能力系统组件
+	UAuraAttributeSet* GetAuraAS();		// 获取Aura属性集
+
 
 };

@@ -10,7 +10,7 @@ class UAuraGameplayAbility;
 
 // 定义一个委托，用于在效果应用到目标时调用，该委托用于广播效果的标签
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /* Asset Tags */);
-DECLARE_MULTICAST_DELEGATE_OneParam(FAbilitiesGiven, UAuraAbilitySystemComponent*);	// 定义一个委托，用于在给角色添加能力时调用
+DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);	// 定义一个委托，用于在给角色添加能力时调用
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);	// 为每个能力定义一个委托
 
 /**

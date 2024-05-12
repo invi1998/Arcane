@@ -12,17 +12,14 @@
 
 void UAttributeMenuWidgetController::BroadcastInitialValues(const FGameplayTag& Tag)
 {
-	// UAuraAttributeSet* AS = CastChecked<UAuraAttributeSet>(AttributeSet);
-
 	checkf(AuraAttributeInfo, TEXT("AuraAttributeInfo is not set!"));	// 需要保证我们在蓝图中设置了数据资产
 
 	for (const FAuraAttributeInfo& Info : AuraAttributeInfo.Get()->AttributeInformation)
 	{
 		BroadcastAttributeInfo(Info.AttributeTag);
 	}
-
-	AAuraPlayerState* PS = CastChecked<AAuraPlayerState>(PlayerState);
-	AttributePointChangeDelegate.Broadcast(PS->GetAttributePoints());
+	
+	AttributePointChangeDelegate.Broadcast(GetAuraPS()->GetAttributePoints());
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
@@ -39,9 +36,8 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 			}
 		);
 	}
-
-	AAuraPlayerState* PS = CastChecked<AAuraPlayerState>(PlayerState);
-	PS->OnAttributePointChangedDelegate.AddLambda(
+	
+	GetAuraPS()->OnAttributePointChangedDelegate.AddLambda(
 		[this](int32 Points)->void
 		{
 			AttributePointChangeDelegate.Broadcast(Points);
@@ -64,6 +60,5 @@ void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& 
 
 void UAttributeMenuWidgetController::UpgradeAttribute(const FGameplayTag& Tag)
 {
-	UAuraAbilitySystemComponent* AuraASC = CastChecked<UAuraAbilitySystemComponent>(AbilitySystemComponent);
-	AuraASC->UpgradeAttribute(Tag);
+	GetAuraASC()->UpgradeAttribute(Tag);
 }

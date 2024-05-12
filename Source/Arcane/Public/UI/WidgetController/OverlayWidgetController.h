@@ -37,8 +37,6 @@ struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableRowBase
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, MessageWidgetRow);		// 消息小部件行，一个参数是消息小部件行
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, const FAuraAbilityInfo&, AbilityInfo);		// 能力信息委托，一个参数是能力信息)
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangeSignature, int32, NewValue);		// 玩家状态改变委托，一个参数是新值（等级，属性点，技能点）
 
 /**
@@ -85,22 +83,14 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="GAS|Message")		// 设置为蓝图可分配，分类为GAS下的Attributes
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;		// 消息小部件 行委托
 
-	UPROPERTY(BlueprintAssignable, Category="GAS|Abilities")		// 设置为蓝图可分配，分类为GAS下的Abilities
-	FAbilityInfoSignature AbilityInfoDelegate;		// 能力信息委托
-
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Widget Data")		// 设置为可编辑的任何地方，蓝图可读
 	TObjectPtr<UDataTable> MessageWidgetDataTable;		// 消息小部件数据表
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Widget Data")		// 设置为可编辑的任何地方，蓝图可读
-	TObjectPtr<UAbilityInfo> AbilityInformation;		// 能力信息
-
-	void OnInitializedStartupAbilities(UAuraAbilitySystemComponent* AuraASC);		// 当初始化启动能力完成时
-
 	template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag) const;		// 通过标签获取数据表行
 
-	void OnExpChanged(int32 NewExp) const;		// 当经验改变时
+	void OnExpChanged(int32 NewExp);		// 当经验改变时
 
 	void OnPlayerLevelChanged(int32 NewLevel) const;		// 当玩家等级改变时
 

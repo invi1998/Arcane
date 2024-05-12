@@ -45,7 +45,7 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
         }
 	}
     bStartupAbilitiesGiven = true;    // 标记已经添加了能力
-    AbilitiesGivenDelegate.Broadcast(this);    // 广播给UI，告诉UI能力已经添加，可以显示了
+    AbilitiesGivenDelegate.Broadcast();    // 广播给UI，告诉UI能力已经添加，可以显示了
 }
 
 void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(
@@ -217,7 +217,7 @@ void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
     if (!bStartupAbilitiesGiven)
 	{
         bStartupAbilitiesGiven = true;
-    	AbilitiesGivenDelegate.Broadcast(this);
+    	AbilitiesGivenDelegate.Broadcast();
 	}
    
 }
