@@ -5,6 +5,9 @@
 
 #include "AbilitySystemComponent.h"
 #include "AuraAbilityTypes.h"
+#include "Blueprint/UserWidget.h"
+#include "Components/Widget.h"
+#include "Components/WidgetComponent.h"
 #include "Game/AuraGameModeBase.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -316,4 +319,13 @@ int32 UAuraAbilitySystemLibrary::GetMonsterEXPRewardByClassAndLv(const UObject* 
 		return static_cast<int32>(ClassDefaultInfo.EXPReward.GetValueAtLevel(CharacterLv));
 	}
 	return 0;
+}
+
+void UAuraAbilitySystemLibrary::GetWidgetPositionAndSize(const UObject* WorldContextObject, UUserWidget* MyWidgetInstance, FVector2D& OutPosition, FVector2D& OutSize)
+{
+	if (MyWidgetInstance)
+	{
+		OutPosition = MyWidgetInstance->GetCachedGeometry().GetAbsolutePosition();
+		UKismetSystemLibrary::PrintString(WorldContextObject, FString::Printf(TEXT("Position: %s"), *OutPosition.ToString()), true, false, FLinearColor::Green, 5.f);
+	}
 }

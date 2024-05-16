@@ -87,4 +87,9 @@ public:
 	// 获取怪物的经验奖励（传入上下文对象，传入怪物等级， 怪物职业）
 	static int32 GetMonsterEXPRewardByClassAndLv(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLv);
 
+	// 传入任意Widget，通过Slate获取该Widget在屏幕上的位置和大小
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayMechanice")
+	static void GetWidgetPositionAndSize(const UObject* WorldContextObject, class UUserWidget* MyWidgetInstance, FVector2D& OutPosition, FVector2D& OutSize);
+
+
 };
