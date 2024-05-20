@@ -79,6 +79,8 @@ USpellMenuWidgetController* UAuraAbilitySystemLibrary::GetSpellMenuWidgetControl
 		return AuraHUD->GetSpellMenuWidgetController(InitParams);
 	}
 
+	UKismetSystemLibrary::PrintString(WorldContextObject, "GetSpellMenuWidgetController Failed", true, false, FLinearColor::Red, 5.f);
+
 	return nullptr;
 }
 
