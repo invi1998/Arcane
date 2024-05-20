@@ -192,6 +192,16 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Input Tag for the 0 Key")
 	);
 
+	GameplayTags.InputTag_Passive_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.Passive.1"),
+		FString("Input Tag for the Passive 1 Key")
+	);
+
+	GameplayTags.InputTag_Passive_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("InputTag.Passive.2"),
+		FString("Input Tag for the Passive 2 Key")
+	);
+
 	/*
 	* Damage Types
 	*/

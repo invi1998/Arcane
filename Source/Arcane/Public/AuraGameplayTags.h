@@ -67,6 +67,9 @@ public:
 	FGameplayTag InputTag_9;									// 输入：9
 	FGameplayTag InputTag_0;									// 输入：0
 
+	FGameplayTag InputTag_Passive_1;							// 输入：被动1
+	FGameplayTag InputTag_Passive_2;							// 输入：被动2
+
 	/*
 	 * Meta Tags
 	 */
