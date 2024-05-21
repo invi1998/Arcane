@@ -274,13 +274,130 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Call"),
 		FString("Call Ability")
 	);
+	GameplayTags.Abilities_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.HitReact"),
+		FString("Hit React Ability")
+	);
+
+	/*
+	 * Fire Ability Tags
+	 */
 	GameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Fire.FireBolt"),
 		FString("FireBolt Ability")
 	);
-	GameplayTags.Abilities_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.HitReact"),
-		FString("Hit React Ability")
+	GameplayTags.Abilities_Fire_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Fire.FireBlast"),
+		FString("FireBlast Ability")
+	);
+	GameplayTags.Abilities_Fire_FireNova = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Fire.FireNova"),
+		FString("FireNova Ability")
+	);
+	GameplayTags.Abilities_Fire_FireStorm = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Fire.FireStorm"),
+		FString("FireStorm Ability")
+	);
+
+	/*
+	 * Ice Ability Tags
+	 */
+	GameplayTags.Abilities_Ice_Freeze = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Ice.Freeze"),
+		FString("Freeze Ability")
+	);
+	GameplayTags.Abilities_Ice_FrostBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Ice.FrostBolt"),
+		FString("FrostBolt Ability")
+	);
+	GameplayTags.Abilities_Ice_Blade = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Ice.Blade"),
+		FString("Blade Ability")
+	);
+	GameplayTags.Abilities_Ice_Blizzard = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Ice.Blizzard"),
+		FString("Blizzard Ability")
+	);
+
+	/*
+	 * Poison Ability Tags
+	 */
+	GameplayTags.Abilities_Poison_PoisonDart = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Poison.PoisonDart"),
+		FString("PoisonDart Ability")
+	);
+	GameplayTags.Abilities_Poison_Venom = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Poison.Venom"),
+		FString("Venom Ability")
+	);
+	GameplayTags.Abilities_Poison_ToxicCloud = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Poison.ToxicCloud"),
+		FString("ToxicCloud Ability")
+	);
+	GameplayTags.Abilities_Poison_PoisonNova = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Poison.PoisonNova"),
+		FString("PoisonNova Ability")
+	);
+
+	/*
+	 * Lightning Ability Tags
+	 *
+	 */
+	GameplayTags.Abilities_Lightning_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Lightning.Electrocute"),
+		FString("Electrocute Ability")
+	);
+	GameplayTags.Abilities_Lightning_Thunder = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Lightning.Thunder"),
+		FString("Thunder Ability")
+	);
+	GameplayTags.Abilities_Lightning_Chain = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Lightning.Chain"),
+		FString("Chain Ability")
+	);
+	GameplayTags.Abilities_Lightning_Storm = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Lightning.Storm"),
+		FString("Storm Ability")
+	);
+
+	/*
+	 * Arcane Ability Tags
+	 */
+	GameplayTags.Abilities_Arcane_ArcaneMissile = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Arcane.ArcaneMissile"),
+		FString("ArcaneMissile Ability")
+	);
+	GameplayTags.Abilities_Arcane_Spellbind = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Arcane.Spellbind"),
+		FString("Spellbind Ability")
+	);
+	GameplayTags.Abilities_Arcane_Shield = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Arcane.Shield"),
+		FString("Shield Ability")
+	);
+	GameplayTags.Abilities_Arcane_Lgnition = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Arcane.Lgnition"),
+		FString("Lgnition Ability")
+	);
+
+	/*
+	 * Physical Ability Tags
+	 */
+	GameplayTags.Abilities_Physical_Slash = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Physical.Slash"),
+		FString("Slash Ability")
+	);
+	GameplayTags.Abilities_Physical_Stab = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Physical.Stab"),
+		FString("Stab Ability")
+	);
+	GameplayTags.Abilities_Physical_Swing = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Physical.Swing"),
+		FString("Swing Ability")
+	);
+	GameplayTags.Abilities_Physical_Thrust = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Physical.Thrust"),
+		FString("Thrust Ability")
 	);
 
 	/*
@@ -332,6 +449,98 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Cooldown_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.Fire.FireBolt"),
 		FString("FireBolt Cooldown")
+	);
+	GameplayTags.Cooldown_Fire_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Fire.FireBlast"),
+		FString("FireBlast Cooldown")
+	);
+	GameplayTags.Cooldown_Fire_FireNova = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Fire.FireNova"),
+		FString("FireNova Cooldown")
+	);
+	GameplayTags.Cooldown_Fire_FireStorm = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Fire.FireStorm"),
+		FString("FireStorm Cooldown")
+	);
+	GameplayTags.Cooldown_Ice_Freeze = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Ice.Freeze"),
+		FString("Freeze Cooldown")
+	);
+	GameplayTags.Cooldown_Ice_FrostBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Ice.FrostBolt"),
+		FString("FrostBolt Cooldown")
+	);
+	GameplayTags.Cooldown_Ice_Blade = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Ice.Blade"),
+		FString("Blade Cooldown")
+	);
+	GameplayTags.Cooldown_Ice_Blizzard = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Ice.Blizzard"),
+		FString("Blizzard Cooldown")
+	);
+	GameplayTags.Cooldown_Lightning_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Lightning.Electrocute"),
+		FString("Electrocute Cooldown")
+	);
+	GameplayTags.Cooldown_Lightning_Thunder = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Lightning.Thunder"),
+		FString("Thunder Cooldown")
+	);
+	GameplayTags.Cooldown_Lightning_Chain = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Lightning.Chain"),
+		FString("Chain Cooldown")
+	);
+	GameplayTags.Cooldown_Lightning_Storm = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Lightning.Storm"),
+		FString("Storm Cooldown")
+	);
+	GameplayTags.Cooldown_Arcane_ArcaneMissile = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Arcane.ArcaneMissile"),
+		FString("ArcaneMissile Cooldown")
+	);
+	GameplayTags.Cooldown_Arcane_Spellbind = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Arcane.Spellbind"),
+		FString("Spellbind Cooldown")
+	);
+	GameplayTags.Cooldown_Arcane_Shield = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Arcane.Shield"),
+		FString("Shield Cooldown")
+	);
+	GameplayTags.Cooldown_Arcane_Lgnition = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Arcane.Lgnition"),
+		FString("Lgnition Cooldown")
+	);
+	GameplayTags.Cooldown_Poison_PoisonDart = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Poison.PoisonDart"),
+		FString("PoisonDart Cooldown")
+	);
+	GameplayTags.Cooldown_Poison_Venom = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Poison.Venom"),
+		FString("Venom Cooldown")
+	);
+	GameplayTags.Cooldown_Poison_ToxicCloud = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Poison.ToxicCloud"),
+		FString("ToxicCloud Cooldown")
+	);
+	GameplayTags.Cooldown_Poison_PoisonNova = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Poison.PoisonNova"),
+		FString("PoisonNova Cooldown")
+	);
+	GameplayTags.Cooldown_Physical_Slash = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Physical.Slash"),
+		FString("Slash Cooldown")
+	);
+	GameplayTags.Cooldown_Physical_Stab = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Physical.Stab"),
+		FString("Stab Cooldown")
+	);
+	GameplayTags.Cooldown_Physical_Swing = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Physical.Swing"),
+		FString("Swing Cooldown")
+	);
+	GameplayTags.Cooldown_Physical_Thrust = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Physical.Thrust"),
+		FString("Thrust Cooldown")
 	);
 
 	/*

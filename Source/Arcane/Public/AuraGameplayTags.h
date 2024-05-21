@@ -87,8 +87,55 @@ public:
 	 */
 	FGameplayTag Abilities_Attack;				// 能力：攻击
 	FGameplayTag Abilities_Call;				// 能力：召唤
-	FGameplayTag Abilities_Fire_FireBolt;				// 能力: 火焰：火球
 	FGameplayTag Abilities_HitReact;			// 能力：受击反应
+
+	/*
+	 * Fire Ability Tags
+	 */
+	FGameplayTag Abilities_Fire_FireBolt;				// 能力: 火焰：火球
+	FGameplayTag Abilities_Fire_FireBlast;				// 能力: 火焰：火爆
+	FGameplayTag Abilities_Fire_FireNova;				// 能力: 火焰：火爆
+	FGameplayTag Abilities_Fire_FireStorm;				// 能力: 火焰：火风暴
+
+	/*
+	 * Ice Ability Tags
+	 */
+	FGameplayTag Abilities_Ice_Freeze;				// 能力: 冰霜：冰冻
+	FGameplayTag Abilities_Ice_FrostBolt;			// 能力: 冰霜：霜冰箭
+	FGameplayTag Abilities_Ice_Blade;				// 能力: 冰霜：冰刃
+	FGameplayTag Abilities_Ice_Blizzard;			// 能力: 冰霜：暴风雪
+
+	/*
+	 * Lightning Ability Tags
+	 */
+	FGameplayTag Abilities_Lightning_Electrocute;	// 能力: 闪电：电击
+	FGameplayTag Abilities_Lightning_Thunder;		// 能力: 闪电：雷霆
+	FGameplayTag Abilities_Lightning_Chain;			// 能力: 闪电：闪电链
+	FGameplayTag Abilities_Lightning_Storm;			// 能力: 闪电：雷暴
+
+	/*
+	 * Arcane Ability Tags
+	 */
+	FGameplayTag Abilities_Arcane_ArcaneMissile;	// 能力: 奥术：奥术飞弹
+	FGameplayTag Abilities_Arcane_Spellbind;		// 能力: 奥术：法术束缚
+	FGameplayTag Abilities_Arcane_Shield;			// 能力: 奥术：护盾
+	FGameplayTag Abilities_Arcane_Lgnition;			// 能力: 奥术：引燃
+
+	/*
+	 * Poison Ability Tags
+	 */
+	FGameplayTag Abilities_Poison_PoisonDart;		// 能力: 毒素：毒镖
+	FGameplayTag Abilities_Poison_Venom;			// 能力: 毒素：毒液
+	FGameplayTag Abilities_Poison_ToxicCloud;		// 能力: 毒素：毒云
+	FGameplayTag Abilities_Poison_PoisonNova;		// 能力: 毒素：毒爆
+
+	/*
+	 * Physical Ability Tags
+	 */
+	FGameplayTag Abilities_Physical_Slash;			// 能力: 物理：斩击
+	FGameplayTag Abilities_Physical_Stab;			// 能力: 物理：刺击
+	FGameplayTag Abilities_Physical_Swing;			// 能力: 物理：挥击
+	FGameplayTag Abilities_Physical_Thrust;			// 能力: 物理：刺刀
 
 	/*
 	 * Ability State Tags
@@ -109,6 +156,29 @@ public:
 	 * Cooldown Tags
 	 */
 	FGameplayTag Cooldown_Fire_FireBolt;		// 冷却：火焰：火球
+	FGameplayTag Cooldown_Fire_FireBlast;		// 冷却：火焰：火爆
+	FGameplayTag Cooldown_Fire_FireNova;		// 冷却：火焰：火爆
+	FGameplayTag Cooldown_Fire_FireStorm;		// 冷却：火焰：火风暴
+	FGameplayTag Cooldown_Ice_Freeze;			// 冷却：冰霜：冰冻
+	FGameplayTag Cooldown_Ice_FrostBolt;		// 冷却：冰霜：霜冰箭
+	FGameplayTag Cooldown_Ice_Blade;			// 冷却：冰霜：冰刃
+	FGameplayTag Cooldown_Ice_Blizzard;		// 冷却：冰霜：暴风雪
+	FGameplayTag Cooldown_Lightning_Electrocute;	// 冷却：闪电：电击
+	FGameplayTag Cooldown_Lightning_Thunder;		// 冷却：闪电：雷霆
+	FGameplayTag Cooldown_Lightning_Chain;		// 冷却：闪电：闪电链
+	FGameplayTag Cooldown_Lightning_Storm;		// 冷却：闪电：雷暴
+	FGameplayTag Cooldown_Arcane_ArcaneMissile;	// 冷却：奥术：奥术飞弹
+	FGameplayTag Cooldown_Arcane_Spellbind;		// 冷却：奥术：法术束缚
+	FGameplayTag Cooldown_Arcane_Shield;			// 冷却：奥术：护盾
+	FGameplayTag Cooldown_Arcane_Lgnition;		// 冷却：奥术：引燃
+	FGameplayTag Cooldown_Poison_PoisonDart;		// 冷却：毒素：毒镖
+	FGameplayTag Cooldown_Poison_Venom;			// 冷却：毒素：毒液
+	FGameplayTag Cooldown_Poison_ToxicCloud;		// 冷却：毒素：毒云
+	FGameplayTag Cooldown_Poison_PoisonNova;		// 冷却：毒素：毒爆
+	FGameplayTag Cooldown_Physical_Slash;		// 冷却：物理：斩击
+	FGameplayTag Cooldown_Physical_Stab;			// 冷却：物理：刺击
+	FGameplayTag Cooldown_Physical_Swing;		// 冷却：物理：挥击
+	FGameplayTag Cooldown_Physical_Thrust;		// 冷却：物理：刺刀
 
 	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;	// 伤害类型对应抗性
 

@@ -7,6 +7,8 @@
 #include "Engine/DataAsset.h"
 #include "AbilityInfo.generated.h"
 
+class UGameplayAbility;
+
 USTRUCT(BlueprintType)
 struct FAuraAbilityInfo
 {
@@ -30,6 +32,11 @@ struct FAuraAbilityInfo
 	UPROPERTY(BlueprintReadOnly)
 	FGameplayTag StateTag = FGameplayTag::EmptyTag;			// 技能状态标签
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	int32 LevelRequired = 1;								// 解锁技能对玩家的等级要求
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayAbility> AbilityClass = nullptr;	// 技能类
 };
 
 /**

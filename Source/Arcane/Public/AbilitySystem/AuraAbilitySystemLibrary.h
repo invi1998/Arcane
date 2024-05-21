@@ -48,6 +48,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|CharacterClassDefault")
 	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);
 
+	// 获取AbilityInfo
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|AbilityInfo")
+	static UAbilityInfo* GetAbilityInfo(const UObject* WorldContextObject);
+
 	// 从AuraGampelayEffectContext中获取格挡信息
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static bool IsBlockedHit(const FGameplayEffectContextHandle& ContextHandle);
@@ -90,6 +94,5 @@ public:
 	// 传入任意Widget，通过Slate获取该Widget在屏幕上的位置和大小
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayMechanice")
 	static void GetWidgetPositionAndSize(const UObject* WorldContextObject, class UUserWidget* MyWidgetInstance, FVector2D& OutPosition, FVector2D& OutSize);
-
 
 };
