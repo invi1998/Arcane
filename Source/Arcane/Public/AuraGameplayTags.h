@@ -106,16 +106,6 @@ public:
 	FGameplayTag Abilities_Type_None;			// 能力类型：无
 
 	/*
-	 * Ability Element Type Tags
-	 */
-	FGameplayTag Abilities_ElementType_Fire;	// 能力元素类型：火焰
-	FGameplayTag Abilities_ElementType_Ice;		// 能力元素类型：冰霜
-	FGameplayTag Abilities_ElementType_Lightning;	// 能力元素类型：闪电
-	FGameplayTag Abilities_ElementType_Poison;	// 能力元素类型：毒素
-	FGameplayTag Abilities_ElementType_Arcane;	// 能力元素类型：奥术
-	FGameplayTag Abilities_ElementType_Physical;	// 能力元素类型：物理
-
-	/*
 	 * Cooldown Tags
 	 */
 	FGameplayTag Cooldown_Fire_FireBolt;		// 冷却：火焰：火球
