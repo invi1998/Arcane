@@ -325,6 +325,38 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("No Ability")
 	);
 
+	/*
+	 * Ability Element Type Tags
+	 */
+	GameplayTags.Abilities_ElementType_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.ElementType.Fire"),
+		FString("Fire Element Ability")
+	);
+
+	GameplayTags.Abilities_ElementType_Ice = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.ElementType.Ice"),
+		FString("Ice Element Ability")
+	);
+
+	GameplayTags.Abilities_ElementType_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.ElementType.Lightning"),
+		FString("Lightning Element Ability")
+	);
+
+	GameplayTags.Abilities_ElementType_Poison = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.ElementType.Poison"),
+		FString("Poison Element Ability")
+	);
+
+	GameplayTags.Abilities_ElementType_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.ElementType.Arcane"),
+		FString("Arcane Element Ability")
+	);
+
+	GameplayTags.Abilities_ElementType_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.ElementType.Physical"),
+		FString("Physical Element Ability")
+	);
 
 	/*
 	 * Cooldown Tags

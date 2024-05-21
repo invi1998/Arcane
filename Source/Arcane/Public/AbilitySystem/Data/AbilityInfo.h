@@ -27,6 +27,9 @@ struct FAuraAbilityInfo
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<UTexture2D> Background = nullptr;			// 技能背景
 
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayTag StateTag = FGameplayTag::EmptyTag;			// 技能状态标签
+
 };
 
 /**

@@ -46,6 +46,10 @@ void UAuraWidgetController::BroadcastAbilityInfo()
 			const FGameplayTag inputTag = AuraAbilitySystemComponent->GetAbilityInputTagBySpec(AbilitySpec);
 			AbilityInfo.InputTag = inputTag;	// 设置输入Tag
 
+			// 获取状态Tag
+			const FGameplayTag stateTag = AuraAbilitySystemComponent->GetAbilityStateTag(AbilitySpec);
+			AbilityInfo.StateTag = stateTag;	// 设置状态Tag
+
 			// 广播委托
 			AbilityInfoDelegate.Broadcast(AbilityInfo);	// 广播能力信息
 		}
