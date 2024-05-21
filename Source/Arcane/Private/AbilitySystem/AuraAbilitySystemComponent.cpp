@@ -39,6 +39,9 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
             // 简单来说，就是比如我在开始的时候给一个角色添加了一个能力，这个能力可以被左键点击触发，所以我将左键输入标签添加到了这个能力的DynamicAbilityTags中。
             // 然后在游戏运行过程中，我可以卸载或者更换这个输入标签，改为右键输入标签，这样这个能力就可以被右键点击触发了。
 
+            // 同时，在赋予能力的时候，我们还需要将能力状态设置为已装备
+            AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_State_Equipped);
+
             // 将能力添加到AbilitySystemComponent中
             GiveAbility(AbilitySpec);   // 添加能力
             // GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活能力
@@ -75,14 +78,9 @@ void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
                // 5： 判断能力是否已经激活
                 if (!Spec.IsActive())
                 {
-                    UKismetSystemLibrary::PrintString(this, "Ability is not active", true, true, FLinearColor::Green, 5.0f);
-                	// 6：尝试激活能力
+                    // 6：尝试激活能力
 					TryActivateAbility(Spec.Handle);    // 尝试激活能力
 				}
-                else
-                {
-	                UKismetSystemLibrary::PrintString(this, "Ability is already active", true, true, FLinearColor::Red, 5.0f);
-                }
             }
 		}
 	}
@@ -174,6 +172,20 @@ FGameplayTag UAuraAbilitySystemComponent::GetAbilityInputTagBySpec(const FGamepl
 	{
 		// 如果能力的标签包含了"Input"，那么返回这个标签
 		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("InputTag"))))
+		{
+			return Tag;
+		}
+	}
+
+	return FGameplayTag();    // 返回一个空的标签
+}
+
+FGameplayTag UAuraAbilitySystemComponent::GetAbilityStateTag(const FGameplayAbilitySpec& Spec)
+{
+	for (const FGameplayTag& Tag : Spec.DynamicAbilityTags)
+	{
+		// 如果能力的标签包含了"Abilities.State"，那么返回这个标签
+		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Abilities.State"))))
 		{
 			return Tag;
 		}

@@ -44,6 +44,7 @@ public:
 
 	static FGameplayTag GetAbilityTagBySpec(const FGameplayAbilitySpec& Spec);	// 通过AbilitySpec获取能力标签
 	static FGameplayTag GetAbilityInputTagBySpec(const FGameplayAbilitySpec& Spec);	// 通过AbilitySpec获取能力输入标签
+	static FGameplayTag GetAbilityStateTag(const FGameplayAbilitySpec& Spec);	// 获取能力状态标签
 
 	void UpgradeAttribute(const FGameplayTag& AttributeTag);	// 升级属性
 

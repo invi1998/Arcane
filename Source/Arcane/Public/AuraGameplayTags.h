@@ -88,6 +88,22 @@ public:
 	FGameplayTag Abilities_Attack;				// 能力：攻击
 	FGameplayTag Abilities_Call;				// 能力：召唤
 	FGameplayTag Abilities_Fire_FireBolt;				// 能力: 火焰：火球
+	FGameplayTag Abilities_HitReact;			// 能力：受击反应
+
+	/*
+	 * Ability State Tags
+	 */
+	FGameplayTag Abilities_State_Locked;		// 能力状态：锁定
+	FGameplayTag Abilities_State_Eligible;		// 能力状态：可用
+	FGameplayTag Abilities_State_UnLocked;		// 能力状态：解锁
+	FGameplayTag Abilities_State_Equipped;		// 能力状态：装备
+
+	/*
+	 * Ability Type Tags
+	 */
+	FGameplayTag Abilities_Type_Offensive;		// 能力类型：攻击
+	FGameplayTag Abilities_Type_Passive;		// 能力类型：被动
+	FGameplayTag Abilities_Type_None;			// 能力类型：无
 
 	/*
 	 * Cooldown Tags
