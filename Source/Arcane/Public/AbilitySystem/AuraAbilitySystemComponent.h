@@ -12,6 +12,8 @@ class UAuraGameplayAbility;
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /* Asset Tags */);
 DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);	// 定义一个委托，用于在给角色添加能力时调用
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);	// 为每个能力定义一个委托
+DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityInputTagChanged, const FGameplayTag& /* Input Tag */, bool /* Pressed */);	// 定义一个委托，用于在技能输入标签改变时调用
+DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityStatusChanged, const FGameplayTag& /* State Tag */, const FGameplayTag& /* Ability Tag */);	// 定义一个委托，用于在技能状态改变时调用
 
 /**
  * 
@@ -27,6 +29,7 @@ public:
 
 	FEffectAssetTags EffectAssetTags;	// 定义一个委托，用于在效果应用到目标时调用，该委托用于广播效果的标签
 	FAbilitiesGiven AbilitiesGivenDelegate;	// 定义一个委托，用于在给角色添加能力时调用
+	FAbilityStatusChanged AbilityStatusChangedDelegate;	// 定义一个委托，用于在技能状态改变时调用
 
 	void AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities);		// 添加角色的能力，这些能力在角色创建时就会被添加
 
@@ -62,4 +65,8 @@ protected:
 	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
 	
 	virtual void OnRep_ActivateAbilities() override;	// 当激活能力时调用，用于在客户端和服务器之间同步激活的能力
+
+	UFUNCTION(Client, Reliable)
+	void ClientUpdateAbilityStateTags(const FGameplayTag& AbilityTag, const FGameplayTag& StateTag);	// 客户端更新能力状态标签
+
 };

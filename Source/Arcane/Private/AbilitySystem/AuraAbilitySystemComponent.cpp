@@ -261,10 +261,11 @@ void UAuraAbilitySystemComponent::UpdateAbilityStateTags(int32 NewLevel)
 			if (!Spec)
 			{
 				// 如果技能还没有添加，那么就将技能状态设置为已解锁
-                FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.AbilityClass.GetDefaultObject(), 1);
+                FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.AbilityClass, 1);
                 AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_State_Eligible);   // 设置技能状态为已解锁
                 GiveAbility(AbilitySpec);    // 添加技能，但是不激活
                 MarkAbilitySpecDirty(AbilitySpec);    // 标记技能为脏，这样在下一帧就会更新技能状态
+                ClientUpdateAbilityStateTags(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_State_Eligible);    // 客户端更新技能状态标签
 			}
     	}
 	}
@@ -280,6 +281,13 @@ void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
     	AbilitiesGivenDelegate.Broadcast();
 	}
    
+}
+
+void UAuraAbilitySystemComponent::ClientUpdateAbilityStateTags_Implementation(const FGameplayTag& AbilityTag,
+	const FGameplayTag& StateTag)
+{
+	// 通过AbilityStatusChangedDelegate委托广播技能状态改变
+	AbilityStatusChangedDelegate.Broadcast(StateTag, AbilityTag);
 }
 
 void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,

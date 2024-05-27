@@ -133,6 +133,11 @@ void AAuraCharacter::SetLevel_Implementation(int32 Lv)
 			AddSkillPoint_Implementation(CulSkillPoints);
 		}
 	}
+	// 更新角色能力状态
+	if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		AuraAbilitySystemComponent->UpdateAbilityStateTags(AuraPlayerState->GetPlayerLevel());
+	}
 }
 
 void AAuraCharacter::LevelUp_Implementation(int32 Lv)
@@ -161,6 +166,11 @@ void AAuraCharacter::LevelUp_Implementation(int32 Lv)
 	if (Lv > 0)
 	{
 		MulticastLevelUpEffect();	// 多播升级特效
+		// 更新角色能力状态
+		if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+		{
+			AuraAbilitySystemComponent->UpdateAbilityStateTags(AuraPlayerState->GetPlayerLevel());
+		}
 	}
 }
 
