@@ -5,8 +5,10 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Arcane/ArcaneLogChannels.h"
 #include "Interaction/PlayerInterface.h"
@@ -194,6 +196,28 @@ FGameplayTag UAuraAbilitySystemComponent::GetAbilityStateTag(const FGameplayAbil
 	return FGameplayTag();    // 返回一个空的标签
 }
 
+FGameplayAbilitySpec* UAuraAbilitySystemComponent::FindAbilitySpecByTag(const FGameplayTag& AbilityTag)
+{
+    // 检索之前，需要锁住AbilitySystemComponent的能力列表
+    FScopedAbilityListLock AbilityLock(*this);	// 创建一个作用域锁，锁住AbilitySystemComponent的能力列表
+
+	// 1：遍历所有的激活的能力
+	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	{
+		// 2：获取能力的标签
+		for (const FGameplayTag& Tag : Spec.Ability->AbilityTags)
+		{
+			// 3：判断能力的标签是否与输入的标签相同
+			if (Tag.MatchesTag(AbilityTag))
+			{
+				return &Spec;    // 返回这个能力
+			}
+		}
+	}
+
+	return nullptr;    // 返回空指针
+}
+
 void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGameplayTag& AttributeTag)
 {
 	FGameplayEventData Payload;
@@ -220,6 +244,30 @@ void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& Attribute
             ServerUpgradeAttribute(AttributeTag);	// 服务端升级属性
 		}
     }
+}
+
+void UAuraAbilitySystemComponent::UpdateAbilityStateTags(int32 NewLevel)
+{
+	// 获取AbilityInfo
+    UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
+
+    // 遍历AbilityInfo中的所有能力，它里面有该能力的等级需求
+    for (const FAuraAbilityInfo &Info : AbilityInfo->AbilitiesInformation)
+    {
+    	if (NewLevel >= Info.LevelRequired && Info.AbilityTag.IsValid())
+    	{
+    		// 如果角色的等级大于等于技能的等级需求，那么就判断该技能是否已经添加
+			FGameplayAbilitySpec* Spec = FindAbilitySpecByTag(Info.AbilityTag);
+			if (!Spec)
+			{
+				// 如果技能还没有添加，那么就将技能状态设置为已解锁
+                FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.AbilityClass.GetDefaultObject(), 1);
+                AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_State_Eligible);   // 设置技能状态为已解锁
+                GiveAbility(AbilitySpec);    // 添加技能，但是不激活
+                MarkAbilitySpecDirty(AbilitySpec);    // 标记技能为脏，这样在下一帧就会更新技能状态
+			}
+    	}
+	}
 }
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
