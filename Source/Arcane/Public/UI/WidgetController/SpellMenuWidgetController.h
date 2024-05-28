@@ -21,5 +21,6 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "gas|Attributes")		// 蓝图可调用的委托
 	FOnPlayerStatChangeSignatureInt SkillPointChangeDelegate;	// 技能点改变委托
+
 	
 };

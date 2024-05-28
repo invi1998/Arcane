@@ -32,3 +32,4 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 		SkillPointChangeDelegate.Broadcast(SkillPoints);	// 广播技能点改变
 	});
 }
+
