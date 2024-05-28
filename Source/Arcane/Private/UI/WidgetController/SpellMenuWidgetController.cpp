@@ -16,7 +16,7 @@ void USpellMenuWidgetController::BroadcastInitialValues()
 
 void USpellMenuWidgetController::BindCallbacksToDependencies()
 {
-	GetAuraASC()->AbilityStatusChangedDelegate.AddLambda([this](const FGameplayTag& AbilityTag, const FGameplayTag& AbilityStatus)->void
+	GetAuraASC()->AbilityStatusChangedDelegate.AddLambda([this](const FGameplayTag& AbilityTag, const FGameplayTag& AbilityStatus, int32 NewLevel)->void
 	{
 		if (AbilityInformation)
 		{
@@ -31,5 +31,10 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 	{
 		SkillPointChangeDelegate.Broadcast(SkillPoints);	// 广播技能点改变
 	});
+}
+
+void USpellMenuWidgetController::SpendSkillPoint(const FGameplayTag& AbilityTag)
+{
+	GetAuraASC()->ServerSpendSkillPoint(AbilityTag);
 }
 

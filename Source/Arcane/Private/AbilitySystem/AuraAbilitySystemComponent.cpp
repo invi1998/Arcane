@@ -265,9 +265,47 @@ void UAuraAbilitySystemComponent::UpdateAbilityStateTags(int32 NewLevel)
                 AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_State_Eligible);   // 设置技能状态为已解锁
                 GiveAbility(AbilitySpec);    // 添加技能，但是不激活
                 MarkAbilitySpecDirty(AbilitySpec);    // 标记技能为脏，这样在下一帧就会更新技能状态
-                ClientUpdateAbilityStateTags(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_State_Eligible);    // 客户端更新技能状态标签
+                ClientUpdateAbilityStateTags(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_State_Eligible, 1);    // 通知客户端技能状态改变
 			}
     	}
+	}
+}
+
+void UAuraAbilitySystemComponent::ServerSpendSkillPoint_Implementation(const FGameplayTag& AbilityTag)
+{
+	// 检查当前可用技能点数是否大于0
+	const int32 SkillPoints = GetAvatarActor()->Implements<UPlayerInterface>() ? IPlayerInterface::Execute_GetSkillPoint(GetAvatarActor()) : 0;
+    if (SkillPoints <= 0) return;
+
+    const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();    // 获取AuraGameplayTags
+
+    // 检查当前Tag是否有效
+    if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecByTag(AbilityTag))
+    {
+        // 如果角色实现了PlayerInterface，那么就可以消耗技能点
+        if (GetAvatarActor()->Implements<UPlayerInterface>())
+        {
+            IPlayerInterface::Execute_AddSkillPoint(GetAvatarActor(), -1);    // 减少一个技能点
+        }
+
+    	// 检查当前Tag状态是否为锁定状态，如果是锁定状态，则不能升级
+        const FGameplayTag StateTag = GetAbilityStateTag(*AbilitySpec);
+        if (StateTag.IsValid() && StateTag.MatchesTagExact(AuraTags.Abilities_State_Eligible))
+        {
+        	AbilitySpec->DynamicAbilityTags.RemoveTag(AuraTags.Abilities_State_Eligible);    // 移除技能状态标签
+			AbilitySpec->DynamicAbilityTags.AddTag(AuraTags.Abilities_State_UnLocked);    // 添加技能状态标签
+		}
+
+    	if (StateTag.IsValid() &&( StateTag.MatchesTagExact(AuraTags.Abilities_State_UnLocked) || StateTag.MatchesTagExact(AuraTags.Abilities_State_Equipped)))
+        {
+        	// 如果技能已经解锁，那么就升级技能
+			AbilitySpec->Level++;    // 升级技能
+		}
+
+        // 通知客户端技能状态改变
+        ClientUpdateAbilityStateTags(AbilityTag, StateTag, AbilitySpec->Level);
+        MarkAbilitySpecDirty(*AbilitySpec);    // 标记技能为脏，这样在下一帧就会更新技能状态
+        
 	}
 }
 
@@ -283,11 +321,10 @@ void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
    
 }
 
-void UAuraAbilitySystemComponent::ClientUpdateAbilityStateTags_Implementation(const FGameplayTag& AbilityTag,
-	const FGameplayTag& StateTag)
+void UAuraAbilitySystemComponent::ClientUpdateAbilityStateTags_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& StateTag, const int32 AbilityLevel)
 {
 	// 通过AbilityStatusChangedDelegate委托广播技能状态改变
-	AbilityStatusChangedDelegate.Broadcast(StateTag, AbilityTag);
+	AbilityStatusChangedDelegate.Broadcast(StateTag, AbilityTag, AbilityLevel);
 }
 
 void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,

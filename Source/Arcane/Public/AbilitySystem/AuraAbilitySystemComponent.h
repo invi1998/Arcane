@@ -13,7 +13,7 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContaine
 DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);	// 定义一个委托，用于在给角色添加能力时调用
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);	// 为每个能力定义一个委托
 DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityInputTagChanged, const FGameplayTag& /* Input Tag */, bool /* Pressed */);	// 定义一个委托，用于在技能输入标签改变时调用
-DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityStatusChanged, const FGameplayTag& /* State Tag */, const FGameplayTag& /* Ability Tag */);	// 定义一个委托，用于在技能状态改变时调用
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged, const FGameplayTag& /* State Tag */, const FGameplayTag& /* Ability Tag */, const int32 /* Ability Level */);	// 定义一个委托，用于在技能状态改变时调用
 
 /**
  * 
@@ -59,6 +59,9 @@ public:
 	// 依据等级更新能力状态标签
 	void UpdateAbilityStateTags(int32 NewLevel);
 
+	UFUNCTION(Server, Reliable)
+	void ServerSpendSkillPoint(const FGameplayTag& AbilityTag);	// 服务端消耗技能点
+
 protected:
 	// 在效果应用到目标时调用
 	UFUNCTION(Client, Reliable)
@@ -67,6 +70,6 @@ protected:
 	virtual void OnRep_ActivateAbilities() override;	// 当激活能力时调用，用于在客户端和服务器之间同步激活的能力
 
 	UFUNCTION(Client, Reliable)
-	void ClientUpdateAbilityStateTags(const FGameplayTag& AbilityTag, const FGameplayTag& StateTag);	// 客户端更新能力状态标签
+	void ClientUpdateAbilityStateTags(const FGameplayTag& AbilityTag, const FGameplayTag& StateTag, const int32 AbilityLevel);	// 客户端更新能力状态标签
 
 };

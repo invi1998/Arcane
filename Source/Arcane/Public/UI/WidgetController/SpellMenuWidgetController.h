@@ -22,5 +22,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "gas|Attributes")		// 蓝图可调用的委托
 	FOnPlayerStatChangeSignatureInt SkillPointChangeDelegate;	// 技能点改变委托
 
+	UFUNCTION(BlueprintCallable, Category = "gas|Attributes")	// 蓝图可调用的函数
+	void SpendSkillPoint(const FGameplayTag& AbilityTag);	// 消耗技能点
 	
 };
