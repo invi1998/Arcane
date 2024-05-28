@@ -289,11 +289,12 @@ void UAuraAbilitySystemComponent::ServerSpendSkillPoint_Implementation(const FGa
         }
 
     	// 检查当前Tag状态是否为锁定状态，如果是锁定状态，则不能升级
-        const FGameplayTag StateTag = GetAbilityStateTag(*AbilitySpec);
+    	FGameplayTag StateTag = GetAbilityStateTag(*AbilitySpec);
         if (StateTag.IsValid() && StateTag.MatchesTagExact(AuraTags.Abilities_State_Eligible))
         {
         	AbilitySpec->DynamicAbilityTags.RemoveTag(AuraTags.Abilities_State_Eligible);    // 移除技能状态标签
 			AbilitySpec->DynamicAbilityTags.AddTag(AuraTags.Abilities_State_UnLocked);    // 添加技能状态标签
+            StateTag = AuraTags.Abilities_State_UnLocked;    // 设置技能状态标签
 		}
 
     	if (StateTag.IsValid() &&( StateTag.MatchesTagExact(AuraTags.Abilities_State_UnLocked) || StateTag.MatchesTagExact(AuraTags.Abilities_State_Equipped)))
