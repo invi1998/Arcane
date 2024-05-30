@@ -91,7 +91,7 @@ void AAuraCharacter::AddToEXP_Implementation(int32 EXP)
 			AuraAttributeSet->SetTopOfHealth(true);	// 设置满血
 			AuraAttributeSet->SetTopOfMana(true);	// 设置满蓝
 		}
-		LevelUp_Implementation(MatchedLevel - Level);	// 升级
+		Execute_LevelUp(this, MatchedLevel - Level);	// 升级
 	}
 }
 
@@ -105,7 +105,7 @@ void AAuraCharacter::SetEXP_Implementation(int32 EXP)
 	const int32 MatchedLevel = AuraPlayerState->LevelUpInfo->GetLevelByExp(TotalEXP);
 	if (MatchedLevel != Level)
 	{
-		SetLevel_Implementation(MatchedLevel);	// 设置等级
+		Execute_SetLevel(this, MatchedLevel);	// 设置等级
 	}
 }
 
@@ -123,14 +123,15 @@ void AAuraCharacter::SetLevel_Implementation(int32 Lv)
 		const int32 CulAttributePoints = AuraPlayerState->LevelUpInfo->GetTotalAttributePointRewardInLevel(MatchedLevel);
 		if (CulAttributePoints > 0)
 		{
-			AddAttributePoint_Implementation(CulAttributePoints);
+			// 调用AddAttributePoint的Execute版本
+			Execute_AddAttributePoint(this, CulAttributePoints);
 		}
 
 		// 获取奖励的技能点数
 		const int32 CulSkillPoints = AuraPlayerState->LevelUpInfo->GetTotalSkillPointRewardInLevel(MatchedLevel);
 		if (CulSkillPoints > 0)
 		{
-			AddSkillPoint_Implementation(CulSkillPoints);
+			Execute_AddSkillPoint(this, CulSkillPoints);
 		}
 	}
 	// 更新角色能力状态
@@ -152,14 +153,14 @@ void AAuraCharacter::LevelUp_Implementation(int32 Lv)
 		const int32 CulAttributePoints = AuraPlayerState->LevelUpInfo->GetAttributePointRewardByLevel(MatchedLevel);
 		if (CulAttributePoints > 0)
 		{
-			AddAttributePoint_Implementation(CulAttributePoints);
+			Execute_AddAttributePoint(this, CulAttributePoints);
 		}
 
 		// 获取奖励的技能点数
 		const int32 CulSkillPoints = AuraPlayerState->LevelUpInfo->GetSkillPointRewardByLevel(MatchedLevel);
 		if (CulSkillPoints > 0)
 		{
-			AddSkillPoint_Implementation(CulSkillPoints);
+			Execute_AddSkillPoint(this, CulSkillPoints);
 		}
 	}
 

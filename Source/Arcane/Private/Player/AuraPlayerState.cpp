@@ -7,6 +7,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
 #include "Interaction/PlayerInterface.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 AAuraPlayerState::AAuraPlayerState()
@@ -32,6 +33,8 @@ void AAuraPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 	DOREPLIFETIME(AAuraPlayerState, Level);
 	DOREPLIFETIME(AAuraPlayerState, EXP);
+	DOREPLIFETIME(AAuraPlayerState, AttributePoints);
+	DOREPLIFETIME(AAuraPlayerState, SkillPoints);
 }
 
 UAbilitySystemComponent* AAuraPlayerState::GetAbilitySystemComponent() const
@@ -53,11 +56,6 @@ void AAuraPlayerState::AddEXP(int32 Value)
 void AAuraPlayerState::SetEXP(int32 Value)
 {
 	EXP = Value;
-	const int32 MatchedLevel = LevelUpInfo->GetLevelByExp(EXP);
-	if (MatchedLevel != Level)
-	{
-		SetLevel(MatchedLevel);
-	}
 	OnExpChangedDelegate.Broadcast(EXP);
 }
 
