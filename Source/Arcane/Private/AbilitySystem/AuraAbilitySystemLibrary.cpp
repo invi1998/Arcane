@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AuraAbilityTypes.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Widget.h"
 #include "Components/WidgetComponent.h"

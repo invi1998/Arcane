@@ -37,6 +37,7 @@ struct FAuraAbilityInfo
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UGameplayAbility> AbilityClass = nullptr;	// ººƒ‹¿‡
+
 };
 
 /**

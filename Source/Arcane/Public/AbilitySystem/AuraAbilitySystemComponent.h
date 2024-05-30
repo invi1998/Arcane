@@ -62,6 +62,8 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerSpendSkillPoint(const FGameplayTag& AbilityTag);	// 服务端消耗技能点
 
+	bool GetDescriptionByTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription);	// 通过标签获取技能描述
+
 protected:
 	// 在效果应用到目标时调用
 	UFUNCTION(Client, Reliable)

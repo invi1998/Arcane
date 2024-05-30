@@ -271,6 +271,36 @@ void UAuraAbilitySystemComponent::UpdateAbilityStateTags(int32 NewLevel)
 	}
 }
 
+bool UAuraAbilitySystemComponent::GetDescriptionByTag(const FGameplayTag& AbilityTag, FString& OutDescription,
+	FString& OutNextLevelDescription)
+{
+	const UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
+
+	if (const FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecByTag(AbilityTag))
+	{
+		// 说明技能已经添加或者已经解锁
+		if (UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec->Ability))
+		{
+			OutDescription = AuraAbility->GetDescription(AbilitySpec->Level);
+			OutNextLevelDescription = AuraAbility->GetNextLevelDescription(AbilitySpec->Level);
+			return true;
+		}
+		else
+		{
+			OutDescription = FString();
+			OutNextLevelDescription = FString();
+			return false;
+		}
+	}
+    else
+    {
+	    
+        OutDescription = UAuraGameplayAbility::GetLockedDescription(AbilityInfo->FindAbilityInfoByTag(AbilityTag).LevelRequired);
+        OutNextLevelDescription = FString();
+        return false;
+    }
+}
+
 void UAuraAbilitySystemComponent::ServerSpendSkillPoint_Implementation(const FGameplayTag& AbilityTag)
 {
 	// 检查当前可用技能点数是否大于0
@@ -302,7 +332,7 @@ void UAuraAbilitySystemComponent::ServerSpendSkillPoint_Implementation(const FGa
         	// 如果技能已经解锁，那么就升级技能
 			AbilitySpec->Level++;    // 升级技能
 		}
-
+        
         // 通知客户端技能状态改变
         ClientUpdateAbilityStateTags(AbilityTag, StateTag, AbilitySpec->Level);
         MarkAbilitySpecDirty(*AbilitySpec);    // 标记技能为脏，这样在下一帧就会更新技能状态
