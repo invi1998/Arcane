@@ -10,25 +10,32 @@ class AAuraProjectile;
 class UGameplayEffect;
 
 /**
- * Í¶Éä£¨µ¯µÀÀàĞÍ£©·¨Êõ
+ * æŠ•å°„ï¼ˆå¼¹é“ç±»å‹ï¼‰æ³•æœ¯
  */
 UCLASS()
 class ARCANE_API UAuraProjectileSpell : public UAuraDamageGameplayAbility
 {
 	GENERATED_BODY()
 
+public:
+	virtual FString GetDescription(int32 Level) override;
+	virtual FString GetNextLevelDescription(int32 Level) override;
+
 protected:
 
-	// ¼¤»îÄÜÁ¦
+	// æ¿€æ´»èƒ½åŠ›
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 	UFUNCTION(BlueprintCallable, Category="Projectile")
-	void SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& Tag, bool bOverridePitch = false, float PitchOverride = 0.f);		// Éú³ÉÍ¶ÉäÎï
+	void SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& Tag, bool bOverridePitch = false, float PitchOverride = 0.f);		// ç”ŸæˆæŠ•å°„ç‰©
 
 	UFUNCTION(BlueprintCallable, Category="Projectile")
-	void SetProjectileClass(TSubclassOf<AAuraProjectile> NewProjectileClass);	// ÉèÖÃÍ¶ÉäÎïÀà
+	void SetProjectileClass(TSubclassOf<AAuraProjectile> NewProjectileClass);	// è®¾ç½®æŠ•å°„ç‰©ç±»
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<AAuraProjectile> ProjectileClass;	// Í¶ÉäÎïÀà
+	TSubclassOf<AAuraProjectile> ProjectileClass;	// æŠ•å°„ç‰©ç±»
+
+	UPROPERTY(EditDefaultsOnly)
+	int32 NumProjectiles = 1;	// æŠ•å°„ç‰©æ•°é‡
 
 };

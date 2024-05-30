@@ -16,13 +16,20 @@ class ARCANE_API UAuraDamageGameplayAbility : public UAuraGameplayAbility
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void CauseDamage(AActor* TargetActor);	// Ôì³ÉÉËº¦
+	void CauseDamage(AActor* TargetActor);	// é€ æˆä¼¤å®³
 
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<UGameplayEffect> DamageEffectClass;		// ÉËº¦Ğ§¹û
+	TSubclassOf<UGameplayEffect> DamageEffectClass;		// ä¼¤å®³æ•ˆæœ
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
-	TMap<FGameplayTag, FScalableFloat> DamageType;	// ÉËº¦ÀàĞÍ
+	TMap<FGameplayTag, FScalableFloat> DamageType;	// ä¼¤å®³ç±»å‹
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldown")
+	FScalableFloat CooldownScalableFloat;	// å†·å´æ—¶é—´
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ManaCost")
+	FScalableFloat ManaCostScalableFloat;	// æ³•åŠ›æ¶ˆè€—
+
 };
