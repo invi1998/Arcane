@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AuraAbilityTypes.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Widget.h"
@@ -21,15 +22,15 @@ bool UAuraAbilitySystemLibrary::MakeWidgetControllerParams(const UObject* WorldC
 {
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
 	{
-		// 2£ºÈ»ºó£¬ÎÒÃÇÏ£Íû»ñÈ¡HUD£¬HUDÊÇÎÒÃÇËùÓĞWidgetµÄÕ¹Ê¾µÄµØ·½£¬ËùÒÔÎÒÃÇĞèÒª»ñÈ¡HUD£¬È»ºóÔÚHUDÖĞ´´½¨Ò»¸öOverlayWidgetController
-		OutAuraHUD = Cast<AAuraHUD>(PlayerController->GetHUD());	// »ñÈ¡HUD
+		// 2ï¼šç„¶åï¼Œæˆ‘ä»¬å¸Œæœ›è·å–HUDï¼ŒHUDæ˜¯æˆ‘ä»¬æ‰€æœ‰Widgetçš„å±•ç¤ºçš„åœ°æ–¹ï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦è·å–HUDï¼Œç„¶ååœ¨HUDä¸­åˆ›å»ºä¸€ä¸ªOverlayWidgetController
+		OutAuraHUD = Cast<AAuraHUD>(PlayerController->GetHUD());	// è·å–HUD
 		if (OutAuraHUD)
 		{
-			AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(PlayerController->PlayerState);	// »ñÈ¡Íæ¼Ò×´Ì¬
-			UAbilitySystemComponent* AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();	// »ñÈ¡Íæ¼ÒµÄÄÜÁ¦ÏµÍ³×é¼ş
-			UAttributeSet* AttributeSet = AuraPlayerState->GetAttributeSet();	// »ñÈ¡Íæ¼ÒµÄÊôĞÔ¼¯
+			AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(PlayerController->PlayerState);	// è·å–ç©å®¶çŠ¶æ€
+			UAbilitySystemComponent* AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();	// è·å–ç©å®¶çš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
+			UAttributeSet* AttributeSet = AuraPlayerState->GetAttributeSet();	// è·å–ç©å®¶çš„å±æ€§é›†
 
-			// 3£ºÓĞÁËÕâËÄ¸ö¶ÔÏó£¬ÎÒÃÇ¾Í¿ÉÒÔÔÚHUDÖĞ´´½¨Ò»¸öOverlayWidgetController
+			// 3ï¼šæœ‰äº†è¿™å››ä¸ªå¯¹è±¡ï¼Œæˆ‘ä»¬å°±å¯ä»¥åœ¨HUDä¸­åˆ›å»ºä¸€ä¸ªOverlayWidgetController
 			OutParams.PlayerController = PlayerController;
 			OutParams.PlayerState = AuraPlayerState;
 			OutParams.AbilitySystemComponent = AbilitySystemComponent;
@@ -43,8 +44,8 @@ bool UAuraAbilitySystemLibrary::MakeWidgetControllerParams(const UObject* WorldC
 
 UOverlayWidgetController* UAuraAbilitySystemLibrary::GetOverlayWidgetController(const UObject* WorldContextObject)
 {
-	// 1£ºÊ×ÏÈ£¬ÎÒÃÇÊÇÍ¨¹ıÒ»¸öWidgetÀ´µ÷ÓÃµÄÕâ¸öº¯Êı£¬ËùÒÔÎÒÃÇÊÇ´ÓWidgetÄÚ²¿µ÷ÓÃËü£¬Ò²¾ÍÊÇËµÊÇ´Ó±¾µØÍæ¼ÒµÄ½Ç¶Èµ÷ÓÃµÄËü£¬widgetÊÇÔÚ±¾µØÍæ¼ÒµÄÊÓ½ÇÏÂ´´½¨µÄ£¬
-	// ËùÒÔÎÒÃÇÏ£Íû¹ØÁª¾ßÓĞ¸Ã»á»°µÄ±¾µØÍæ¼Ò¿ØÖÆÆ÷£¬»»¾ä»°Ëµ¾ÍÊÇGetFirstLocalPlayerController
+	// 1ï¼šé¦–å…ˆï¼Œæˆ‘ä»¬æ˜¯é€šè¿‡ä¸€ä¸ªWidgetæ¥è°ƒç”¨çš„è¿™ä¸ªå‡½æ•°ï¼Œæ‰€ä»¥æˆ‘ä»¬æ˜¯ä»Widgetå†…éƒ¨è°ƒç”¨å®ƒï¼Œä¹Ÿå°±æ˜¯è¯´æ˜¯ä»æœ¬åœ°ç©å®¶çš„è§’åº¦è°ƒç”¨çš„å®ƒï¼Œwidgetæ˜¯åœ¨æœ¬åœ°ç©å®¶çš„è§†è§’ä¸‹åˆ›å»ºçš„ï¼Œ
+	// æ‰€ä»¥æˆ‘ä»¬å¸Œæœ›å…³è”å…·æœ‰è¯¥ä¼šè¯çš„æœ¬åœ°ç©å®¶æ§åˆ¶å™¨ï¼Œæ¢å¥è¯è¯´å°±æ˜¯GetFirstLocalPlayerController
 
 	FWidgetControllerParams InitParams;
 	AAuraHUD* AuraHUD = nullptr;
@@ -89,16 +90,16 @@ void UAuraAbilitySystemLibrary::InitCharacterAttributesByClassAndLevel(const UOb
 {
 	if (const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
 	{
-		const FCharacterClassDefaultInfo ClassDefaultInfo = AuraGameMode->CharacterClassInfo->GetCharacterClassDefaultInfo(CharacterClass);	// »ñÈ¡½ÇÉ«³õÊ¼»¯ĞÅÏ¢
+		const FCharacterClassDefaultInfo ClassDefaultInfo = AuraGameMode->CharacterClassInfo->GetCharacterClassDefaultInfo(CharacterClass);	// è·å–è§’è‰²åˆå§‹åŒ–ä¿¡æ¯
 
 		const AActor* SourceActor = ASC->GetAvatarActor();
 
-		FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();	// ´´½¨Ğ§¹ûÉÏÏÂÎÄ
-		EffectContext.AddSourceObject(SourceActor);	// Ìí¼ÓÔ´¶ÔÏó
+		FGameplayEffectContextHandle EffectContext = ASC->MakeEffectContext();	// åˆ›å»ºæ•ˆæœä¸Šä¸‹æ–‡
+		EffectContext.AddSourceObject(SourceActor);	// æ·»åŠ æºå¯¹è±¡
 
 		// PrimaryAttributes
-		const FGameplayEffectSpecHandle PrimaryAttrSpecHandle = ASC->MakeOutgoingSpec(ClassDefaultInfo.PrimaryAttributes,  Level, EffectContext);	// ´´½¨Ğ§¹û¹æ¸ñ
-		ASC->ApplyGameplayEffectSpecToSelf(*PrimaryAttrSpecHandle.Data.Get());	// Ó¦ÓÃÄ¬ÈÏÊôĞÔĞ§¹û
+		const FGameplayEffectSpecHandle PrimaryAttrSpecHandle = ASC->MakeOutgoingSpec(ClassDefaultInfo.PrimaryAttributes,  Level, EffectContext);	// åˆ›å»ºæ•ˆæœè§„æ ¼
+		ASC->ApplyGameplayEffectSpecToSelf(*PrimaryAttrSpecHandle.Data.Get());	// åº”ç”¨é»˜è®¤å±æ€§æ•ˆæœ
 
 		// SecondaryAttributes
 		const FGameplayEffectSpecHandle SecondaryAttrSpecHandle = ASC->MakeOutgoingSpec(AuraGameMode->CharacterClassInfo->SecondaryAttributes, Level, EffectContext);
@@ -188,24 +189,24 @@ void UAuraAbilitySystemLibrary::SetBlockedHit(FGameplayEffectContextHandle& Cont
 void UAuraAbilitySystemLibrary::GetLivePlayerWithinRadius(const UObject* WorldContextObject,
 	TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Origin, float Radius)
 {
-	FCollisionQueryParams SphereParams;		// Åö×²²éÑ¯²ÎÊı
-	SphereParams.AddIgnoredActors(IgnoreActors);	// ºöÂÔµÄÅö×²Ìå
+	FCollisionQueryParams SphereParams;		// ç¢°æ’æŸ¥è¯¢å‚æ•°
+	SphereParams.AddIgnoredActors(IgnoreActors);	// å¿½ç•¥çš„ç¢°æ’ä½“
 
-	TArray<FOverlapResult> Overlaps;	// ÖØµş½á¹û
+	TArray<FOverlapResult> Overlaps;	// é‡å ç»“æœ
 
 	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
-		// ÖØµş¶à¸ö¶ÔÏó£¬ÏÂÃæÕâ¸öº¯Êı»á·µ»ØÖØµşµÄ¶ÔÏó
+		// é‡å å¤šä¸ªå¯¹è±¡ï¼Œä¸‹é¢è¿™ä¸ªå‡½æ•°ä¼šè¿”å›é‡å çš„å¯¹è±¡
 		World->OverlapMultiByObjectType(Overlaps, Origin, FQuat::Identity, FCollisionObjectQueryParams::InitType::AllDynamicObjects, FCollisionShape::MakeSphere(Radius), SphereParams);
 		for (FOverlapResult& Overlap : Overlaps)
 		{
 			if (AActor* OverlapActor = Overlap.GetActor())
 			{
-				if (OverlapActor->Implements<UCombatInterface>())	// Èç¹ûÊµÏÖÁËÕ½¶·½Ó¿Ú
+				if (OverlapActor->Implements<UCombatInterface>())	// å¦‚æœå®ç°äº†æˆ˜æ–—æ¥å£
 				{
-					if (!ICombatInterface::Execute_IsDead(OverlapActor))	// Èç¹û»î×Å£¬ÎªÊ²Ã´ÒªÓÃExecute_IsDead£¬ÒòÎªIsDeadÊÇÒ»¸ö´¿Ğéº¯Êı£¬ËùÒÔÎÒÃÇĞèÒªÓÃExecute_IsDeadÀ´µ÷ÓÃËü
+					if (!ICombatInterface::Execute_IsDead(OverlapActor))	// å¦‚æœæ´»ç€ï¼Œä¸ºä»€ä¹ˆè¦ç”¨Execute_IsDeadï¼Œå› ä¸ºIsDeadæ˜¯ä¸€ä¸ªçº¯è™šå‡½æ•°ï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦ç”¨Execute_IsDeadæ¥è°ƒç”¨å®ƒ
 					{
-						OutPlayers.AddUnique(ICombatInterface::Execute_GetActor(OverlapActor));		// Ìí¼Óµ½Êı×éÖĞ
+						OutPlayers.AddUnique(ICombatInterface::Execute_GetActor(OverlapActor));		// æ·»åŠ åˆ°æ•°ç»„ä¸­
 					}
 				}
 			}
@@ -217,24 +218,24 @@ void UAuraAbilitySystemLibrary::GetLivePlayerWithinRadius(const UObject* WorldCo
 void UAuraAbilitySystemLibrary::GetLivePlayerWithinRaycast(const UObject* WorldContextObject,
 	TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Start, const FVector& End)
 {
-	FCollisionQueryParams LineParams;		// Åö×²²éÑ¯²ÎÊı
-	LineParams.AddIgnoredActors(IgnoreActors);	// ºöÂÔµÄÅö×²Ìå
+	FCollisionQueryParams LineParams;		// ç¢°æ’æŸ¥è¯¢å‚æ•°
+	LineParams.AddIgnoredActors(IgnoreActors);	// å¿½ç•¥çš„ç¢°æ’ä½“
 
-	TArray<FHitResult> Hits;	// Åö×²½á¹û
+	TArray<FHitResult> Hits;	// ç¢°æ’ç»“æœ
 
 	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
-		// ÉäÏßÅö×²£¬ÏÂÃæÕâ¸öº¯Êı»á·µ»ØÅö×²µÄ¶ÔÏó
+		// å°„çº¿ç¢°æ’ï¼Œä¸‹é¢è¿™ä¸ªå‡½æ•°ä¼šè¿”å›ç¢°æ’çš„å¯¹è±¡
 		World->LineTraceMultiByChannel(Hits, Start, End, ECollisionChannel::ECC_Pawn, LineParams);
 		for (FHitResult& Hit : Hits)
 		{
 			if (AActor* HitActor = Hit.GetActor())
 			{
-				if (HitActor->Implements<UCombatInterface>())	// Èç¹ûÊµÏÖÁËÕ½¶·½Ó¿Ú
+				if (HitActor->Implements<UCombatInterface>())	// å¦‚æœå®ç°äº†æˆ˜æ–—æ¥å£
 				{
-					if (!ICombatInterface::Execute_IsDead(HitActor))	// Èç¹û»î×Å£¬ÎªÊ²Ã´ÒªÓÃExecute_IsDead£¬ÒòÎªIsDeadÊÇÒ»¸ö´¿Ğéº¯Êı£¬ËùÒÔÎÒÃÇĞèÒªÓÃExecute_IsDeadÀ´µ÷ÓÃËü
+					if (!ICombatInterface::Execute_IsDead(HitActor))	// å¦‚æœæ´»ç€ï¼Œä¸ºä»€ä¹ˆè¦ç”¨Execute_IsDeadï¼Œå› ä¸ºIsDeadæ˜¯ä¸€ä¸ªçº¯è™šå‡½æ•°ï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦ç”¨Execute_IsDeadæ¥è°ƒç”¨å®ƒ
 					{
-						OutPlayers.AddUnique(ICombatInterface::Execute_GetActor(HitActor));		// Ìí¼Óµ½Êı×éÖĞ
+						OutPlayers.AddUnique(ICombatInterface::Execute_GetActor(HitActor));		// æ·»åŠ åˆ°æ•°ç»„ä¸­
 					}
 				}
 			}
@@ -245,24 +246,24 @@ void UAuraAbilitySystemLibrary::GetLivePlayerWithinRaycast(const UObject* WorldC
 void UAuraAbilitySystemLibrary::GetLivePlayerWithinBoxOverlap(const UObject* WorldContextObject,
 	TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Origin, const FVector& BoxExtent)
 {
-	FCollisionQueryParams BoxParams;		// Åö×²²éÑ¯²ÎÊı
-	BoxParams.AddIgnoredActors(IgnoreActors);	// ºöÂÔµÄÅö×²Ìå
+	FCollisionQueryParams BoxParams;		// ç¢°æ’æŸ¥è¯¢å‚æ•°
+	BoxParams.AddIgnoredActors(IgnoreActors);	// å¿½ç•¥çš„ç¢°æ’ä½“
 
-	TArray<FOverlapResult> Overlaps;	// ÖØµş½á¹û
+	TArray<FOverlapResult> Overlaps;	// é‡å ç»“æœ
 
 	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
-				// Á¢·½ÌåÖØµş¼ì²â£¬ÏÂÃæÕâ¸öº¯Êı»á·µ»ØÖØµşµÄ¶ÔÏó
+				// ç«‹æ–¹ä½“é‡å æ£€æµ‹ï¼Œä¸‹é¢è¿™ä¸ªå‡½æ•°ä¼šè¿”å›é‡å çš„å¯¹è±¡
 		World->OverlapMultiByObjectType(Overlaps, Origin, FQuat::Identity, FCollisionObjectQueryParams::InitType::AllDynamicObjects, FCollisionShape::MakeBox(BoxExtent), BoxParams);
 		for (FOverlapResult& Overlap : Overlaps)
 		{
 			if (AActor* OverlapActor = Overlap.GetActor())
 			{
-				if (OverlapActor->Implements<UCombatInterface>())	// Èç¹ûÊµÏÖÁËÕ½¶·½Ó¿Ú
+				if (OverlapActor->Implements<UCombatInterface>())	// å¦‚æœå®ç°äº†æˆ˜æ–—æ¥å£
 				{
-					if (!ICombatInterface::Execute_IsDead(OverlapActor))	// Èç¹û»î×Å£¬ÎªÊ²Ã´ÒªÓÃExecute_IsDead£¬ÒòÎªIsDeadÊÇÒ»¸ö´¿Ğéº¯Êı£¬ËùÒÔÎÒÃÇĞèÒªÓÃExecute_IsDeadÀ´µ÷ÓÃËü
+					if (!ICombatInterface::Execute_IsDead(OverlapActor))	// å¦‚æœæ´»ç€ï¼Œä¸ºä»€ä¹ˆè¦ç”¨Execute_IsDeadï¼Œå› ä¸ºIsDeadæ˜¯ä¸€ä¸ªçº¯è™šå‡½æ•°ï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦ç”¨Execute_IsDeadæ¥è°ƒç”¨å®ƒ
 					{
-						OutPlayers.AddUnique(ICombatInterface::Execute_GetActor(OverlapActor));		// Ìí¼Óµ½Êı×éÖĞ
+						OutPlayers.AddUnique(ICombatInterface::Execute_GetActor(OverlapActor));		// æ·»åŠ åˆ°æ•°ç»„ä¸­
 					}
 				}
 			}
@@ -274,29 +275,29 @@ void UAuraAbilitySystemLibrary::GetLivePlayerWithinForwardSector(const UObject* 
 	TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Origin, const FVector& Forward,
 	float Angle, float Radius)
 {
-	FCollisionQueryParams SphereParams;		// Åö×²²éÑ¯²ÎÊı
-	SphereParams.AddIgnoredActors(IgnoreActors);	// ºöÂÔµÄÅö×²Ìå
+	FCollisionQueryParams SphereParams;		// ç¢°æ’æŸ¥è¯¢å‚æ•°
+	SphereParams.AddIgnoredActors(IgnoreActors);	// å¿½ç•¥çš„ç¢°æ’ä½“
 
-	TArray<FOverlapResult> Overlaps;	// ÖØµş½á¹û
+	TArray<FOverlapResult> Overlaps;	// é‡å ç»“æœ
 
 	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
-		// ÖØµş¶à¸ö¶ÔÏó£¬ÏÂÃæÕâ¸öº¯Êı»á·µ»ØÖØµşµÄ¶ÔÏó
+		// é‡å å¤šä¸ªå¯¹è±¡ï¼Œä¸‹é¢è¿™ä¸ªå‡½æ•°ä¼šè¿”å›é‡å çš„å¯¹è±¡
 		World->OverlapMultiByObjectType(Overlaps, Origin, FQuat::Identity, FCollisionObjectQueryParams::InitType::AllDynamicObjects, FCollisionShape::MakeSphere(Radius), SphereParams);
 		for (FOverlapResult& Overlap : Overlaps)
 		{
 			if (AActor* OverlapActor = Overlap.GetActor())
 			{
-				if (OverlapActor->Implements<UCombatInterface>())	// Èç¹ûÊµÏÖÁËÕ½¶·½Ó¿Ú
+				if (OverlapActor->Implements<UCombatInterface>())	// å¦‚æœå®ç°äº†æˆ˜æ–—æ¥å£
 				{
-					if (!ICombatInterface::Execute_IsDead(OverlapActor))	// Èç¹û»î×Å£¬ÎªÊ²Ã´ÒªÓÃExecute_IsDead£¬ÒòÎªIsDeadÊÇÒ»¸ö´¿Ğéº¯Êı£¬ËùÒÔÎÒÃÇĞèÒªÓÃExecute_IsDeadÀ´µ÷ÓÃËü
+					if (!ICombatInterface::Execute_IsDead(OverlapActor))	// å¦‚æœæ´»ç€ï¼Œä¸ºä»€ä¹ˆè¦ç”¨Execute_IsDeadï¼Œå› ä¸ºIsDeadæ˜¯ä¸€ä¸ªçº¯è™šå‡½æ•°ï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦ç”¨Execute_IsDeadæ¥è°ƒç”¨å®ƒ
 					{
 						const FVector ToTarget = OverlapActor->GetActorLocation() - Origin;
 						const float Dot = FVector::DotProduct(ToTarget.GetSafeNormal(), Forward.GetSafeNormal());
 						const float AngleToTarget = FMath::Acos(Dot) * 180.f / PI;
 						if (AngleToTarget <= Angle)
 						{
-							OutPlayers.AddUnique(ICombatInterface::Execute_GetActor(OverlapActor));		// Ìí¼Óµ½Êı×éÖĞ
+							OutPlayers.AddUnique(ICombatInterface::Execute_GetActor(OverlapActor));		// æ·»åŠ åˆ°æ•°ç»„ä¸­
 						}
 					}
 				}
@@ -307,7 +308,7 @@ void UAuraAbilitySystemLibrary::GetLivePlayerWithinForwardSector(const UObject* 
 
 bool UAuraAbilitySystemLibrary::IsFriendly(AActor* FirstActor, AActor* SecondActor)
 {
-	// Í¨¹ıÅĞ¶ÏActorHasTagÀ´ÅĞ¶ÏÊÇ·ñÊÇÓÑ·½
+	// é€šè¿‡åˆ¤æ–­ActorHasTagæ¥åˆ¤æ–­æ˜¯å¦æ˜¯å‹æ–¹
 	const bool SelfIsPlayer = FirstActor->ActorHasTag("Player");
 	const bool TargetIsPlayer = SecondActor->ActorHasTag("Player");
 	if (SelfIsPlayer && TargetIsPlayer)
@@ -339,5 +340,16 @@ void UAuraAbilitySystemLibrary::GetWidgetPositionAndSize(const UObject* WorldCon
 	{
 		OutPosition = MyWidgetInstance->GetCachedGeometry().GetAbsolutePosition();
 		UKismetSystemLibrary::PrintString(WorldContextObject, FString::Printf(TEXT("Position: %s"), *OutPosition.ToString()), true, false, FLinearColor::Green, 5.f);
+	}
+}
+
+void UAuraAbilitySystemLibrary::GetAbilityDescriptionByTag(const UObject* WorldContextObject, const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription)
+{
+	if (const APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	{
+		const AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(PlayerController->PlayerState);	// è·å–ç©å®¶çŠ¶æ€
+		UAuraAbilitySystemComponent* AbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent());	// è·å–ç©å®¶çš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
+
+		AbilitySystemComponent->GetDescriptionByTag(AbilityTag, OutDescription, OutNextLevelDescription);
 	}
 }

@@ -5,15 +5,15 @@
 
 FString UAuraGameplayAbility::GetDescription(int32 Level)
 {
-	return FString::Printf(TEXT("<Default>%s£¬</>\n<Default>µÈ¼¶£º</><Level>%d</>"), L"¼¼ÄÜÃû - LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum", Level);
+	return FString::Printf(TEXT("<Default>%sï¼Œ</>\n<Default>ç­‰çº§ï¼š</><Level>%d</>"), L"æŠ€èƒ½å - LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum", Level);
 }
 
 FString UAuraGameplayAbility::GetNextLevelDescription(int32 Level)
 {
-	return FString::Printf(TEXT("<Default>%s£¬</>\n<Default>µÈ¼¶£º</><Level>%d</>"), L"¼¼ÄÜÃû - LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum", Level + 1);
+	return FString::Printf(TEXT("<Default>%sï¼Œ</>\n<Default>ç­‰çº§ï¼š</><Level>%d</>"), L"æŠ€èƒ½å - LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum", Level + 1);
 }
 
 FString UAuraGameplayAbility::GetLockedDescription(int32 Level)
 {
-	return FString::Printf(TEXT("<Default>%s£¬</>\n<Default>µ±Ç°¼¼ÄÜÒÑËø¶¨£¬½âËøµÈ¼¶£º</><Level>%d</>"), L"¼¼ÄÜÃû - LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum", Level);
+	return FString::Printf(TEXT("<Default>%sï¼Œ</>\n<Default>å½“å‰æŠ€èƒ½å·²é”å®šï¼Œè§£é”ç­‰çº§ï¼š</><Level>%d</>"), L"æŠ€èƒ½å - LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum LoremIpsum", Level);
 }

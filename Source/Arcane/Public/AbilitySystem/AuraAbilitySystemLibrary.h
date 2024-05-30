@@ -20,14 +20,14 @@ class ARCANE_API UAuraAbilitySystemLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-	// ÒòÎª¾²Ì¬º¯Êı²»ÄÜ·ÃÎÊÊµÀı»¯¶ÔÏó£¬¾²Ì¬º¯ÊıËùÊôµÄÀà±¾Éí¾Í²»»á±»´´½¨ÔÚWorldÖĞ£¬ËùÒÔĞèÒª´«ÈëÒ»¸öWorldContextObject£¬ÓÃÓÚ»ñÈ¡µ±Ç°µÄWorld
-	// ËùÒÔÕâÒ²¾ÍÊÇÎªÊ²Ã´ºÜ¶àº¯Êı¿âÔÚÒıÇæÖĞ¶¼ĞèÒªÒ»¸öWorldContextObjectµÄÔ­Òò
-	// ÀıÈç£º Í¨¹ıWorldContextObject»ñÈ¡µ±Ç°µÄWorld£¬È»ºóÍ¨¹ıWorld»ñÈ¡GameInstance£¬ÔÙÍ¨¹ıGameInstance»ñÈ¡×Ô¶¨ÒåµÄGameInstanceµÈµÈµÈ
+	// å› ä¸ºé™æ€å‡½æ•°ä¸èƒ½è®¿é—®å®ä¾‹åŒ–å¯¹è±¡ï¼Œé™æ€å‡½æ•°æ‰€å±çš„ç±»æœ¬èº«å°±ä¸ä¼šè¢«åˆ›å»ºåœ¨Worldä¸­ï¼Œæ‰€ä»¥éœ€è¦ä¼ å…¥ä¸€ä¸ªWorldContextObjectï¼Œç”¨äºè·å–å½“å‰çš„World
+	// æ‰€ä»¥è¿™ä¹Ÿå°±æ˜¯ä¸ºä»€ä¹ˆå¾ˆå¤šå‡½æ•°åº“åœ¨å¼•æ“ä¸­éƒ½éœ€è¦ä¸€ä¸ªWorldContextObjectçš„åŸå› 
+	// ä¾‹å¦‚ï¼š é€šè¿‡WorldContextObjectè·å–å½“å‰çš„Worldï¼Œç„¶åé€šè¿‡Worldè·å–GameInstanceï¼Œå†é€šè¿‡GameInstanceè·å–è‡ªå®šä¹‰çš„GameInstanceç­‰ç­‰ç­‰
 
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|AbilitySystemComponent", meta=(DefaultToSelf="WorldContextObject"))
 	static bool MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& OutParams, AAuraHUD*& OutAuraHUD);
 
-	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|WidgetController", meta = (DefaultToSelf = "WorldContextObject")) // BlueprintPure±íÊ¾ÕâÊÇÒ»¸ö´¿À¶Í¼º¯Êı£¬²»ĞèÒªÈÎºÎÒı½Å£¬ËûÖ»ÊÇÖ´ĞĞÄ³ÖÖ²Ù×÷£¬²¢·µ»Ø½á¹û
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|WidgetController", meta = (DefaultToSelf = "WorldContextObject")) // BlueprintPureè¡¨ç¤ºè¿™æ˜¯ä¸€ä¸ªçº¯è“å›¾å‡½æ•°ï¼Œä¸éœ€è¦ä»»ä½•å¼•è„šï¼Œä»–åªæ˜¯æ‰§è¡ŒæŸç§æ“ä½œï¼Œå¹¶è¿”å›ç»“æœ
 	static UOverlayWidgetController* GetOverlayWidgetController(const UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|WidgetController", meta = (DefaultToSelf = "WorldContextObject"))
@@ -36,63 +36,66 @@ public:
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|WidgetController", meta = (DefaultToSelf = "WorldContextObject"))
 	static USpellMenuWidgetController* GetSpellMenuWidgetController(const UObject* WorldContextObject);
 
-	// ¸ù¾İ½ÇÉ«Ö°ÒµºÍ½ÇÉ«µÈ¼¶³õÊ¼»¯½ÇÉ«ÊôĞÔ
+	// æ ¹æ®è§’è‰²èŒä¸šå’Œè§’è‰²ç­‰çº§åˆå§‹åŒ–è§’è‰²å±æ€§
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|CharacterClassDefault")
 	static void InitCharacterAttributesByClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC);
 
-	// ³õÊ¼»¯½ÇÉ«ÄÜÁ¦×é
+	// åˆå§‹åŒ–è§’è‰²èƒ½åŠ›ç»„
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|CharacterClassDefault")
 	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass);
 
-	// »ñÈ¡CharacterClassInfo
+	// è·å–CharacterClassInfo
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|CharacterClassDefault")
 	static UCharacterClassInfo* GetCharacterClassInfo(const UObject* WorldContextObject);
 
-	// »ñÈ¡AbilityInfo
+	// è·å–AbilityInfo
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|AbilityInfo")
 	static UAbilityInfo* GetAbilityInfo(const UObject* WorldContextObject);
 
-	// ´ÓAuraGampelayEffectContextÖĞ»ñÈ¡¸ñµ²ĞÅÏ¢
+	// ä»AuraGampelayEffectContextä¸­è·å–æ ¼æŒ¡ä¿¡æ¯
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static bool IsBlockedHit(const FGameplayEffectContextHandle& ContextHandle);
 
-	// ´ÓAuraGampelayEffectContextÖĞ»ñÈ¡±©»÷ĞÅÏ¢
+	// ä»AuraGampelayEffectContextä¸­è·å–æš´å‡»ä¿¡æ¯
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static bool IsCriticalHit(const FGameplayEffectContextHandle& ContextHandle);
 
-	// ÉèÖÃ±©»÷ĞÅÏ¢ UPARAM(ref)±íÊ¾´«ÈëµÄÊÇÒıÓÃ£¬¶ø²»ÊÇÖµ£¬¶øÇÒÕâ¸ö²ÎÊıÔÚÀ¶Í¼ÖĞÊÇ×÷ÎªÊäÈëÒı½ÅµÄ
+	// è®¾ç½®æš´å‡»ä¿¡æ¯ UPARAM(ref)è¡¨ç¤ºä¼ å…¥çš„æ˜¯å¼•ç”¨ï¼Œè€Œä¸æ˜¯å€¼ï¼Œè€Œä¸”è¿™ä¸ªå‚æ•°åœ¨è“å›¾ä¸­æ˜¯ä½œä¸ºè¾“å…¥å¼•è„šçš„
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static void SetCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, bool bCriticalHit);
 
-	// ÉèÖÃ¸ñµ²ĞÅÏ¢ UPARAM(ref)±íÊ¾´«ÈëµÄÊÇÒıÓÃ£¬¶ø²»ÊÇÖµ£¬¶øÇÒÕâ¸ö²ÎÊıÔÚÀ¶Í¼ÖĞÊÇ×÷ÎªÊäÈëÒı½ÅµÄ
+	// è®¾ç½®æ ¼æŒ¡ä¿¡æ¯ UPARAM(ref)è¡¨ç¤ºä¼ å…¥çš„æ˜¯å¼•ç”¨ï¼Œè€Œä¸æ˜¯å€¼ï¼Œè€Œä¸”è¿™ä¸ªå‚æ•°åœ¨è“å›¾ä¸­æ˜¯ä½œä¸ºè¾“å…¥å¼•è„šçš„
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static void SetBlockedHit(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, bool bBlockedHit);
 
-	// »ñÈ¡°ë¾¶ÄÚµÄËùÓĞ´æ»îÍæ¼Ò £¨´«ÈëÉÏÏÂÎÄ¶ÔÏó£¬´«³öÍæ¼ÒÊı×é£¬´«ÈëºöÂÔµÄÍæ¼ÒÊı×é£¬´«ÈëÖĞĞÄµã£¬´«Èë°ë¾¶£©
+	// è·å–åŠå¾„å†…çš„æ‰€æœ‰å­˜æ´»ç©å®¶ ï¼ˆä¼ å…¥ä¸Šä¸‹æ–‡å¯¹è±¡ï¼Œä¼ å‡ºç©å®¶æ•°ç»„ï¼Œä¼ å…¥å¿½ç•¥çš„ç©å®¶æ•°ç»„ï¼Œä¼ å…¥ä¸­å¿ƒç‚¹ï¼Œä¼ å…¥åŠå¾„ï¼‰
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
 	static void GetLivePlayerWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Origin, float Radius);
 
-	// »ñÈ¡ÉäÏß¼ì²âÄÚµÄËùÓĞ´æ»îÍæ¼Ò £¨´«ÈëÉÏÏÂÎÄ¶ÔÏó£¬´«³öÍæ¼ÒÊı×é£¬´«ÈëºöÂÔµÄÍæ¼ÒÊı×é£¬´«ÈëÉäÏßÆğµã£¬ÉäÏßÖÕµã£©
+	// è·å–å°„çº¿æ£€æµ‹å†…çš„æ‰€æœ‰å­˜æ´»ç©å®¶ ï¼ˆä¼ å…¥ä¸Šä¸‹æ–‡å¯¹è±¡ï¼Œä¼ å‡ºç©å®¶æ•°ç»„ï¼Œä¼ å…¥å¿½ç•¥çš„ç©å®¶æ•°ç»„ï¼Œä¼ å…¥å°„çº¿èµ·ç‚¹ï¼Œå°„çº¿ç»ˆç‚¹ï¼‰
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
 	static void GetLivePlayerWithinRaycast(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Start, const FVector& End);
 
-	// »ñÈ¡Á¢·½ÌåÖØµş¼ì²âÄÚµÄËùÓĞ´æ»îÍæ¼Ò £¨´«ÈëÉÏÏÂÎÄ¶ÔÏó£¬´«³öÍæ¼ÒÊı×é£¬´«ÈëºöÂÔµÄÍæ¼ÒÊı×é£¬´«ÈëÁ¢·½ÌåÖĞĞÄ£¬´«ÈëÁ¢·½Ìå³ß´ç£©
+	// è·å–ç«‹æ–¹ä½“é‡å æ£€æµ‹å†…çš„æ‰€æœ‰å­˜æ´»ç©å®¶ ï¼ˆä¼ å…¥ä¸Šä¸‹æ–‡å¯¹è±¡ï¼Œä¼ å‡ºç©å®¶æ•°ç»„ï¼Œä¼ å…¥å¿½ç•¥çš„ç©å®¶æ•°ç»„ï¼Œä¼ å…¥ç«‹æ–¹ä½“ä¸­å¿ƒï¼Œä¼ å…¥ç«‹æ–¹ä½“å°ºå¯¸ï¼‰
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
 	static void GetLivePlayerWithinBoxOverlap(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Origin, const FVector& BoxExtent);
 
-	// »ñÈ¡Ç°·½ÉÈĞÎÄÚµÄËùÓĞ´æ»îÍæ¼Ò £¨´«ÈëÉÏÏÂÎÄ¶ÔÏó£¬´«³öÍæ¼ÒÊı×é£¬´«ÈëºöÂÔµÄÍæ¼ÒÊı×é£¬´«ÈëÖĞĞÄµã£¬´«ÈëÇ°·½Ïò£¬´«ÈëÉÈĞÎ½Ç¶È£¬´«Èë°ë¾¶£©
+	// è·å–å‰æ–¹æ‰‡å½¢å†…çš„æ‰€æœ‰å­˜æ´»ç©å®¶ ï¼ˆä¼ å…¥ä¸Šä¸‹æ–‡å¯¹è±¡ï¼Œä¼ å‡ºç©å®¶æ•°ç»„ï¼Œä¼ å…¥å¿½ç•¥çš„ç©å®¶æ•°ç»„ï¼Œä¼ å…¥ä¸­å¿ƒç‚¹ï¼Œä¼ å…¥å‰æ–¹å‘ï¼Œä¼ å…¥æ‰‡å½¢è§’åº¦ï¼Œä¼ å…¥åŠå¾„ï¼‰
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
 	static void GetLivePlayerWithinForwardSector(const UObject* WorldContextObject, TArray<AActor*>& OutPlayers, const TArray<AActor*>& IgnoreActors, const FVector& Origin, const FVector& Forward, float Angle, float Radius);
 
-	// ÊÇ·ñÊÇÓÑ¾ü£¨´«ÈëÉÏÏÂÎÄ¶ÔÏó£¬´«Èë×Ô¼º£¬´«ÈëÄ¿±ê£©
+	// æ˜¯å¦æ˜¯å‹å†›ï¼ˆä¼ å…¥ä¸Šä¸‹æ–‡å¯¹è±¡ï¼Œä¼ å…¥è‡ªå·±ï¼Œä¼ å…¥ç›®æ ‡ï¼‰
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
 	static bool IsFriendly(AActor* FirstActor, AActor* SecondActor);
 
-	// »ñÈ¡¹ÖÎïµÄ¾­Ñé½±Àø£¨´«ÈëÉÏÏÂÎÄ¶ÔÏó£¬´«Èë¹ÖÎïµÈ¼¶£¬ ¹ÖÎïÖ°Òµ£©
+	// è·å–æ€ªç‰©çš„ç»éªŒå¥–åŠ±ï¼ˆä¼ å…¥ä¸Šä¸‹æ–‡å¯¹è±¡ï¼Œä¼ å…¥æ€ªç‰©ç­‰çº§ï¼Œ æ€ªç‰©èŒä¸šï¼‰
 	static int32 GetMonsterEXPRewardByClassAndLv(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLv);
 
-	// ´«ÈëÈÎÒâWidget£¬Í¨¹ıSlate»ñÈ¡¸ÃWidgetÔÚÆÁÄ»ÉÏµÄÎ»ÖÃºÍ´óĞ¡
+	// ä¼ å…¥ä»»æ„Widgetï¼Œé€šè¿‡Slateè·å–è¯¥Widgetåœ¨å±å¹•ä¸Šçš„ä½ç½®å’Œå¤§å°
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayMechanice")
 	static void GetWidgetPositionAndSize(const UObject* WorldContextObject, class UUserWidget* MyWidgetInstance, FVector2D& OutPosition, FVector2D& OutSize);
 
+	// ä¼ å…¥AbilityTagï¼Œè·å–æŠ€èƒ½æè¿°
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|AbilityInfo")
+	static void GetAbilityDescriptionByTag(const UObject* WorldContextObject, const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription);
 };
