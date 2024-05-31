@@ -92,6 +92,8 @@ public:
 	FGameplayTag Abilities_Call;				// 能力：召唤
 	FGameplayTag Abilities_HitReact;			// 能力：受击反应
 
+	FGameplayTag Abilities_None;				// 能力：无
+
 	/*
 	 * Fire Ability Tags
 	 */

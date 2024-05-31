@@ -297,6 +297,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Hit React Ability")
 	);
 
+	GameplayTags.Abilities_None = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.None"),
+		FString("No Ability")
+	);
+
 	/*
 	 * Fire Ability Tags
 	 */

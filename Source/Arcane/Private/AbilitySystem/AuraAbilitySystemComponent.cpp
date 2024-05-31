@@ -338,7 +338,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
             // 通知客户端技能状态改变
         }
 
-        ClientEquipAbility(AbilityTag, StatusTag, SlotTag, PreviousSlotTag);    // 通知客户端装备技能
+        ClientEquipAbility(AbilityTag, AuraTags.Abilities_State_Equipped, SlotTag, PreviousSlotTag);    // 通知客户端装备技能
 	}
 }
 

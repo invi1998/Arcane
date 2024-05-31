@@ -17,24 +17,28 @@ void USpellMenuWidgetController::BroadcastInitialValues()
 
 void USpellMenuWidgetController::BindCallbacksToDependencies()
 {
-	GetAuraASC()->AbilityStatusChangedDelegate.AddLambda([this](const FGameplayTag& AbilityTag, const FGameplayTag& AbilityStatus, int32 NewLevel)->void
+	if (GetAuraASC())
 	{
-		if (AbilityInformation)
+		// 添加技能槽改变的委托
+		GetAuraASC()->AbilitySlotChangedDelegate.AddUObject(this, &USpellMenuWidgetController::OnAbilitySlotChange);
+
+		GetAuraASC()->AbilityStatusChangedDelegate.AddLambda([this](const FGameplayTag& AbilityTag, const FGameplayTag& AbilityStatus, int32 NewLevel)->void
 		{
-			FAuraAbilityInfo AbilityInfo = AbilityInformation->FindAbilityInfoByTag(AbilityTag);
-			AbilityInfo.StateTag = AbilityStatus;	// 设置技能状态标签
-			AbilityInfoDelegate.Broadcast(AbilityInfo);
-		}
-	});
+			if (AbilityInformation)
+			{
+				FAuraAbilityInfo AbilityInfo = AbilityInformation->FindAbilityInfoByTag(AbilityTag);
+				AbilityInfo.StateTag = AbilityStatus;	// 设置技能状态标签
+				AbilityInfoDelegate.Broadcast(AbilityInfo);
+			}
+		});
 
-	// 添加技能状态改变的委托
-	GetAuraPS()->OnSkillPointChangedDelegate.AddLambda([this](int32 SkillPoints)->void
-	{
-		SkillPointChangeDelegate.Broadcast(SkillPoints);	// 广播技能点改变
-	});
-
-	// 添加技能槽改变的委托
-	GetAuraASC()->AbilitySlotChangedDelegate.AddUObject(this, &USpellMenuWidgetController::OnAbilitySlotChange);
+		// 添加技能状态改变的委托
+		GetAuraPS()->OnSkillPointChangedDelegate.AddLambda([this](int32 SkillPoints)->void
+		{
+			SkillPointChangeDelegate.Broadcast(SkillPoints);	// 广播技能点改变
+		});
+	}
+	
 }
 
 void USpellMenuWidgetController::SpendSkillPoint(const FGameplayTag& AbilityTag)
@@ -66,7 +70,7 @@ void USpellMenuWidgetController::OnAbilitySlotChange(const FGameplayTag& Ability
 	FAuraAbilityInfo LastSlotInfo;	// 上一个槽信息
 	LastSlotInfo.StateTag = AuraTags.Abilities_State_UnLocked;	// 设置技能状态标签为解锁状态
 	LastSlotInfo.InputTag = OldSlotTag;	// 设置输入标签为旧槽标签
-	LastSlotInfo.AbilityTag = FGameplayTag::EmptyTag;	// 设置技能标签为空标签
+	LastSlotInfo.AbilityTag = AuraTags.Abilities_None;	// 设置技能标签为空标签
 	AbilityInfoDelegate.Broadcast(LastSlotInfo);	// 广播技能信息
 
 	FAuraAbilityInfo AbilityInfo = AbilityInformation->FindAbilityInfoByTag(AbilityTag);	// 通过技能标签查找技能信息
