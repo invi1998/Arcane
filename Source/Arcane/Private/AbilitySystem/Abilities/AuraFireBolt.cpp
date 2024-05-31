@@ -58,7 +58,7 @@ FString UAuraFireBolt::GetNextLevelDescription(int32 Level)
 		"\t<Default>冷却时间：</><Cooldown>%.1f s</>\n"
 		"\t<Default>法力消耗：</><ManaCast>%.1f</>\n"
 		"\t<Default>火球数量：</><Time>%d</>\n\n"
-		"<Default>技能详细伤害描述：</>\n"
+		"<Default>技能详细伤害描述：</>\n\n"
 	), Level + 1, Cooldown, ManaCost, NumProjectiles);
 	Desc += DamageTypeString;
 
