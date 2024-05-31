@@ -19,9 +19,6 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 {
 	if (GetAuraASC())
 	{
-		// 添加技能槽改变的委托
-		GetAuraASC()->AbilitySlotChangedDelegate.AddUObject(this, &USpellMenuWidgetController::OnAbilitySlotChange);
-
 		GetAuraASC()->AbilityStatusChangedDelegate.AddLambda([this](const FGameplayTag& AbilityTag, const FGameplayTag& AbilityStatus, int32 NewLevel)->void
 		{
 			if (AbilityInformation)
@@ -37,6 +34,9 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 		{
 			SkillPointChangeDelegate.Broadcast(SkillPoints);	// 广播技能点改变
 		});
+
+		// 添加技能槽改变的委托
+		GetAuraASC()->AbilitySlotChangedDelegate.AddUObject(this, &USpellMenuWidgetController::OnAbilitySlotChange);
 	}
 	
 }

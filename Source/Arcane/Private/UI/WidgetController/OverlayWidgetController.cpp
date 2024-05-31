@@ -4,6 +4,7 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 
 #include "AttributeSet.h"
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
@@ -15,74 +16,76 @@
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
-	OnHealthChanged.Broadcast(GetAuraAS()->GetHealth());			// ¹ã²¥ÉúÃüÖµ¸Ä±ä
-	OnMaxHealthChanged.Broadcast(GetAuraAS()->GetMaxHealth());		// ¹ã²¥×î´óÉúÃüÖµ¸Ä±ä
-	OnManaChanged.Broadcast(GetAuraAS()->GetMana());				// ¹ã²¥·¨Á¦Öµ¸Ä±ä
-	OnMaxManaChanged.Broadcast(GetAuraAS()->GetMaxMana());			// ¹ã²¥×î´ó·¨Á¦Öµ¸Ä±ä
+	OnHealthChanged.Broadcast(GetAuraAS()->GetHealth());			// å¹¿æ’­ç”Ÿå‘½å€¼æ”¹å˜
+	OnMaxHealthChanged.Broadcast(GetAuraAS()->GetMaxHealth());		// å¹¿æ’­æœ€å¤§ç”Ÿå‘½å€¼æ”¹å˜
+	OnManaChanged.Broadcast(GetAuraAS()->GetMana());				// å¹¿æ’­æ³•åŠ›å€¼æ”¹å˜
+	OnMaxManaChanged.Broadcast(GetAuraAS()->GetMaxMana());			// å¹¿æ’­æœ€å¤§æ³•åŠ›å€¼æ”¹å˜
 }
 
 void UOverlayWidgetController::BindCallbacksToDependencies()
 {
-	GetAuraPS()->OnExpChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnExpChanged);	// Ìí¼Ó¾­Ñé¸Ä±äµÄÎ¯ÍĞ
-	GetAuraPS()->OnLevelChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnPlayerLevelChanged);	// Ìí¼ÓµÈ¼¶¸Ä±äµÄÎ¯ÍĞ
-	GetAuraPS()->OnAttributePointChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnAttributePointsChanged);	// Ìí¼ÓÊôĞÔµã¸Ä±äµÄÎ¯ÍĞ
-	GetAuraPS()->OnSkillPointChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnSkillPointsChanged);	// Ìí¼Ó¼¼ÄÜµã¸Ä±äµÄÎ¯ÍĞ
+	GetAuraPS()->OnExpChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnExpChanged);	// æ·»åŠ ç»éªŒæ”¹å˜çš„å§”æ‰˜
+	GetAuraPS()->OnLevelChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnPlayerLevelChanged);	// æ·»åŠ ç­‰çº§æ”¹å˜çš„å§”æ‰˜
+	GetAuraPS()->OnAttributePointChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnAttributePointsChanged);	// æ·»åŠ å±æ€§ç‚¹æ”¹å˜çš„å§”æ‰˜
+	GetAuraPS()->OnSkillPointChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnSkillPointsChanged);	// æ·»åŠ æŠ€èƒ½ç‚¹æ”¹å˜çš„å§”æ‰˜
 
 	GetAuraASC()->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetHealthAttribute()).AddLambda( 
 		[this](const FOnAttributeChangeData& Data)->void
 		{
-			OnHealthChanged.Broadcast(Data.NewValue);	// ¹ã²¥ÉúÃüÖµ¸Ä±ä
-		});	// Ìí¼ÓÉúÃüÖµ¸Ä±äµÄÎ¯ÍĞ
+			OnHealthChanged.Broadcast(Data.NewValue);	// å¹¿æ’­ç”Ÿå‘½å€¼æ”¹å˜
+		});	// æ·»åŠ ç”Ÿå‘½å€¼æ”¹å˜çš„å§”æ‰˜
 
 	GetAuraASC()->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetMaxHealthAttribute()).AddLambda(
 		[this](const FOnAttributeChangeData& Data)->void
 		{
-			OnMaxHealthChanged.Broadcast(Data.NewValue);	// ¹ã²¥×î´óÉúÃüÖµ¸Ä±ä
-		});	// Ìí¼Ó×î´óÉúÃüÖµ¸Ä±äµÄÎ¯ÍĞ)
+			OnMaxHealthChanged.Broadcast(Data.NewValue);	// å¹¿æ’­æœ€å¤§ç”Ÿå‘½å€¼æ”¹å˜
+		});	// æ·»åŠ æœ€å¤§ç”Ÿå‘½å€¼æ”¹å˜çš„å§”æ‰˜)
 
 	GetAuraASC()->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetManaAttribute()).AddLambda(
 		[this](const FOnAttributeChangeData& Data)->void
 		{
-			OnManaChanged.Broadcast(Data.NewValue);	// ¹ã²¥·¨Á¦Öµ¸Ä±ä
-		});	// Ìí¼Ó·¨Á¦Öµ¸Ä±äµÄÎ¯ÍĞ)
+			OnManaChanged.Broadcast(Data.NewValue);	// å¹¿æ’­æ³•åŠ›å€¼æ”¹å˜
+		});	// æ·»åŠ æ³•åŠ›å€¼æ”¹å˜çš„å§”æ‰˜)
 
 	GetAuraASC()->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetMaxManaAttribute()).AddLambda(
 		[this](const FOnAttributeChangeData& Data)->void
 		{
-			OnMaxManaChanged.Broadcast(Data.NewValue);	// ¹ã²¥×î´ó·¨Á¦Öµ¸Ä±ä
-		});	// Ìí¼Ó×î´ó·¨Á¦Öµ¸Ä±äµÄÎ¯ÍĞ)
+			OnMaxManaChanged.Broadcast(Data.NewValue);	// å¹¿æ’­æœ€å¤§æ³•åŠ›å€¼æ”¹å˜
+		});	// æ·»åŠ æœ€å¤§æ³•åŠ›å€¼æ”¹å˜çš„å§”æ‰˜)
 
 	if (GetAuraASC())
 	{
+		GetAuraASC()->AbilitySlotChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnAbilitySlotChange);	// æ·»åŠ æŠ€èƒ½æ§½æ”¹å˜çš„å§”æ‰˜
+
 		GetAuraASC()->EffectAssetTags.AddLambda(
 			[this](const FGameplayTagContainer& AssertTags)
 			{
 				for (const FGameplayTag& Tag : AssertTags)
 				{
-					// ÕâÀïÎÒÃÇÖ»ÒªMessageTag
-					FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));	// »ñÈ¡Message
+					// è¿™é‡Œæˆ‘ä»¬åªè¦MessageTag
+					FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));	// è·å–Message
 					if (Tag.MatchesTag(MessageTag))
 					{
-						// UKismetSystemLibrary::PrintString(GEngine->GetWorld(), Tag.ToString(), true, true, FLinearColor::Green, 5.0f);	// ´òÓ¡Tag
+						// UKismetSystemLibrary::PrintString(GEngine->GetWorld(), Tag.ToString(), true, true, FLinearColor::Green, 5.0f);	// æ‰“å°Tag
 
-						const FUIWidgetRow* WidgetRow = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);	// Í¨¹ıTag»ñÈ¡Êı¾İ±íĞĞ
-						// ÎÒÃÇÏ£ÍûÍ¨¹ıTagÀ´»ñÈ¡Êı¾İ±íĞĞ£¬È»ºóÊ¹ÓÃÕâĞ©Êı¾İÀ´¸üĞÂUI£¬±ÈÈçÊ¹ÓÃËüÀïÃæµÄÒ»Ğ©×Ê²úÀ´ÏÔÊ¾ÄÚÈİ
+						const FUIWidgetRow* WidgetRow = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);	// é€šè¿‡Tagè·å–æ•°æ®è¡¨è¡Œ
+						// æˆ‘ä»¬å¸Œæœ›é€šè¿‡Tagæ¥è·å–æ•°æ®è¡¨è¡Œï¼Œç„¶åä½¿ç”¨è¿™äº›æ•°æ®æ¥æ›´æ–°UIï¼Œæ¯”å¦‚ä½¿ç”¨å®ƒé‡Œé¢çš„ä¸€äº›èµ„äº§æ¥æ˜¾ç¤ºå†…å®¹
 
-						MessageWidgetRowDelegate.Broadcast(*WidgetRow);	// ¹ã²¥ÏûÏ¢Ğ¡²¿¼şĞĞ
+						MessageWidgetRowDelegate.Broadcast(*WidgetRow);	// å¹¿æ’­æ¶ˆæ¯å°éƒ¨ä»¶è¡Œ
 					}
 				}
 			}
 		);
 
-		// ÎÒÃÇ±ØĞë¿¼ÂÇµ½ÔÚ³õÊ¼»¯Ê±£¬ÎÒÃÇ¿ÉÄÜ»¹Ã»ÓĞ¸øÓèÄÜÁ¦£¬ËùÒÔÎÒÃÇĞèÒª¼ì²éÊÇ·ñÒÑ¾­¸øÓèÁËÄÜÁ¦
+		// æˆ‘ä»¬å¿…é¡»è€ƒè™‘åˆ°åœ¨åˆå§‹åŒ–æ—¶ï¼Œæˆ‘ä»¬å¯èƒ½è¿˜æ²¡æœ‰ç»™äºˆèƒ½åŠ›ï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦æ£€æŸ¥æ˜¯å¦å·²ç»ç»™äºˆäº†èƒ½åŠ›
 		if (GetAuraASC()->bStartupAbilitiesGiven)
 		{
-			// Èç¹ûÒÑ¾­¸øÓèÁËÄÜÁ¦£¬ÎÒÃÇ¾Í¿ÉÒÔÖ±½Óµ÷ÓÃOnInitializedStartupAbilities
-			BroadcastAbilityInfo();	// ¹ã²¥ÄÜÁ¦ĞÅÏ¢
+			// å¦‚æœå·²ç»ç»™äºˆäº†èƒ½åŠ›ï¼Œæˆ‘ä»¬å°±å¯ä»¥ç›´æ¥è°ƒç”¨OnInitializedStartupAbilities
+			BroadcastAbilityInfo();	// å¹¿æ’­èƒ½åŠ›ä¿¡æ¯
 		}
 		else
 		{
-			// Èç¹ûÃ»ÓĞ¸øÓèÄÜÁ¦£¬ÎÒÃÇ¾ÍĞèÒªÌí¼ÓÒ»¸öÎ¯ÍĞ£¬ÒÔ±ãÔÚ¸øÓèÄÜÁ¦Ê±µ÷ÓÃOnInitializedStartupAbilities
+			// å¦‚æœæ²¡æœ‰ç»™äºˆèƒ½åŠ›ï¼Œæˆ‘ä»¬å°±éœ€è¦æ·»åŠ ä¸€ä¸ªå§”æ‰˜ï¼Œä»¥ä¾¿åœ¨ç»™äºˆèƒ½åŠ›æ—¶è°ƒç”¨OnInitializedStartupAbilities
 			GetAuraASC()->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::BroadcastAbilityInfo);
 		}
 	}
@@ -92,34 +95,50 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 void UOverlayWidgetController::OnExpChanged(int32 NewExp)
 {
 
-	checkf(GetAuraPS()->LevelUpInfo, TEXT("LevelUpInfo is not set in AuraPlayerState"));	// ¼ì²éLevelUpInfoÊÇ·ñÎª¿Õ
+	checkf(GetAuraPS()->LevelUpInfo, TEXT("LevelUpInfo is not set in AuraPlayerState"));	// æ£€æŸ¥LevelUpInfoæ˜¯å¦ä¸ºç©º
 
-	// »ñÈ¡Íæ¼ÒµÈ¼¶
-	int32 PlayerLevel = GetAuraPS()->LevelUpInfo->GetLevelByExp(NewExp);	// »ñÈ¡Íæ¼ÒµÈ¼¶
-	PlayerLevel = FMath::Clamp(PlayerLevel, 1, GetAuraPS()->LevelUpInfo->LevelUpInformation.Num());	// ÏŞÖÆÍæ¼ÒµÈ¼¶
+	// è·å–ç©å®¶ç­‰çº§
+	int32 PlayerLevel = GetAuraPS()->LevelUpInfo->GetLevelByExp(NewExp);	// è·å–ç©å®¶ç­‰çº§
+	PlayerLevel = FMath::Clamp(PlayerLevel, 1, GetAuraPS()->LevelUpInfo->LevelUpInformation.Num());	// é™åˆ¶ç©å®¶ç­‰çº§
 
-	// ´«ÈëµÄÊÇÍæ¼ÒµÄ×Ü¾­Ñé£¬ÎÒÃÇĞèÒªµÃµ½µ±Ç°µÈ¼¶µÄ¾­Ñé
-	const int32 CurrentLevelExp = GetAuraPS()->LevelUpInfo->GetCurrentLevelTotalExp(PlayerLevel);	// »ñÈ¡µ±Ç°µÈ¼¶µÄ×Ü¾­Ñé
+	// ä¼ å…¥çš„æ˜¯ç©å®¶çš„æ€»ç»éªŒï¼Œæˆ‘ä»¬éœ€è¦å¾—åˆ°å½“å‰ç­‰çº§çš„ç»éªŒ
+	const int32 CurrentLevelExp = GetAuraPS()->LevelUpInfo->GetCurrentLevelTotalExp(PlayerLevel);	// è·å–å½“å‰ç­‰çº§çš„æ€»ç»éªŒ
 
-	const int32 NextLevelExp = GetAuraPS()->LevelUpInfo->GetLevelUpRequiredExp(PlayerLevel + 1);	// »ñÈ¡ÏÂÒ»¼¶µÄ×Ü¾­Ñé
+	const int32 NextLevelExp = GetAuraPS()->LevelUpInfo->GetLevelUpRequiredExp(PlayerLevel + 1);	// è·å–ä¸‹ä¸€çº§çš„æ€»ç»éªŒ
 
-	const float ExpPercent = static_cast<float>(NewExp - CurrentLevelExp) / static_cast<float>(NextLevelExp);	// ¼ÆËã¾­Ñé°Ù·Ö±È
+	const float ExpPercent = static_cast<float>(NewExp - CurrentLevelExp) / static_cast<float>(NextLevelExp);	// è®¡ç®—ç»éªŒç™¾åˆ†æ¯”
 
-	OnExpPercentChangedDelegate.Broadcast(ExpPercent);	// ¹ã²¥¾­Ñé°Ù·Ö±È
+	OnExpPercentChangedDelegate.Broadcast(ExpPercent);	// å¹¿æ’­ç»éªŒç™¾åˆ†æ¯”
 }
 
 void UOverlayWidgetController::OnPlayerLevelChanged(int32 NewLevel) const
 {
-	OnLevelChangedDelegate.Broadcast(NewLevel);	// ¹ã²¥µÈ¼¶¸Ä±ä
+	OnLevelChangedDelegate.Broadcast(NewLevel);	// å¹¿æ’­ç­‰çº§æ”¹å˜
 }
 
 void UOverlayWidgetController::OnAttributePointsChanged(int32 NewAttributePoints) const
 {
-	OnAttributePointsChangedDelegate.Broadcast(NewAttributePoints);	// ¹ã²¥ÊôĞÔµã¸Ä±ä
+	OnAttributePointsChangedDelegate.Broadcast(NewAttributePoints);	// å¹¿æ’­å±æ€§ç‚¹æ”¹å˜
 }
 
 void UOverlayWidgetController::OnSkillPointsChanged(int32 NewSkillPoints) const
 {
-	OnSkillPointsChangedDelegate.Broadcast(NewSkillPoints);	// ¹ã²¥¼¼ÄÜµã¸Ä±ä
+	OnSkillPointsChangedDelegate.Broadcast(NewSkillPoints);	// å¹¿æ’­æŠ€èƒ½ç‚¹æ”¹å˜
+}
+
+void UOverlayWidgetController::OnAbilitySlotChange(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& OldSlotTag) const
+{
+	const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();
+
+	FAuraAbilityInfo LastSlotInfo;	// ä¸Šä¸€ä¸ªæ§½ä¿¡æ¯
+	LastSlotInfo.StateTag = AuraTags.Abilities_State_UnLocked;	// è®¾ç½®æŠ€èƒ½çŠ¶æ€æ ‡ç­¾ä¸ºè§£é”çŠ¶æ€
+	LastSlotInfo.InputTag = OldSlotTag;	// è®¾ç½®è¾“å…¥æ ‡ç­¾ä¸ºæ—§æ§½æ ‡ç­¾
+	LastSlotInfo.AbilityTag = AuraTags.Abilities_None;	// è®¾ç½®æŠ€èƒ½æ ‡ç­¾ä¸ºç©ºæ ‡ç­¾
+	AbilityInfoDelegate.Broadcast(LastSlotInfo);	// å¹¿æ’­æŠ€èƒ½ä¿¡æ¯
+
+	FAuraAbilityInfo AbilityInfo = AbilityInformation->FindAbilityInfoByTag(AbilityTag);	// é€šè¿‡æŠ€èƒ½æ ‡ç­¾æŸ¥æ‰¾æŠ€èƒ½ä¿¡æ¯
+	AbilityInfo.StateTag = StatusTag;	// è®¾ç½®æŠ€èƒ½çŠ¶æ€æ ‡ç­¾
+	AbilityInfo.InputTag = SlotTag;	// è®¾ç½®è¾“å…¥æ ‡ç­¾
+	AbilityInfoDelegate.Broadcast(AbilityInfo);	// å¹¿æ’­æŠ€èƒ½ä¿¡æ¯
 }
 

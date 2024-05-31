@@ -7,40 +7,40 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
-struct FOnAttributeChangeData;		// ÊôĞÔ¸Ä±äÊı¾İ
+struct FOnAttributeChangeData;		// å±æ€§æ”¹å˜æ•°æ®
 class UAbilityInfo;
 class UAuraAbilitySystemComponent;
 struct FAuraAbilityInfo;
 
-// Õâ½á¹¹ÌåÓÃÓÚ´æ´¢UIĞ¡²¿¼şĞĞµÄÊı¾İ£¬ÓÃÀ´ÔÚÆÁÄ»ÉÏÏÔÊ¾ÏûÏ¢
-USTRUCT(BlueprintType)		// ÉèÖÃÎªÀ¶Í¼ÀàĞÍ
-struct FUIWidgetRow : public FTableRowBase 	// UIĞ¡²¿¼şĞĞ£¬¼Ì³Ğ×ÔFTableRowBase
+// è¿™ç»“æ„ä½“ç”¨äºå­˜å‚¨UIå°éƒ¨ä»¶è¡Œçš„æ•°æ®ï¼Œç”¨æ¥åœ¨å±å¹•ä¸Šæ˜¾ç¤ºæ¶ˆæ¯
+USTRUCT(BlueprintType)		// è®¾ç½®ä¸ºè“å›¾ç±»å‹
+struct FUIWidgetRow : public FTableRowBase 	// UIå°éƒ¨ä»¶è¡Œï¼Œç»§æ‰¿è‡ªFTableRowBase
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// ÉèÖÃÎª¿É±à¼­µÄÈÎºÎµØ·½£¬À¶Í¼¿É¶Á
-	FGameplayTag MessageTag = FGameplayTag::EmptyTag;		// ÏûÏ¢±êÇ©
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// è®¾ç½®ä¸ºå¯ç¼–è¾‘çš„ä»»ä½•åœ°æ–¹ï¼Œè“å›¾å¯è¯»
+	FGameplayTag MessageTag = FGameplayTag::EmptyTag;		// æ¶ˆæ¯æ ‡ç­¾
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// ÉèÖÃÎª¿É±à¼­µÄÈÎºÎµØ·½£¬À¶Í¼¿É¶Á)
-	FText MessageText = FText::GetEmpty();		// ÏûÏ¢ÎÄ±¾
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// è®¾ç½®ä¸ºå¯ç¼–è¾‘çš„ä»»ä½•åœ°æ–¹ï¼Œè“å›¾å¯è¯»)
+	FText MessageText = FText::GetEmpty();		// æ¶ˆæ¯æ–‡æœ¬
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// ÉèÖÃÎª¿É±à¼­µÄÈÎºÎµØ·½£¬À¶Í¼¿É¶Á
-	TSubclassOf<class UAuraUserWidget> MessageWidgetClass;		// Ğ¡²¿¼şÀà£¬Õâ¸ö²¿¼şÎÒÃÇ¿ÉÒÔÔÚÀ¶Í¼ÖĞÈÎÒâ¶¨ÖÆ£¬±ÈÈçÏÔÊ¾ÎÄ±¾£¬Í¼Æ¬µÈµÈ
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// è®¾ç½®ä¸ºå¯ç¼–è¾‘çš„ä»»ä½•åœ°æ–¹ï¼Œè“å›¾å¯è¯»
+	TSubclassOf<class UAuraUserWidget> MessageWidgetClass;		// å°éƒ¨ä»¶ç±»ï¼Œè¿™ä¸ªéƒ¨ä»¶æˆ‘ä»¬å¯ä»¥åœ¨è“å›¾ä¸­ä»»æ„å®šåˆ¶ï¼Œæ¯”å¦‚æ˜¾ç¤ºæ–‡æœ¬ï¼Œå›¾ç‰‡ç­‰ç­‰
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// ÉèÖÃÎª¿É±à¼­µÄÈÎºÎµØ·½£¬À¶Í¼¿É¶Á
-	UTexture2D* MessageIcon = nullptr;		// ÏûÏ¢Í¼±ê
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// è®¾ç½®ä¸ºå¯ç¼–è¾‘çš„ä»»ä½•åœ°æ–¹ï¼Œè“å›¾å¯è¯»
+	UTexture2D* MessageIcon = nullptr;		// æ¶ˆæ¯å›¾æ ‡
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// ÉèÖÃÎª¿É±à¼­µÄÈÎºÎµØ·½£¬À¶Í¼¿É¶Á
-	UTexture2D* BackgroundIcon = nullptr;		// ÏûÏ¢±³¾°
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)		// è®¾ç½®ä¸ºå¯ç¼–è¾‘çš„ä»»ä½•åœ°æ–¹ï¼Œè“å›¾å¯è¯»
+	UTexture2D* BackgroundIcon = nullptr;		// æ¶ˆæ¯èƒŒæ™¯
 
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, MessageWidgetRow);		// ÏûÏ¢Ğ¡²¿¼şĞĞ£¬Ò»¸ö²ÎÊıÊÇÏûÏ¢Ğ¡²¿¼şĞĞ
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, MessageWidgetRow);		// æ¶ˆæ¯å°éƒ¨ä»¶è¡Œï¼Œä¸€ä¸ªå‚æ•°æ˜¯æ¶ˆæ¯å°éƒ¨ä»¶è¡Œ
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangeSignature, int32, NewValue);		// Íæ¼Ò×´Ì¬¸Ä±äÎ¯ÍĞ£¬Ò»¸ö²ÎÊıÊÇĞÂÖµ£¨µÈ¼¶£¬ÊôĞÔµã£¬¼¼ÄÜµã£©
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangeSignature, int32, NewValue);		// ç©å®¶çŠ¶æ€æ”¹å˜å§”æ‰˜ï¼Œä¸€ä¸ªå‚æ•°æ˜¯æ–°å€¼ï¼ˆç­‰çº§ï¼Œå±æ€§ç‚¹ï¼ŒæŠ€èƒ½ç‚¹ï¼‰
 
 /**
- * OverlayWidgetController, µş¼Ó²ã¿Ø¼ş¿ØÖÆÆ÷, ÉèÖÃÎªBlueprintType, Blueprintable£¬ÊÇÒòÎªÎÒÃÇÏ£ÍûÔÚÀ¶Í¼ÖĞÊ¹ÓÃËü
+ * OverlayWidgetController, å åŠ å±‚æ§ä»¶æ§åˆ¶å™¨, è®¾ç½®ä¸ºBlueprintType, Blueprintableï¼Œæ˜¯å› ä¸ºæˆ‘ä»¬å¸Œæœ›åœ¨è“å›¾ä¸­ä½¿ç”¨å®ƒ
  */
 UCLASS(BlueprintType, Blueprintable)
 class ARCANE_API UOverlayWidgetController : public UAuraWidgetController
@@ -48,55 +48,57 @@ class ARCANE_API UOverlayWidgetController : public UAuraWidgetController
 	GENERATED_BODY()
 
 public:
-	virtual void BroadcastInitialValues() override;	// ¹ã²¥³õÊ¼Öµ
-	virtual void BindCallbacksToDependencies() override;		// °ó¶¨»Øµ÷µ½ÒÀÀµÏî
+	virtual void BroadcastInitialValues() override;	// å¹¿æ’­åˆå§‹å€¼
+	virtual void BindCallbacksToDependencies() override;		// ç»‘å®šå›è°ƒåˆ°ä¾èµ–é¡¹
 
 	/*
-	 * ÒòÎªÎÒÃÇ´´½¨ÁËÒ»¸ö¶¯Ì¬¶à²¥Î¯ÍĞ£¬ËùÒÔÎÒÃÇĞèÒªÒ»¸öÀ¶Í¼¿É·ÖÅäµÄÊÂ¼şÀ´´¥·¢Ëü
-	 * Ò»µ«ÎÒÃÇµÄĞ¡²¿¼şÀ¶Í¼£¬WBPµş¼Ó²ã»òÕßÈÎºÎÆäËû¶«Î÷£¬Èç¹ûËûÃÇÄÜ¹»·ÃÎÊµ½Õâ¸ö¿ØÖÆÆ÷£¬ËûÃÇ¾Í¿ÉÒÔ·ÖÅäÒ»¸öÊÂ¼şÀ´½ÓÊÕÕâ¸öÎ¯ÍĞ
+	 * å› ä¸ºæˆ‘ä»¬åˆ›å»ºäº†ä¸€ä¸ªåŠ¨æ€å¤šæ’­å§”æ‰˜ï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦ä¸€ä¸ªè“å›¾å¯åˆ†é…çš„äº‹ä»¶æ¥è§¦å‘å®ƒ
+	 * ä¸€ä½†æˆ‘ä»¬çš„å°éƒ¨ä»¶è“å›¾ï¼ŒWBPå åŠ å±‚æˆ–è€…ä»»ä½•å…¶ä»–ä¸œè¥¿ï¼Œå¦‚æœä»–ä»¬èƒ½å¤Ÿè®¿é—®åˆ°è¿™ä¸ªæ§åˆ¶å™¨ï¼Œä»–ä»¬å°±å¯ä»¥åˆ†é…ä¸€ä¸ªäº‹ä»¶æ¥æ¥æ”¶è¿™ä¸ªå§”æ‰˜
 	 */
 
-	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// ÉèÖÃÎªÀ¶Í¼¿É·ÖÅä£¬·ÖÀàÎªGASÏÂµÄAttributes
-	FOnAttributeChangeSignature OnHealthChanged;		// ÉúÃüÖµ¸Ä±ä
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// è®¾ç½®ä¸ºè“å›¾å¯åˆ†é…ï¼Œåˆ†ç±»ä¸ºGASä¸‹çš„Attributes
+	FOnAttributeChangeSignature OnHealthChanged;		// ç”Ÿå‘½å€¼æ”¹å˜
 
-	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// ÉèÖÃÎªÀ¶Í¼¿É·ÖÅä£¬·ÖÀàÎªGASÏÂµÄAttributes
-	FOnAttributeChangeSignature OnMaxHealthChanged;		// ×î´óÉúÃüÖµ¸Ä±ä
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// è®¾ç½®ä¸ºè“å›¾å¯åˆ†é…ï¼Œåˆ†ç±»ä¸ºGASä¸‹çš„Attributes
+	FOnAttributeChangeSignature OnMaxHealthChanged;		// æœ€å¤§ç”Ÿå‘½å€¼æ”¹å˜
 
-	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// ÉèÖÃÎªÀ¶Í¼¿É·ÖÅä£¬·ÖÀàÎªGASÏÂµÄAttributes
-	FOnAttributeChangeSignature OnManaChanged;		// ·¨Á¦Öµ¸Ä±ä
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// è®¾ç½®ä¸ºè“å›¾å¯åˆ†é…ï¼Œåˆ†ç±»ä¸ºGASä¸‹çš„Attributes
+	FOnAttributeChangeSignature OnManaChanged;		// æ³•åŠ›å€¼æ”¹å˜
 
-	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// ÉèÖÃÎªÀ¶Í¼¿É·ÖÅä£¬·ÖÀàÎªGASÏÂµÄAttributes
-	FOnAttributeChangeSignature OnMaxManaChanged;		// ×î´ó·¨Á¦Öµ¸Ä±ä
+	UPROPERTY(BlueprintAssignable, Category="GAS|Attributes")		// è®¾ç½®ä¸ºè“å›¾å¯åˆ†é…ï¼Œåˆ†ç±»ä¸ºGASä¸‹çš„Attributes
+	FOnAttributeChangeSignature OnMaxManaChanged;		// æœ€å¤§æ³•åŠ›å€¼æ”¹å˜
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|EXP")
-	FOnAttributeChangeSignature OnExpPercentChangedDelegate;		// ¾­Ñé¸Ä±ä
+	FOnAttributeChangeSignature OnExpPercentChangedDelegate;		// ç»éªŒæ”¹å˜
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Stat")
-	FOnPlayerStatChangeSignature OnLevelChangedDelegate;		// µÈ¼¶¸Ä±ä
+	FOnPlayerStatChangeSignature OnLevelChangedDelegate;		// ç­‰çº§æ”¹å˜
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Stat")
-	FOnPlayerStatChangeSignature OnAttributePointsChangedDelegate;		// ÊôĞÔµã¸Ä±ä
+	FOnPlayerStatChangeSignature OnAttributePointsChangedDelegate;		// å±æ€§ç‚¹æ”¹å˜
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Stat")
-	FOnPlayerStatChangeSignature OnSkillPointsChangedDelegate;		// ¼¼ÄÜµã¸Ä±ä
+	FOnPlayerStatChangeSignature OnSkillPointsChangedDelegate;		// æŠ€èƒ½ç‚¹æ”¹å˜
 
-	UPROPERTY(BlueprintAssignable, Category="GAS|Message")		// ÉèÖÃÎªÀ¶Í¼¿É·ÖÅä£¬·ÖÀàÎªGASÏÂµÄAttributes
-	FMessageWidgetRowSignature MessageWidgetRowDelegate;		// ÏûÏ¢Ğ¡²¿¼ş ĞĞÎ¯ÍĞ
+	UPROPERTY(BlueprintAssignable, Category="GAS|Message")		// è®¾ç½®ä¸ºè“å›¾å¯åˆ†é…ï¼Œåˆ†ç±»ä¸ºGASä¸‹çš„Attributes
+	FMessageWidgetRowSignature MessageWidgetRowDelegate;		// æ¶ˆæ¯å°éƒ¨ä»¶ è¡Œå§”æ‰˜
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Widget Data")		// ÉèÖÃÎª¿É±à¼­µÄÈÎºÎµØ·½£¬À¶Í¼¿É¶Á
-	TObjectPtr<UDataTable> MessageWidgetDataTable;		// ÏûÏ¢Ğ¡²¿¼şÊı¾İ±í
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Widget Data")		// è®¾ç½®ä¸ºå¯ç¼–è¾‘çš„ä»»ä½•åœ°æ–¹ï¼Œè“å›¾å¯è¯»
+	TObjectPtr<UDataTable> MessageWidgetDataTable;		// æ¶ˆæ¯å°éƒ¨ä»¶æ•°æ®è¡¨
 
 	template<typename T>
-	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag) const;		// Í¨¹ı±êÇ©»ñÈ¡Êı¾İ±íĞĞ
+	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag) const;		// é€šè¿‡æ ‡ç­¾è·å–æ•°æ®è¡¨è¡Œ
 
-	void OnExpChanged(int32 NewExp);		// µ±¾­Ñé¸Ä±äÊ±
+	void OnExpChanged(int32 NewExp);		// å½“ç»éªŒæ”¹å˜æ—¶
 
-	void OnPlayerLevelChanged(int32 NewLevel) const;		// µ±Íæ¼ÒµÈ¼¶¸Ä±äÊ±
+	void OnPlayerLevelChanged(int32 NewLevel) const;		// å½“ç©å®¶ç­‰çº§æ”¹å˜æ—¶
 
-	void OnAttributePointsChanged(int32 NewAttributePoints) const;		// µ±ÊôĞÔµã¸Ä±äÊ±
+	void OnAttributePointsChanged(int32 NewAttributePoints) const;		// å½“å±æ€§ç‚¹æ”¹å˜æ—¶
 
-	void OnSkillPointsChanged(int32 NewSkillPoints) const;		// µ±¼¼ÄÜµã¸Ä±äÊ±
+	void OnSkillPointsChanged(int32 NewSkillPoints) const;		// å½“æŠ€èƒ½ç‚¹æ”¹å˜æ—¶
+
+	void OnAbilitySlotChange(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& OldSlotTag) const;		// å½“èƒ½åŠ›æ§½æ”¹å˜æ—¶
 
 };
 
