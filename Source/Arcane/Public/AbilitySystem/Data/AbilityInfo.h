@@ -15,33 +15,36 @@ struct FAuraAbilityInfo
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FGameplayTag AbilityTag = FGameplayTag::EmptyTag;		// ¼¼ÄÜ±êÇ©
+	FGameplayTag AbilityTag = FGameplayTag::EmptyTag;		// æŠ€èƒ½æ ‡ç­¾
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayTag AbilityTypeTag = FGameplayTag::EmptyTag;	// æŠ€èƒ½ç±»å‹æ ‡ç­¾
 
 	UPROPERTY(BlueprintReadOnly)
-	FGameplayTag InputTag = FGameplayTag::EmptyTag;			// ÊäÈë±êÇ©£¨ÓÃÓÚ°ó¶¨ÊäÈë£©£¬¸ÃÖµÀ¶Í¼²»¿É±à¼­£¬Í¨¹ı´úÂëÂß¼­ÉèÖÃ
+	FGameplayTag InputTag = FGameplayTag::EmptyTag;			// è¾“å…¥æ ‡ç­¾ï¼ˆç”¨äºç»‘å®šè¾“å…¥ï¼‰ï¼Œè¯¥å€¼è“å›¾ä¸å¯ç¼–è¾‘ï¼Œé€šè¿‡ä»£ç é€»è¾‘è®¾ç½®
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	FGameplayTag CooldownTag = FGameplayTag::EmptyTag;		// ÀäÈ´±êÇ©
+	FGameplayTag CooldownTag = FGameplayTag::EmptyTag;		// å†·å´æ ‡ç­¾
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UTexture2D> Icon = nullptr;					// ¼¼ÄÜÍ¼±ê
+	TObjectPtr<UTexture2D> Icon = nullptr;					// æŠ€èƒ½å›¾æ ‡
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TObjectPtr<UTexture2D> Background = nullptr;			// ¼¼ÄÜ±³¾°
+	TObjectPtr<UTexture2D> Background = nullptr;			// æŠ€èƒ½èƒŒæ™¯
 
 	UPROPERTY(BlueprintReadOnly)
-	FGameplayTag StateTag = FGameplayTag::EmptyTag;			// ¼¼ÄÜ×´Ì¬±êÇ©
+	FGameplayTag StateTag = FGameplayTag::EmptyTag;			// æŠ€èƒ½çŠ¶æ€æ ‡ç­¾
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	int32 LevelRequired = 1;								// ½âËø¼¼ÄÜ¶ÔÍæ¼ÒµÄµÈ¼¶ÒªÇó
+	int32 LevelRequired = 1;								// è§£é”æŠ€èƒ½å¯¹ç©å®¶çš„ç­‰çº§è¦æ±‚
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UGameplayAbility> AbilityClass = nullptr;	// ¼¼ÄÜÀà
+	TSubclassOf<UGameplayAbility> AbilityClass = nullptr;	// æŠ€èƒ½ç±»
 
 };
 
 /**
- * ¼¼ÄÜĞÅÏ¢
+ * æŠ€èƒ½ä¿¡æ¯
  */
 UCLASS()
 class ARCANE_API UAbilityInfo : public UDataAsset
@@ -51,7 +54,7 @@ class ARCANE_API UAbilityInfo : public UDataAsset
 public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AbilityInformation")
-	TArray<FAuraAbilityInfo> AbilitiesInformation;						// ¼¼ÄÜÁĞ±í
+	TArray<FAuraAbilityInfo> AbilitiesInformation;						// æŠ€èƒ½åˆ—è¡¨
 
 
 	FAuraAbilityInfo FindAbilityInfoByTag(const FGameplayTag& AbilityTag, bool bLogNotFound = false) const;
