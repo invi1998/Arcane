@@ -26,10 +26,4 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageType;	// 伤害类型
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Cooldown")
-	FScalableFloat CooldownScalableFloat;	// 冷却时间
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "ManaCost")
-	FScalableFloat ManaCostScalableFloat;	// 法力消耗
-
 };

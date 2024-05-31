@@ -5,202 +5,205 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 
+
+
 /**
  * AuraGameplayTags
  *
- * Ô­Éúµ¥Àı£¬ÓÃÓÚ¹ÜÀíÓÎÏ·ÖĞµÄËùÓĞGameplayTags
+ * åŸç”Ÿå•ä¾‹ï¼Œç”¨äºç®¡ç†æ¸¸æˆä¸­çš„æ‰€æœ‰GameplayTags
  */
 struct FAuraGameplayTags
 {
 public:
 	static const FAuraGameplayTags& Get() { return GameplayTags; };
+	static FString GetDamageCnName(const FGameplayTag& Tag);
 
-	static void InitializeNativeGameplayTags();				// ³õÊ¼»¯Ô­ÉúGameplayTags
-
-	/*
-	 * Ö÷ÊôĞÔ£¨Primary Attributes£©
-	 */
-	FGameplayTag Attributes_Primary_Strength;				// Ö÷ÊôĞÔ£ºÁ¦Á¿
-	FGameplayTag Attributes_Primary_Agility;				// Ö÷ÊôĞÔ£ºÃô½İ
-	FGameplayTag Attributes_Primary_Intelligence;			// Ö÷ÊôĞÔ£ºÖÇÁ¦
-	FGameplayTag Attributes_Primary_Vigor;					// Ö÷ÊôĞÔ£º»îÁ¦
-	FGameplayTag Attributes_Primary_Resilience;				// Ö÷ÊôĞÔ£º¼áÈÍ
+	static void InitializeNativeGameplayTags();				// åˆå§‹åŒ–åŸç”ŸGameplayTags
 
 	/*
-	 *	´ÎÒªÊôĞÔ£¨Secondary Attributes£© »òÕßËµÊÇÅÉÉúÊôĞÔ£¨Derived Attributes£©
+	 * ä¸»å±æ€§ï¼ˆPrimary Attributesï¼‰
+	 */
+	FGameplayTag Attributes_Primary_Strength;				// ä¸»å±æ€§ï¼šåŠ›é‡
+	FGameplayTag Attributes_Primary_Agility;				// ä¸»å±æ€§ï¼šæ•æ·
+	FGameplayTag Attributes_Primary_Intelligence;			// ä¸»å±æ€§ï¼šæ™ºåŠ›
+	FGameplayTag Attributes_Primary_Vigor;					// ä¸»å±æ€§ï¼šæ´»åŠ›
+	FGameplayTag Attributes_Primary_Resilience;				// ä¸»å±æ€§ï¼šåšéŸ§
+
+	/*
+	 *	æ¬¡è¦å±æ€§ï¼ˆSecondary Attributesï¼‰ æˆ–è€…è¯´æ˜¯æ´¾ç”Ÿå±æ€§ï¼ˆDerived Attributesï¼‰
 	 */
 
-	FGameplayTag Attributes_Secondary_MaxHealth;			// ¶ş¼¶ÊôĞÔ£º×î´óÉúÃüÖµ
-	FGameplayTag Attributes_Secondary_MaxMana;				// ¶ş¼¶ÊôĞÔ£º×î´ó·¨Á¦Öµ
+	FGameplayTag Attributes_Secondary_MaxHealth;			// äºŒçº§å±æ€§ï¼šæœ€å¤§ç”Ÿå‘½å€¼
+	FGameplayTag Attributes_Secondary_MaxMana;				// äºŒçº§å±æ€§ï¼šæœ€å¤§æ³•åŠ›å€¼
 
-	FGameplayTag Attributes_Secondary_Armor;				// ¶ş¼¶ÊôĞÔ£º»¤¼×
-	FGameplayTag Attributes_Secondary_ArmorPenetration;		// ¶ş¼¶ÊôĞÔ£º»¤¼×´©Í¸
-	FGameplayTag Attributes_Secondary_BlockChance;			// ¶ş¼¶ÊôĞÔ£º¸ñµ²¼¸ÂÊ
-	FGameplayTag Attributes_Secondary_CriticalHitChance;	// ¶ş¼¶ÊôĞÔ£º±©»÷¼¸ÂÊ
-	FGameplayTag Attributes_Secondary_CriticalHitDamage;	// ¶ş¼¶ÊôĞÔ: ±©»÷ÉËº¦
-	FGameplayTag Attributes_Secondary_CriticalHitResistance;	// ¶ş¼¶ÊôĞÔ: ±©»÷¿¹ĞÔ
-	FGameplayTag Attributes_Secondary_HealthRegeneration;	// ¶ş¼¶ÊôĞÔ: ÉúÃü»Ø¸´
-	FGameplayTag Attributes_Secondary_ManaRegeneration;		// ¶ş¼¶ÊôĞÔ: ·¨Á¦»Ø¸´
+	FGameplayTag Attributes_Secondary_Armor;				// äºŒçº§å±æ€§ï¼šæŠ¤ç”²
+	FGameplayTag Attributes_Secondary_ArmorPenetration;		// äºŒçº§å±æ€§ï¼šæŠ¤ç”²ç©¿é€
+	FGameplayTag Attributes_Secondary_BlockChance;			// äºŒçº§å±æ€§ï¼šæ ¼æŒ¡å‡ ç‡
+	FGameplayTag Attributes_Secondary_CriticalHitChance;	// äºŒçº§å±æ€§ï¼šæš´å‡»å‡ ç‡
+	FGameplayTag Attributes_Secondary_CriticalHitDamage;	// äºŒçº§å±æ€§: æš´å‡»ä¼¤å®³
+	FGameplayTag Attributes_Secondary_CriticalHitResistance;	// äºŒçº§å±æ€§: æš´å‡»æŠ—æ€§
+	FGameplayTag Attributes_Secondary_HealthRegeneration;	// äºŒçº§å±æ€§: ç”Ÿå‘½å›å¤
+	FGameplayTag Attributes_Secondary_ManaRegeneration;		// äºŒçº§å±æ€§: æ³•åŠ›å›å¤
 
-	FGameplayTag Attributes_Secondary_Resistance_Fire;		// ¶ş¼¶ÊôĞÔ£º»ğÑæ¿¹ĞÔ
-	FGameplayTag Attributes_Secondary_Resistance_Ice;		// ¶ş¼¶ÊôĞÔ£º±ùËª¿¹ĞÔ
-	FGameplayTag Attributes_Secondary_Resistance_Lightning;	// ¶ş¼¶ÊôĞÔ£ºÉÁµç¿¹ĞÔ
-	FGameplayTag Attributes_Secondary_Resistance_Poison;	// ¶ş¼¶ÊôĞÔ£º¶¾ËØ¿¹ĞÔ
-	FGameplayTag Attributes_Secondary_Resistance_Arcane;	// ¶ş¼¶ÊôĞÔ£º°ÂÊõ¿¹ĞÔ
-	FGameplayTag Attributes_Secondary_Resistance_Physical;	// ¶ş¼¶ÊôĞÔ£ºÎïÀí¿¹ĞÔ
+	FGameplayTag Attributes_Secondary_Resistance_Fire;		// äºŒçº§å±æ€§ï¼šç«ç„°æŠ—æ€§
+	FGameplayTag Attributes_Secondary_Resistance_Ice;		// äºŒçº§å±æ€§ï¼šå†°éœœæŠ—æ€§
+	FGameplayTag Attributes_Secondary_Resistance_Lightning;	// äºŒçº§å±æ€§ï¼šé—ªç”µæŠ—æ€§
+	FGameplayTag Attributes_Secondary_Resistance_Poison;	// äºŒçº§å±æ€§ï¼šæ¯’ç´ æŠ—æ€§
+	FGameplayTag Attributes_Secondary_Resistance_Arcane;	// äºŒçº§å±æ€§ï¼šå¥¥æœ¯æŠ—æ€§
+	FGameplayTag Attributes_Secondary_Resistance_Physical;	// äºŒçº§å±æ€§ï¼šç‰©ç†æŠ—æ€§
 
-	FGameplayTag Attributes_Meta_RewardExperience;			// ÔªÊôĞÔ£º½±Àø¾­Ñé
+	FGameplayTag Attributes_Meta_RewardExperience;			// å…ƒå±æ€§ï¼šå¥–åŠ±ç»éªŒ
 
 	/*
 	 * Input
 	 */
-	FGameplayTag InputTag_LeftMouseButton;						// ÊäÈë£º×ó¼ü
-	FGameplayTag InputTag_RightMouseButton;						// ÊäÈë£ºÓÒ¼ü
-	FGameplayTag InputTag_1;									// ÊäÈë£º1
-	FGameplayTag InputTag_2;									// ÊäÈë£º2
-	FGameplayTag InputTag_3;									// ÊäÈë£º3
-	FGameplayTag InputTag_4;									// ÊäÈë£º4
-	FGameplayTag InputTag_5;									// ÊäÈë£º5
-	FGameplayTag InputTag_6;									// ÊäÈë£º6
-	FGameplayTag InputTag_7;									// ÊäÈë£º7
-	FGameplayTag InputTag_8;									// ÊäÈë£º8
-	FGameplayTag InputTag_9;									// ÊäÈë£º9
-	FGameplayTag InputTag_0;									// ÊäÈë£º0
+	FGameplayTag InputTag_LeftMouseButton;						// è¾“å…¥ï¼šå·¦é”®
+	FGameplayTag InputTag_RightMouseButton;						// è¾“å…¥ï¼šå³é”®
+	FGameplayTag InputTag_1;									// è¾“å…¥ï¼š1
+	FGameplayTag InputTag_2;									// è¾“å…¥ï¼š2
+	FGameplayTag InputTag_3;									// è¾“å…¥ï¼š3
+	FGameplayTag InputTag_4;									// è¾“å…¥ï¼š4
+	FGameplayTag InputTag_5;									// è¾“å…¥ï¼š5
+	FGameplayTag InputTag_6;									// è¾“å…¥ï¼š6
+	FGameplayTag InputTag_7;									// è¾“å…¥ï¼š7
+	FGameplayTag InputTag_8;									// è¾“å…¥ï¼š8
+	FGameplayTag InputTag_9;									// è¾“å…¥ï¼š9
+	FGameplayTag InputTag_0;									// è¾“å…¥ï¼š0
 
-	FGameplayTag InputTag_Passive_1;							// ÊäÈë£º±»¶¯1
-	FGameplayTag InputTag_Passive_2;							// ÊäÈë£º±»¶¯2
+	FGameplayTag InputTag_Passive_1;							// è¾“å…¥ï¼šè¢«åŠ¨1
+	FGameplayTag InputTag_Passive_2;							// è¾“å…¥ï¼šè¢«åŠ¨2
 
 	/*
 	 * Meta Tags
 	 */
-	FGameplayTag Damage;						// Ôª±êÇ©£ºÊÜµ½ÉËº¦
+	FGameplayTag Damage;						// å…ƒæ ‡ç­¾ï¼šå—åˆ°ä¼¤å®³
 
-	FGameplayTag Damage_Fire;					// »ğÑæÉËº¦
-	FGameplayTag Damage_Ice;					// ±ùËªÉËº¦
-	FGameplayTag Damage_Lightning;				// ÉÁµçÉËº¦
-	FGameplayTag Damage_Poison;					// ¶¾ËØÉËº¦
-	FGameplayTag Damage_Arcane;					// °ÂÊõÉËº¦
-	FGameplayTag Damage_Physical;				// ÎïÀíÉËº¦
+	FGameplayTag Damage_Fire;					// ç«ç„°ä¼¤å®³
+	FGameplayTag Damage_Ice;					// å†°éœœä¼¤å®³
+	FGameplayTag Damage_Lightning;				// é—ªç”µä¼¤å®³
+	FGameplayTag Damage_Poison;					// æ¯’ç´ ä¼¤å®³
+	FGameplayTag Damage_Arcane;					// å¥¥æœ¯ä¼¤å®³
+	FGameplayTag Damage_Physical;				// ç‰©ç†ä¼¤å®³
 
 	/*
 	 * Ability Tags
 	 */
-	FGameplayTag Abilities_Attack;				// ÄÜÁ¦£º¹¥»÷
-	FGameplayTag Abilities_Call;				// ÄÜÁ¦£ºÕÙ»½
-	FGameplayTag Abilities_HitReact;			// ÄÜÁ¦£ºÊÜ»÷·´Ó¦
+	FGameplayTag Abilities_Attack;				// èƒ½åŠ›ï¼šæ”»å‡»
+	FGameplayTag Abilities_Call;				// èƒ½åŠ›ï¼šå¬å”¤
+	FGameplayTag Abilities_HitReact;			// èƒ½åŠ›ï¼šå—å‡»ååº”
 
 	/*
 	 * Fire Ability Tags
 	 */
-	FGameplayTag Abilities_Fire_FireBolt;				// ÄÜÁ¦: »ğÑæ£º»ğÇò
-	FGameplayTag Abilities_Fire_FireBlast;				// ÄÜÁ¦: »ğÑæ£º»ğ±¬
-	FGameplayTag Abilities_Fire_FireNova;				// ÄÜÁ¦: »ğÑæ£º»ğ±¬
-	FGameplayTag Abilities_Fire_FireStorm;				// ÄÜÁ¦: »ğÑæ£º»ğ·ç±©
+	FGameplayTag Abilities_Fire_FireBolt;				// èƒ½åŠ›: ç«ç„°ï¼šç«çƒ
+	FGameplayTag Abilities_Fire_FireBlast;				// èƒ½åŠ›: ç«ç„°ï¼šç«çˆ†
+	FGameplayTag Abilities_Fire_FireNova;				// èƒ½åŠ›: ç«ç„°ï¼šç«æ–°æ˜Ÿ
+	FGameplayTag Abilities_Fire_FireStorm;				// èƒ½åŠ›: ç«ç„°ï¼šç«é£æš´
 
 	/*
 	 * Ice Ability Tags
 	 */
-	FGameplayTag Abilities_Ice_Freeze;				// ÄÜÁ¦: ±ùËª£º±ù¶³
-	FGameplayTag Abilities_Ice_FrostBolt;			// ÄÜÁ¦: ±ùËª£ºËª±ù¼ı
-	FGameplayTag Abilities_Ice_Blade;				// ÄÜÁ¦: ±ùËª£º±ùÈĞ
-	FGameplayTag Abilities_Ice_Blizzard;			// ÄÜÁ¦: ±ùËª£º±©·çÑ©
+	FGameplayTag Abilities_Ice_Freeze;				// èƒ½åŠ›: å†°éœœï¼šå†°å†»
+	FGameplayTag Abilities_Ice_FrostBolt;			// èƒ½åŠ›: å†°éœœï¼šéœœå†°ç®­
+	FGameplayTag Abilities_Ice_Blade;				// èƒ½åŠ›: å†°éœœï¼šå†°åˆƒ
+	FGameplayTag Abilities_Ice_Blizzard;			// èƒ½åŠ›: å†°éœœï¼šæš´é£é›ª
 
 	/*
 	 * Lightning Ability Tags
 	 */
-	FGameplayTag Abilities_Lightning_Electrocute;	// ÄÜÁ¦: ÉÁµç£ºµç»÷
-	FGameplayTag Abilities_Lightning_Thunder;		// ÄÜÁ¦: ÉÁµç£ºÀ×öª
-	FGameplayTag Abilities_Lightning_Chain;			// ÄÜÁ¦: ÉÁµç£ºÉÁµçÁ´
-	FGameplayTag Abilities_Lightning_Storm;			// ÄÜÁ¦: ÉÁµç£ºÀ×±©
+	FGameplayTag Abilities_Lightning_Electrocute;	// èƒ½åŠ›: é—ªç”µï¼šç”µå‡»
+	FGameplayTag Abilities_Lightning_Thunder;		// èƒ½åŠ›: é—ªç”µï¼šé›·éœ†
+	FGameplayTag Abilities_Lightning_Chain;			// èƒ½åŠ›: é—ªç”µï¼šé—ªç”µé“¾
+	FGameplayTag Abilities_Lightning_Storm;			// èƒ½åŠ›: é—ªç”µï¼šé›·æš´
 
 	/*
 	 * Arcane Ability Tags
 	 */
-	FGameplayTag Abilities_Arcane_ArcaneMissile;	// ÄÜÁ¦: °ÂÊõ£º°ÂÊõ·Éµ¯
-	FGameplayTag Abilities_Arcane_Spellbind;		// ÄÜÁ¦: °ÂÊõ£º·¨ÊõÊø¸¿
-	FGameplayTag Abilities_Arcane_Shield;			// ÄÜÁ¦: °ÂÊõ£º»¤¶Ü
-	FGameplayTag Abilities_Arcane_Lgnition;			// ÄÜÁ¦: °ÂÊõ£ºÒıÈ¼
+	FGameplayTag Abilities_Arcane_ArcaneMissile;	// èƒ½åŠ›: å¥¥æœ¯ï¼šå¥¥æœ¯é£å¼¹
+	FGameplayTag Abilities_Arcane_Spellbind;		// èƒ½åŠ›: å¥¥æœ¯ï¼šæ³•æœ¯æŸç¼š
+	FGameplayTag Abilities_Arcane_Shield;			// èƒ½åŠ›: å¥¥æœ¯ï¼šæŠ¤ç›¾
+	FGameplayTag Abilities_Arcane_Lgnition;			// èƒ½åŠ›: å¥¥æœ¯ï¼šå¼•ç‡ƒ
 
 	/*
 	 * Poison Ability Tags
 	 */
-	FGameplayTag Abilities_Poison_PoisonDart;		// ÄÜÁ¦: ¶¾ËØ£º¶¾ïÚ
-	FGameplayTag Abilities_Poison_Venom;			// ÄÜÁ¦: ¶¾ËØ£º¶¾Òº
-	FGameplayTag Abilities_Poison_ToxicCloud;		// ÄÜÁ¦: ¶¾ËØ£º¶¾ÔÆ
-	FGameplayTag Abilities_Poison_PoisonNova;		// ÄÜÁ¦: ¶¾ËØ£º¶¾±¬
+	FGameplayTag Abilities_Poison_PoisonDart;		// èƒ½åŠ›: æ¯’ç´ ï¼šæ¯’é•–
+	FGameplayTag Abilities_Poison_Venom;			// èƒ½åŠ›: æ¯’ç´ ï¼šæ¯’æ¶²
+	FGameplayTag Abilities_Poison_ToxicCloud;		// èƒ½åŠ›: æ¯’ç´ ï¼šæ¯’äº‘
+	FGameplayTag Abilities_Poison_PoisonNova;		// èƒ½åŠ›: æ¯’ç´ ï¼šæ¯’çˆ†
 
 	/*
 	 * Physical Ability Tags
 	 */
-	FGameplayTag Abilities_Physical_Slash;			// ÄÜÁ¦: ÎïÀí£ºÕ¶»÷
-	FGameplayTag Abilities_Physical_Stab;			// ÄÜÁ¦: ÎïÀí£º´Ì»÷
-	FGameplayTag Abilities_Physical_Swing;			// ÄÜÁ¦: ÎïÀí£º»Ó»÷
-	FGameplayTag Abilities_Physical_Thrust;			// ÄÜÁ¦: ÎïÀí£º´Ìµ¶
+	FGameplayTag Abilities_Physical_Slash;			// èƒ½åŠ›: ç‰©ç†ï¼šæ–©å‡»
+	FGameplayTag Abilities_Physical_Stab;			// èƒ½åŠ›: ç‰©ç†ï¼šåˆºå‡»
+	FGameplayTag Abilities_Physical_Swing;			// èƒ½åŠ›: ç‰©ç†ï¼šæŒ¥å‡»
+	FGameplayTag Abilities_Physical_Thrust;			// èƒ½åŠ›: ç‰©ç†ï¼šåˆºåˆ€
 
 	/*
 	 * Ability State Tags
 	 */
-	FGameplayTag Abilities_State_Locked;		// ÄÜÁ¦×´Ì¬£ºËø¶¨
-	FGameplayTag Abilities_State_Eligible;		// ÄÜÁ¦×´Ì¬£º¿ÉÓÃ
-	FGameplayTag Abilities_State_UnLocked;		// ÄÜÁ¦×´Ì¬£º½âËø
-	FGameplayTag Abilities_State_Equipped;		// ÄÜÁ¦×´Ì¬£º×°±¸
+	FGameplayTag Abilities_State_Locked;		// èƒ½åŠ›çŠ¶æ€ï¼šé”å®š
+	FGameplayTag Abilities_State_Eligible;		// èƒ½åŠ›çŠ¶æ€ï¼šå¯ç”¨
+	FGameplayTag Abilities_State_UnLocked;		// èƒ½åŠ›çŠ¶æ€ï¼šè§£é”
+	FGameplayTag Abilities_State_Equipped;		// èƒ½åŠ›çŠ¶æ€ï¼šè£…å¤‡
 
 	/*
 	 * Ability Type Tags
 	 */
-	FGameplayTag Abilities_Type_Offensive;		// ÄÜÁ¦ÀàĞÍ£º¹¥»÷
-	FGameplayTag Abilities_Type_Passive;		// ÄÜÁ¦ÀàĞÍ£º±»¶¯
-	FGameplayTag Abilities_Type_None;			// ÄÜÁ¦ÀàĞÍ£ºÎŞ
+	FGameplayTag Abilities_Type_Offensive;		// èƒ½åŠ›ç±»å‹ï¼šæ”»å‡»
+	FGameplayTag Abilities_Type_Passive;		// èƒ½åŠ›ç±»å‹ï¼šè¢«åŠ¨
+	FGameplayTag Abilities_Type_None;			// èƒ½åŠ›ç±»å‹ï¼šæ— 
 
 	/*
 	 * Cooldown Tags
 	 */
-	FGameplayTag Cooldown_Fire_FireBolt;		// ÀäÈ´£º»ğÑæ£º»ğÇò
-	FGameplayTag Cooldown_Fire_FireBlast;		// ÀäÈ´£º»ğÑæ£º»ğ±¬
-	FGameplayTag Cooldown_Fire_FireNova;		// ÀäÈ´£º»ğÑæ£º»ğ±¬
-	FGameplayTag Cooldown_Fire_FireStorm;		// ÀäÈ´£º»ğÑæ£º»ğ·ç±©
-	FGameplayTag Cooldown_Ice_Freeze;			// ÀäÈ´£º±ùËª£º±ù¶³
-	FGameplayTag Cooldown_Ice_FrostBolt;		// ÀäÈ´£º±ùËª£ºËª±ù¼ı
-	FGameplayTag Cooldown_Ice_Blade;			// ÀäÈ´£º±ùËª£º±ùÈĞ
-	FGameplayTag Cooldown_Ice_Blizzard;		// ÀäÈ´£º±ùËª£º±©·çÑ©
-	FGameplayTag Cooldown_Lightning_Electrocute;	// ÀäÈ´£ºÉÁµç£ºµç»÷
-	FGameplayTag Cooldown_Lightning_Thunder;		// ÀäÈ´£ºÉÁµç£ºÀ×öª
-	FGameplayTag Cooldown_Lightning_Chain;		// ÀäÈ´£ºÉÁµç£ºÉÁµçÁ´
-	FGameplayTag Cooldown_Lightning_Storm;		// ÀäÈ´£ºÉÁµç£ºÀ×±©
-	FGameplayTag Cooldown_Arcane_ArcaneMissile;	// ÀäÈ´£º°ÂÊõ£º°ÂÊõ·Éµ¯
-	FGameplayTag Cooldown_Arcane_Spellbind;		// ÀäÈ´£º°ÂÊõ£º·¨ÊõÊø¸¿
-	FGameplayTag Cooldown_Arcane_Shield;			// ÀäÈ´£º°ÂÊõ£º»¤¶Ü
-	FGameplayTag Cooldown_Arcane_Lgnition;		// ÀäÈ´£º°ÂÊõ£ºÒıÈ¼
-	FGameplayTag Cooldown_Poison_PoisonDart;		// ÀäÈ´£º¶¾ËØ£º¶¾ïÚ
-	FGameplayTag Cooldown_Poison_Venom;			// ÀäÈ´£º¶¾ËØ£º¶¾Òº
-	FGameplayTag Cooldown_Poison_ToxicCloud;		// ÀäÈ´£º¶¾ËØ£º¶¾ÔÆ
-	FGameplayTag Cooldown_Poison_PoisonNova;		// ÀäÈ´£º¶¾ËØ£º¶¾±¬
-	FGameplayTag Cooldown_Physical_Slash;		// ÀäÈ´£ºÎïÀí£ºÕ¶»÷
-	FGameplayTag Cooldown_Physical_Stab;			// ÀäÈ´£ºÎïÀí£º´Ì»÷
-	FGameplayTag Cooldown_Physical_Swing;		// ÀäÈ´£ºÎïÀí£º»Ó»÷
-	FGameplayTag Cooldown_Physical_Thrust;		// ÀäÈ´£ºÎïÀí£º´Ìµ¶
+	FGameplayTag Cooldown_Fire_FireBolt;		// å†·å´ï¼šç«ç„°ï¼šç«çƒ
+	FGameplayTag Cooldown_Fire_FireBlast;		// å†·å´ï¼šç«ç„°ï¼šç«çˆ†
+	FGameplayTag Cooldown_Fire_FireNova;		// å†·å´ï¼šç«ç„°ï¼šç«çˆ†
+	FGameplayTag Cooldown_Fire_FireStorm;		// å†·å´ï¼šç«ç„°ï¼šç«é£æš´
+	FGameplayTag Cooldown_Ice_Freeze;			// å†·å´ï¼šå†°éœœï¼šå†°å†»
+	FGameplayTag Cooldown_Ice_FrostBolt;		// å†·å´ï¼šå†°éœœï¼šéœœå†°ç®­
+	FGameplayTag Cooldown_Ice_Blade;			// å†·å´ï¼šå†°éœœï¼šå†°åˆƒ
+	FGameplayTag Cooldown_Ice_Blizzard;		// å†·å´ï¼šå†°éœœï¼šæš´é£é›ª
+	FGameplayTag Cooldown_Lightning_Electrocute;	// å†·å´ï¼šé—ªç”µï¼šç”µå‡»
+	FGameplayTag Cooldown_Lightning_Thunder;		// å†·å´ï¼šé—ªç”µï¼šé›·éœ†
+	FGameplayTag Cooldown_Lightning_Chain;		// å†·å´ï¼šé—ªç”µï¼šé—ªç”µé“¾
+	FGameplayTag Cooldown_Lightning_Storm;		// å†·å´ï¼šé—ªç”µï¼šé›·æš´
+	FGameplayTag Cooldown_Arcane_ArcaneMissile;	// å†·å´ï¼šå¥¥æœ¯ï¼šå¥¥æœ¯é£å¼¹
+	FGameplayTag Cooldown_Arcane_Spellbind;		// å†·å´ï¼šå¥¥æœ¯ï¼šæ³•æœ¯æŸç¼š
+	FGameplayTag Cooldown_Arcane_Shield;			// å†·å´ï¼šå¥¥æœ¯ï¼šæŠ¤ç›¾
+	FGameplayTag Cooldown_Arcane_Lgnition;		// å†·å´ï¼šå¥¥æœ¯ï¼šå¼•ç‡ƒ
+	FGameplayTag Cooldown_Poison_PoisonDart;		// å†·å´ï¼šæ¯’ç´ ï¼šæ¯’é•–
+	FGameplayTag Cooldown_Poison_Venom;			// å†·å´ï¼šæ¯’ç´ ï¼šæ¯’æ¶²
+	FGameplayTag Cooldown_Poison_ToxicCloud;		// å†·å´ï¼šæ¯’ç´ ï¼šæ¯’äº‘
+	FGameplayTag Cooldown_Poison_PoisonNova;		// å†·å´ï¼šæ¯’ç´ ï¼šæ¯’çˆ†
+	FGameplayTag Cooldown_Physical_Slash;		// å†·å´ï¼šç‰©ç†ï¼šæ–©å‡»
+	FGameplayTag Cooldown_Physical_Stab;			// å†·å´ï¼šç‰©ç†ï¼šåˆºå‡»
+	FGameplayTag Cooldown_Physical_Swing;		// å†·å´ï¼šç‰©ç†ï¼šæŒ¥å‡»
+	FGameplayTag Cooldown_Physical_Thrust;		// å†·å´ï¼šç‰©ç†ï¼šåˆºåˆ€
 
-	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;	// ÉËº¦ÀàĞÍ¶ÔÓ¦¿¹ĞÔ
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;	// ä¼¤å®³ç±»å‹å¯¹åº”æŠ—æ€§
 
 	/*
 	 * Effect Tags
 	 */
-	FGameplayTag Effect_HitReact;				// Ğ§¹û£ºÊÜ»÷·´Ó¦
-	FGameplayTag Effect_DeathReact;				// Ğ§¹û£ºËÀÍö·´Ó¦
+	FGameplayTag Effect_HitReact;				// æ•ˆæœï¼šå—å‡»ååº”
+	FGameplayTag Effect_DeathReact;				// æ•ˆæœï¼šæ­»äº¡ååº”
 
-	FGameplayTag Montage_Attack_Weapon;				// ÃÉÌ«Ææ£ºÎäÆ÷¹¥»÷
-	FGameplayTag Montage_Attack_LeftWeapon;			// ÃÉÌ«Ææ£º×óÊÖÎäÆ÷¹¥»÷
-	FGameplayTag Montage_Attack_LeftWeaponLeftSwing;	// ÃÉÌ«Ææ£º×óÊÖÎäÆ÷×ó»Ó
-	FGameplayTag Montage_Attack_LeftWeaponRightSwing;	// ÃÉÌ«Ææ£º×óÊÖÎäÆ÷ÓÒ»Ó
-	FGameplayTag Montage_Attack_RightWeapon;		// ÃÉÌ«Ææ£ºÓÒÊÖÎäÆ÷¹¥»÷
-	FGameplayTag Montage_Attack_RightWeaponLeftSwing;	// ÃÉÌ«Ææ£ºÓÒÊÖÎäÆ÷×ó»Ó
-	FGameplayTag Montage_Attack_RightWeaponRightSwing;	// ÃÉÌ«Ææ£ºÓÒÊÖÎäÆ÷ÓÒ»Ó
-	FGameplayTag Montage_Attack_Unarmed;			// ÃÉÌ«Ææ£ºÍ½ÊÖ¹¥»÷
-	FGameplayTag Montage_Attack_LeftUnarmed;		// ÃÉÌ«Ææ£º×óÊÖÍ½ÊÖ¹¥»÷
-	FGameplayTag Montage_Attack_RightUnarmed;		// ÃÉÌ«Ææ£ºÓÒÊÖÍ½ÊÖ¹¥»÷
-	FGameplayTag Montage_Attack_Bow;				// ÃÉÌ«Ææ£º¹­¼ı¹¥»÷
-	FGameplayTag Montage_Attack_LichCall;			// ÃÉÌ«Ææ£ºÎ×ÑıÕÙ»½
-	FGameplayTag Montage_Attack_LichSpell;			// ÃÉÌ«Ææ£ºÎ×Ñı·¨Êõ
+	FGameplayTag Montage_Attack_Weapon;				// è’™å¤ªå¥‡ï¼šæ­¦å™¨æ”»å‡»
+	FGameplayTag Montage_Attack_LeftWeapon;			// è’™å¤ªå¥‡ï¼šå·¦æ‰‹æ­¦å™¨æ”»å‡»
+	FGameplayTag Montage_Attack_LeftWeaponLeftSwing;	// è’™å¤ªå¥‡ï¼šå·¦æ‰‹æ­¦å™¨å·¦æŒ¥
+	FGameplayTag Montage_Attack_LeftWeaponRightSwing;	// è’™å¤ªå¥‡ï¼šå·¦æ‰‹æ­¦å™¨å³æŒ¥
+	FGameplayTag Montage_Attack_RightWeapon;		// è’™å¤ªå¥‡ï¼šå³æ‰‹æ­¦å™¨æ”»å‡»
+	FGameplayTag Montage_Attack_RightWeaponLeftSwing;	// è’™å¤ªå¥‡ï¼šå³æ‰‹æ­¦å™¨å·¦æŒ¥
+	FGameplayTag Montage_Attack_RightWeaponRightSwing;	// è’™å¤ªå¥‡ï¼šå³æ‰‹æ­¦å™¨å³æŒ¥
+	FGameplayTag Montage_Attack_Unarmed;			// è’™å¤ªå¥‡ï¼šå¾’æ‰‹æ”»å‡»
+	FGameplayTag Montage_Attack_LeftUnarmed;		// è’™å¤ªå¥‡ï¼šå·¦æ‰‹å¾’æ‰‹æ”»å‡»
+	FGameplayTag Montage_Attack_RightUnarmed;		// è’™å¤ªå¥‡ï¼šå³æ‰‹å¾’æ‰‹æ”»å‡»
+	FGameplayTag Montage_Attack_Bow;				// è’™å¤ªå¥‡ï¼šå¼“ç®­æ”»å‡»
+	FGameplayTag Montage_Attack_LichCall;			// è’™å¤ªå¥‡ï¼šå·«å¦–å¬å”¤
+	FGameplayTag Montage_Attack_LichSpell;			// è’™å¤ªå¥‡ï¼šå·«å¦–æ³•æœ¯
 	
 
 
@@ -209,3 +212,4 @@ protected:
 private:
 	static FAuraGameplayTags GameplayTags;
 };
+

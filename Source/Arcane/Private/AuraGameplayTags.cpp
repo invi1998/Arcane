@@ -5,12 +5,30 @@
 
 #include "GameplayTagsManager.h"
 
-FAuraGameplayTags FAuraGameplayTags::GameplayTags;	// ¾²Ì¬±äÁ¿³õÊ¼»¯
+FAuraGameplayTags FAuraGameplayTags::GameplayTags;	// é™æ€å˜é‡åˆå§‹åŒ–
+
+FString FAuraGameplayTags::GetDamageCnName(const FGameplayTag& Tag)
+{
+	TMap<FGameplayTag, FString> DamageCnNameMap = {
+			{GameplayTags.Damage_Fire, FString(TEXT("ç«ç„°ä¼¤å®³"))},
+			{GameplayTags.Damage_Ice, FString(TEXT("å†°éœœä¼¤å®³"))},
+			{GameplayTags.Damage_Lightning, FString(TEXT("é—ªç”µä¼¤å®³"))},
+			{GameplayTags.Damage_Poison, FString(TEXT("æ¯’ç´ ä¼¤å®³"))},
+			{GameplayTags.Damage_Arcane, FString(TEXT("å¥¥æœ¯ä¼¤å®³"))},
+			{GameplayTags.Damage_Physical, FString(TEXT("ç‰©ç†ä¼¤å®³"))}
+		};
+
+	if (DamageCnNameMap.Contains(Tag))
+	{
+		return DamageCnNameMap[Tag];
+	}
+	return FString(TEXT("æœªçŸ¥ä¼¤å®³ç±»å‹"));
+}
 
 void FAuraGameplayTags::InitializeNativeGameplayTags()
 {
-	// Ìí¼ÓÔ­Éú±êÇ©£¬ÊôĞÔ->´ÎÒªÊôĞÔ->»¤¼×£¬ÃèÊö
-	// ½«Õâ¸ö±êÇ©Ìí¼Óµ½GameplayTagsManagerÖĞ
+	// æ·»åŠ åŸç”Ÿæ ‡ç­¾ï¼Œå±æ€§->æ¬¡è¦å±æ€§->æŠ¤ç”²ï¼Œæè¿°
+	// å°†è¿™ä¸ªæ ‡ç­¾æ·»åŠ åˆ°GameplayTagsManagerä¸­
 	
 /*
 	 * Primary Attributes
@@ -130,7 +148,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	);
 
 	/*
-	 * Input °´¼üÊäÈë
+	 * Input æŒ‰é”®è¾“å…¥
 	 */
 	GameplayTags.InputTag_LeftMouseButton = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("InputTag.LeftMouseButton"),
@@ -255,12 +273,12 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	 */
 	GameplayTags.Effect_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Effect.HitReact"),
-		FString("Hit granted when Hit Reacting")		// ÊÜ»÷·´Ó¦
+		FString("Hit granted when Hit Reacting")		// å—å‡»ååº”
 	);
 
 	GameplayTags.Effect_DeathReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Effect.DeathReact"),
-		FString("Hit granted when Death Reacting")		// ËÀÍö·´Ó¦
+		FString("Hit granted when Death Reacting")		// æ­»äº¡ååº”
 	);
 
 	/*

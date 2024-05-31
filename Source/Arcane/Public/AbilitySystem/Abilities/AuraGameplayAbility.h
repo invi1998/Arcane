@@ -17,11 +17,17 @@ class ARCANE_API UAuraGameplayAbility : public UGameplayAbility
 public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
-	FGameplayTag StartupInputTag;	// Æô¶¯ÊäÈë±êÇ©
+	FGameplayTag StartupInputTag;	// å¯åŠ¨è¾“å…¥æ ‡ç­¾
 
 	virtual FString GetDescription(int32 Level);
 
 	virtual FString GetNextLevelDescription(int32 Level);
 
 	static FString GetLockedDescription(int32 Level);
+
+protected:
+	float GetManaCost(float Level = 1.f);
+
+	float GetCooldown(float Level = 1.f);
+
 };
