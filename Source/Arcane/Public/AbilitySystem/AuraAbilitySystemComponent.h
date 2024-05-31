@@ -8,12 +8,13 @@
 
 class UAuraGameplayAbility;
 
-// ¶¨ÒåÒ»¸öÎ¯ÍĞ£¬ÓÃÓÚÔÚĞ§¹ûÓ¦ÓÃµ½Ä¿±êÊ±µ÷ÓÃ£¬¸ÃÎ¯ÍĞÓÃÓÚ¹ã²¥Ğ§¹ûµÄ±êÇ©
+// å®šä¹‰ä¸€ä¸ªå§”æ‰˜ï¼Œç”¨äºåœ¨æ•ˆæœåº”ç”¨åˆ°ç›®æ ‡æ—¶è°ƒç”¨ï¼Œè¯¥å§”æ‰˜ç”¨äºå¹¿æ’­æ•ˆæœçš„æ ‡ç­¾
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /* Asset Tags */);
-DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);	// ¶¨ÒåÒ»¸öÎ¯ÍĞ£¬ÓÃÓÚÔÚ¸ø½ÇÉ«Ìí¼ÓÄÜÁ¦Ê±µ÷ÓÃ
-DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);	// ÎªÃ¿¸öÄÜÁ¦¶¨ÒåÒ»¸öÎ¯ÍĞ
-DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityInputTagChanged, const FGameplayTag& /* Input Tag */, bool /* Pressed */);	// ¶¨ÒåÒ»¸öÎ¯ÍĞ£¬ÓÃÓÚÔÚ¼¼ÄÜÊäÈë±êÇ©¸Ä±äÊ±µ÷ÓÃ
-DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged, const FGameplayTag& /* State Tag */, const FGameplayTag& /* Ability Tag */, const int32 /* Ability Level */);	// ¶¨ÒåÒ»¸öÎ¯ÍĞ£¬ÓÃÓÚÔÚ¼¼ÄÜ×´Ì¬¸Ä±äÊ±µ÷ÓÃ
+DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);	// å®šä¹‰ä¸€ä¸ªå§”æ‰˜ï¼Œç”¨äºåœ¨ç»™è§’è‰²æ·»åŠ èƒ½åŠ›æ—¶è°ƒç”¨
+DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);	// ä¸ºæ¯ä¸ªèƒ½åŠ›å®šä¹‰ä¸€ä¸ªå§”æ‰˜
+DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityInputTagChanged, const FGameplayTag& /* Input Tag */, bool /* Pressed */);	// å®šä¹‰ä¸€ä¸ªå§”æ‰˜ï¼Œç”¨äºåœ¨æŠ€èƒ½è¾“å…¥æ ‡ç­¾æ”¹å˜æ—¶è°ƒç”¨
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged, const FGameplayTag& /* State Tag */, const FGameplayTag& /* Ability Tag */, const int32 /* Ability Level */);	// å®šä¹‰ä¸€ä¸ªå§”æ‰˜ï¼Œç”¨äºåœ¨æŠ€èƒ½çŠ¶æ€æ”¹å˜æ—¶è°ƒç”¨
+DECLARE_MULTICAST_DELEGATE_FourParams(FAbilitySlotChanged, const FGameplayTag& /* Ability Tag */, const FGameplayTag& /* Status */, const FGameplayTag& /* Slot Tag */, const FGameplayTag& /* Previous Slot Tag */);	// å®šä¹‰ä¸€ä¸ªå§”æ‰˜ï¼Œç”¨äºåœ¨æŠ€èƒ½æ§½æ”¹å˜æ—¶è°ƒç”¨
 
 /**
  * 
@@ -24,54 +25,70 @@ class ARCANE_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 	GENERATED_BODY()
 
 public:
-	// µ±µ÷ÓÃÕâ¸öº¯ÊıÊ±£¬ÎÒÃÇÖªµÀÕâ¸ö½ÇÉ«µÄAbilityActorInfoÒÑ¾­±»ÉèÖÃÁË
+	// å½“è°ƒç”¨è¿™ä¸ªå‡½æ•°æ—¶ï¼Œæˆ‘ä»¬çŸ¥é“è¿™ä¸ªè§’è‰²çš„AbilityActorInfoå·²ç»è¢«è®¾ç½®äº†
 	void AbilityActorInfoSet();
 
-	FEffectAssetTags EffectAssetTags;	// ¶¨ÒåÒ»¸öÎ¯ÍĞ£¬ÓÃÓÚÔÚĞ§¹ûÓ¦ÓÃµ½Ä¿±êÊ±µ÷ÓÃ£¬¸ÃÎ¯ÍĞÓÃÓÚ¹ã²¥Ğ§¹ûµÄ±êÇ©
-	FAbilitiesGiven AbilitiesGivenDelegate;	// ¶¨ÒåÒ»¸öÎ¯ÍĞ£¬ÓÃÓÚÔÚ¸ø½ÇÉ«Ìí¼ÓÄÜÁ¦Ê±µ÷ÓÃ
-	FAbilityStatusChanged AbilityStatusChangedDelegate;	// ¶¨ÒåÒ»¸öÎ¯ÍĞ£¬ÓÃÓÚÔÚ¼¼ÄÜ×´Ì¬¸Ä±äÊ±µ÷ÓÃ
+	FEffectAssetTags EffectAssetTags;	// å®šä¹‰ä¸€ä¸ªå§”æ‰˜ï¼Œç”¨äºåœ¨æ•ˆæœåº”ç”¨åˆ°ç›®æ ‡æ—¶è°ƒç”¨ï¼Œè¯¥å§”æ‰˜ç”¨äºå¹¿æ’­æ•ˆæœçš„æ ‡ç­¾
+	FAbilitiesGiven AbilitiesGivenDelegate;	// å®šä¹‰ä¸€ä¸ªå§”æ‰˜ï¼Œç”¨äºåœ¨ç»™è§’è‰²æ·»åŠ èƒ½åŠ›æ—¶è°ƒç”¨
+	FAbilityStatusChanged AbilityStatusChangedDelegate;	// å®šä¹‰ä¸€ä¸ªå§”æ‰˜ï¼Œç”¨äºåœ¨æŠ€èƒ½çŠ¶æ€æ”¹å˜æ—¶è°ƒç”¨
+	FAbilitySlotChanged AbilitySlotChangedDelegate;	// å®šä¹‰ä¸€ä¸ªå§”æ‰˜ï¼Œç”¨äºåœ¨æŠ€èƒ½æ§½æ”¹å˜æ—¶è°ƒç”¨
 
-	void AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities);		// Ìí¼Ó½ÇÉ«µÄÄÜÁ¦£¬ÕâĞ©ÄÜÁ¦ÔÚ½ÇÉ«´´½¨Ê±¾Í»á±»Ìí¼Ó
+	void AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities);		// æ·»åŠ è§’è‰²çš„èƒ½åŠ›ï¼Œè¿™äº›èƒ½åŠ›åœ¨è§’è‰²åˆ›å»ºæ—¶å°±ä¼šè¢«æ·»åŠ 
 
-	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities);	// Ìí¼Ó½ÇÉ«µÄ±»¶¯ÄÜÁ¦£¬ÕâĞ©ÄÜÁ¦ÔÚ½ÇÉ«´´½¨Ê±¾Í»á±»Ìí¼Ó
+	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities);	// æ·»åŠ è§’è‰²çš„è¢«åŠ¨èƒ½åŠ›ï¼Œè¿™äº›èƒ½åŠ›åœ¨è§’è‰²åˆ›å»ºæ—¶å°±ä¼šè¢«æ·»åŠ 
 
-	bool bStartupAbilitiesGiven = false;	// ÊÇ·ñÒÑ¾­Ìí¼ÓÁË½ÇÉ«µÄÄÜÁ¦
+	bool bStartupAbilitiesGiven = false;	// æ˜¯å¦å·²ç»æ·»åŠ äº†è§’è‰²çš„èƒ½åŠ›
 
-	void AbilityInputTagPressed(const FGameplayTag& InputTag);	// ¼¼ÄÜÊäÈë±êÇ©°´ÏÂ
+	void AbilityInputTagPressed(const FGameplayTag& InputTag);	// æŠ€èƒ½è¾“å…¥æ ‡ç­¾æŒ‰ä¸‹
 
-	void AbilityInputTagReleased(const FGameplayTag& InputTag);	// ¼¼ÄÜÊäÈë±êÇ©ÊÍ·Å
+	void AbilityInputTagReleased(const FGameplayTag& InputTag);	// æŠ€èƒ½è¾“å…¥æ ‡ç­¾é‡Šæ”¾
 
-	void AbilityInputTagHeld(const FGameplayTag& InputTag);	// ¼¼ÄÜÊäÈë±êÇ©°´×¡
+	void AbilityInputTagHeld(const FGameplayTag& InputTag);	// æŠ€èƒ½è¾“å…¥æ ‡ç­¾æŒ‰ä½
 
-	void ForEachAbility(const FForEachAbility& Delegate);	// ÎªÃ¿¸öÄÜÁ¦µ÷ÓÃÒ»¸öÎ¯ÍĞ)
+	void ForEachAbility(const FForEachAbility& Delegate);	// ä¸ºæ¯ä¸ªèƒ½åŠ›è°ƒç”¨ä¸€ä¸ªå§”æ‰˜)
 
-	static FGameplayTag GetAbilityTagBySpec(const FGameplayAbilitySpec& Spec);	// Í¨¹ıAbilitySpec»ñÈ¡ÄÜÁ¦±êÇ©
-	static FGameplayTag GetAbilityInputTagBySpec(const FGameplayAbilitySpec& Spec);	// Í¨¹ıAbilitySpec»ñÈ¡ÄÜÁ¦ÊäÈë±êÇ©
-	static FGameplayTag GetAbilityStateTag(const FGameplayAbilitySpec& Spec);	// »ñÈ¡ÄÜÁ¦×´Ì¬±êÇ©
+	static FGameplayTag GetAbilityTagBySpec(const FGameplayAbilitySpec& Spec);	// é€šè¿‡AbilitySpecè·å–èƒ½åŠ›æ ‡ç­¾
+	static FGameplayTag GetAbilityInputTagBySpec(const FGameplayAbilitySpec& Spec);	// é€šè¿‡AbilitySpecè·å–èƒ½åŠ›è¾“å…¥æ ‡ç­¾
+	static FGameplayTag GetAbilityStateTag(const FGameplayAbilitySpec& Spec);	// è·å–èƒ½åŠ›çŠ¶æ€æ ‡ç­¾
 
-	FGameplayAbilitySpec* FindAbilitySpecByTag(const FGameplayTag& AbilityTag);	// Í¨¹ı±êÇ©²éÕÒÄÜÁ¦
+	FGameplayTag GetStatusTagByAbilityTag(const FGameplayTag& AbilityTag);	// é€šè¿‡èƒ½åŠ›æ ‡ç­¾è·å–çŠ¶æ€æ ‡ç­¾
+	FGameplayTag GetInputTagByAbilityTag(const FGameplayTag& AbilityTag);	// é€šè¿‡èƒ½åŠ›æ ‡ç­¾è·å–è¾“å…¥æ ‡ç­¾
+	FGameplayTag GetAbilityTagByInputTag(const FGameplayTag& InputTag);		// é€šè¿‡è¾“å…¥æ ‡ç­¾è·å–èƒ½åŠ›æ ‡ç­¾
 
-	void UpgradeAttribute(const FGameplayTag& AttributeTag);	// Éı¼¶ÊôĞÔ
+	FGameplayAbilitySpec* FindAbilitySpecByTag(const FGameplayTag& AbilityTag);	// é€šè¿‡æ ‡ç­¾æŸ¥æ‰¾èƒ½åŠ›
+
+	void UpgradeAttribute(const FGameplayTag& AttributeTag);	// å‡çº§å±æ€§
 
 	UFUNCTION(Server, Reliable)
-	void ServerUpgradeAttribute(const FGameplayTag& AttributeTag);	// ·şÎñ¶ËÉı¼¶ÊôĞÔ
+	void ServerUpgradeAttribute(const FGameplayTag& AttributeTag);	// æœåŠ¡ç«¯å‡çº§å±æ€§
 
-	// ÒÀ¾İµÈ¼¶¸üĞÂÄÜÁ¦×´Ì¬±êÇ©
+	// ä¾æ®ç­‰çº§æ›´æ–°èƒ½åŠ›çŠ¶æ€æ ‡ç­¾
 	void UpdateAbilityStateTags(int32 NewLevel);
 
 	UFUNCTION(Server, Reliable)
-	void ServerSpendSkillPoint(const FGameplayTag& AbilityTag);	// ·şÎñ¶ËÏûºÄ¼¼ÄÜµã
+	void ServerSpendSkillPoint(const FGameplayTag& AbilityTag);	// æœåŠ¡ç«¯æ¶ˆè€—æŠ€èƒ½ç‚¹
 
-	bool GetDescriptionByTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription);	// Í¨¹ı±êÇ©»ñÈ¡¼¼ÄÜÃèÊö
+	UFUNCTION(Server, Reliable)
+	void ServerEquipAbility(const FGameplayTag& AbilityTag, const FGameplayTag& SlotTag);	// æœåŠ¡ç«¯è£…å¤‡æŠ€èƒ½
+
+	UFUNCTION(Client, Reliable)
+	void ClientEquipAbility(const FGameplayTag& AbilityTag, const FGameplayTag& Status, const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlotTag);	// å®¢æˆ·ç«¯è£…å¤‡æŠ€èƒ½
+
+	void ClearSlot(FGameplayAbilitySpec* Spec);	// æ¸…é™¤æ§½
+	void ClearAbilityOnSlot(const FGameplayTag& SlotTag);	// æ¸…é™¤æ§½ä¸Šçš„æŠ€èƒ½
+	bool AbilityHasSlot(FGameplayAbilitySpec* Spec, const FGameplayTag& SlotTag);	// æŠ€èƒ½æ˜¯å¦æœ‰æ§½
+
+	bool GetDescriptionByTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription);	// é€šè¿‡æ ‡ç­¾è·å–æŠ€èƒ½æè¿°
 
 protected:
-	// ÔÚĞ§¹ûÓ¦ÓÃµ½Ä¿±êÊ±µ÷ÓÃ
+	// åœ¨æ•ˆæœåº”ç”¨åˆ°ç›®æ ‡æ—¶è°ƒç”¨
 	UFUNCTION(Client, Reliable)
 	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
 	
-	virtual void OnRep_ActivateAbilities() override;	// µ±¼¤»îÄÜÁ¦Ê±µ÷ÓÃ£¬ÓÃÓÚÔÚ¿Í»§¶ËºÍ·şÎñÆ÷Ö®¼äÍ¬²½¼¤»îµÄÄÜÁ¦
+	virtual void OnRep_ActivateAbilities() override;	// å½“æ¿€æ´»èƒ½åŠ›æ—¶è°ƒç”¨ï¼Œç”¨äºåœ¨å®¢æˆ·ç«¯å’ŒæœåŠ¡å™¨ä¹‹é—´åŒæ­¥æ¿€æ´»çš„èƒ½åŠ›
 
 	UFUNCTION(Client, Reliable)
-	void ClientUpdateAbilityStateTags(const FGameplayTag& AbilityTag, const FGameplayTag& StateTag, const int32 AbilityLevel);	// ¿Í»§¶Ë¸üĞÂÄÜÁ¦×´Ì¬±êÇ©
+	void ClientUpdateAbilityStateTags(const FGameplayTag& AbilityTag, const FGameplayTag& StateTag, const int32 AbilityLevel);	// å®¢æˆ·ç«¯æ›´æ–°èƒ½åŠ›çŠ¶æ€æ ‡ç­¾
 
 };
+

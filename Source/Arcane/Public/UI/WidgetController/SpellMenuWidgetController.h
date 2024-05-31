@@ -15,14 +15,19 @@ class ARCANE_API USpellMenuWidgetController : public UAuraWidgetController
 	GENERATED_BODY()
 
 public:
-	virtual void BroadcastInitialValues() override;	// ¹ã²¥³õÊ¼Öµ
+	virtual void BroadcastInitialValues() override;	// å¹¿æ’­åˆå§‹å€¼
 
-	virtual void BindCallbacksToDependencies() override;	// °ó¶¨»Øµ÷º¯Êıµ½ÒÀÀµÏî
+	virtual void BindCallbacksToDependencies() override;	// ç»‘å®šå›è°ƒå‡½æ•°åˆ°ä¾èµ–é¡¹
 
-	UPROPERTY(BlueprintAssignable, Category = "gas|Attributes")		// À¶Í¼¿Éµ÷ÓÃµÄÎ¯ÍĞ
-	FOnPlayerStatChangeSignatureInt SkillPointChangeDelegate;	// ¼¼ÄÜµã¸Ä±äÎ¯ÍĞ
+	UPROPERTY(BlueprintAssignable, Category = "gas|Attributes")		// è“å›¾å¯è°ƒç”¨çš„å§”æ‰˜
+	FOnPlayerStatChangeSignatureInt SkillPointChangeDelegate;	// æŠ€èƒ½ç‚¹æ”¹å˜å§”æ‰˜
 
-	UFUNCTION(BlueprintCallable, Category = "gas|Attributes")	// À¶Í¼¿Éµ÷ÓÃµÄº¯Êı
-	void SpendSkillPoint(const FGameplayTag& AbilityTag);	// ÏûºÄ¼¼ÄÜµã
+	UFUNCTION(BlueprintCallable, Category = "gas|Attributes")	// è“å›¾å¯è°ƒç”¨çš„å‡½æ•°
+	void SpendSkillPoint(const FGameplayTag& AbilityTag);	// æ¶ˆè€—æŠ€èƒ½ç‚¹
+
+	UFUNCTION(BlueprintCallable, Category = "gas|Attributes")	// è“å›¾å¯è°ƒç”¨çš„å‡½æ•°
+	void EquipAbility(const FGameplayTag& AbilityTag, const FGameplayTag& SlotTag);	// è£…å¤‡èƒ½åŠ›
+
+	void OnAbilitySlotChange(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& OldSlotTag);	// èƒ½åŠ›æ§½æ”¹å˜
 	
 };
