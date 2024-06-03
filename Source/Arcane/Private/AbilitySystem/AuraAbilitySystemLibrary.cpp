@@ -353,3 +353,15 @@ void UAuraAbilitySystemLibrary::GetAbilityDescriptionByTag(const UObject* WorldC
 		AbilitySystemComponent->GetDescriptionByTag(AbilityTag, OutDescription, OutNextLevelDescription);
 	}
 }
+
+int32 UAuraAbilitySystemLibrary::GetAbilityLevelByTag(const UObject* WorldContextObject, const FGameplayTag& AbilityTag)
+{
+	if (const APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	{
+		const AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(PlayerController->PlayerState);	// 获取玩家状态
+		UAuraAbilitySystemComponent* AbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent());	// 获取玩家的能力系统组件
+
+		return AbilitySystemComponent->GetAbilityLevelByTag(AbilityTag);
+	}
+	return 0;
+}

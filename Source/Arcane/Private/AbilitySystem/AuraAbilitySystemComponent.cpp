@@ -255,6 +255,16 @@ FGameplayAbilitySpec* UAuraAbilitySystemComponent::FindAbilitySpecByTag(const FG
 	return nullptr;    // 返回空指针
 }
 
+int32 UAuraAbilitySystemComponent::GetAbilityLevelByTag(const FGameplayTag& AbilityTag)
+{
+	if (const FGameplayAbilitySpec* Spec = FindAbilitySpecByTag(AbilityTag))
+	{
+		return Spec->Level;    // 返回技能等级
+	}
+
+	return 0;    // 返回0
+}
+
 void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGameplayTag& AttributeTag)
 {
 	FGameplayEventData Payload;

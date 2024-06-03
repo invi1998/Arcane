@@ -98,4 +98,8 @@ public:
 	// 传入AbilityTag，获取技能描述
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|AbilityInfo")
 	static void GetAbilityDescriptionByTag(const UObject* WorldContextObject, const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription);
+
+	// 传入AbilityTag，获取技能等级
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|AbilityInfo")
+	static int32 GetAbilityLevelByTag(const UObject* WorldContextObject, const FGameplayTag& AbilityTag);
 };

@@ -57,6 +57,8 @@ public:
 
 	FGameplayAbilitySpec* FindAbilitySpecByTag(const FGameplayTag& AbilityTag);	// 通过标签查找能力
 
+	int32 GetAbilityLevelByTag(const FGameplayTag& AbilityTag);	// 通过标签获取技能等级
+
 	void UpgradeAttribute(const FGameplayTag& AttributeTag);	// 升级属性
 
 	UFUNCTION(Server, Reliable)
