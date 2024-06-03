@@ -77,5 +77,7 @@ void USpellMenuWidgetController::OnAbilitySlotChange(const FGameplayTag& Ability
 	AbilityInfo.StateTag = StatusTag;	// 设置技能状态标签
 	AbilityInfo.InputTag = SlotTag;	// 设置输入标签
 	AbilityInfoDelegate.Broadcast(AbilityInfo);	// 广播技能信息
+
+	SpellButtonReassignDelegate.Broadcast(AbilityTag);	// 重新分配技能按钮
 }
 
