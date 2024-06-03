@@ -300,9 +300,9 @@ void UAuraAbilitySystemComponent::UpdateAbilityStateTags(int32 NewLevel)
 				// 如果技能还没有添加，那么就将技能状态设置为已解锁
                 FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.AbilityClass, 1);
                 AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_State_UnLocked);   // 设置技能状态为已解锁
-                // GiveAbility(AbilitySpec);    // 添加技能，但是不激活
+                GiveAbility(AbilitySpec);    // 添加技能，但是不激活
                 // 添加技能并激活
-                GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活技能
+                // GiveAbilityAndActivateOnce(AbilitySpec);    // 添加并激活技能
                 MarkAbilitySpecDirty(AbilitySpec);    // 标记技能为脏，这样在下一帧就会更新技能状态
                 ClientUpdateAbilityStateTags(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_State_UnLocked, 1);    // 通知客户端技能状态改变
 			}
