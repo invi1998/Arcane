@@ -13,26 +13,27 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "UI/Widget/AuraUserWidget.h"
 
 AAuraEnemy::AAuraEnemy()
 {
-	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);	// ÉèÖÃÅö×²ÏìÓ¦
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);	// è®¾ç½®ç¢°æ’å“åº”
 
-	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>(TEXT("AbilitySystemComponent"));	// ´´½¨ÄÜÁ¦ÏµÍ³×é¼ş
-	AbilitySystemComponent->SetIsReplicated(true);	// ÉèÖÃ¸´ÖÆ
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);	// ÉèÖÃ¸´ÖÆÄ£Ê½£¬¶ÔÓÚAIÀ´Ëµ£¬Ö»ĞèÒª×îĞ¡µÄ¸´ÖÆ
+	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>(TEXT("AbilitySystemComponent"));	// åˆ›å»ºèƒ½åŠ›ç³»ç»Ÿç»„ä»¶
+	AbilitySystemComponent->SetIsReplicated(true);	// è®¾ç½®å¤åˆ¶
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);	// è®¾ç½®å¤åˆ¶æ¨¡å¼ï¼Œå¯¹äºAIæ¥è¯´ï¼Œåªéœ€è¦æœ€å°çš„å¤åˆ¶
 
-	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("AttributeSet"));	// ´´½¨ÊôĞÔ¼¯
+	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("AttributeSet"));	// åˆ›å»ºå±æ€§é›†
 
-	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));	// ´´½¨ÑªÌõ
-	HealthBar->SetupAttachment(GetRootComponent());	// ÉèÖÃ¸¸¼¶
+	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));	// åˆ›å»ºè¡€æ¡
+	HealthBar->SetupAttachment(GetRootComponent());	// è®¾ç½®çˆ¶çº§
 
-	bUseControllerRotationYaw = false;	// ¹Ø±Õ¿ØÖÆÆ÷Ğı×ªÆ«º½
-	bUseControllerRotationPitch = false;	// ¹Ø±Õ¿ØÖÆÆ÷Ğı×ª¸©Ñö
-	bUseControllerRotationRoll = false;	// ¹Ø±Õ¿ØÖÆÆ÷Ğı×ª·­¹ö
+	bUseControllerRotationYaw = false;	// å…³é—­æ§åˆ¶å™¨æ—‹è½¬åèˆª
+	bUseControllerRotationPitch = false;	// å…³é—­æ§åˆ¶å™¨æ—‹è½¬ä¿¯ä»°
+	bUseControllerRotationRoll = false;	// å…³é—­æ§åˆ¶å™¨æ—‹è½¬ç¿»æ»š
 
-	GetCharacterMovement()->bUseControllerDesiredRotation = true;	// ¿ªÆô¿ØÖÆÆ÷ÆÚÍûĞı×ª£¨ÒÆ¶¯×é¼ş»á¸ù¾İ¿ØÖÆÆ÷µÄĞı×ªÀ´Ğı×ª£©
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;	// å¼€å¯æ§åˆ¶å™¨æœŸæœ›æ—‹è½¬ï¼ˆç§»åŠ¨ç»„ä»¶ä¼šæ ¹æ®æ§åˆ¶å™¨çš„æ—‹è½¬æ¥æ—‹è½¬ï¼‰
 
 }
 
@@ -42,35 +43,35 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 
 	if (HasAuthority())
 	{
-		AuraAIController = Cast<AAuraAIController>(NewController);	// ÉèÖÃAI¿ØÖÆÆ÷
+		AuraAIController = Cast<AAuraAIController>(NewController);	// è®¾ç½®AIæ§åˆ¶å™¨
 
-		AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);	// ³õÊ¼»¯ºÚ°å
+		AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);	// åˆå§‹åŒ–é»‘æ¿
 
-		AuraAIController->RunBehaviorTree(BehaviorTree);	// ÔËĞĞĞĞÎªÊ÷
+		AuraAIController->RunBehaviorTree(BehaviorTree);	// è¿è¡Œè¡Œä¸ºæ ‘
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("HitReacting", false);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñÊÜ»÷·´Ó¦
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("HitReacting", false);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦å—å‡»ååº”
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("RangedAttacker", CharacterClass == ECharacterClass::Ranger);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñÔ¶³Ì¹¥»÷Õß
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("RangedAttacker", CharacterClass == ECharacterClass::Ranger);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦è¿œç¨‹æ”»å‡»è€…
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("ZombieAttacker", CharacterClass == ECharacterClass::Zombie);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñÉ¥Ê¬¹¥»÷Õß
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("ZombieAttacker", CharacterClass == ECharacterClass::Zombie);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦ä¸§å°¸æ”»å‡»è€…
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichAttacker", CharacterClass == ECharacterClass::Lich);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñÎ×Ñı¹¥»÷Õß
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichAttacker", CharacterClass == ECharacterClass::Lich);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦å·«å¦–æ”»å‡»è€…
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("GoblinAttacker", CharacterClass == ECharacterClass::Goblin);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñ¸ç²¼ÁÖ¹¥»÷Õß
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("GoblinAttacker", CharacterClass == ECharacterClass::Goblin);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦å“¥å¸ƒæ—æ”»å‡»è€…
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("ElementalistAttacker", CharacterClass == ECharacterClass::Elementalist);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñÔªËØÊ¦¹¥»÷Õß
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("ElementalistAttacker", CharacterClass == ECharacterClass::Elementalist);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦å…ƒç´ å¸ˆæ”»å‡»è€…
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("WarriorAttacker", CharacterClass == ECharacterClass::Warrior);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñÕ½Ê¿¹¥»÷Õß
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("WarriorAttacker", CharacterClass == ECharacterClass::Warrior);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦æˆ˜å£«æ”»å‡»è€…
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichKingAttacker", CharacterClass == ECharacterClass::LichKing);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñÎ×ÑıÍõ¹¥»÷Õß
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichKingAttacker", CharacterClass == ECharacterClass::LichKing);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦å·«å¦–ç‹æ”»å‡»è€…
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichGuardAttacker", CharacterClass == ECharacterClass::LichGuard);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñÎ×ÑıÎÀÊ¿¹¥»÷Õß
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichGuardAttacker", CharacterClass == ECharacterClass::LichGuard);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦å·«å¦–å«å£«æ”»å‡»è€…
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichQueenAttacker", CharacterClass == ECharacterClass::LichQueen);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñÎ×ÑıÅ®Íõ¹¥»÷Õß
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("LichQueenAttacker", CharacterClass == ECharacterClass::LichQueen);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦å·«å¦–å¥³ç‹æ”»å‡»è€…
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("GhoulAttacker", CharacterClass == ECharacterClass::Ghoul);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñÊ³Ê¬¹í¹¥»÷Õß
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("GhoulAttacker", CharacterClass == ECharacterClass::Ghoul);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦é£Ÿå°¸é¬¼æ”»å‡»è€…
 
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsAlive", true);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñ´æ»î
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsAlive", true);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦å­˜æ´»
 
 	}
 }
@@ -79,21 +80,21 @@ void AAuraEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;	// ÉèÖÃ×î´óĞĞ×ßËÙ¶È
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;	// è®¾ç½®æœ€å¤§è¡Œèµ°é€Ÿåº¦
 	
-	InitAbilityActorInfo();	// ³õÊ¼»¯ÄÜÁ¦ÏµÍ³×é¼ş£¬ÉèÖÃÓµÓĞÕßºÍËùÓĞÕß
+	InitAbilityActorInfo();	// åˆå§‹åŒ–èƒ½åŠ›ç³»ç»Ÿç»„ä»¶ï¼Œè®¾ç½®æ‹¥æœ‰è€…å’Œæ‰€æœ‰è€…
 
 	if (HasAuthority())
 	{
-		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);	// ³õÊ¼»¯ÄÜÁ¦
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent, CharacterClass);	// åˆå§‹åŒ–èƒ½åŠ›
 	}
 
-	// ½«ÑªÌõ×é¼şµÄWidgetControllerÉèÖÃÎªActor±¾Éí
+	// å°†è¡€æ¡ç»„ä»¶çš„WidgetControllerè®¾ç½®ä¸ºActoræœ¬èº«
 	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
 	{
-		// ÕâÑù£¬WidgetController¾ÍÊÇÓµÓĞÕâ¸öWidgetµÄActor±¾Éí£¬ÎªÊ²Ã´¿ÉÒÔÕâÑùÉèÖÃÄØ£¿
-		// ÒòÎªUAuraUserWidgetController¼Ì³Ğ×ÔUObject£¬¶øUObjectÊÇÒ»¸ö»ùÀà£¬ÈÎºÎ¼Ì³Ğ×ÔUObjectµÄÀà¶¼¿ÉÒÔÉèÖÃÎªWidgetController
-		// ÔÚUEÀï£¬ÈÎºÎÀà¶¼¼Ì³Ğ×ÔUObject£¬ËùÒÔÎÒÃÇ¿ÉÒÔÉèÖÃÈÎºÎÀàÎªWidgetController
+		// è¿™æ ·ï¼ŒWidgetControllerå°±æ˜¯æ‹¥æœ‰è¿™ä¸ªWidgetçš„Actoræœ¬èº«ï¼Œä¸ºä»€ä¹ˆå¯ä»¥è¿™æ ·è®¾ç½®å‘¢ï¼Ÿ
+		// å› ä¸ºUAuraUserWidgetControllerç»§æ‰¿è‡ªUObjectï¼Œè€ŒUObjectæ˜¯ä¸€ä¸ªåŸºç±»ï¼Œä»»ä½•ç»§æ‰¿è‡ªUObjectçš„ç±»éƒ½å¯ä»¥è®¾ç½®ä¸ºWidgetController
+		// åœ¨UEé‡Œï¼Œä»»ä½•ç±»éƒ½ç»§æ‰¿è‡ªUObjectï¼Œæ‰€ä»¥æˆ‘ä»¬å¯ä»¥è®¾ç½®ä»»ä½•ç±»ä¸ºWidgetController
 		AuraUserWidget->SetWidgetController(this);
 	}
 
@@ -102,34 +103,34 @@ void AAuraEnemy::BeginPlay()
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAS->GetHealthAttribute()).AddLambda(
 			[this](const FOnAttributeChangeData& Data)->void
 			{
-				OnHealthChanged.Broadcast(Data.NewValue);	// ¹ã²¥ÉúÃüÖµ¸Ä±ä
+				OnHealthChanged.Broadcast(Data.NewValue);	// å¹¿æ’­ç”Ÿå‘½å€¼æ”¹å˜
 			}
-		);	// Ìí¼ÓÉúÃüÖµ¸Ä±äÎ¯ÍĞ
+		);	// æ·»åŠ ç”Ÿå‘½å€¼æ”¹å˜å§”æ‰˜
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAS->GetMaxHealthAttribute()).AddLambda(
 			[this](const FOnAttributeChangeData& Data)->void
 			{
-				OnMaxHealthChanged.Broadcast(Data.NewValue);	// ¹ã²¥×î´óÉúÃüÖµ¸Ä±ä
+				OnMaxHealthChanged.Broadcast(Data.NewValue);	// å¹¿æ’­æœ€å¤§ç”Ÿå‘½å€¼æ”¹å˜
 			}
-		);	// Ìí¼Ó×î´óÉúÃüÖµ¸Ä±äÎ¯ÍĞ
+		);	// æ·»åŠ æœ€å¤§ç”Ÿå‘½å€¼æ”¹å˜å§”æ‰˜
 		
-		AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Effect_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AAuraEnemy::HitReactTagChanged);	// ×¢²áËÀÍö±êÇ©¸Ä±äÎ¯ÍĞ
+		AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Effect_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AAuraEnemy::HitReactTagChanged);	// æ³¨å†Œæ­»äº¡æ ‡ç­¾æ”¹å˜å§”æ‰˜
 
-		// Ö±½ÓÔÚÕâÀï¹ã²¥Ò»´Î£¬×÷ÎªÑªÌõµÄ³õÊ¼»¯
-		OnHealthChanged.Broadcast(AuraAS->GetHealth());	// ¹ã²¥ÉúÃüÖµ¸Ä±ä
-		OnMaxHealthChanged.Broadcast(AuraAS->GetMaxHealth());	// ¹ã²¥×î´óÉúÃüÖµ¸Ä±ä
+		// ç›´æ¥åœ¨è¿™é‡Œå¹¿æ’­ä¸€æ¬¡ï¼Œä½œä¸ºè¡€æ¡çš„åˆå§‹åŒ–
+		OnHealthChanged.Broadcast(AuraAS->GetHealth());	// å¹¿æ’­ç”Ÿå‘½å€¼æ”¹å˜
+		OnMaxHealthChanged.Broadcast(AuraAS->GetMaxHealth());	// å¹¿æ’­æœ€å¤§ç”Ÿå‘½å€¼æ”¹å˜
 	}
 }
 
 void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
-	bIsHitReact = NewCount > 0;	// ÊÇ·ñÊÜ»÷·´Ó¦
+	bIsHitReact = NewCount > 0;	// æ˜¯å¦å—å‡»ååº”
 
-	// ÊÜ»÷£¬Í£Ö¹ÒÆ¶¯
-	GetCharacterMovement()->MaxWalkSpeed = bIsHitReact ? 0.f : BaseWalkSpeed;	// Èç¹ûÊÜ»÷£¬ËÙ¶ÈÎª0£¬·ñÔòÎªÔ­À´µÄËÙ¶È
+	// å—å‡»ï¼Œåœæ­¢ç§»åŠ¨
+	GetCharacterMovement()->MaxWalkSpeed = bIsHitReact ? 0.f : BaseWalkSpeed;	// å¦‚æœå—å‡»ï¼Œé€Ÿåº¦ä¸º0ï¼Œå¦åˆ™ä¸ºåŸæ¥çš„é€Ÿåº¦
 
 	if (AuraAIController && AuraAIController->GetBlackboardComponent())
 	{
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("HitReacting", bIsHitReact);	// ÉèÖÃºÚ°åÖµ£¬ÊÇ·ñÊÜ»÷·´Ó¦
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("HitReacting", bIsHitReact);	// è®¾ç½®é»‘æ¿å€¼ï¼Œæ˜¯å¦å—å‡»ååº”
 	}
 	
 }
@@ -138,7 +139,7 @@ void AAuraEnemy::Die()
 {
 	if (AuraAIController && AuraAIController->GetBlackboardComponent())
 	{
-		AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsAlive", false);	// ÉèÖÃºÚ°åÖµ, ÊÇ·ñ´æ»î
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsAlive", false);	// è®¾ç½®é»‘æ¿å€¼, æ˜¯å¦å­˜æ´»
 	}
 	
 	SetLifeSpan(LifeSpan);
@@ -157,9 +158,9 @@ AActor* AAuraEnemy::GetCombatTarget_Implementation() const
 
 void AAuraEnemy::InitAbilityActorInfo()
 {
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);	// ³õÊ¼»¯ÄÜÁ¦ÏµÍ³×é¼ş£¬ÉèÖÃÓµÓĞÕßºÍËùÓĞÕß
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);	// åˆå§‹åŒ–èƒ½åŠ›ç³»ç»Ÿç»„ä»¶ï¼Œè®¾ç½®æ‹¥æœ‰è€…å’Œæ‰€æœ‰è€…
 
-	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();	// ÉèÖÃ¼¼ÄÜActorĞÅÏ¢
+	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AbilityActorInfoSet();	// è®¾ç½®æŠ€èƒ½Actorä¿¡æ¯
 
 	if (HasAuthority())
 	{
@@ -169,67 +170,67 @@ void AAuraEnemy::InitAbilityActorInfo()
 
 void AAuraEnemy::InitializeDefaultAttributes() const
 {
-	// Í¨¹ı½ÇÉ«Ö°ÒµºÍµÈ¼¶³õÊ¼»¯½ÇÉ«ÊôĞÔ
+	// é€šè¿‡è§’è‰²èŒä¸šå’Œç­‰çº§åˆå§‹åŒ–è§’è‰²å±æ€§
 	UAuraAbilitySystemLibrary::InitCharacterAttributesByClassAndLevel(this, CharacterClass, Level, AbilitySystemComponent);
 }
 
 void AAuraEnemy::HighlightActor()
 {
-	// Í¨¹ıÉèÖÃºó´¦Àí²ÄÖÊÀ´¸ßÁÁ£¬ºó´¦Àí²ÄÖÊÖ÷ÒªÍ¨¹ıäÖÈ¾×Ô¶¨ÒåÉî¶ÈÀ´ÊµÏÖ
+	// é€šè¿‡è®¾ç½®åå¤„ç†æè´¨æ¥é«˜äº®ï¼Œåå¤„ç†æè´¨ä¸»è¦é€šè¿‡æ¸²æŸ“è‡ªå®šä¹‰æ·±åº¦æ¥å®ç°
 
-	GetMesh()->SetRenderCustomDepth(true);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈäÖÈ¾
-	GetMesh()->CustomDepthStencilValue = CUSTOM_DEPTH_STENCIL_RED;	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈÖµ
+	GetMesh()->SetRenderCustomDepth(true);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦æ¸²æŸ“
+	GetMesh()->CustomDepthStencilValue = CUSTOM_DEPTH_STENCIL_RED;	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦å€¼
 
 	if (Weapon)
 	{
-		Weapon->SetRenderCustomDepth(true);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈäÖÈ¾
-		Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈÖµ
+		Weapon->SetRenderCustomDepth(true);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦æ¸²æŸ“
+		Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦å€¼
 	}
 	if (LeftWeapon)
 	{
-		LeftWeapon->SetRenderCustomDepth(true);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈäÖÈ¾
-		LeftWeapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈÖµ
+		LeftWeapon->SetRenderCustomDepth(true);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦æ¸²æŸ“
+		LeftWeapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦å€¼
 	}
 	if (RightWeapon)
 	{
-		RightWeapon->SetRenderCustomDepth(true);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈäÖÈ¾
-		RightWeapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈÖµ
+		RightWeapon->SetRenderCustomDepth(true);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦æ¸²æŸ“
+		RightWeapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦å€¼
 	}
 	if (BowWeapon)
 	{
-		BowWeapon->SetRenderCustomDepth(true);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈäÖÈ¾
-		BowWeapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈÖµ
+		BowWeapon->SetRenderCustomDepth(true);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦æ¸²æŸ“
+		BowWeapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦å€¼
 	}
 	if (BowArrow)
 	{
-		BowArrow->SetRenderCustomDepth(true);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈäÖÈ¾
-		BowArrow->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈÖµ
+		BowArrow->SetRenderCustomDepth(true);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦æ¸²æŸ“
+		BowArrow->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦å€¼
 	}
 
 }
 
 void AAuraEnemy::UnHighlightActor()
 {
-	GetMesh()->SetRenderCustomDepth(false);	// È¡Ïû×Ô¶¨ÒåÉî¶ÈäÖÈ¾
+	GetMesh()->SetRenderCustomDepth(false);	// å–æ¶ˆè‡ªå®šä¹‰æ·±åº¦æ¸²æŸ“
 	if (Weapon)
 	{
-		Weapon->SetRenderCustomDepth(false);	// È¡Ïû×Ô¶¨ÒåÉî¶ÈäÖÈ¾
+		Weapon->SetRenderCustomDepth(false);	// å–æ¶ˆè‡ªå®šä¹‰æ·±åº¦æ¸²æŸ“
 	}
 	if (LeftWeapon)
 	{
-		LeftWeapon->SetRenderCustomDepth(false);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈäÖÈ¾
+		LeftWeapon->SetRenderCustomDepth(false);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦æ¸²æŸ“
 	}
 	if (RightWeapon)
 	{
-		RightWeapon->SetRenderCustomDepth(false);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈäÖÈ¾
+		RightWeapon->SetRenderCustomDepth(false);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦æ¸²æŸ“
 	}
 	if (BowWeapon)
 	{
-		BowWeapon->SetRenderCustomDepth(false);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈäÖÈ¾
+		BowWeapon->SetRenderCustomDepth(false);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦æ¸²æŸ“
 	}
 	if (BowArrow)
 	{
-		BowArrow->SetRenderCustomDepth(false);	// ÉèÖÃ×Ô¶¨ÒåÉî¶ÈäÖÈ¾
+		BowArrow->SetRenderCustomDepth(false);	// è®¾ç½®è‡ªå®šä¹‰æ·±åº¦æ¸²æŸ“
 	}
 }
 
