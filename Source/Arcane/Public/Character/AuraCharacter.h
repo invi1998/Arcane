@@ -22,43 +22,44 @@ class ARCANE_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInter
 public:
 	AAuraCharacter();
 
-	virtual void PossessedBy(AController* NewController) override;		// µ±½ÇÉ«±»¿ØÖÆÆ÷¿ØÖÆÊ±µ÷ÓÃ
-	virtual void OnRep_PlayerState() override;		// µ±½ÇÉ«µÄPlayerState±»¸´ÖÆÊ±µ÷ÓÃ
+	virtual void PossessedBy(AController* NewController) override;		// å½“è§’è‰²è¢«æ§åˆ¶å™¨æ§åˆ¶æ—¶è°ƒç”¨
+	virtual void OnRep_PlayerState() override;		// å½“è§’è‰²çš„PlayerStateè¢«å¤åˆ¶æ—¶è°ƒç”¨
 
 	/* Combat Interface */
-	virtual int32 GetCharacterLevel_Implementation() const override;	// »ñÈ¡µÈ¼¶
+	virtual int32 GetCharacterLevel_Implementation() const override;	// è·å–ç­‰çº§
+	virtual void Die() override;	// æ­»äº¡
 	/* Combat Interface End*/
 
 	/* Player Interface Start*/
-	virtual void AddToEXP_Implementation(int32 EXP) override;	// Ìí¼Ó¾­Ñé
-	virtual void SetEXP_Implementation(int32 EXP) override;	// ÉèÖÃ¾­Ñé
-	virtual void LevelUp_Implementation(int32 Lv) override;	// Éı¼¶
-	virtual void SetLevel_Implementation(int32 Lv) override;	// ÉèÖÃµÈ¼¶
-	virtual int32 GetEXP_Implementation() const override;	// »ñÈ¡¾­Ñé
-	virtual int32 GetLevelByEXP_Implementation(int32 EXP) const override;	// Í¨¹ı¾­Ñé»ñÈ¡µÈ¼¶
-	virtual int32 GetAttributePointReward_Implementation() const override;	// »ñÈ¡ÊôĞÔµã½±Àø
-	virtual int32 GetSkillPointReward_Implementation() const override;	// »ñÈ¡¼¼ÄÜµã½±Àø
-	virtual void AddAttributePoint_Implementation(int32 Point) override;	// ÊôĞÔ¼Óµã
-	virtual void AddSkillPoint_Implementation(int32 Point) override;	// ¼¼ÄÜ¼Óµã
-	virtual int32 GetAttributePoint_Implementation() const override;	// »ñÈ¡ÊôĞÔµã
-	virtual int32 GetSkillPoint_Implementation() const override;	// »ñÈ¡¼¼ÄÜµã
+	virtual void AddToEXP_Implementation(int32 EXP) override;	// æ·»åŠ ç»éªŒ
+	virtual void SetEXP_Implementation(int32 EXP) override;	// è®¾ç½®ç»éªŒ
+	virtual void LevelUp_Implementation(int32 Lv) override;	// å‡çº§
+	virtual void SetLevel_Implementation(int32 Lv) override;	// è®¾ç½®ç­‰çº§
+	virtual int32 GetEXP_Implementation() const override;	// è·å–ç»éªŒ
+	virtual int32 GetLevelByEXP_Implementation(int32 EXP) const override;	// é€šè¿‡ç»éªŒè·å–ç­‰çº§
+	virtual int32 GetAttributePointReward_Implementation() const override;	// è·å–å±æ€§ç‚¹å¥–åŠ±
+	virtual int32 GetSkillPointReward_Implementation() const override;	// è·å–æŠ€èƒ½ç‚¹å¥–åŠ±
+	virtual void AddAttributePoint_Implementation(int32 Point) override;	// å±æ€§åŠ ç‚¹
+	virtual void AddSkillPoint_Implementation(int32 Point) override;	// æŠ€èƒ½åŠ ç‚¹
+	virtual int32 GetAttributePoint_Implementation() const override;	// è·å–å±æ€§ç‚¹
+	virtual int32 GetSkillPoint_Implementation() const override;	// è·å–æŠ€èƒ½ç‚¹
 	/* Player Interface End*/
 
-	// ½ÇÉ«Éı¼¶ÌØĞ§
+	// è§’è‰²å‡çº§ç‰¹æ•ˆ
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Effects")
 	TObjectPtr<UNiagaraComponent> LevelUpEffect;
 
 
 private:
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UCameraComponent> TopDownCameraComponent;	// ¶¥²¿Ïà»ú×é¼ş
+	TObjectPtr<UCameraComponent> TopDownCameraComponent;	// é¡¶éƒ¨ç›¸æœºç»„ä»¶
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USpringArmComponent> CameraBoom;	// Ïà»úÒ¡±Û
+	TObjectPtr<USpringArmComponent> CameraBoom;	// ç›¸æœºæ‘‡è‡‚
 
-	virtual void InitAbilityActorInfo() override;	// ³õÊ¼»¯ÄÜÁ¦ActorĞÅÏ¢
+	virtual void InitAbilityActorInfo() override;	// åˆå§‹åŒ–èƒ½åŠ›Actorä¿¡æ¯
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastLevelUpEffect() const;	// ¶à²¥Éı¼¶ÌØĞ§
+	void MulticastLevelUpEffect() const;	// å¤šæ’­å‡çº§ç‰¹æ•ˆ
 	
 };

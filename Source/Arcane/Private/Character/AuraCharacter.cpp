@@ -18,41 +18,41 @@
 
 AAuraCharacter::AAuraCharacter()
 {
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));	// ´´½¨Ïà»úÒ¡±Û
-	CameraBoom->SetupAttachment(RootComponent);	// ÉèÖÃÏà»úÒ¡±Û¸½¼Óµ½¸ù×é¼ş
-	CameraBoom->SetUsingAbsoluteRotation(true);	// ÉèÖÃÊ¹ÓÃ¾ø¶ÔĞı×ª
-	CameraBoom->bDoCollisionTest = false;	// ¹Ø±ÕÅö×²²âÊÔ
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));	// åˆ›å»ºç›¸æœºæ‘‡è‡‚
+	CameraBoom->SetupAttachment(RootComponent);	// è®¾ç½®ç›¸æœºæ‘‡è‡‚é™„åŠ åˆ°æ ¹ç»„ä»¶
+	CameraBoom->SetUsingAbsoluteRotation(true);	// è®¾ç½®ä½¿ç”¨ç»å¯¹æ—‹è½¬
+	CameraBoom->bDoCollisionTest = false;	// å…³é—­ç¢°æ’æµ‹è¯•
 
-	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCameraComponent"));	// ´´½¨¶¥ÊÓÉãÏñ»ú×é¼ş
-	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);	// ÉèÖÃ¶¥ÊÓÉãÏñ»ú×é¼ş¸½¼Óµ½Ïà»úÒ¡±Û
-	TopDownCameraComponent->bUsePawnControlRotation = false;	// ¹Ø±ÕÊ¹ÓÃPawn¿ØÖÆĞı×ª
+	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCameraComponent"));	// åˆ›å»ºé¡¶è§†æ‘„åƒæœºç»„ä»¶
+	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);	// è®¾ç½®é¡¶è§†æ‘„åƒæœºç»„ä»¶é™„åŠ åˆ°ç›¸æœºæ‘‡è‡‚
+	TopDownCameraComponent->bUsePawnControlRotation = false;	// å…³é—­ä½¿ç”¨Pawnæ§åˆ¶æ—‹è½¬
 
-	GetCharacterMovement()->bOrientRotationToMovement = true;	// ¿ªÆôÒÆ¶¯Ê±Ğı×ª
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 400.0f, 0.0f);	// ÉèÖÃĞı×ªËÙÂÊ
-	GetCharacterMovement()->bConstrainToPlane = true;	// ¿ªÆôÏŞÖÆÒÆ¶¯µ½Æ½Ãæ£¬ÕâÑùÎÒÃÇ¾Í¿ÉÒÔÔÚË®Æ½ÃæÉÏÒÆ¶¯£¬¶ø²»ÊÇÔÚ¿ÕÖĞÒÆ¶¯
-	GetCharacterMovement()->bSnapToPlaneAtStart = true;	// ¿ªÆôÔÚ¿ªÊ¼Ê±¾ÍÏŞÖÆÒÆ¶¯µ½Æ½Ãæ
+	GetCharacterMovement()->bOrientRotationToMovement = true;	// å¼€å¯ç§»åŠ¨æ—¶æ—‹è½¬
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 400.0f, 0.0f);	// è®¾ç½®æ—‹è½¬é€Ÿç‡
+	GetCharacterMovement()->bConstrainToPlane = true;	// å¼€å¯é™åˆ¶ç§»åŠ¨åˆ°å¹³é¢ï¼Œè¿™æ ·æˆ‘ä»¬å°±å¯ä»¥åœ¨æ°´å¹³é¢ä¸Šç§»åŠ¨ï¼Œè€Œä¸æ˜¯åœ¨ç©ºä¸­ç§»åŠ¨
+	GetCharacterMovement()->bSnapToPlaneAtStart = true;	// å¼€å¯åœ¨å¼€å§‹æ—¶å°±é™åˆ¶ç§»åŠ¨åˆ°å¹³é¢
 
-	bUseControllerRotationPitch = false;	// ¹Ø±Õ¿ØÖÆÆ÷Ğı×ª¸©Ñö, ÕâÑùÎÒÃÇ¾Í²»ÄÜÌ§Æğ»òÕßµÍÏÂÍ·²¿£¬Ö»ÄÜ×óÓÒĞı×ª£¬Õâ¶ÔÓÚ¸©ÊÓ½ÇÓÎÏ·À´ËµÊÇºÜºÃµÄ
-	bUseControllerRotationYaw = false;	// ¹Ø±Õ¿ØÖÆÆ÷Ğı×ªÆ«º½, ÕâÑùÎÒÃÇ¾Í²»ÄÜ×óÓÒĞı×ª
-	bUseControllerRotationRoll = false;	// ¹Ø±Õ¿ØÖÆÆ÷Ğı×ª·­¹ö, ÕâÑùÎÒÃÇ¾Í²»ÄÜ·­¹ö
+	bUseControllerRotationPitch = false;	// å…³é—­æ§åˆ¶å™¨æ—‹è½¬ä¿¯ä»°, è¿™æ ·æˆ‘ä»¬å°±ä¸èƒ½æŠ¬èµ·æˆ–è€…ä½ä¸‹å¤´éƒ¨ï¼Œåªèƒ½å·¦å³æ—‹è½¬ï¼Œè¿™å¯¹äºä¿¯è§†è§’æ¸¸æˆæ¥è¯´æ˜¯å¾ˆå¥½çš„
+	bUseControllerRotationYaw = false;	// å…³é—­æ§åˆ¶å™¨æ—‹è½¬åèˆª, è¿™æ ·æˆ‘ä»¬å°±ä¸èƒ½å·¦å³æ—‹è½¬
+	bUseControllerRotationRoll = false;	// å…³é—­æ§åˆ¶å™¨æ—‹è½¬ç¿»æ»š, è¿™æ ·æˆ‘ä»¬å°±ä¸èƒ½ç¿»æ»š
 
-	CharacterClass = ECharacterClass::Elementalist;	// ÉèÖÃ½ÇÉ«Ö°Òµ
+	CharacterClass = ECharacterClass::Elementalist;	// è®¾ç½®è§’è‰²èŒä¸š
 
-	LevelUpEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LevelUpEffect"));	// ´´½¨Éı¼¶ÌØĞ§
-	LevelUpEffect->SetupAttachment(RootComponent);	// ÉèÖÃÌØĞ§¸½¼Óµ½¸ù×é¼ş
-	LevelUpEffect->bAutoActivate = false;	// ¹Ø±Õ×Ô¶¯¼¤»î
+	LevelUpEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LevelUpEffect"));	// åˆ›å»ºå‡çº§ç‰¹æ•ˆ
+	LevelUpEffect->SetupAttachment(RootComponent);	// è®¾ç½®ç‰¹æ•ˆé™„åŠ åˆ°æ ¹ç»„ä»¶
+	LevelUpEffect->bAutoActivate = false;	// å…³é—­è‡ªåŠ¨æ¿€æ´»
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
 {
-	// ¸Ãº¯ÊıÖ»»áÔÚ·şÎñÆ÷¶Ë±»µ÷ÓÃ
-	// PossessedBy()º¯ÊıÍ¨³£ÔÚ·şÎñÆ÷¶Ë±»µ÷ÓÃ¡£µ±Ò»¸öController£¨ÈçPlayerController»òAIController£©¿ªÊ¼¿ØÖÆÒ»¸öPawn£¨ÈçPlayerCharacter»òAICharacter£©Ê±£¬·şÎñÆ÷»áµ÷ÓÃPossessedBy()º¯ÊıÀ´ÉèÖÃPawnµÄControllerÊôĞÔ¡£
+	// è¯¥å‡½æ•°åªä¼šåœ¨æœåŠ¡å™¨ç«¯è¢«è°ƒç”¨
+	// PossessedBy()å‡½æ•°é€šå¸¸åœ¨æœåŠ¡å™¨ç«¯è¢«è°ƒç”¨ã€‚å½“ä¸€ä¸ªControllerï¼ˆå¦‚PlayerControlleræˆ–AIControllerï¼‰å¼€å§‹æ§åˆ¶ä¸€ä¸ªPawnï¼ˆå¦‚PlayerCharacteræˆ–AICharacterï¼‰æ—¶ï¼ŒæœåŠ¡å™¨ä¼šè°ƒç”¨PossessedBy()å‡½æ•°æ¥è®¾ç½®Pawnçš„Controllerå±æ€§ã€‚
 	Super::PossessedBy(NewController);
 
-	// Îª·şÎñÆ÷³õÊ¼»¯AbilitySystemComponent
+	// ä¸ºæœåŠ¡å™¨åˆå§‹åŒ–AbilitySystemComponent
 	InitAbilityActorInfo();
 
-	// ³õÊ¼»¯½ÇÉ«ÄÜÁ¦
+	// åˆå§‹åŒ–è§’è‰²èƒ½åŠ›
 	AddCharacterAbilities();
 	
 }
@@ -61,18 +61,25 @@ void AAuraCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	// Îª¿Í»§¶Ë³õÊ¼»¯AbilitySystemComponent
+	// ä¸ºå®¢æˆ·ç«¯åˆå§‹åŒ–AbilitySystemComponent
 	InitAbilityActorInfo();
 }
 
 int32 AAuraCharacter::GetCharacterLevel_Implementation() const
 {
-	// »ñÈ¡Íæ¼Ò×´Ì¬
+	// è·å–ç©å®¶çŠ¶æ€
 	if (const AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>())
 	{
 		return AuraPlayerState->GetPlayerLevel();
 	}
 	return 0;
+}
+
+void AAuraCharacter::Die()
+{
+	Super::Die();
+
+
 }
 
 void AAuraCharacter::AddToEXP_Implementation(int32 EXP)
@@ -88,10 +95,10 @@ void AAuraCharacter::AddToEXP_Implementation(int32 EXP)
 		if (IsValid(AttributeSet))
 		{
 			UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
-			AuraAttributeSet->SetTopOfHealth(true);	// ÉèÖÃÂúÑª
-			AuraAttributeSet->SetTopOfMana(true);	// ÉèÖÃÂúÀ¶
+			AuraAttributeSet->SetTopOfHealth(true);	// è®¾ç½®æ»¡è¡€
+			AuraAttributeSet->SetTopOfMana(true);	// è®¾ç½®æ»¡è“
 		}
-		Execute_LevelUp(this, MatchedLevel - Level);	// Éı¼¶
+		Execute_LevelUp(this, MatchedLevel - Level);	// å‡çº§
 	}
 }
 
@@ -105,7 +112,7 @@ void AAuraCharacter::SetEXP_Implementation(int32 EXP)
 	const int32 MatchedLevel = AuraPlayerState->LevelUpInfo->GetLevelByExp(TotalEXP);
 	if (MatchedLevel != Level)
 	{
-		Execute_SetLevel(this, MatchedLevel);	// ÉèÖÃµÈ¼¶
+		Execute_SetLevel(this, MatchedLevel);	// è®¾ç½®ç­‰çº§
 	}
 }
 
@@ -116,25 +123,25 @@ void AAuraCharacter::SetLevel_Implementation(int32 Lv)
 	AuraPlayerState->SetLevel(Lv);
 	if (Lv > 0)
 	{
-		MulticastLevelUpEffect();	// ¶à²¥Éı¼¶ÌØĞ§
+		MulticastLevelUpEffect();	// å¤šæ’­å‡çº§ç‰¹æ•ˆ
 
 		const int32 MatchedLevel = AuraPlayerState->GetPlayerLevel();
-		// »ñÈ¡½±ÀøµÄÊôĞÔµãÊı
+		// è·å–å¥–åŠ±çš„å±æ€§ç‚¹æ•°
 		const int32 CulAttributePoints = AuraPlayerState->LevelUpInfo->GetTotalAttributePointRewardInLevel(MatchedLevel);
 		if (CulAttributePoints > 0)
 		{
-			// µ÷ÓÃAddAttributePointµÄExecute°æ±¾
+			// è°ƒç”¨AddAttributePointçš„Executeç‰ˆæœ¬
 			Execute_AddAttributePoint(this, CulAttributePoints);
 		}
 
-		// »ñÈ¡½±ÀøµÄ¼¼ÄÜµãÊı
+		// è·å–å¥–åŠ±çš„æŠ€èƒ½ç‚¹æ•°
 		const int32 CulSkillPoints = AuraPlayerState->LevelUpInfo->GetTotalSkillPointRewardInLevel(MatchedLevel);
 		if (CulSkillPoints > 0)
 		{
 			Execute_AddSkillPoint(this, CulSkillPoints);
 		}
 	}
-	// ¸üĞÂ½ÇÉ«ÄÜÁ¦×´Ì¬
+	// æ›´æ–°è§’è‰²èƒ½åŠ›çŠ¶æ€
 	if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
 	{
 		AuraAbilitySystemComponent->UpdateAbilityStateTags(AuraPlayerState->GetPlayerLevel());
@@ -149,14 +156,14 @@ void AAuraCharacter::LevelUp_Implementation(int32 Lv)
 	{
 		AuraPlayerState->AddLevel(1);
 		const int32 MatchedLevel = AuraPlayerState->GetPlayerLevel();
-		// »ñÈ¡½±ÀøµÄÊôĞÔµãÊı
+		// è·å–å¥–åŠ±çš„å±æ€§ç‚¹æ•°
 		const int32 CulAttributePoints = AuraPlayerState->LevelUpInfo->GetAttributePointRewardByLevel(MatchedLevel);
 		if (CulAttributePoints > 0)
 		{
 			Execute_AddAttributePoint(this, CulAttributePoints);
 		}
 
-		// »ñÈ¡½±ÀøµÄ¼¼ÄÜµãÊı
+		// è·å–å¥–åŠ±çš„æŠ€èƒ½ç‚¹æ•°
 		const int32 CulSkillPoints = AuraPlayerState->LevelUpInfo->GetSkillPointRewardByLevel(MatchedLevel);
 		if (CulSkillPoints > 0)
 		{
@@ -166,8 +173,8 @@ void AAuraCharacter::LevelUp_Implementation(int32 Lv)
 
 	if (Lv > 0)
 	{
-		MulticastLevelUpEffect();	// ¶à²¥Éı¼¶ÌØĞ§
-		// ¸üĞÂ½ÇÉ«ÄÜÁ¦×´Ì¬
+		MulticastLevelUpEffect();	// å¤šæ’­å‡çº§ç‰¹æ•ˆ
+		// æ›´æ–°è§’è‰²èƒ½åŠ›çŠ¶æ€
 		if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
 		{
 			AuraAbilitySystemComponent->UpdateAbilityStateTags(AuraPlayerState->GetPlayerLevel());
@@ -235,15 +242,15 @@ void AAuraCharacter::InitAbilityActorInfo()
 {
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
-	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);	// ³õÊ¼»¯¼¼ÄÜÏµÍ³×é¼ş
-	Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();	// ÉèÖÃ¼¼ÄÜActorĞÅÏ¢
-	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();	// »ñÈ¡¼¼ÄÜÏµÍ³×é¼ş
-	AttributeSet = AuraPlayerState->GetAttributeSet();	// »ñÈ¡ÊôĞÔ¼¯
+	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);	// åˆå§‹åŒ–æŠ€èƒ½ç³»ç»Ÿç»„ä»¶
+	Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();	// è®¾ç½®æŠ€èƒ½Actorä¿¡æ¯
+	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();	// è·å–æŠ€èƒ½ç³»ç»Ÿç»„ä»¶
+	AttributeSet = AuraPlayerState->GetAttributeSet();	// è·å–å±æ€§é›†
 
-	// ºÜ¶àÈË¾À½áµ½µ×ÔÚÊ²Ã´Çé¿öÏÂÓ¦¸Ã¶ÏÑÔPlayerController*£¬Ê²Ã´Ê±ºòÖ»ĞèÒªÅĞ¶ÏÖ¸ÕëÊÇ·ñÎª¿Õ£¿
-	// ÒòÎªÎÒÃÇÕâ¸öÊÇÒ»¸ö¶àÈËÓÎÏ·£¬¶ø¿ØÖÆÆ÷ÔÚ¿Í»§¶ËÖ»ÓĞ×Ô¼º½ÇÉ«µÄ¿ØÖÆÆ÷£¬ÆäËû½ÇÉ«µÄ¿ØÖÆÆ÷ÊÇ¿ÕµÄ£¬·şÎñ¶ËÓĞËùÓĞ½ÇÉ«µÄ¿ØÖÆÆ÷¡£
-	// ËùÒÔ¿ØÖÆÆ÷Õâ¸öÖ¸ÕëÊÇ»á´æÔÚ¿ÕµÄÇé¿öµÄ£¬ÕâÊÇÕı³£µÄ£¬ËµÃ÷Õâ¸ö¿ØÖÆÆ÷²»ÊÇ×Ô¼ºµÄ¿ØÖÆÆ÷¡£
-	// ËùÒÔÕâÖÖÇé¿öÏÂÎÒÃÇÖ»ĞèÒªÅĞ¶ÏÖ¸ÕëÊÇ·ñÎª¿Õ¾Í¿ÉÒÔÁË£¬²»ĞèÒª¶ÏÑÔ¡£
+	// å¾ˆå¤šäººçº ç»“åˆ°åº•åœ¨ä»€ä¹ˆæƒ…å†µä¸‹åº”è¯¥æ–­è¨€PlayerController*ï¼Œä»€ä¹ˆæ—¶å€™åªéœ€è¦åˆ¤æ–­æŒ‡é’ˆæ˜¯å¦ä¸ºç©ºï¼Ÿ
+	// å› ä¸ºæˆ‘ä»¬è¿™ä¸ªæ˜¯ä¸€ä¸ªå¤šäººæ¸¸æˆï¼Œè€Œæ§åˆ¶å™¨åœ¨å®¢æˆ·ç«¯åªæœ‰è‡ªå·±è§’è‰²çš„æ§åˆ¶å™¨ï¼Œå…¶ä»–è§’è‰²çš„æ§åˆ¶å™¨æ˜¯ç©ºçš„ï¼ŒæœåŠ¡ç«¯æœ‰æ‰€æœ‰è§’è‰²çš„æ§åˆ¶å™¨ã€‚
+	// æ‰€ä»¥æ§åˆ¶å™¨è¿™ä¸ªæŒ‡é’ˆæ˜¯ä¼šå­˜åœ¨ç©ºçš„æƒ…å†µçš„ï¼Œè¿™æ˜¯æ­£å¸¸çš„ï¼Œè¯´æ˜è¿™ä¸ªæ§åˆ¶å™¨ä¸æ˜¯è‡ªå·±çš„æ§åˆ¶å™¨ã€‚
+	// æ‰€ä»¥è¿™ç§æƒ…å†µä¸‹æˆ‘ä»¬åªéœ€è¦åˆ¤æ–­æŒ‡é’ˆæ˜¯å¦ä¸ºç©ºå°±å¯ä»¥äº†ï¼Œä¸éœ€è¦æ–­è¨€ã€‚
 	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 	{
 		if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
@@ -252,7 +259,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 		}
 	}
 
-	InitializeDefaultAttributes();	// ³õÊ¼»¯Ö÷ÒªÄÜÁ¦
+	InitializeDefaultAttributes();	// åˆå§‹åŒ–ä¸»è¦èƒ½åŠ›
 
 }
 
@@ -260,12 +267,12 @@ void AAuraCharacter::MulticastLevelUpEffect_Implementation() const
 {
 	if (IsValid(LevelUpEffect))
 	{
-		const FVector CameraLocation = TopDownCameraComponent->GetComponentLocation();	// »ñÈ¡Ïà»úÎ»ÖÃ
-		const FVector NiagaraLocation = LevelUpEffect->GetComponentLocation();	// »ñÈ¡ÌØĞ§Î»ÖÃ
-		// ÈÃÌØĞ§³¯ÏòÉãÏñ»ú
+		const FVector CameraLocation = TopDownCameraComponent->GetComponentLocation();	// è·å–ç›¸æœºä½ç½®
+		const FVector NiagaraLocation = LevelUpEffect->GetComponentLocation();	// è·å–ç‰¹æ•ˆä½ç½®
+		// è®©ç‰¹æ•ˆæœå‘æ‘„åƒæœº
 		const FRotator LookAtRotator = FRotationMatrix::MakeFromX(CameraLocation - NiagaraLocation).Rotator();
-		LevelUpEffect->SetWorldRotation(LookAtRotator);	// ÉèÖÃÌØĞ§Ğı×ª
-		LevelUpEffect->Activate(true);	// ¼¤»îÌØĞ§
+		LevelUpEffect->SetWorldRotation(LookAtRotator);	// è®¾ç½®ç‰¹æ•ˆæ—‹è½¬
+		LevelUpEffect->Activate(true);	// æ¿€æ´»ç‰¹æ•ˆ
 	}
 }
 
