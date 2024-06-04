@@ -269,6 +269,41 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.DamageTypesToResistance.Add(GameplayTags.Damage_Physical, GameplayTags.Attributes_Secondary_Resistance_Physical);
 
 	/*
+	 * DamageType Debuff Tags
+	 */
+	GameplayTags.Debuff_FireBurn = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.FireBurn"),
+		FString("Fire Burn Debuff")
+	);
+	GameplayTags.Debuff_IceFreeze = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.IceFreeze"),
+		FString("Ice Freeze Debuff")
+	);
+	GameplayTags.Debuff_LightningStun = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.LightningStun"),
+		FString("Lightning Stun Debuff")
+	);
+	GameplayTags.Debuff_PoisonVenom = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.PoisonVenom"),
+		FString("Poison Venom Debuff")
+	);
+	GameplayTags.Debuff_ArcaneCurse = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.ArcaneCurse"),
+		FString("Arcane Curse Debuff")
+	);
+	GameplayTags.Debuff_PhysicalBleed = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.PhysicalBleed"),
+		FString("Physical Bleed Debuff")
+	);
+
+	GameplayTags.DamageTypesToDebuff.Add(GameplayTags.Damage_Fire, GameplayTags.Debuff_FireBurn);
+	GameplayTags.DamageTypesToDebuff.Add(GameplayTags.Damage_Ice, GameplayTags.Debuff_IceFreeze);
+	GameplayTags.DamageTypesToDebuff.Add(GameplayTags.Damage_Lightning, GameplayTags.Debuff_LightningStun);
+	GameplayTags.DamageTypesToDebuff.Add(GameplayTags.Damage_Poison, GameplayTags.Debuff_PoisonVenom);
+	GameplayTags.DamageTypesToDebuff.Add(GameplayTags.Damage_Arcane, GameplayTags.Debuff_ArcaneCurse);
+	GameplayTags.DamageTypesToDebuff.Add(GameplayTags.Damage_Physical, GameplayTags.Debuff_PhysicalBleed);
+
+	/*
 	 * Effect Tags
 	 */
 	GameplayTags.Effect_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(

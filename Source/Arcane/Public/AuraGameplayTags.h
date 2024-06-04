@@ -86,6 +86,16 @@ public:
 	FGameplayTag Damage_Physical;				// 物理伤害
 
 	/*
+	 * DamageType Debuff Tags	每种伤害类型对应的Debuff
+	 */
+	FGameplayTag Debuff_FireBurn;				// 火焰灼烧
+	FGameplayTag Debuff_IceFreeze;				// 冰霜冻结
+	FGameplayTag Debuff_LightningStun;			// 闪电眩晕
+	FGameplayTag Debuff_PoisonVenom;			// 毒素中毒
+	FGameplayTag Debuff_ArcaneCurse;			// 奥术诅咒
+	FGameplayTag Debuff_PhysicalBleed;			// 物理流血
+
+	/*
 	 * Ability Tags
 	 */
 	FGameplayTag Abilities_Attack;				// 能力：攻击
@@ -186,6 +196,7 @@ public:
 	FGameplayTag Cooldown_Physical_Thrust;		// 冷却：物理：刺刀
 
 	TMap<FGameplayTag, FGameplayTag> DamageTypesToResistance;	// 伤害类型对应抗性
+	TMap<FGameplayTag, FGameplayTag> DamageTypesToDebuff;		// 伤害类型对应Debuff
 
 	/*
 	 * Effect Tags

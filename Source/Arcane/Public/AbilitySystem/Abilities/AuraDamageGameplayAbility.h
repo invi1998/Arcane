@@ -26,4 +26,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageType;	// 伤害类型
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
+	FGameplayTag MajorDamageType;	// 主要伤害类型，该类型的伤害会被添加上额外的buff效果
+
 };
