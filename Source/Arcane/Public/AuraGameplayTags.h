@@ -95,6 +95,11 @@ public:
 	FGameplayTag Debuff_ArcaneCurse;			// 奥术诅咒
 	FGameplayTag Debuff_PhysicalBleed;			// 物理流血
 
+	FGameplayTag Debuff_Chance;					// Debuff几率
+	FGameplayTag Debuff_Damage;					// Debuff伤害
+	FGameplayTag Debuff_Frequency;				// Debuff频率
+	FGameplayTag Debuff_Duration;				// Debuff持续时间
+
 	/*
 	 * Ability Tags
 	 */

@@ -29,4 +29,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	FGameplayTag MajorDamageType;	// 主要伤害类型，该类型的伤害会被添加上额外的buff效果
 
+	// Debuff效果的各项参数
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float DebuffChance = 20.0f;	// Debuff的几率
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float DebuffDamage = 5.f;	// Debuff的伤害
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float DebuffFrequency = 1.f;	// Debuff的频率
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	float DebuffDuration = 5.f;	// Debuff的持续时间
+
 };
