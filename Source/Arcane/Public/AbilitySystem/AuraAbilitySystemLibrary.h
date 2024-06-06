@@ -10,6 +10,8 @@
 
 class UAbilitySystemComponent;
 struct FWidgetControllerParams;
+struct FDamageEffectParams;
+struct FGameplayEffectContextHandle;
 
 /**
  * 
@@ -105,5 +107,5 @@ public:
 
 	// 传入FDamageEffectParams, 获取伤害效果
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
-	static FGameplayEffectContextHandle* ApplyDamageEffect(const FDamageEffectParams& Params);
+	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams& Params);
 };

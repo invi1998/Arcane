@@ -368,7 +368,7 @@ int32 UAuraAbilitySystemLibrary::GetAbilityLevelByTag(const UObject* WorldContex
 	return 0;
 }
 
-FGameplayEffectContextHandle* UAuraAbilitySystemLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
+FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 {
 	if (Params.WorldContextObject && Params.DamageEffectClass && Params.InstigatorASC)
 	{
@@ -387,7 +387,8 @@ FGameplayEffectContextHandle* UAuraAbilitySystemLibrary::ApplyDamageEffect(const
 
 		Params.InstigatorASC->ApplyGameplayEffectSpecToSelf(*DamageSpecHandle.Data.Get());	// 应用效果到自己
 
-		return &ContextHandle;
+		return ContextHandle;
 	}
-	return nullptr;
+
+	return FGameplayEffectContextHandle();
 }

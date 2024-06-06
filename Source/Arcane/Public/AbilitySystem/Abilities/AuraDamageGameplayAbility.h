@@ -6,6 +6,8 @@
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 #include "AuraDamageGameplayAbility.generated.h"
 
+struct FDamageEffectParams;
+
 /**
  * 
  */
