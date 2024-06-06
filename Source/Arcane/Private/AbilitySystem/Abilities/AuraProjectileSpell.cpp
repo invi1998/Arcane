@@ -8,6 +8,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 
@@ -56,29 +57,12 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn	// 碰撞处理方式, 总是生成
 		);
 
-		// TODO: 设置投射物属性，比如伤害，速度等
-		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetOwningActorFromActorInfo());	// 获取施法者的ASC
-		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();	// 生成效果上下文
-		EffectContextHandle.SetAbility(this);	// 设置技能
-		EffectContextHandle.AddSourceObject(Projectile);	// 添加来源对象
-		TArray<TWeakObjectPtr<AActor>> Actors;	// 生成一个Actor数组
-		Actors.Add(Projectile);	// 添加投射物
-		EffectContextHandle.AddActors(Actors);	// 添加Actor
-		FHitResult HitResult;	// 生成一个命中结果
-		HitResult.Location = ProjectileTargetLocation;	// 设置命中位置
-		EffectContextHandle.AddHitResult(HitResult);	// 添加命中结果
-
-		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);	// 生成效果
-
-		for (auto& DamagePair : DamageType)	// 遍历伤害类型
+		// 遍历所有的伤害类型，然后设置伤害
+		for (TTuple<FGameplayTag, FScalableFloat> DamagePair : DamageType)
 		{
-			const FGameplayTag& DamageTag = DamagePair.Key;	// 获取伤害标签
-			const FScalableFloat& DamageValue = DamagePair.Value;	// 获取伤害值
-			const float ScaledDamageValue = DamageValue.GetValueAtLevel(GetAbilityLevel());	// 获取伤害值（根据等级，从ScalableFloat中获取）
-			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, DamageTag, ScaledDamageValue);	// 设置伤害
+			FDamageEffectParams Params = MakeDamageEffectParamsFromClassDefaults(DamagePair.Key, Projectile);
+			UAuraAbilitySystemLibrary::ApplyDamageEffect(Params);
 		}
-
-		Projectile->DamageEffectSpecHandle = SpecHandle;	// 设置效果句柄
 
 		Projectile->FinishSpawning(SpawnTransform);	// 完成生成
 	}

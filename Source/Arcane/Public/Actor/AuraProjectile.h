@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AuraAbilityTypes.h"
 #include "GameplayEffectTypes.h"
 #include "GameFramework/Actor.h"
 #include "AuraProjectile.generated.h"
@@ -21,17 +22,17 @@ public:
 	AAuraProjectile();
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;	// Í¶ÉäÎïÒÆ¶¯×é¼ş
+	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;	// æŠ•å°„ç‰©ç§»åŠ¨ç»„ä»¶
 
-	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))	// ExposeOnSpawn ±íÊ¾¿ÉÒÔÔÚ´´½¨ÊµÀıÊ±ÉèÖÃ¸ÃÊôĞÔ
-	FGameplayEffectSpecHandle DamageEffectSpecHandle;	// ÉËº¦Ğ§¹û¾ä±ú
+	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))	// ExposeOnSpawn è¡¨ç¤ºå¯ä»¥åœ¨åˆ›å»ºå®ä¾‹æ—¶è®¾ç½®è¯¥å±æ€§
+	FDamageEffectParams DamageEffectParams;	// ä¼¤å®³æ•ˆæœå‚æ•°
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
 
-	// ÇòĞÎÅö×²ÌåÖØµşÊÂ¼ş
+	// çƒå½¢ç¢°æ’ä½“é‡å äº‹ä»¶
 	UFUNCTION()
 	void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -39,21 +40,21 @@ private:
 	bool bHit = false;
 
 	UPROPERTY(EditDefaultsOnly)
-	float LifeSpan = 5.0f;	// Éú´æÊ±¼ä
+	float LifeSpan = 5.0f;	// ç”Ÿå­˜æ—¶é—´
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USphereComponent> Sphere;	// ÇòĞÎÅö×²Ìå
+	TObjectPtr<USphereComponent> Sphere;	// çƒå½¢ç¢°æ’ä½“
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<UNiagaraSystem> ImpactEffect;	// »÷ÖĞÌØĞ§
+	TObjectPtr<UNiagaraSystem> ImpactEffect;	// å‡»ä¸­ç‰¹æ•ˆ
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<USoundBase> ImpactSound;		// »÷ÖĞÒôĞ§
+	TObjectPtr<USoundBase> ImpactSound;		// å‡»ä¸­éŸ³æ•ˆ
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<USoundBase> LoopingSound;		// ·ÉĞĞÒôĞ§
+	TObjectPtr<USoundBase> LoopingSound;		// é£è¡ŒéŸ³æ•ˆ
 
 	UPROPERTY()
-	TObjectPtr<UAudioComponent> LoopingSoundComponent;		// ·ÉĞĞÒôĞ§×é¼ş
+	TObjectPtr<UAudioComponent> LoopingSoundComponent;		// é£è¡ŒéŸ³æ•ˆç»„ä»¶
 
 };
