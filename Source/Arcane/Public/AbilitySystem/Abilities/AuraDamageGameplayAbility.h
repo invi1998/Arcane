@@ -18,6 +18,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CauseDamage(AActor* TargetActor);	// 造成伤害
 
+	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(FGameplayTag InDamageType, AActor* TargetActor = nullptr) const;	// 从类默认值创建伤害效果参数
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -26,20 +27,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageType;	// 伤害类型
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
-	FGameplayTag MajorDamageType;	// 主要伤害类型，该类型的伤害会被添加上额外的buff效果
-
 	// Debuff效果的各项参数
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-	float DebuffChance = 20.0f;	// Debuff的几率
+	TMap<FGameplayTag, float> DebuffChances;		// Debuff几率
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-	float DebuffDamage = 5.f;	// Debuff的伤害
+	TMap<FGameplayTag, float> DebuffDamages;		// Debuff伤害
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-	float DebuffFrequency = 1.f;	// Debuff的频率
+	TMap<FGameplayTag, float> DebuffFrequencies;	// Debuff频率
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-	float DebuffDuration = 5.f;	// Debuff的持续时间
+	TMap<FGameplayTag, float> DebuffDurations;		// Debuff持续时间
 
 };

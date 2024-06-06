@@ -33,11 +33,11 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		{
 			RepBits |= 1 << 6;
 		}
-		if (bIsBlockedHit)	// 是否格挡
+		if (bIsBlockedHit)	// 鏄惁鏍兼尅
 		{
 			RepBits |= 1 << 7;
 		}
-		if (bIsCriticalHit)	// 是否暴击
+		if (bIsCriticalHit)	// 鏄惁鏆村嚮
 		{
 			RepBits |= 1 << 8;
 		}

@@ -3,7 +3,52 @@
 #include "GameplayEffectTypes.h"
 #include "AuraAbilityTypes.generated.h"
 
+class UAbilitySystemComponent;
 class UAuraAbilitySystemComponent;
+class UGameplayEffect;
+
+USTRUCT(BlueprintType)
+struct FDamageEffectParams
+{
+	GENERATED_BODY()
+
+	FDamageEffectParams() {}
+
+	UPROPERTY()
+	TObjectPtr<UObject> WorldContextObject = nullptr;		// ä¸–ç•Œä¸Šä¸‹æ–‡å¯¹è±¡
+
+	UPROPERTY()
+	TSubclassOf<UGameplayEffect> DamageEffectClass;		// ä¼¤å®³æ•ˆæœ
+
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> InstigatorASC;	// æ–½åŠ è€…ASC
+
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> TargetASC;		// ç›®æ ‡ASC
+
+	UPROPERTY()
+	float BaseDamage = 0.f;		// åŸºç¡€ä¼¤å®³
+
+	UPROPERTY()
+	float AbilityLevel = 1.f;	// æŠ€èƒ½ç­‰çº§
+
+	UPROPERTY()
+	FGameplayTag DamageType = FGameplayTag::EmptyTag;	// ä¼¤å®³ç±»å‹
+
+	UPROPERTY()
+	float DebuffChance = 0.f;	// Debuffå‡ ç‡
+
+	UPROPERTY()
+	float DebuffDamage = 0.f;	// Debuffä¼¤å®³
+
+	UPROPERTY()
+	float DebuffFrequency = 0.f;	// Debuffé¢‘ç‡
+
+	UPROPERTY()
+	float DebuffDuration = 0.f;	// DebuffæŒç»­æ—¶é—´
+
+
+};
 
 USTRUCT(BlueprintType)
 struct FAuraGameplayEffectContext : public FGameplayEffectContext
@@ -17,7 +62,6 @@ public:
 
 	void SetCriticalHit(bool bInIsCriticalHit) { bIsCriticalHit = bInIsCriticalHit; }
 	void SetBlockedHit(bool bInIsBlockedHit) { bIsBlockedHit = bInIsBlockedHit; }
-
 
 	/** Returns the actual struct used for serialization, subclasses must override this! */
 	virtual UScriptStruct* GetScriptStruct() const
@@ -38,26 +82,26 @@ public:
 		return NewContext;
 	}
 
-	// ÍøÂçĞòÁĞ»¯¡£ÕâÀï¾ö¶¨ÁËÕâ¸ö½á¹¹ÌåÔÚÍøÂçÖĞÈçºÎĞòÁĞ»¯
+	// ç½‘ç»œåºåˆ—åŒ–ã€‚è¿™é‡Œå†³å®šäº†è¿™ä¸ªç»“æ„ä½“åœ¨ç½‘ç»œä¸­å¦‚ä½•åºåˆ—åŒ–
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
 
 protected:
 
 	UPROPERTY()
-	bool bIsBlockedHit = false;		// ÊÇ·ñ¸ñµ²
+	bool bIsBlockedHit = false;		// æ˜¯å¦æ ¼æŒ¡
 
 	UPROPERTY()
-	bool bIsCriticalHit = false;	// ÊÇ·ñ±©»÷
+	bool bIsCriticalHit = false;	// æ˜¯å¦æš´å‡»
 	
 };
 
-// Èç¹ûÎÒÃÇĞèÒª×Ô¶¨ÒåGameplayEffectContext, ÄÇÃ´ÎÒÃÇĞèÒªÔÚÕâÀï×¢²áGameplayEffectContextµÄ²Ù×÷ÀàĞÍ
+// å¦‚æœæˆ‘ä»¬éœ€è¦è‡ªå®šä¹‰GameplayEffectContext, é‚£ä¹ˆæˆ‘ä»¬éœ€è¦åœ¨è¿™é‡Œæ³¨å†ŒGameplayEffectContextçš„æ“ä½œç±»å‹
 template<>
 struct TStructOpsTypeTraits<FAuraGameplayEffectContext> : public TStructOpsTypeTraitsBase2<FAuraGameplayEffectContext>
 {
 	enum
 	{
-		WithNetSerializer = true,	// Necessary so that FGameplayEffectContext can be serialized over the network£¨±ØÒªµÄ£¬ÒÔ±ãFGameplayEffectContext¿ÉÒÔÔÚÍøÂçÉÏĞòÁĞ»¯£©
-		WithCopy = true,	// Necessary so that TSharedPtr<FHitResult> Data is copied around£¨±ØÒªµÄ£¬ÒÔ±ãÔÚ¸÷¸öµØ·½¸´ÖÆTSharedPtr<FHitResult>Êı¾İ£©
+		WithNetSerializer = true,	// Necessary so that FGameplayEffectContext can be serialized over the networkï¼ˆå¿…è¦çš„ï¼Œä»¥ä¾¿FGameplayEffectContextå¯ä»¥åœ¨ç½‘ç»œä¸Šåºåˆ—åŒ–ï¼‰
+		WithCopy = true,	// Necessary so that TSharedPtr<FHitResult> Data is copied aroundï¼ˆå¿…è¦çš„ï¼Œä»¥ä¾¿åœ¨å„ä¸ªåœ°æ–¹å¤åˆ¶TSharedPtr<FHitResult>æ•°æ®ï¼‰
 	};
 };

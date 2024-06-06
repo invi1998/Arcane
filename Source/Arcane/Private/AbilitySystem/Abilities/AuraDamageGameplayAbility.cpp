@@ -5,6 +5,8 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraAbilityTypes.h"
+#include "Arcane/ArcaneLogChannels.h"
 
 void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 {
@@ -14,10 +16,33 @@ void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 		for (TTuple<FGameplayTag, FScalableFloat> Pair : DamageType)
 		{
 			const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
-			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Pair.Key, ScaledDamage);	// Assign the damage value to the tag£¨×¢²áÉËº¦Öµµ½±êÇ©£©
+			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Pair.Key, ScaledDamage);	// Assign the damage value to the tagï¼ˆæ³¨å†Œä¼¤å®³å€¼åˆ°æ ‡ç­¾ï¼‰
 		}
 
-		// Apply the damage to the target actor(¶ÔÄ¿±ê½ÇÉ«Ó¦ÓÃÉËº¦)
+		// Apply the damage to the target actor(å¯¹ç›®æ ‡è§’è‰²åº”ç”¨ä¼¤å®³)
 		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*DamageSpecHandle.Data.Get(), UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor));
 	}
+}
+
+FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassDefaults(FGameplayTag InDamageType, AActor* TargetActor) const
+{
+	if (DamageType.Contains(InDamageType) == false)
+	{
+		UE_LOG(LogArcane, Warning, TEXT("MakeDamageEffectParamsFromClassDefaults: DamageType %s not found in DamageType map."), *InDamageType.ToString());
+		return FDamageEffectParams();
+	}
+	FDamageEffectParams Params;
+	Params.WorldContextObject = GetAvatarActorFromActorInfo();
+	Params.DamageEffectClass = DamageEffectClass;
+	Params.InstigatorASC = GetAbilitySystemComponentFromActorInfo();
+	Params.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	Params.DamageType = InDamageType;
+	Params.BaseDamage = DamageType[InDamageType].GetValueAtLevel(GetAbilityLevel());
+	Params.AbilityLevel = GetAbilityLevel();
+	Params.DebuffChance = DebuffChances.Contains(InDamageType) ? DebuffChances[InDamageType] : 0.f;
+	Params.DebuffDamage = DebuffDamages.Contains(InDamageType) ? DebuffDamages[InDamageType] : 0.f;
+	Params.DebuffFrequency = DebuffFrequencies.Contains(InDamageType) ? DebuffFrequencies[InDamageType] : 0.f;
+	Params.DebuffDuration = DebuffDurations.Contains(InDamageType) ? DebuffDurations[InDamageType] : 0.f;
+
+	return Params;
 }

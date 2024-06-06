@@ -3,8 +3,10 @@
 
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AuraAbilityTypes.h"
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "Blueprint/UserWidget.h"
@@ -364,4 +366,28 @@ int32 UAuraAbilitySystemLibrary::GetAbilityLevelByTag(const UObject* WorldContex
 		return AbilitySystemComponent->GetAbilityLevelByTag(AbilityTag);
 	}
 	return 0;
+}
+
+FGameplayEffectContextHandle* UAuraAbilitySystemLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
+{
+	if (Params.WorldContextObject && Params.DamageEffectClass && Params.InstigatorASC)
+	{
+		FAuraGameplayTags Tags = FAuraGameplayTags::Get();	// 获取游戏标签
+
+		FGameplayEffectContextHandle ContextHandle = Params.InstigatorASC->MakeEffectContext();	// 创建效果上下文
+		ContextHandle.AddSourceObject(Params.WorldContextObject);	// 添加源对象
+
+		const FGameplayEffectSpecHandle DamageSpecHandle = Params.InstigatorASC->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, ContextHandle);	// 创建效果规格
+
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Params.DamageType, Params.BaseDamage);	// Assign the damage value to the tag（注册伤害值到标签）
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Tags.Debuff_Chance, Params.DebuffChance);	// Assign the debuff chance value to the tag（注册debuff几率到标签）
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Tags.Debuff_Damage, Params.DebuffDamage);	// Assign the debuff damage value to the tag（注册debuff伤害到标签）
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Tags.Debuff_Frequency, Params.DebuffFrequency);	// Assign the debuff frequency value to the tag（注册debuff频率到标签）
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Tags.Debuff_Duration, Params.DebuffDuration);	// Assign the debuff duration value to the tag（注册debuff持续时间到标签）
+
+		Params.InstigatorASC->ApplyGameplayEffectSpecToSelf(*DamageSpecHandle.Data.Get());	// 应用效果到自己
+
+		return &ContextHandle;
+	}
+	return nullptr;
 }
