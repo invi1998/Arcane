@@ -57,17 +57,9 @@ void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParam
 				const float DebuffFrequency = Spec.GetSetByCallerMagnitude(AuraTags.Debuff_Frequency, false, 0);	// Debuff频率
 				const float DebuffDuration = Spec.GetSetByCallerMagnitude(AuraTags.Debuff_Duration, false, 0);	// Debuff持续时间
 
-				//// Debuff伤害
-				const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, DebuffDamage);
-				//OutExecutionOutput.AddOutputModifier(EvaluatedData);
-
-				//// Debuff频率
-				//const FGameplayModifierEvaluatedData FrequencyEvaluatedData(UAuraAttributeSet::GetDebuffFrequencyAttribute(), EGameplayModOp::Additive, DebuffFrequency);
-				//OutExecutionOutput.AddOutputModifier(FrequencyEvaluatedData);
-
-				//// Debuff持续时间
-				//const FGameplayModifierEvaluatedData DurationEvaluatedData(UAuraAttributeSet::GetDebuffDurationAttribute(), EGameplayModOp::Additive, DebuffDuration);
-				//OutExecutionOutput.AddOutputModifier(DurationEvaluatedData);
+				// 设置Debuff参数在AuraGameplayEffectContext中
+				FGameplayEffectContextHandle ContextHandle = Spec.GetContext();		// 获取GameplayEffectContextHandle
+				
 			}
 		}
 		

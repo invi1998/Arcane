@@ -62,6 +62,17 @@ public:
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static bool IsCriticalHit(const FGameplayEffectContextHandle& ContextHandle);
 
+	// 设置暴击信息 UPARAM(ref)表示传入的是引用，而不是值，而且这个参数在蓝图中是作为输入引脚的
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static void SetCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, bool bCriticalHit);
+
+	// 设置格挡信息 UPARAM(ref)表示传入的是引用，而不是值，而且这个参数在蓝图中是作为输入引脚的
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static void SetBlockedHit(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, bool bBlockedHit);
+
+	/*
+	 * Debuff Start
+	 */
 	// 从AuraGampelayEffectContext中获取是否成功施加Debuff
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static bool IsSuccessfulDebuff(const FGameplayEffectContextHandle& ContextHandle);
@@ -82,13 +93,24 @@ public:
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static FGameplayTag GetDamageType(const FGameplayEffectContextHandle& ContextHandle);
 
-	// 设置暴击信息 UPARAM(ref)表示传入的是引用，而不是值，而且这个参数在蓝图中是作为输入引脚的
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
-	static void SetCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, bool bCriticalHit);
+	static void SetSuccessfulDebuff(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, bool bSuccessfulDebuff);
 
-	// 设置格挡信息 UPARAM(ref)表示传入的是引用，而不是值，而且这个参数在蓝图中是作为输入引脚的
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
-	static void SetBlockedHit(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, bool bBlockedHit);
+	static void SetDebuffDamage(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, float DebuffDamage);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static void SetDebuffFrequency(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, float DebuffFrequency);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static void SetDebuffDuration(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, float DebuffDuration);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
+	static void SetDamageType(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, FGameplayTag DamageType);
+
+	/*
+	 * Debuff End
+	 */
 
 	// 获取半径内的所有存活玩家 （传入上下文对象，传出玩家数组，传入忽略的玩家数组，传入中心点，传入半径）
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanice")
