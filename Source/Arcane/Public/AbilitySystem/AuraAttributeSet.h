@@ -297,6 +297,10 @@ private:
 
 	void SendEXPEvent(const FEffectProperties& Props) const;	// 发送经验给玩家
 
+	void HandleIncomingDamage(const FEffectProperties& Props);	// 处理受到的伤害
+	void HandleIncomingExp(const FEffectProperties& Props);	// 处理获得的经验
+	void Debuff(const FEffectProperties& Props);	// Debuff处理
+
 	bool bTopOfHealth = false;	// 是否在生命值最大值
 	bool bTopOfMana = false;	// 是否在魔法值最大值
 };

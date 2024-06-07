@@ -59,6 +59,12 @@ void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParam
 
 				// 设置Debuff参数在AuraGameplayEffectContext中
 				FGameplayEffectContextHandle ContextHandle = Spec.GetContext();		// 获取GameplayEffectContextHandle
+
+				UAuraAbilitySystemLibrary::SetSuccessfulDebuff(ContextHandle, true);	// 设置成功施加Debuff
+				UAuraAbilitySystemLibrary::SetDebuffDamage(ContextHandle, DebuffDamage);	// 设置Debuff伤害
+				UAuraAbilitySystemLibrary::SetDebuffFrequency(ContextHandle, DebuffFrequency);	// 设置Debuff频率
+				UAuraAbilitySystemLibrary::SetDebuffDuration(ContextHandle, DebuffDuration);	// 设置Debuff持续时间
+				UAuraAbilitySystemLibrary::SetDamageType(ContextHandle, DebuffTag);	// 设置伤害类型
 				
 			}
 		}
