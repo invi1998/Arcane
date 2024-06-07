@@ -58,7 +58,7 @@ void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParam
 				const float DebuffDuration = Spec.GetSetByCallerMagnitude(AuraTags.Debuff_Duration, false, 0);	// Debuff持续时间
 
 				//// Debuff伤害
-				//const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, DebuffDamage);
+				const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, DebuffDamage);
 				//OutExecutionOutput.AddOutputModifier(EvaluatedData);
 
 				//// Debuff频率

@@ -8,7 +8,7 @@
 #include "AuraAttributeSet.generated.h"
 
 
-// ¸ÃºêÓÃÓÚÉú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+// è¯¥å®ç”¨äºç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_PROPERTY_GETTER(ClassName, PropertyName) \
 	GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
@@ -36,38 +36,38 @@ struct FEffectProperties
 	 * Source
 	 */
 	UPROPERTY()
-	UAbilitySystemComponent* SourceASC;		// Ê©·¨ÕßµÄÄÜÁ¦ÏµÍ³×é¼ş
+	UAbilitySystemComponent* SourceASC;		// æ–½æ³•è€…çš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
 
 	UPROPERTY()
-	AActor* SourceAvatarActor;					// Ê©·¨ÕßµÄActor
+	AActor* SourceAvatarActor;					// æ–½æ³•è€…çš„Actor
 
 	UPROPERTY()
-	AController* SourceController;			// Ê©·¨ÕßµÄ¿ØÖÆÆ÷
+	AController* SourceController;			// æ–½æ³•è€…çš„æ§åˆ¶å™¨
 
 	UPROPERTY()
-	ACharacter* SourceCharacter;			// Ê©·¨ÕßµÄ½ÇÉ«
+	ACharacter* SourceCharacter;			// æ–½æ³•è€…çš„è§’è‰²
 
 	/*
 	 * Target
 	 */
 
 	UPROPERTY()
-	UAbilitySystemComponent* TargetASC;		// Ä¿±êµÄÄÜÁ¦ÏµÍ³×é¼ş
+	UAbilitySystemComponent* TargetASC;		// ç›®æ ‡çš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
 
 	UPROPERTY()
-	AActor* TargetAvatarActor;					// Ä¿±êµÄActor
+	AActor* TargetAvatarActor;					// ç›®æ ‡çš„Actor
 
 	UPROPERTY()
-	AController* TargetController;			// Ä¿±êµÄ¿ØÖÆÆ÷
+	AController* TargetController;			// ç›®æ ‡çš„æ§åˆ¶å™¨
 
 	UPROPERTY()
-	ACharacter* TargetCharacter;			// Ä¿±êµÄ½ÇÉ«
+	ACharacter* TargetCharacter;			// ç›®æ ‡çš„è§’è‰²
 
 	/*
 	 * Context
 	 */
 
-	FGameplayEffectContextHandle EffectContextHandle;	// Ğ§¹ûÉÏÏÂÎÄ¾ä±ú
+	FGameplayEffectContextHandle EffectContextHandle;	// æ•ˆæœä¸Šä¸‹æ–‡å¥æŸ„
 };
 
 // typedef is specific to the FGameplayAttribute() signature, but TStaticFunPtr is generic to any signature chosen
@@ -77,7 +77,7 @@ using TStaticFuncPtr = typename TBaseStaticDelegateInstance<T, FDefaultDelegateU
 
 
 /**
- * ÊôĞÔ¼¯
+ * å±æ€§é›†
  */
 UCLASS()
 class ARCANE_API UAuraAttributeSet : public UAttributeSet
@@ -87,216 +87,216 @@ class ARCANE_API UAuraAttributeSet : public UAttributeSet
 public:
 	UAuraAttributeSet();
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;	// ÖØĞ´GetLifetimeReplicatedPropsº¯Êı£¬ÓÃÓÚÉèÖÃÊôĞÔµÄ¸´ÖÆ·½Ê½
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;	// é‡å†™GetLifetimeReplicatedPropså‡½æ•°ï¼Œç”¨äºè®¾ç½®å±æ€§çš„å¤åˆ¶æ–¹å¼
 
-	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;	// ÖØĞ´PreAttributeChangeº¯Êı£¬ÓÃÓÚÊôĞÔ¸Ä±äÇ°µÄ´¦Àí
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;	// é‡å†™PreAttributeChangeå‡½æ•°ï¼Œç”¨äºå±æ€§æ”¹å˜å‰çš„å¤„ç†
 
-	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;	// ÖØĞ´PostGameplayEffectExecuteº¯Êı£¬ÓÃÓÚĞ§¹ûÖ´ĞĞºóµÄ´¦Àí
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;	// é‡å†™PostGameplayEffectExecuteå‡½æ•°ï¼Œç”¨äºæ•ˆæœæ‰§è¡Œåçš„å¤„ç†
 
-	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;	// ÖØĞ´PostAttributeChangeº¯Êı£¬ÓÃÓÚÊôĞÔ¸Ä±äºóµÄ´¦Àí
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;	// é‡å†™PostAttributeChangeå‡½æ•°ï¼Œç”¨äºå±æ€§æ”¹å˜åçš„å¤„ç†
 
-	// µ±Ç°ÏîÄ¿Ã»ÓĞÊ¹ÓÃ¸ÃÊôĞÔ½øĞĞTagºÍÊôĞÔµÄÓ³Éä
-	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;	// GamplayTagºÍÒ»¸ö¾²Ì¬º¯ÊıÖ¸ÕëµÄÓ³Éä£¬ÓÃÓÚ½«GamplayTagÓ³Éäµ½ÊôĞÔ£¬»òÕßºóĞøÓÃÓÚ°ó¶¨ÆäËûµÄ»Øµ÷º¯Êı
+	// å½“å‰é¡¹ç›®æ²¡æœ‰ä½¿ç”¨è¯¥å±æ€§è¿›è¡ŒTagå’Œå±æ€§çš„æ˜ å°„
+	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;	// GamplayTagå’Œä¸€ä¸ªé™æ€å‡½æ•°æŒ‡é’ˆçš„æ˜ å°„ï¼Œç”¨äºå°†GamplayTagæ˜ å°„åˆ°å±æ€§ï¼Œæˆ–è€…åç»­ç”¨äºç»‘å®šå…¶ä»–çš„å›è°ƒå‡½æ•°
 
 	/*
-	 * RPG Ö÷ÊôĞÔ£¨Primary Attributes£©
+	 * RPG ä¸»å±æ€§ï¼ˆPrimary Attributesï¼‰
 	 */
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Strength, Category = "Primary Attributes")
-	FGameplayAttributeData Strength;	// Á¦Á¿
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Strength)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	FGameplayAttributeData Strength;	// åŠ›é‡
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Strength)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Agility, Category = "Primary Attributes")
-	FGameplayAttributeData Agility;		// Ãô½İ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Agility)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	FGameplayAttributeData Agility;		// æ•æ·
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Agility)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Intelligence, Category = "Primary Attributes")
-	FGameplayAttributeData Intelligence;	// ÖÇÁ¦
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Intelligence)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	FGameplayAttributeData Intelligence;	// æ™ºåŠ›
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Intelligence)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Vigor, Category = "Primary Attributes")
-	FGameplayAttributeData Vigor;		// »îÁ¦
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Vigor)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	FGameplayAttributeData Vigor;		// æ´»åŠ›
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Vigor)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Resilience, Category = "Primary Attributes")
-	FGameplayAttributeData Resilience;	// ÈÍĞÔ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resilience)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	FGameplayAttributeData Resilience;	// éŸ§æ€§
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Resilience)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
 	UFUNCTION()
-	void OnRep_Strength(const FGameplayAttributeData& OldStrength) const;	// Á¦Á¿»Øµ÷º¯Êı
+	void OnRep_Strength(const FGameplayAttributeData& OldStrength) const;	// åŠ›é‡å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_Agility(const FGameplayAttributeData& OldAgility) const;	// Ãô½İ»Øµ÷º¯Êı
+	void OnRep_Agility(const FGameplayAttributeData& OldAgility) const;	// æ•æ·å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_Intelligence(const FGameplayAttributeData& OldIntelligence) const;	// ÖÇÁ¦»Øµ÷º¯Êı
+	void OnRep_Intelligence(const FGameplayAttributeData& OldIntelligence) const;	// æ™ºåŠ›å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_Vigor(const FGameplayAttributeData& OldVigor) const;	// »îÁ¦»Øµ÷º¯Êı
+	void OnRep_Vigor(const FGameplayAttributeData& OldVigor) const;	// æ´»åŠ›å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_Resilience(const FGameplayAttributeData& OldResilience) const;	// ÈÍĞÔ»Øµ÷º¯Êı
+	void OnRep_Resilience(const FGameplayAttributeData& OldResilience) const;	// éŸ§æ€§å›è°ƒå‡½æ•°
 
 
 	/*
-	 * ÖØÒªÊôĞÔ£¨Vital Attributes£©
+	 * é‡è¦å±æ€§ï¼ˆVital Attributesï¼‰
 	 */
 
-	/** ÉúÃüÖµ */
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_Health, Category="Vital Attributes")	// À¶Í¼Ö»¶Á£¬¸´ÖÆÊ¹ÓÃOnRep_Healthº¯Êı£¬·ÖÀàÎªVital Attributes£¨ÖØÒªÊôĞÔ£©
-	FGameplayAttributeData Health;		// ÉúÃüÖµ£¬ÀàĞÍÎªFGameplayAttributeData£¬ÕâÊÇÒ»¸ö½á¹¹Ìå£¬°üº¬ÁËµ±Ç°ÖµºÍ»ù´¡Öµ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	/** ç”Ÿå‘½å€¼ */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing= OnRep_Health, Category="Vital Attributes")	// è“å›¾åªè¯»ï¼Œå¤åˆ¶ä½¿ç”¨OnRep_Healthå‡½æ•°ï¼Œåˆ†ç±»ä¸ºVital Attributesï¼ˆé‡è¦å±æ€§ï¼‰
+	FGameplayAttributeData Health;		// ç”Ÿå‘½å€¼ï¼Œç±»å‹ä¸ºFGameplayAttributeDataï¼Œè¿™æ˜¯ä¸€ä¸ªç»“æ„ä½“ï¼ŒåŒ…å«äº†å½“å‰å€¼å’ŒåŸºç¡€å€¼
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Health)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	/** Ä§·¨ */
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Mana, Category="Vital Attributes")	// À¶Í¼Ö»¶Á, ¸´ÖÆÊ¹ÓÃOnRep_Manaº¯Êı£¬·ÖÀàÎªVital Attributes£¨ÖØÒªÊôĞÔ£©
-	FGameplayAttributeData Mana;		// Ä§·¨
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
-
-	UFUNCTION()
-	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;		// Ò»°ãÀ´Ëµ£¬Repº¯ÊıÊÇ²»ĞèÒª´«Èë²ÎÊıµÄ£¬µ«ÊÇÈç¹ûÄãĞèÒªÔÚRepº¯ÊıÖĞÊ¹ÓÃ¾ÉÖµ£¬ÄÇÃ´Äã¾ÍĞèÒª´«Èë²ÎÊı
+	/** é­”æ³• */
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_Mana, Category="Vital Attributes")	// è“å›¾åªè¯», å¤åˆ¶ä½¿ç”¨OnRep_Manaå‡½æ•°ï¼Œåˆ†ç±»ä¸ºVital Attributesï¼ˆé‡è¦å±æ€§ï¼‰
+	FGameplayAttributeData Mana;		// é­”æ³•
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Mana)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
 	UFUNCTION()
-	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;		// Ä§·¨»Øµ÷º¯Êı
+	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;		// ä¸€èˆ¬æ¥è¯´ï¼ŒRepå‡½æ•°æ˜¯ä¸éœ€è¦ä¼ å…¥å‚æ•°çš„ï¼Œä½†æ˜¯å¦‚æœä½ éœ€è¦åœ¨Repå‡½æ•°ä¸­ä½¿ç”¨æ—§å€¼ï¼Œé‚£ä¹ˆä½ å°±éœ€è¦ä¼ å…¥å‚æ•°
+
+	UFUNCTION()
+	void OnRep_Mana(const FGameplayAttributeData& OldMana) const;		// é­”æ³•å›è°ƒå‡½æ•°
 
 
 	/*
-	 * ´ÎÒªÊôĞÔ£¨Secondary Attributes£© »òÕßËµÊÇÅÉÉúÊôĞÔ£¨Derived Attributes£©
+	 * æ¬¡è¦å±æ€§ï¼ˆSecondary Attributesï¼‰ æˆ–è€…è¯´æ˜¯æ´¾ç”Ÿå±æ€§ï¼ˆDerived Attributesï¼‰
 	 */
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Secondary Attributes")	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©
-	FGameplayAttributeData MaxHealth;	// ×î´óÉúÃüÖµ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Secondary Attributes")	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰
+	FGameplayAttributeData MaxHealth;	// æœ€å¤§ç”Ÿå‘½å€¼
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxHealth)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Secondary Attributes")	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©
-	FGameplayAttributeData MaxMana;		// ×î´óÄ§·¨
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxMana, Category = "Secondary Attributes")	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰
+	FGameplayAttributeData MaxMana;		// æœ€å¤§é­”æ³•
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor, Category="Secondary Attributes")	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©
-	FGameplayAttributeData Armor;		// »¤¼×
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Armor)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Armor, Category="Secondary Attributes")	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰
+	FGameplayAttributeData Armor;		// æŠ¤ç”²
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, Armor)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ArmorPenetration, Category="Secondary Attributes")	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©
-	FGameplayAttributeData ArmorPenetration;		// »¤¼×´©Í¸
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArmorPenetration)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ArmorPenetration, Category="Secondary Attributes")	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰
+	FGameplayAttributeData ArmorPenetration;		// æŠ¤ç”²ç©¿é€
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArmorPenetration)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_BlockChance, Category="Secondary Attributes")	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©
-	FGameplayAttributeData BlockChance;		// ¸ñµ²¼¸ÂÊ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, BlockChance)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_BlockChance, Category="Secondary Attributes")	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰
+	FGameplayAttributeData BlockChance;		// æ ¼æŒ¡å‡ ç‡
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, BlockChance)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitChance, Category="Secondary Attributes")	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©
-	FGameplayAttributeData CriticalHitChance;		// ±©»÷¼¸ÂÊ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitChance)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitChance, Category="Secondary Attributes")	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰
+	FGameplayAttributeData CriticalHitChance;		// æš´å‡»å‡ ç‡
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitChance)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitDamage, Category="Secondary Attributes")	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©
-	FGameplayAttributeData CriticalHitDamage;		// ±©»÷ÉËº¦
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitDamage)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitDamage, Category="Secondary Attributes")	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰
+	FGameplayAttributeData CriticalHitDamage;		// æš´å‡»ä¼¤å®³
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitDamage)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitResistance, Category="Secondary Attributes")	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©
-	FGameplayAttributeData CriticalHitResistance;		// ±©»÷¿¹ĞÔ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitResistance)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_CriticalHitResistance, Category="Secondary Attributes")	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰
+	FGameplayAttributeData CriticalHitResistance;		// æš´å‡»æŠ—æ€§
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, CriticalHitResistance)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegeneration, Category="Secondary Attributes")	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©
-	FGameplayAttributeData HealthRegeneration;		// ÉúÃü»Ö¸´
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, HealthRegeneration)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_HealthRegeneration, Category="Secondary Attributes")	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰
+	FGameplayAttributeData HealthRegeneration;		// ç”Ÿå‘½æ¢å¤
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, HealthRegeneration)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ManaRegeneration, Category="Secondary Attributes")	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©
-	FGameplayAttributeData ManaRegeneration;		// Ä§·¨»Ö¸´
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_ManaRegeneration, Category="Secondary Attributes")	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰
+	FGameplayAttributeData ManaRegeneration;		// é­”æ³•æ¢å¤
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaRegeneration)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_FireResistance)	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©ºÍResistance Attributes£¨¿¹ĞÔÊôĞÔ£©
-	FGameplayAttributeData FireResistance;		// »ğÑæ¿¹ĞÔ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, FireResistance)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_FireResistance)	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰å’ŒResistance Attributesï¼ˆæŠ—æ€§å±æ€§ï¼‰
+	FGameplayAttributeData FireResistance;		// ç«ç„°æŠ—æ€§
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, FireResistance)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_IceResistance)	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©ºÍResistance Attributes£¨¿¹ĞÔÊôĞÔ£©
-	FGameplayAttributeData IceResistance;		// ±ùËª¿¹ĞÔ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IceResistance)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_IceResistance)	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰å’ŒResistance Attributesï¼ˆæŠ—æ€§å±æ€§ï¼‰
+	FGameplayAttributeData IceResistance;		// å†°éœœæŠ—æ€§
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IceResistance)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_LightningResistance)	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©ºÍResistance Attributes£¨¿¹ĞÔÊôĞÔ£©
-	FGameplayAttributeData LightningResistance;		// ÉÁµç¿¹ĞÔ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, LightningResistance)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_LightningResistance)	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰å’ŒResistance Attributesï¼ˆæŠ—æ€§å±æ€§ï¼‰
+	FGameplayAttributeData LightningResistance;		// é—ªç”µæŠ—æ€§
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, LightningResistance)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_PoisonResistance)	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©ºÍResistance Attributes£¨¿¹ĞÔÊôĞÔ£©
-	FGameplayAttributeData PoisonResistance;		// ¶¾ËØ¿¹ĞÔ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, PoisonResistance)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_PoisonResistance)	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰å’ŒResistance Attributesï¼ˆæŠ—æ€§å±æ€§ï¼‰
+	FGameplayAttributeData PoisonResistance;		// æ¯’ç´ æŠ—æ€§
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, PoisonResistance)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_ArcaneResistance)	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©ºÍResistance Attributes£¨¿¹ĞÔÊôĞÔ£©
-	FGameplayAttributeData ArcaneResistance;		// °ÂÊõ¿¹ĞÔ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArcaneResistance)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_ArcaneResistance)	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰å’ŒResistance Attributesï¼ˆæŠ—æ€§å±æ€§ï¼‰
+	FGameplayAttributeData ArcaneResistance;		// å¥¥æœ¯æŠ—æ€§
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ArcaneResistance)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_PhysicalResistance)	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªSecondary Attributes£¨´ÎÒªÊôĞÔ£©ºÍResistance Attributes£¨¿¹ĞÔÊôĞÔ£©
-	FGameplayAttributeData PhysicalResistance;		// ÎïÀí¿¹ĞÔ
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, PhysicalResistance)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
-
-	UFUNCTION()
-	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;	// ×î´óÉúÃüÖµ»Øµ÷º¯Êı
+	UPROPERTY(BlueprintReadOnly, Category="Secondary Attributes|Resistance Attributes", ReplicatedUsing = OnRep_PhysicalResistance)	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºSecondary Attributesï¼ˆæ¬¡è¦å±æ€§ï¼‰å’ŒResistance Attributesï¼ˆæŠ—æ€§å±æ€§ï¼‰
+	FGameplayAttributeData PhysicalResistance;		// ç‰©ç†æŠ—æ€§
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, PhysicalResistance)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
 	UFUNCTION()
-	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;	// ×î´óÄ§·¨»Øµ÷º¯Êı
+	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;	// æœ€å¤§ç”Ÿå‘½å€¼å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_Armor(const FGameplayAttributeData& OldArmor) const;		// »¤¼×»Øµ÷º¯Êı
+	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;	// æœ€å¤§é­”æ³•å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_ArmorPenetration(const FGameplayAttributeData& OldArmorPenetration) const;	// »¤¼×´©Í¸»Øµ÷º¯Êı
+	void OnRep_Armor(const FGameplayAttributeData& OldArmor) const;		// æŠ¤ç”²å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_BlockChance(const FGameplayAttributeData& OldBlockChance) const;	// ¸ñµ²¼¸ÂÊ»Øµ÷º¯Êı
+	void OnRep_ArmorPenetration(const FGameplayAttributeData& OldArmorPenetration) const;	// æŠ¤ç”²ç©¿é€å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_CriticalHitChance(const FGameplayAttributeData& OldCriticalHitChance) const;	// ±©»÷¼¸ÂÊ»Øµ÷º¯Êı
+	void OnRep_BlockChance(const FGameplayAttributeData& OldBlockChance) const;	// æ ¼æŒ¡å‡ ç‡å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_CriticalHitDamage(const FGameplayAttributeData& OldCriticalHitDamage) const;	// ±©»÷ÉËº¦»Øµ÷º¯Êı
+	void OnRep_CriticalHitChance(const FGameplayAttributeData& OldCriticalHitChance) const;	// æš´å‡»å‡ ç‡å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_CriticalHitResistance(const FGameplayAttributeData& OldCriticalHitResistance) const;	// ±©»÷¿¹ĞÔ»Øµ÷º¯Êı
+	void OnRep_CriticalHitDamage(const FGameplayAttributeData& OldCriticalHitDamage) const;	// æš´å‡»ä¼¤å®³å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const;	// ÉúÃü»Ö¸´»Øµ÷º¯Êı
+	void OnRep_CriticalHitResistance(const FGameplayAttributeData& OldCriticalHitResistance) const;	// æš´å‡»æŠ—æ€§å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const;	// Ä§·¨»Ö¸´»Øµ÷º¯Êı
+	void OnRep_HealthRegeneration(const FGameplayAttributeData& OldHealthRegeneration) const;	// ç”Ÿå‘½æ¢å¤å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance) const;	// »ğÑæ¿¹ĞÔ»Øµ÷º¯Êı
+	void OnRep_ManaRegeneration(const FGameplayAttributeData& OldManaRegeneration) const;	// é­”æ³•æ¢å¤å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_IceResistance(const FGameplayAttributeData& OldIceResistance) const;	// ±ùËª¿¹ĞÔ»Øµ÷º¯Êı
+	void OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance) const;	// ç«ç„°æŠ—æ€§å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_LightningResistance(const FGameplayAttributeData& OldLightningResistance) const;	// ÉÁµç¿¹ĞÔ»Øµ÷º¯Êı
+	void OnRep_IceResistance(const FGameplayAttributeData& OldIceResistance) const;	// å†°éœœæŠ—æ€§å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_PoisonResistance(const FGameplayAttributeData& OldPoisonResistance) const;	// ¶¾ËØ¿¹ĞÔ»Øµ÷º¯Êı
+	void OnRep_LightningResistance(const FGameplayAttributeData& OldLightningResistance) const;	// é—ªç”µæŠ—æ€§å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_ArcaneResistance(const FGameplayAttributeData& OldArcaneResistance) const;	// °ÂÊõ¿¹ĞÔ»Øµ÷º¯Êı
+	void OnRep_PoisonResistance(const FGameplayAttributeData& OldPoisonResistance) const;	// æ¯’ç´ æŠ—æ€§å›è°ƒå‡½æ•°
 
 	UFUNCTION()
-	void OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance) const;	// ÎïÀí¿¹ĞÔ»Øµ÷º¯Êı
+	void OnRep_ArcaneResistance(const FGameplayAttributeData& OldArcaneResistance) const;	// å¥¥æœ¯æŠ—æ€§å›è°ƒå‡½æ•°
+
+	UFUNCTION()
+	void OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance) const;	// ç‰©ç†æŠ—æ€§å›è°ƒå‡½æ•°
 
 	/*
-	 * Meta Attributes ÔªÊôĞÔ, ÓÃÓÚÃèÊö½ÇÉ«µÄÌØĞÔ
+	 * Meta Attributes å…ƒå±æ€§, ç”¨äºæè¿°è§’è‰²çš„ç‰¹æ€§
 	 */
-	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªMeta Attributes£¨ÔªÊôĞÔ£©, ÔªÊôĞÔ²»ĞèÒª¸´ÖÆ
-	FGameplayAttributeData IncomingDamage;	// ÔªÊôĞÔ£ºÊÜµ½µÄÉËº¦
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºMeta Attributesï¼ˆå…ƒå±æ€§ï¼‰, å…ƒå±æ€§ä¸éœ€è¦å¤åˆ¶
+	FGameplayAttributeData IncomingDamage;	// å…ƒå±æ€§ï¼šå—åˆ°çš„ä¼¤å®³
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")	// À¶Í¼Ö»¶Á£¬·ÖÀàÎªMeta Attributes£¨ÔªÊôĞÔ£©, ÔªÊôĞÔ²»ĞèÒª¸´ÖÆ
-	FGameplayAttributeData RewardExperience;	// ÔªÊôĞÔ£º½±Àø¾­Ñé
-	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, RewardExperience)	// Éú³ÉÊôĞÔµÄGetterº¯Êı£¬ÊôĞÔµÄSetterº¯Êı£¬ÊôĞÔµÄ³õÊ¼»¯º¯Êı
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")	// è“å›¾åªè¯»ï¼Œåˆ†ç±»ä¸ºMeta Attributesï¼ˆå…ƒå±æ€§ï¼‰, å…ƒå±æ€§ä¸éœ€è¦å¤åˆ¶
+	FGameplayAttributeData RewardExperience;	// å…ƒå±æ€§ï¼šå¥–åŠ±ç»éªŒ
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, RewardExperience)	// ç”Ÿæˆå±æ€§çš„Getterå‡½æ•°ï¼Œå±æ€§çš„Setterå‡½æ•°ï¼Œå±æ€§çš„åˆå§‹åŒ–å‡½æ•°
 
-	FORCEINLINE bool IsTopOfHealth() const { return bTopOfHealth; }	// ÊÇ·ñÔÚÉúÃüÖµ×î´óÖµ¸Ä±ä
-	FORCEINLINE bool IsTopOfMana() const { return bTopOfMana; }	// ÊÇ·ñÔÚÄ§·¨Öµ×î´óÖµ¸Ä±ä
-	FORCEINLINE void SetTopOfHealth(bool bTop) { bTopOfHealth = bTop; }	// ÉèÖÃÊÇ·ñÔÚÉúÃüÖµ×î´óÖµ¸Ä±ä
-	FORCEINLINE void SetTopOfMana(bool bTop) { bTopOfMana = bTop; }	// ÉèÖÃÊÇ·ñÔÚÄ§·¨Öµ×î´óÖµ¸Ä±ä
+	FORCEINLINE bool IsTopOfHealth() const { return bTopOfHealth; }	// æ˜¯å¦åœ¨ç”Ÿå‘½å€¼æœ€å¤§å€¼æ”¹å˜
+	FORCEINLINE bool IsTopOfMana() const { return bTopOfMana; }	// æ˜¯å¦åœ¨é­”æ³•å€¼æœ€å¤§å€¼æ”¹å˜
+	FORCEINLINE void SetTopOfHealth(bool bTop) { bTopOfHealth = bTop; }	// è®¾ç½®æ˜¯å¦åœ¨ç”Ÿå‘½å€¼æœ€å¤§å€¼æ”¹å˜
+	FORCEINLINE void SetTopOfMana(bool bTop) { bTopOfMana = bTop; }	// è®¾ç½®æ˜¯å¦åœ¨é­”æ³•å€¼æœ€å¤§å€¼æ”¹å˜
 
 private:
-	void SetEffectsProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;	// ÉèÖÃĞ§¹ûÊôĞÔ
+	void SetEffectsProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;	// è®¾ç½®æ•ˆæœå±æ€§
 
-	void ShowFloatingText(const FEffectProperties Props, float Damage, bool bBlockedHit, bool bCriticalHit) const;	// ÏÔÊ¾¸¡¶¯ÎÄ×Ö£¬ÓÃÓÚÏÔÊ¾ÉËº¦£¬¸ñµ²£¬±©»÷µÈĞÅÏ¢
+	void ShowFloatingText(const FEffectProperties Props, float Damage, bool bBlockedHit, bool bCriticalHit) const;	// æ˜¾ç¤ºæµ®åŠ¨æ–‡å­—ï¼Œç”¨äºæ˜¾ç¤ºä¼¤å®³ï¼Œæ ¼æŒ¡ï¼Œæš´å‡»ç­‰ä¿¡æ¯
 
-	void SendEXPEvent(const FEffectProperties& Props) const;	// ·¢ËÍ¾­Ñé¸øÍæ¼Ò
+	void SendEXPEvent(const FEffectProperties& Props) const;	// å‘é€ç»éªŒç»™ç©å®¶
 
-	bool bTopOfHealth = false;	// ÊÇ·ñÔÚÉúÃüÖµ×î´óÖµ
-	bool bTopOfMana = false;	// ÊÇ·ñÔÚÄ§·¨Öµ×î´óÖµ
+	bool bTopOfHealth = false;	// æ˜¯å¦åœ¨ç”Ÿå‘½å€¼æœ€å¤§å€¼
+	bool bTopOfMana = false;	// æ˜¯å¦åœ¨é­”æ³•å€¼æœ€å¤§å€¼
 };

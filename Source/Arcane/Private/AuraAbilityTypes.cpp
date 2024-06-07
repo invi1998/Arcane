@@ -41,6 +41,10 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		{
 			RepBits |= 1 << 8;
 		}
+		if (bIsSuccessfulDebuff)	// 是否成功施加Debuff
+		{
+			RepBits |= 1 << 9;
+		}
 	}
 
 	Ar.SerializeBits(&RepBits, 9);

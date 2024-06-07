@@ -92,6 +92,21 @@ protected:
 
 	UPROPERTY()
 	bool bIsCriticalHit = false;	// 是否暴击
+
+	UPROPERTY()
+	bool bIsSuccessfulDebuff = false;	// 是否成功Debuff
+
+	UPROPERTY()
+	float DebuffDamage = 0.f;	// Debuff伤害
+
+	UPROPERTY()
+	float DebuffFrequency = 0.f;	// Debuff频率
+
+	UPROPERTY()
+	float DebuffDuration = 0.f;	// Debuff持续时间
+
+	UPROPERTY()
+	FGameplayTag DamageType = FGameplayTag::EmptyTag;	// 伤害类型
 	
 };
 
