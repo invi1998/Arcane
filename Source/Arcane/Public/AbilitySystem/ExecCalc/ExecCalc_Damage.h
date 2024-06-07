@@ -8,63 +8,47 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "ExecCalc_Damage.generated.h"
 
-// ¸Ã½á¹¹ÌåÓÃÓÚ´æ´¢²¶»ñµÄÊôĞÔ£¨¸Ã½á¹¹Ìå×÷ÎªÒ»¸öÔ­Éú½á¹¹Ìå£¬²»»áÓÃÓÚÀ¶Í¼£©
+// è¯¥ç»“æ„ä½“ç”¨äºå­˜å‚¨æ•è·çš„å±æ€§ï¼ˆè¯¥ç»“æ„ä½“ä½œä¸ºä¸€ä¸ªåŸç”Ÿç»“æ„ä½“ï¼Œä¸ä¼šç”¨äºè“å›¾ï¼‰
 struct AuraDamageStatics
 {
-	// ¸ÃºêÓÃÓÚÉùÃ÷Ò»¸ö²¶»ñÊôĞÔµÄ½á¹¹Ìå£¬ÆäÖĞ°üº¬ÁË²¶»ñµÄÊôĞÔµÄÖ¸Õë£¬ÒÔ¼°²¶»ñµÄÊôĞÔµÄÃû³Æ
-	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);		// »¤¼×
-	DECLARE_ATTRIBUTE_CAPTUREDEF(ArmorPenetration);	// »¤¼×´©Í¸
-	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);	// ¸ñµ²¼¸ÂÊ
-	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitChance);	// ±©»÷¼¸ÂÊ
-	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitDamage);	// ±©»÷ÉËº¦
-	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitResistance);	// ±©»÷¿¹ĞÔ
+	// è¯¥å®ç”¨äºå£°æ˜ä¸€ä¸ªæ•è·å±æ€§çš„ç»“æ„ä½“ï¼Œå…¶ä¸­åŒ…å«äº†æ•è·çš„å±æ€§çš„æŒ‡é’ˆï¼Œä»¥åŠæ•è·çš„å±æ€§çš„åç§°
+	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);		// æŠ¤ç”²
+	DECLARE_ATTRIBUTE_CAPTUREDEF(ArmorPenetration);	// æŠ¤ç”²ç©¿é€
+	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);	// æ ¼æŒ¡å‡ ç‡
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitChance);	// æš´å‡»å‡ ç‡
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitDamage);	// æš´å‡»ä¼¤å®³
+	DECLARE_ATTRIBUTE_CAPTUREDEF(CriticalHitResistance);	// æš´å‡»æŠ—æ€§
 
-	DECLARE_ATTRIBUTE_CAPTUREDEF(FireResistance);	// »ğÑæ¿¹ĞÔ
-	DECLARE_ATTRIBUTE_CAPTUREDEF(IceResistance);	// º®Àä¿¹ĞÔ
-	DECLARE_ATTRIBUTE_CAPTUREDEF(LightningResistance);	// ÉÁµç¿¹ĞÔ
-	DECLARE_ATTRIBUTE_CAPTUREDEF(PoisonResistance);	// ¶¾ËØ¿¹ĞÔ
-	DECLARE_ATTRIBUTE_CAPTUREDEF(ArcaneResistance);	// °ÂÊõ¿¹ĞÔ
-	DECLARE_ATTRIBUTE_CAPTUREDEF(PhysicalResistance);	// ÎïÀí¿¹ĞÔ
+	DECLARE_ATTRIBUTE_CAPTUREDEF(FireResistance);	// ç«ç„°æŠ—æ€§
+	DECLARE_ATTRIBUTE_CAPTUREDEF(IceResistance);	// å¯’å†·æŠ—æ€§
+	DECLARE_ATTRIBUTE_CAPTUREDEF(LightningResistance);	// é—ªç”µæŠ—æ€§
+	DECLARE_ATTRIBUTE_CAPTUREDEF(PoisonResistance);	// æ¯’ç´ æŠ—æ€§
+	DECLARE_ATTRIBUTE_CAPTUREDEF(ArcaneResistance);	// å¥¥æœ¯æŠ—æ€§
+	DECLARE_ATTRIBUTE_CAPTUREDEF(PhysicalResistance);	// ç‰©ç†æŠ—æ€§
 
-	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDef;		// ÓÃÓÚ´æ´¢²¶»ñµÄÊôĞÔ
+	
 
 	AuraDamageStatics()
 	{
-		// ¸Ãº¯ÊıÓÃÓÚ²¶»ñÊôĞÔ
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);	// ²¶»ñÄ¿±êµÄ»¤¼×ÊôĞÔ£¬²»ÅÄ¿ìÕÕ
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Source, false);	// ²¶»ñÀ´Ô´µÄ»¤¼×´©Í¸ÊôĞÔ£¬²»ÅÄ¿ìÕÕ
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);		// ²¶»ñÄ¿±êµÄ¸ñµ²¼¸ÂÊÊôĞÔ£¬²»ÅÄ¿ìÕÕ
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitChance, Source, false);	// ²¶»ñÀ´Ô´µÄ±©»÷¼¸ÂÊÊôĞÔ£¬²»ÅÄ¿ìÕÕ
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitDamage, Source, false);	// ²¶»ñÀ´Ô´µÄ±©»÷ÉËº¦ÊôĞÔ£¬²»ÅÄ¿ìÕÕ
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitResistance, Target, false);	// ²¶»ñÄ¿±êµÄ±©»÷¿¹ĞÔÊôĞÔ£¬²»ÅÄ¿ìÕÕ
+		// è¯¥å‡½æ•°ç”¨äºæ•è·å±æ€§
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);	// æ•è·ç›®æ ‡çš„æŠ¤ç”²å±æ€§ï¼Œä¸æ‹å¿«ç…§
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Source, false);	// æ•è·æ¥æºçš„æŠ¤ç”²ç©¿é€å±æ€§ï¼Œä¸æ‹å¿«ç…§
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);		// æ•è·ç›®æ ‡çš„æ ¼æŒ¡å‡ ç‡å±æ€§ï¼Œä¸æ‹å¿«ç…§
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitChance, Source, false);	// æ•è·æ¥æºçš„æš´å‡»å‡ ç‡å±æ€§ï¼Œä¸æ‹å¿«ç…§
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitDamage, Source, false);	// æ•è·æ¥æºçš„æš´å‡»ä¼¤å®³å±æ€§ï¼Œä¸æ‹å¿«ç…§
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, CriticalHitResistance, Target, false);	// æ•è·ç›®æ ‡çš„æš´å‡»æŠ—æ€§å±æ€§ï¼Œä¸æ‹å¿«ç…§
 
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, FireResistance, Target, false);	// ²¶»ñÄ¿±êµÄ»ğÑæ¿¹ĞÔÊôĞÔ£¬²»ÅÄ¿ìÕÕ
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, IceResistance, Target, false);	// ²¶»ñÄ¿±êµÄº®Àä¿¹ĞÔÊôĞÔ£¬²»ÅÄ¿ìÕÕ
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, LightningResistance, Target, false);	// ²¶»ñÄ¿±êµÄÉÁµç¿¹ĞÔÊôĞÔ£¬²»ÅÄ¿ìÕÕ
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, PoisonResistance, Target, false);	// ²¶»ñÄ¿±êµÄ¶¾ËØ¿¹ĞÔÊôĞÔ£¬²»ÅÄ¿ìÕÕ
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArcaneResistance, Target, false);	// ²¶»ñÄ¿±êµÄ°ÂÊõ¿¹ĞÔÊôĞÔ£¬²»ÅÄ¿ìÕÕ
-		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, PhysicalResistance, Target, false);	// ²¶»ñÄ¿±êµÄÎïÀí¿¹ĞÔÊôĞÔ£¬²»ÅÄ¿ìÕÕ
-
-		const FAuraGameplayTags& Tags = FAuraGameplayTags::Get();
-
-		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Armor, ArmorDef);
-		TagsToCaptureDef.Add(Tags.Attributes_Secondary_ArmorPenetration, ArmorPenetrationDef);
-		TagsToCaptureDef.Add(Tags.Attributes_Secondary_BlockChance, BlockChanceDef);
-		TagsToCaptureDef.Add(Tags.Attributes_Secondary_CriticalHitChance, CriticalHitChanceDef);
-		TagsToCaptureDef.Add(Tags.Attributes_Secondary_CriticalHitDamage, CriticalHitDamageDef);
-		TagsToCaptureDef.Add(Tags.Attributes_Secondary_CriticalHitResistance, CriticalHitResistanceDef);
-
-		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Resistance_Fire, FireResistanceDef);
-		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Resistance_Ice, IceResistanceDef);
-		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Resistance_Lightning, LightningResistanceDef);
-		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Resistance_Poison, PoisonResistanceDef);
-		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Resistance_Arcane, ArcaneResistanceDef);
-		TagsToCaptureDef.Add(Tags.Attributes_Secondary_Resistance_Physical, PhysicalResistanceDef);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, FireResistance, Target, false);	// æ•è·ç›®æ ‡çš„ç«ç„°æŠ—æ€§å±æ€§ï¼Œä¸æ‹å¿«ç…§
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, IceResistance, Target, false);	// æ•è·ç›®æ ‡çš„å¯’å†·æŠ—æ€§å±æ€§ï¼Œä¸æ‹å¿«ç…§
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, LightningResistance, Target, false);	// æ•è·ç›®æ ‡çš„é—ªç”µæŠ—æ€§å±æ€§ï¼Œä¸æ‹å¿«ç…§
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, PoisonResistance, Target, false);	// æ•è·ç›®æ ‡çš„æ¯’ç´ æŠ—æ€§å±æ€§ï¼Œä¸æ‹å¿«ç…§
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArcaneResistance, Target, false);	// æ•è·ç›®æ ‡çš„å¥¥æœ¯æŠ—æ€§å±æ€§ï¼Œä¸æ‹å¿«ç…§
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, PhysicalResistance, Target, false);	// æ•è·ç›®æ ‡çš„ç‰©ç†æŠ—æ€§å±æ€§ï¼Œä¸æ‹å¿«ç…§
 
 	}
 };
 
-// ¸Ã¾²Ì¬º¯Êı½«ÔÚÃ¿´Îµ÷ÓÃÊ±·µ»ØÒ»¸öAuraDamageStaticsµÄÊµÀı£¬·µ»ØÖµÃ¿´Îµ÷ÓÃ¶¼ÊÇÏàÍ¬µÄ
+// è¯¥é™æ€å‡½æ•°å°†åœ¨æ¯æ¬¡è°ƒç”¨æ—¶è¿”å›ä¸€ä¸ªAuraDamageStaticsçš„å®ä¾‹ï¼Œè¿”å›å€¼æ¯æ¬¡è°ƒç”¨éƒ½æ˜¯ç›¸åŒçš„
 static const AuraDamageStatics& GetAuraDamageStatics()
 {
 	static AuraDamageStatics AuraStatics;
@@ -82,7 +66,10 @@ class ARCANE_API UExecCalc_Damage : public UGameplayEffectExecutionCalculation
 public:
 	UExecCalc_Damage();
 
-	// ¸Ãº¯ÊıÓÃÓÚ¼ÆËãÉËº¦£¬
+	// è¯¥å‡½æ•°ç”¨äºè®¡ç®—Debuff
+	void DetermineDebuff(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput, const FGameplayEffectSpec& Spec, FAggregatorEvaluateParameters EvaluationParameters, const TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition>& TagsToCaptureDef) const;
+
+	// è¯¥å‡½æ•°ç”¨äºè®¡ç®—ä¼¤å®³ï¼Œ
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
 	
 };
