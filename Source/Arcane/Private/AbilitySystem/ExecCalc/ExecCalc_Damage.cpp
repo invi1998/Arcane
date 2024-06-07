@@ -13,22 +13,22 @@
 
 UExecCalc_Damage::UExecCalc_Damage()
 {
-	RelevantAttributesToCapture.Add(AuraDamageStatics().ArmorDef);	// 捕获护甲
-	RelevantAttributesToCapture.Add(AuraDamageStatics().ArmorPenetrationDef);	// 捕获穿甲
-	RelevantAttributesToCapture.Add(AuraDamageStatics().BlockChanceDef);	// 捕获格挡
-	RelevantAttributesToCapture.Add(AuraDamageStatics().CriticalHitChanceDef);	// 暴击几率
-	RelevantAttributesToCapture.Add(AuraDamageStatics().CriticalHitDamageDef);	// 暴击伤害
-	RelevantAttributesToCapture.Add(AuraDamageStatics().CriticalHitResistanceDef);	// 暴击抗性
-	RelevantAttributesToCapture.Add(AuraDamageStatics().FireResistanceDef);	// 火焰抗性
-	RelevantAttributesToCapture.Add(AuraDamageStatics().IceResistanceDef);	// 寒冷抗性
-	RelevantAttributesToCapture.Add(AuraDamageStatics().LightningResistanceDef);	// 闪电抗性
-	RelevantAttributesToCapture.Add(AuraDamageStatics().PoisonResistanceDef);	// 毒素抗性
-	RelevantAttributesToCapture.Add(AuraDamageStatics().ArcaneResistanceDef);	// 奥术抗性
-	RelevantAttributesToCapture.Add(AuraDamageStatics().PhysicalResistanceDef);	// 物理抗性
+	RelevantAttributesToCapture.Add(GetAuraDamageStatics().ArmorDef);	// 捕获护甲
+	RelevantAttributesToCapture.Add(GetAuraDamageStatics().ArmorPenetrationDef);	// 捕获穿甲
+	RelevantAttributesToCapture.Add(GetAuraDamageStatics().BlockChanceDef);	// 捕获格挡
+	RelevantAttributesToCapture.Add(GetAuraDamageStatics().CriticalHitChanceDef);	// 暴击几率
+	RelevantAttributesToCapture.Add(GetAuraDamageStatics().CriticalHitDamageDef);	// 暴击伤害
+	RelevantAttributesToCapture.Add(GetAuraDamageStatics().CriticalHitResistanceDef);	// 暴击抗性
+	RelevantAttributesToCapture.Add(GetAuraDamageStatics().FireResistanceDef);	// 火焰抗性
+	RelevantAttributesToCapture.Add(GetAuraDamageStatics().IceResistanceDef);	// 寒冷抗性
+	RelevantAttributesToCapture.Add(GetAuraDamageStatics().LightningResistanceDef);	// 闪电抗性
+	RelevantAttributesToCapture.Add(GetAuraDamageStatics().PoisonResistanceDef);	// 毒素抗性
+	RelevantAttributesToCapture.Add(GetAuraDamageStatics().ArcaneResistanceDef);	// 奥术抗性
+	RelevantAttributesToCapture.Add(GetAuraDamageStatics().PhysicalResistanceDef);	// 物理抗性
 
 }
 
-void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput, const FGameplayEffectSpec& Spec, FAggregatorEvaluateParameters EvaluationParameters, const TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition>& TagsToCaptureDef) const
+void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParameters& ExecutionParams, const FGameplayEffectSpec& Spec, FAggregatorEvaluateParameters EvaluationParameters, const TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition>& TagsToCaptureDef) const
 {
 	// 获取GameplayTag
 	const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();
@@ -46,7 +46,8 @@ void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParam
 			const float SourceDebuffChance = Spec.GetSetByCallerMagnitude(AuraTags.Debuff_Chance, false, 0);	// 获取Debuff几率
 
 			float TargetDebuffResistance = 0.f;	// Debuff抗性
-			ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(TagsToCaptureDef[DebuffResistanceTag], EvaluationParameters, TargetDebuffResistance);
+			const FGameplayTag& ResistanceTag = AuraTags.DamageTypesToResistance[DebuffTag];	// 获取Debuff抗性Tag
+			ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(TagsToCaptureDef[ResistanceTag], EvaluationParameters, TargetDebuffResistance);
 			TargetDebuffResistance = FMath::Clamp(TargetDebuffResistance, 0.f, 100.f);	// 最小值为0
 			const float EffectiveDebuffChance = SourceDebuffChance * (100 - TargetDebuffResistance) / 100.f;	// 有效Debuff几率
 			const bool bDebuff = FMath::RandRange(0, 100) <= EffectiveDebuffChance;	// 是否Debuff
@@ -56,9 +57,9 @@ void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParam
 				const float DebuffFrequency = Spec.GetSetByCallerMagnitude(AuraTags.Debuff_Frequency, false, 0);	// Debuff频率
 				const float DebuffDuration = Spec.GetSetByCallerMagnitude(AuraTags.Debuff_Duration, false, 0);	// Debuff持续时间
 
-				// Debuff伤害
-				const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, DebuffDamage);
-				OutExecutionOutput.AddOutputModifier(EvaluatedData);
+				//// Debuff伤害
+				//const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, DebuffDamage);
+				//OutExecutionOutput.AddOutputModifier(EvaluatedData);
 
 				//// Debuff频率
 				//const FGameplayModifierEvaluatedData FrequencyEvaluatedData(UAuraAttributeSet::GetDebuffFrequencyAttribute(), EGameplayModOp::Additive, DebuffFrequency);
@@ -80,19 +81,19 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDef;		// 用于存储捕获的属性
 
-	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Armor, AuraDamageStatics().ArmorDef);
-	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_ArmorPenetration, AuraDamageStatics().ArmorPenetrationDef);
-	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_BlockChance, AuraDamageStatics().BlockChanceDef);
-	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_CriticalHitChance, AuraDamageStatics().CriticalHitChanceDef);
-	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_CriticalHitDamage, AuraDamageStatics().CriticalHitDamageDef);
-	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_CriticalHitResistance, AuraDamageStatics().CriticalHitResistanceDef);
+	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Armor, GetAuraDamageStatics().ArmorDef);
+	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_ArmorPenetration, GetAuraDamageStatics().ArmorPenetrationDef);
+	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_BlockChance, GetAuraDamageStatics().BlockChanceDef);
+	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_CriticalHitChance, GetAuraDamageStatics().CriticalHitChanceDef);
+	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_CriticalHitDamage, GetAuraDamageStatics().CriticalHitDamageDef);
+	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_CriticalHitResistance, GetAuraDamageStatics().CriticalHitResistanceDef);
 
-	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Resistance_Fire, AuraDamageStatics().FireResistanceDef);
-	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Resistance_Ice, AuraDamageStatics().IceResistanceDef);
-	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Resistance_Lightning, AuraDamageStatics().LightningResistanceDef);
-	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Resistance_Poison, AuraDamageStatics().PoisonResistanceDef);
-	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Resistance_Arcane, AuraDamageStatics().ArcaneResistanceDef);
-	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Resistance_Physical, AuraDamageStatics().PhysicalResistanceDef);
+	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Resistance_Fire, GetAuraDamageStatics().FireResistanceDef);
+	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Resistance_Ice, GetAuraDamageStatics().IceResistanceDef);
+	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Resistance_Lightning, GetAuraDamageStatics().LightningResistanceDef);
+	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Resistance_Poison, GetAuraDamageStatics().PoisonResistanceDef);
+	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Resistance_Arcane, GetAuraDamageStatics().ArcaneResistanceDef);
+	TagsToCaptureDef.Add(AuraTags.Attributes_Secondary_Resistance_Physical, GetAuraDamageStatics().PhysicalResistanceDef);
 
 	// 获取AbilitySystemComponent
 	const UAbilitySystemComponent* SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
@@ -121,7 +122,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluationParameters.SourceTags = SourceTags;
 	EvaluationParameters.TargetTags = TargetTags;
 
-	DetermineDebuff(ExecutionParams, OutExecutionOutput, Spec, EvaluationParameters, TagsToCaptureDef);	// 确定Debuff
+	DetermineDebuff(ExecutionParams, Spec, EvaluationParameters, TagsToCaptureDef);	// 确定Debuff
 
 	// 通过Caller Magnitude（调用者的属性值）获取伤害
 	float Damage = 0;
@@ -153,14 +154,14 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	// 捕获暴击几率(攻击者暴击几率)
 	float SourceCriticalHitChance = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().CriticalHitChanceDef, EvaluationParameters, SourceCriticalHitChance);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAuraDamageStatics().CriticalHitChanceDef, EvaluationParameters, SourceCriticalHitChance);
 
 	if (FMath::RandRange(0, 100) <= SourceCriticalHitChance)
 	{
 		UAuraAbilitySystemLibrary::SetCriticalHit(ContextHandle, true);	// 设置暴击
 		// 暴击伤害
 		float CriticalHitDamage = 0.f;
-		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().CriticalHitDamageDef, EvaluationParameters, CriticalHitDamage);
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAuraDamageStatics().CriticalHitDamageDef, EvaluationParameters, CriticalHitDamage);
 		CriticalHitDamage = FMath::Max(0.f, CriticalHitDamage);
 
 		const FRealCurve* CriticalHitResistanceRateCurve = SourceClassInfo->DamageCalculationCurveTable->FindCurve(FName("CriticalHitResistance"), FString());
@@ -168,7 +169,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 		// 暴击抗性
 		float CriticalHitResistance = 0.f;
-		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().CriticalHitResistanceDef, EvaluationParameters, CriticalHitResistance);
+		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAuraDamageStatics().CriticalHitResistanceDef, EvaluationParameters, CriticalHitResistance);
 
 		const float EffectiveCriticalHitDamage = CriticalHitDamage * (1 - CriticalHitResistanceRate);
 
@@ -181,16 +182,16 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	
 	// 捕获格挡(受击者格挡几率)
 	float TargetBlockChance = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().BlockChanceDef, EvaluationParameters, TargetBlockChance);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAuraDamageStatics().BlockChanceDef, EvaluationParameters, TargetBlockChance);
 	TargetBlockChance = FMath::Max(0.f, TargetBlockChance);
 
 	// 捕获护甲(受击者护甲)
 	float TargetArmor = 0.f;	// 捕获护甲
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().ArmorDef, EvaluationParameters, TargetArmor);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAuraDamageStatics().ArmorDef, EvaluationParameters, TargetArmor);
 
 	// 捕获穿甲 (攻击者穿甲) 百分比穿甲
 	float SourceArmorPenetration = 0.f;
-	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(AuraDamageStatics().ArmorPenetrationDef, EvaluationParameters, SourceArmorPenetration);
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(GetAuraDamageStatics().ArmorPenetrationDef, EvaluationParameters, SourceArmorPenetration);
 	
 
 	// 判断是否格挡（百分比）
