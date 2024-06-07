@@ -57,11 +57,13 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn	// 碰撞处理方式, 总是生成
 		);
 
+		Projectile->DamageEffectParams.Empty();	// 清空伤害效果参数
+
 		// 遍历所有的伤害类型，然后设置伤害
 		for (TTuple<FGameplayTag, FScalableFloat> DamagePair : DamageType)
 		{
-			FDamageEffectParams Params = MakeDamageEffectParamsFromClassDefaults(DamagePair.Key, Projectile);
-			UAuraAbilitySystemLibrary::ApplyDamageEffect(Params);
+			FDamageEffectParams Params = MakeDamageEffectParamsFromClassDefaults(DamagePair.Key);
+			Projectile->DamageEffectParams.Add(DamagePair.Key, Params);
 		}
 
 		Projectile->FinishSpawning(SpawnTransform);	// 完成生成

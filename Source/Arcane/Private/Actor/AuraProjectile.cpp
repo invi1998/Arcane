@@ -19,9 +19,9 @@ AAuraProjectile::AAuraProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	bReplicates = true;	// ¿ªÆô¸´ÖÆ
+	bReplicates = true;	// å¼€å¯å¤åˆ¶
 
-	// ´´½¨ÇòĞÎÅö×²Ìå£¬²¢ÉèÖÃÎª¸ù×é¼ş£¬ÓÃÓÚ¼ì²âÅö×²£¬µ«²»²úÉúÎïÀíĞ§¹û£¬Ö»ÓÃÓÚ¼ì²â£¬¶Ô¶¯Ì¬ÎïÌåºÍ¾²Ì¬ÎïÌå¶¼²úÉúÖØµş£¬¶Ô½ÇÉ«²úÉúÖØµş
+	// åˆ›å»ºçƒå½¢ç¢°æ’ä½“ï¼Œå¹¶è®¾ç½®ä¸ºæ ¹ç»„ä»¶ï¼Œç”¨äºæ£€æµ‹ç¢°æ’ï¼Œä½†ä¸äº§ç”Ÿç‰©ç†æ•ˆæœï¼Œåªç”¨äºæ£€æµ‹ï¼Œå¯¹åŠ¨æ€ç‰©ä½“å’Œé™æ€ç‰©ä½“éƒ½äº§ç”Ÿé‡å ï¼Œå¯¹è§’è‰²äº§ç”Ÿé‡å 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	SetRootComponent(Sphere);
 	Sphere->SetCollisionObjectType(ECC_Projectile);
@@ -31,12 +31,12 @@ AAuraProjectile::AAuraProjectile()
 	Sphere->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Overlap);
 	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
-	// ´´½¨Í¶ÉäÎïÒÆ¶¯×é¼ş£¬²¢ÉèÖÃÎªÇòĞÎÅö×²ÌåµÄÒÆ¶¯×é¼ş
+	// åˆ›å»ºæŠ•å°„ç‰©ç§»åŠ¨ç»„ä»¶ï¼Œå¹¶è®¾ç½®ä¸ºçƒå½¢ç¢°æ’ä½“çš„ç§»åŠ¨ç»„ä»¶
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
-	ProjectileMovement->SetUpdatedComponent(Sphere);	// ÉèÖÃ¸üĞÂ×é¼ş
-	ProjectileMovement->InitialSpeed = 1550.f;	// ³õÊ¼ËÙ¶È
-	ProjectileMovement->MaxSpeed = 1550.f;	// ×î´óËÙ¶È
-	ProjectileMovement->ProjectileGravityScale = 0.f;	// Í¶ÉäÎïÖØÁ¦Ëõ·Å
+	ProjectileMovement->SetUpdatedComponent(Sphere);	// è®¾ç½®æ›´æ–°ç»„ä»¶
+	ProjectileMovement->InitialSpeed = 1550.f;	// åˆå§‹é€Ÿåº¦
+	ProjectileMovement->MaxSpeed = 1550.f;	// æœ€å¤§é€Ÿåº¦
+	ProjectileMovement->ProjectileGravityScale = 0.f;	// æŠ•å°„ç‰©é‡åŠ›ç¼©æ”¾
 
 }
 
@@ -45,76 +45,90 @@ void AAuraProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ÉèÖÃ»ğÇòµÄÉúÃüÖÜÆÚ
+	// è®¾ç½®ç«çƒçš„ç”Ÿå‘½å‘¨æœŸ
 	SetLifeSpan(LifeSpan);
 
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AAuraProjectile::OnSphereOverlap);
 
-	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());	// ²¥·ÅÑ­»·ÉùÒô,²¢°ó¶¨µ½¸ù×é¼ş
+	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());	// æ’­æ”¾å¾ªç¯å£°éŸ³,å¹¶ç»‘å®šåˆ°æ ¹ç»„ä»¶
 	
+}
+
+void AAuraProjectile::OnHit()
+{
+	// åœæ­¢é£è¡ŒéŸ³æ•ˆ
+	if (LoopingSoundComponent) LoopingSoundComponent->Stop();
+
+	// æ’­æ”¾å£°éŸ³
+	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
+
+	// æ’­æ”¾ç‰¹æ•ˆ
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), FRotator::ZeroRotator, FVector(1.f));
+
+	bHit = true;
 }
 
 void AAuraProjectile::Destroyed()
 {
 	if (!bHit && !HasAuthority())
 	{
-		// Í£Ö¹·ÉĞĞÒôĞ§
-		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
-
-		// ²¥·ÅÉùÒô
-		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
-
-		// ²¥·ÅÌØĞ§
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), FRotator::ZeroRotator, FVector(1.f));
-
-		bHit = true;
+		OnHit();
 	}
 	Super::Destroyed();
 }
 
-void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                      UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!DamageEffectSpecHandle.Data.IsValid()) return;
-	if (DamageEffectSpecHandle.Data.Get()->GetEffectContext().GetEffectCauser() == OtherActor)
+	// éå†ä¼¤å®³æ•ˆæœå‚æ•°
+	for (auto& Pair : DamageEffectParams)
 	{
-		// Èç¹ûÊÇ×Ô¼º·¢³öµÄÍ¶ÉäÎï£¬¾Í²»´¦Àí
-		return;
-	}
+		// è·å–ä¼¤å®³æ•ˆæœå‚æ•°
+		FDamageEffectParams& Params = Pair.Value;
 
-	// Èç¹ûÊÇÓÑ¾ü£¬²»´¦Àí
-	if (UAuraAbilitySystemLibrary::IsFriendly(DamageEffectSpecHandle.Data.Get()->GetEffectContext().GetEffectCauser(), OtherActor)) return;
+		AActor* SourceActor = Params.InstigatorASC->GetAvatarActor();
 
-	if (!bHit)
-	{
-		// Í£Ö¹·ÉĞĞÒôĞ§
-		if (LoopingSoundComponent) LoopingSoundComponent->Stop();
-		// ²¥·ÅÉùÒô
-		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
-		// ²¥·ÅÌØĞ§
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation(), FRotator::ZeroRotator, FVector(1.f));
+		// å¦‚æœæ²¡æœ‰æ–½æ³•è€…ï¼Œä¸å¤„ç†
+		if (SourceActor == nullptr) return;
 
-		bHit = true;
-	}
-
-	if (HasAuthority())
-	{
-		// Ó¦ÓÃÉËº¦Ğ§¹û
-		if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+		if (OtherActor == SourceActor)
 		{
-			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+			// å¦‚æœæ˜¯è‡ªå·±ï¼Œä¸å¤„ç†
+			return;
 		}
 
-		Destroy();
-		// µ±È»£¬Èç¹ûÊÇ¿Í»§¶Ë£¬ÎÒÃÇÏ£Íû¿Í»§¶Ë±»Ïú»ÙÖ®Ç°£¬ÎÒ¿ÉÒÔÉèÖÃÄ³¸öbool±äÁ¿£¬Ëµ£¬·şÎñ¶ËÒÑ¾­Ïú»ÙÁË£¬
-		// È»ºó¿Í»§¶Ë½ÓÊÕµ½Ïú»ÙĞĞÎª£¬ÎÒÃÇ¿ÉÒÔ¼ì²âÕâ¸öbool£¬¿´¿´¿Í»§¶ËÊÇ·ñÒÑ¾­²¥·Å¹ıÌØĞ§ÁË£¬Èç¹ûÃ»ÓĞ£¬ÎÒÃÇÔÚ¿Í»§¶Ë²¥·ÅÒ»´Î
-	}
-	else
-	{
-		bHit = true;
-	}
+		if (UAuraAbilitySystemLibrary::IsFriendly(SourceActor, OtherActor))
+		{
+			// å¦‚æœæ˜¯å‹å†›ï¼Œä¸å¤„ç†
+			return;
+		}
 
-	
+		if (!bHit)
+		{
+			OnHit();
+		}
+
+		if (HasAuthority())
+		{
+			// åº”ç”¨ä¼¤å®³æ•ˆæœ
+			if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+			{
+				// è®¾ç½®Paramsçš„ç›®æ ‡Actor
+				Params.TargetASC = TargetASC;
+
+				// åº”ç”¨ä¼¤å®³æ•ˆæœ
+				UAuraAbilitySystemLibrary::ApplyDamageEffect(Params);
+			}
+
+			Destroy();
+			// å½“ç„¶ï¼Œå¦‚æœæ˜¯å®¢æˆ·ç«¯ï¼Œæˆ‘ä»¬å¸Œæœ›å®¢æˆ·ç«¯è¢«é”€æ¯ä¹‹å‰ï¼Œæˆ‘å¯ä»¥è®¾ç½®æŸä¸ªboolå˜é‡ï¼Œè¯´ï¼ŒæœåŠ¡ç«¯å·²ç»é”€æ¯äº†ï¼Œ
+			// ç„¶åå®¢æˆ·ç«¯æ¥æ”¶åˆ°é”€æ¯è¡Œä¸ºï¼Œæˆ‘ä»¬å¯ä»¥æ£€æµ‹è¿™ä¸ªboolï¼Œçœ‹çœ‹å®¢æˆ·ç«¯æ˜¯å¦å·²ç»æ’­æ”¾è¿‡ç‰¹æ•ˆäº†ï¼Œå¦‚æœæ²¡æœ‰ï¼Œæˆ‘ä»¬åœ¨å®¢æˆ·ç«¯æ’­æ”¾ä¸€æ¬¡
+		}
+		else
+		{
+			bHit = true;
+		}
+
+	}
 
 }
 

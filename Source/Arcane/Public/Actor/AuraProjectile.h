@@ -25,11 +25,12 @@ public:
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;	// 投射物移动组件
 
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))	// ExposeOnSpawn 表示可以在创建实例时设置该属性
-	FDamageEffectParams DamageEffectParams;	// 伤害效果参数
+	TMap<FGameplayTag, FDamageEffectParams> DamageEffectParams;	// 伤害效果参数
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void OnHit();
 	virtual void Destroyed() override;
 
 	// 球形碰撞体重叠事件
