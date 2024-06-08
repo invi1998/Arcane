@@ -4,6 +4,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AuraAbilityTypes.h"
 #include "AuraGameplayTags.h"
 #include "GameFramework/Character.h"
 #include "GameplayEffectExtension.h"
@@ -154,6 +155,48 @@ void UAuraAttributeSet::HandleIncomingExp(const FEffectProperties& Props)
 
 void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 {
+	FGameplayEffectContextHandle EffectContextHandle = Props.SourceASC->MakeEffectContext();	// 创建效果上下文，该上下文是专门用于创建Debuff效果的
+	EffectContextHandle.AddSourceObject(Props.SourceAvatarActor);	// 添加施法者
+
+	const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();	// 获取标签
+
+	const FGameplayTag DamageTypeTag = UAuraAbilitySystemLibrary::GetDamageType(Props.EffectContextHandle);	// 获取伤害标签
+	const float DebuffDamage = UAuraAbilitySystemLibrary::GetDebuffDamage(Props.EffectContextHandle);	// 获取Debuff伤害
+	const float DebuffDuration = UAuraAbilitySystemLibrary::GetDebuffDuration(Props.EffectContextHandle);	// 获取Debuff持续时间
+	const float DebuffFrequency = UAuraAbilitySystemLibrary::GetDebuffFrequency(Props.EffectContextHandle);	// 获取Debuff频率
+
+	const FString DebuffName = FString::Printf(TEXT("DynamicDebuff_%s"), *DamageTypeTag.ToString());	 // 获取Debuff名称
+	UGameplayEffect* DebuffEffect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(*DebuffName));	// 创建Debuff效果
+
+	DebuffEffect->DurationPolicy = EGameplayEffectDurationType::HasDuration;	// 设置持续时间策略
+	DebuffEffect->Period = DebuffFrequency;	// 设置周期
+	DebuffEffect->DurationMagnitude = FScalableFloat(DebuffDuration);	// 设置持续时间
+
+	// 同时，我希望Debuff效果能动态添加GameplayTag，因为我们希望Actor能够知道什么时候受到Debuff，什么时候结束Debuff
+	DebuffEffect->InheritableGameplayEffectTags.AddTag(AuraTags.DamageTypesToDebuff[DamageTypeTag]);	// 添加Debuff标签
+
+	// 设置Effect堆叠类型
+	DebuffEffect->StackingType = EGameplayEffectStackingType::AggregateBySource;	// 设置堆叠类型，按来源聚合，也就是说，如果来源相同，那么就堆叠
+	DebuffEffect->StackLimitCount = 1;	// 设置堆叠限制
+
+	// 设置Effect修饰器
+	const int32 ModIdx = DebuffEffect->Modifiers.Num();
+	DebuffEffect->Modifiers.Add(FGameplayModifierInfo());
+	FGameplayModifierInfo& ModInfo = DebuffEffect->Modifiers[ModIdx];
+
+	ModInfo.ModifierMagnitude = FScalableFloat(DebuffDamage);		// 设置Modifier的大小, 也就是Debuff伤害
+	ModInfo.ModifierOp = EGameplayModOp::Additive;	// 设置Modifier的操作，加法
+	ModInfo.Attribute = GetIncomingDamageAttribute();	// 设置Modifier的属性，IncomingDamage
+
+	// 创建EffectSpec
+	if (const FGameplayEffectSpec* MutableEffectSpec = new FGameplayEffectSpec(DebuffEffect, EffectContextHandle, 1.f))
+	{
+		FAuraGameplayEffectContext* AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(MutableEffectSpec->GetContext().Get());	// 获取效果上下文
+		const TSharedPtr<FGameplayTag> DamageTypeTagPtr = MakeShared<FGameplayTag>(DamageTypeTag);	// 创建伤害标签指针
+		AuraEffectContext->SetDamageType(DamageTypeTagPtr);	// 设置伤害类型
+
+		Props.TargetASC->ApplyGameplayEffectSpecToSelf(*MutableEffectSpec);	// 对自己应用效果规范
+	}
 
 }
 

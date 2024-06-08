@@ -115,7 +115,6 @@ protected:
 	UPROPERTY()
 	float DebuffDuration = 0.f;	// Debuff持续时间
 
-	UPROPERTY()
 	TSharedPtr<FGameplayTag> DamageType = nullptr;	// 伤害类型
 	
 };
