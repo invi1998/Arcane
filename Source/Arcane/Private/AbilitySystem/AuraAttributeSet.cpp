@@ -72,6 +72,15 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	FEffectProperties EffectProperties;
 	SetEffectsProperties(Data, EffectProperties);	// 设置效果属性
 
+	if (EffectProperties.TargetCharacter->Implements<UCombatInterface>())
+	{
+		// 判读角色是否死亡
+		if (ICombatInterface::Execute_IsDead(EffectProperties.TargetCharacter))
+		{
+			return;
+		}
+	}
+
 	// Clamp
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
@@ -173,6 +182,10 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	DebuffEffect->DurationMagnitude = FScalableFloat(DebuffDuration);	// 设置持续时间
 
 	// 同时，我希望Debuff效果能动态添加GameplayTag，因为我们希望Actor能够知道什么时候受到Debuff，什么时候结束Debuff
+	//FInheritedTagContainer InheritableGameplayEffectTags = FInheritedTagContainer();	// 创建继承标签容器
+	//UTargetTagsGameplayEffectComponent& Component = DebuffEffect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
+	//InheritableGameplayEffectTags.CombinedTags.AddTag(AuraTags.DamageTypesToDebuff[DamageTypeTag]);
+	//Component.SetAndApplyTargetTagChanges(InheritableGameplayEffectTags);
 	DebuffEffect->InheritableGameplayEffectTags.AddTag(AuraTags.DamageTypesToDebuff[DamageTypeTag]);	// 添加Debuff标签
 
 	// 设置Effect堆叠类型
