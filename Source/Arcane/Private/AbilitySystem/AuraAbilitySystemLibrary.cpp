@@ -468,7 +468,7 @@ FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const 
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Tags.Debuff_Frequency, Params.DebuffFrequency);	// Assign the debuff frequency value to the tag（注册debuff频率到标签）
 		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Tags.Debuff_Duration, Params.DebuffDuration);	// Assign the debuff duration value to the tag（注册debuff持续时间到标签）
 
-		Params.InstigatorASC->ApplyGameplayEffectSpecToSelf(*DamageSpecHandle.Data.Get());	// 应用效果到自己
+		Params.TargetASC->ApplyGameplayEffectSpecToSelf(*DamageSpecHandle.Data.Get());	// 应用效果到自己
 
 		return ContextHandle;
 	}
