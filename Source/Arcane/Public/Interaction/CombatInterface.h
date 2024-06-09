@@ -11,6 +11,9 @@
 class UAnimMontage;
 class UNiagaraSystem;
 
+// è¯¥å§”æ‰˜ç”¨äºæ³¨å†ŒASCï¼Œå½“ASCè¢«åˆ›å»ºæ—¶ï¼Œè°ƒç”¨è¯¥å§”æ‰˜
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, class UAbilitySystemComponent*);
+
 USTRUCT(BlueprintType)
 struct FTaggedMontage
 {
@@ -26,14 +29,14 @@ struct FTaggedMontage
 	FGameplayTag MontageTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	USoundBase* ImpactSound;	// ¹¥»÷ÉùÒô
+	USoundBase* ImpactSound;	// æ”»å‡»å£°éŸ³
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UNiagaraSystem* ImpactEffect;	// ¹¥»÷ÌØĞ§
+	UNiagaraSystem* ImpactEffect;	// æ”»å‡»ç‰¹æ•ˆ
 };
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI, BlueprintType)	// ½«½Ó¿ÚÀàĞÍÉèÖÃÎªÀ¶Í¼ÀàĞÍ
+UINTERFACE(MinimalAPI, BlueprintType)	// å°†æ¥å£ç±»å‹è®¾ç½®ä¸ºè“å›¾ç±»å‹
 class UCombatInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -50,57 +53,59 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	int32 GetCharacterLevel() const;
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// À¶Í¼¿Éµ÷ÓÃ£¬À¶Í¼Ô­ÉúÊÂ¼ş
-	FVector GetCombatSocketLocation(const FGameplayTag& MontageTag) const;	// »ñÈ¡Õ½¶·²å²ÛÎ»ÖÃ
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// è“å›¾å¯è°ƒç”¨ï¼Œè“å›¾åŸç”Ÿäº‹ä»¶
+	FVector GetCombatSocketLocation(const FGameplayTag& MontageTag) const;	// è·å–æˆ˜æ–—æ’æ§½ä½ç½®
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// À¶Í¼¿Éµ÷ÓÃ£¬À¶Í¼Ô­ÉúÊÂ¼ş
-	FVector GetCombatSocketForward(const FGameplayTag& MontageTag) const;	// »ñÈ¡Õ½¶·²å²ÛÇ°ÏòÏòÁ¿
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// è“å›¾å¯è°ƒç”¨ï¼Œè“å›¾åŸç”Ÿäº‹ä»¶
+	FVector GetCombatSocketForward(const FGameplayTag& MontageTag) const;	// è·å–æˆ˜æ–—æ’æ§½å‰å‘å‘é‡
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)		// À¶Í¼ÊµÏÖ£¬Í¬Ê±À¶Í¼¿Éµ÷ÓÃ
-	void UpdateFacingTarget(const FVector& Target);	//¸üĞÂÃæÏòÄ¿±ê
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)		// è“å›¾å®ç°ï¼ŒåŒæ—¶è“å›¾å¯è°ƒç”¨
+	void UpdateFacingTarget(const FVector& Target);	//æ›´æ–°é¢å‘ç›®æ ‡
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)	// À¶Í¼Ô­ÉúÊÂ¼ş£¬À¶Í¼¿ÉÒÔÖØĞ´
-	UAnimMontage* GetHitReactMontage();	// »ñÈ¡ÊÜ»÷·´Ó¦¶¯»­
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)	// è“å›¾åŸç”Ÿäº‹ä»¶ï¼Œè“å›¾å¯ä»¥é‡å†™
+	UAnimMontage* GetHitReactMontage();	// è·å–å—å‡»ååº”åŠ¨ç”»
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)	// À¶Í¼Ô­ÉúÊÂ¼ş£¬À¶Í¼¿ÉÒÔÖØĞ´
-	UAnimMontage* GetDeathMontage();	// »ñÈ¡ËÀÍö¶¯»­
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)	// è“å›¾åŸç”Ÿäº‹ä»¶ï¼Œè“å›¾å¯ä»¥é‡å†™
+	UAnimMontage* GetDeathMontage();	// è·å–æ­»äº¡åŠ¨ç”»
 
-	virtual void Die() = 0;	// ËÀÍö
+	virtual void Die() = 0;	// æ­»äº¡
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// À¶Í¼¿Éµ÷ÓÃ£¬À¶Í¼Ô­ÉúÊÂ¼ş
-	bool IsDead() const;	// ÊÇ·ñËÀÍö
+	virtual FOnASCRegistered GetOnASCRegisteredDelegate() = 0;	// è·å–ASCæ³¨å†Œå§”æ‰˜
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// À¶Í¼¿Éµ÷ÓÃ£¬À¶Í¼Ô­ÉúÊÂ¼ş
-	AActor* GetActor();	// »ñÈ¡Actor
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// è“å›¾å¯è°ƒç”¨ï¼Œè“å›¾åŸç”Ÿäº‹ä»¶
+	bool IsDead() const;	// æ˜¯å¦æ­»äº¡
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// À¶Í¼¿Éµ÷ÓÃ£¬À¶Í¼Ô­ÉúÊÂ¼ş
-	TArray<FTaggedMontage> GetAttackMontages() const;	// »ñÈ¡¹¥»÷¶¯»­
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// è“å›¾å¯è°ƒç”¨ï¼Œè“å›¾åŸç”Ÿäº‹ä»¶
+	AActor* GetActor();	// è·å–Actor
 
-	// ´ÓTArrayÖĞËæ»úÑ¡ÔñÒ»¸öMontage
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// À¶Í¼¿Éµ÷ÓÃ£¬À¶Í¼Ô­ÉúÊÂ¼ş
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// è“å›¾å¯è°ƒç”¨ï¼Œè“å›¾åŸç”Ÿäº‹ä»¶
+	TArray<FTaggedMontage> GetAttackMontages() const;	// è·å–æ”»å‡»åŠ¨ç”»
+
+	// ä»TArrayä¸­éšæœºé€‰æ‹©ä¸€ä¸ªMontage
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// è“å›¾å¯è°ƒç”¨ï¼Œè“å›¾åŸç”Ÿäº‹ä»¶
 	FTaggedMontage GetRandomAttackMontage(const FGameplayTag& AbilityTag) const;
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// À¶Í¼¿Éµ÷ÓÃ£¬À¶Í¼Ô­ÉúÊÂ¼ş
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// è“å›¾å¯è°ƒç”¨ï¼Œè“å›¾åŸç”Ÿäº‹ä»¶
 	UNiagaraSystem* GetBloodEffect();
 
-	// ¸ù¾İTag»ñÈ¡MontageTag
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// À¶Í¼¿Éµ÷ÓÃ£¬À¶Í¼Ô­ÉúÊÂ¼ş
+	// æ ¹æ®Tagè·å–MontageTag
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// è“å›¾å¯è°ƒç”¨ï¼Œè“å›¾åŸç”Ÿäº‹ä»¶
 	FTaggedMontage GetMontageByTag(const FGameplayTag& AbilityTag, const FGameplayTag& MontageTag) const;
 
-	// »ñÈ¡ÕÙ»½ÎïÊıÁ¿
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// À¶Í¼¿Éµ÷ÓÃ£¬À¶Í¼Ô­ÉúÊÂ¼ş
+	// è·å–å¬å”¤ç‰©æ•°é‡
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// è“å›¾å¯è°ƒç”¨ï¼Œè“å›¾åŸç”Ÿäº‹ä»¶
 	int32 GetSummonCount();
 
-	// ÉèÖÃÕÙ»½ÎïÊıÁ¿
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// À¶Í¼¿Éµ÷ÓÃ£¬À¶Í¼Ô­ÉúÊÂ¼ş
+	// è®¾ç½®å¬å”¤ç‰©æ•°é‡
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// è“å›¾å¯è°ƒç”¨ï¼Œè“å›¾åŸç”Ÿäº‹ä»¶
 	void IncrementSummonCount(int32 Amount);
 
-	// »ñÈ¡Í¶ÉäÎïÀà
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// À¶Í¼¿Éµ÷ÓÃ£¬À¶Í¼Ô­ÉúÊÂ¼ş
+	// è·å–æŠ•å°„ç‰©ç±»
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// è“å›¾å¯è°ƒç”¨ï¼Œè“å›¾åŸç”Ÿäº‹ä»¶
 	TSubclassOf<AAuraProjectile> GetProjectileClass();
 
-	// »ñÈ¡½ÇÉ«Ö°Òµ
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// À¶Í¼¿Éµ÷ÓÃ£¬À¶Í¼Ô­ÉúÊÂ¼ş
+	// è·å–è§’è‰²èŒä¸š
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// è“å›¾å¯è°ƒç”¨ï¼Œè“å›¾åŸç”Ÿäº‹ä»¶
 	ECharacterClass GetCharacterClass() const;
 
 };

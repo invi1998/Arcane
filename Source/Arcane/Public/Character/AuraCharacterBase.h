@@ -16,7 +16,7 @@ class UGameplayEffect;
 class UAuraGameplayAbility;
 class UAnimMontage;
 
-UCLASS(Abstract)	// Ìí¼ÓAbstract¹Ø¼ü×Ö£¬±íÊ¾Õâ¸öÀàÊÇÒ»¸ö³éÏóÀà
+UCLASS(Abstract)	// æ·»åŠ Abstractå…³é”®å­—ï¼Œè¡¨ç¤ºè¿™ä¸ªç±»æ˜¯ä¸€ä¸ªæŠ½è±¡ç±»
 class ARCANE_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
@@ -28,164 +28,167 @@ public:
 	UAttributeSet* GetAttributeSet() const;
 
 	UFUNCTION(NetMulticast, Reliable)
-	virtual void MulticastHandleDeath();	// ¶à²¥´¦ÀíËÀÍö
+	virtual void MulticastHandleDeath();	// å¤šæ’­å¤„ç†æ­»äº¡
 
 	/*
 	* Combat Interface begin
 	*/
-	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const override;	// »ñÈ¡Õ½¶·²å²ÛÎ»ÖÃ
-	virtual FVector GetCombatSocketForward_Implementation(const FGameplayTag& MontageTag) const override;	// »ñÈ¡Õ½¶·²å²ÛÇ°ÏòÏòÁ¿
-	virtual UAnimMontage* GetHitReactMontage_Implementation() override;	// »ñÈ¡ÊÜ»÷·´Ó¦¶¯»­
-	virtual UAnimMontage* GetDeathMontage_Implementation() override;	// »ñÈ¡ËÀÍö¶¯»­
-	virtual void Die() override;	// ËÀÍö
-	virtual bool IsDead_Implementation() const override;	// ÊÇ·ñËÀÍö
-	virtual AActor* GetActor_Implementation() override;	// »ñÈ¡½ÇÉ«
-	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() const override;	// »ñÈ¡¹¥»÷¶¯»­
+	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) const override;	// è·å–æˆ˜æ–—æ’æ§½ä½ç½®
+	virtual FVector GetCombatSocketForward_Implementation(const FGameplayTag& MontageTag) const override;	// è·å–æˆ˜æ–—æ’æ§½å‰å‘å‘é‡
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;	// è·å–å—å‡»ååº”åŠ¨ç”»
+	virtual UAnimMontage* GetDeathMontage_Implementation() override;	// è·å–æ­»äº¡åŠ¨ç”»
+	virtual void Die() override;	// æ­»äº¡
+	virtual bool IsDead_Implementation() const override;	// æ˜¯å¦æ­»äº¡
+	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;		// è·å–ASCæ³¨å†Œå§”æ‰˜
+	virtual AActor* GetActor_Implementation() override;	// è·å–è§’è‰²
+	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() const override;	// è·å–æ”»å‡»åŠ¨ç”»
 	virtual FTaggedMontage GetRandomAttackMontage_Implementation(const FGameplayTag& AbilityTag) const override;
-	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;	// »ñÈ¡ÑªÒºÌØĞ§
-	virtual FTaggedMontage GetMontageByTag_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& MontageTag) const override;	// ¸ù¾İTag»ñÈ¡MontageTag
-	virtual int32 GetSummonCount_Implementation() override;	// »ñÈ¡ÕÙ»½ÎïÊıÁ¿
-	virtual void IncrementSummonCount_Implementation(int32 Amount) override;	// ÉèÖÃÕÙ»½ÎïÊıÁ¿
-	virtual ECharacterClass GetCharacterClass_Implementation() const override;	// »ñÈ¡½ÇÉ«Àà±ğ
+	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;	// è·å–è¡€æ¶²ç‰¹æ•ˆ
+	virtual FTaggedMontage GetMontageByTag_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& MontageTag) const override;	// æ ¹æ®Tagè·å–MontageTag
+	virtual int32 GetSummonCount_Implementation() override;	// è·å–å¬å”¤ç‰©æ•°é‡
+	virtual void IncrementSummonCount_Implementation(int32 Amount) override;	// è®¾ç½®å¬å”¤ç‰©æ•°é‡
+	virtual ECharacterClass GetCharacterClass_Implementation() const override;	// è·å–è§’è‰²ç±»åˆ«
 	/* Combat Interface End*/
 
+	FOnASCRegistered OnASCRegistered;	// ASCæ³¨å†Œå§”æ‰˜
+
 	UPROPERTY(EditAnywhere, Category="Combat")
-	TArray<FTaggedMontage> AttackMontages;	// ¹¥»÷¶¯»­
+	TArray<FTaggedMontage> AttackMontages;	// æ”»å‡»åŠ¨ç”»
 
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void InitializeDefaultAttributes() const;		// ³õÊ¼»¯ÄÜÁ¦
+	virtual void InitializeDefaultAttributes() const;		// åˆå§‹åŒ–èƒ½åŠ›
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
-	TObjectPtr<USkeletalMeshComponent> Weapon;		// ÎäÆ÷
+	TObjectPtr<USkeletalMeshComponent> Weapon;		// æ­¦å™¨
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
-	TObjectPtr<USkeletalMeshComponent> LeftWeapon;		// ×óÊÖÎäÆ÷
+	TObjectPtr<USkeletalMeshComponent> LeftWeapon;		// å·¦æ‰‹æ­¦å™¨
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
-	TObjectPtr<USkeletalMeshComponent> RightWeapon;		// ÓÒÊÖÎäÆ÷
+	TObjectPtr<USkeletalMeshComponent> RightWeapon;		// å³æ‰‹æ­¦å™¨
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
-	TObjectPtr<USkeletalMeshComponent> BowWeapon;		// ¹­¼ıÎäÆ÷
+	TObjectPtr<USkeletalMeshComponent> BowWeapon;		// å¼“ç®­æ­¦å™¨
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
-	TObjectPtr<USkeletalMeshComponent> BowArrow;			// ¼ı
+	TObjectPtr<USkeletalMeshComponent> BowArrow;			// ç®­
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
-	FName WeaponTipSocketName;	// ÎäÆ÷¼â¶Ë²å²ÛÃû³Æ
+	FName WeaponTipSocketName;	// æ­¦å™¨å°–ç«¯æ’æ§½åç§°
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
-	FName BowArrowTipSocketName;		// ¹­¼ı¼â¶Ë²å²ÛÃû³Æ
+	FName BowArrowTipSocketName;		// å¼“ç®­å°–ç«¯æ’æ§½åç§°
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
-	FName LeftHandSocketName;	// ×óÊÖ²å²ÛÃû³Æ
+	FName LeftHandSocketName;	// å·¦æ‰‹æ’æ§½åç§°
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
-	FName RightHandSocketName;	// ÓÒÊÖ²å²ÛÃû³Æ
+	FName RightHandSocketName;	// å³æ‰‹æ’æ§½åç§°
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
-	FName LeftWeaponTipSocketName;	// ×óÊÖÎäÆ÷¼â¶Ë²å²ÛÃû³Æ
+	FName LeftWeaponTipSocketName;	// å·¦æ‰‹æ­¦å™¨å°–ç«¯æ’æ§½åç§°
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
-	FName RightWeaponTipSocketName;	// ÓÒÊÖÎäÆ÷¼â¶Ë²å²ÛÃû³Æ
+	FName RightWeaponTipSocketName;	// å³æ‰‹æ­¦å™¨å°–ç«¯æ’æ§½åç§°
 
 	UPROPERTY()
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;	// ÄÜÁ¦ÏµÍ³×é¼ş
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;	// èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
 
 	UPROPERTY()
-	TObjectPtr<UAttributeSet> AttributeSet;	// ÊôĞÔ¼¯
+	TObjectPtr<UAttributeSet> AttributeSet;	// å±æ€§é›†
 
-	virtual void InitAbilityActorInfo();		// ³õÊ¼»¯ÄÜÁ¦½ÇÉ«ĞÅÏ¢
+	virtual void InitAbilityActorInfo();		// åˆå§‹åŒ–èƒ½åŠ›è§’è‰²ä¿¡æ¯
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Attributes")
-	TSubclassOf<UGameplayEffect> DefaultPrimaryGameplayEffectClass;		// Ä¬ÈÏÖ÷ÒªÓÎÏ·Ğ§¹ûÀà
+	TSubclassOf<UGameplayEffect> DefaultPrimaryGameplayEffectClass;		// é»˜è®¤ä¸»è¦æ¸¸æˆæ•ˆæœç±»
 
-	// Õâ»áÊÇÒ»¸öÓÀ¾ÃĞÔµÄÓÎÏ·Ğ§¹û£¬Ëü½«Ê¼ÖÕ´æÔÚÓÚ½ÇÉ«ÉíÉÏ£¬Ã¿µ±½ÇÉ«µÄÖ÷ÊôĞÔ·¢Éú±ä»¯Ê±£¬ÕâĞ©´ÎÒªÊôĞÔÒ²»á·¢ÉúÏà¶ÔÓ¦µÄµ÷Õû
+	// è¿™ä¼šæ˜¯ä¸€ä¸ªæ°¸ä¹…æ€§çš„æ¸¸æˆæ•ˆæœï¼Œå®ƒå°†å§‹ç»ˆå­˜åœ¨äºè§’è‰²èº«ä¸Šï¼Œæ¯å½“è§’è‰²çš„ä¸»å±æ€§å‘ç”Ÿå˜åŒ–æ—¶ï¼Œè¿™äº›æ¬¡è¦å±æ€§ä¹Ÿä¼šå‘ç”Ÿç›¸å¯¹åº”çš„è°ƒæ•´
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Attributes")
-	TSubclassOf<UGameplayEffect> DefaultSecondaryGameplayEffectClass;	// Ä¬ÈÏ´ÎÒªÓÎÏ·Ğ§¹ûÀà
+	TSubclassOf<UGameplayEffect> DefaultSecondaryGameplayEffectClass;	// é»˜è®¤æ¬¡è¦æ¸¸æˆæ•ˆæœç±»
 
-	// ÕâÊÇÒ»¸öË²Ê±ĞÔµÄÓÎÏ·Ğ§¹û£¬Ëü»áÔÚ½ÇÉ«³õÊ¼»¯Ê±±»Ó¦ÓÃ£¬È»ºóÁ¢¼´ÏûÊ§
+	// è¿™æ˜¯ä¸€ä¸ªç¬æ—¶æ€§çš„æ¸¸æˆæ•ˆæœï¼Œå®ƒä¼šåœ¨è§’è‰²åˆå§‹åŒ–æ—¶è¢«åº”ç”¨ï¼Œç„¶åç«‹å³æ¶ˆå¤±
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Attributes")
-	TSubclassOf<UGameplayEffect> DefaultVitalGameplayEffectClass;		// Ä¬ÈÏÖØÒªÓÎÏ·Ğ§¹ûÀà
+	TSubclassOf<UGameplayEffect> DefaultVitalGameplayEffectClass;		// é»˜è®¤é‡è¦æ¸¸æˆæ•ˆæœç±»
 
-	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, float Level) const;	// ¶Ô×Ô¼ºÓ¦ÓÃĞ§¹û
+	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, float Level) const;	// å¯¹è‡ªå·±åº”ç”¨æ•ˆæœ
 	
 
 	/*
 	 * Ability
 	 */
-	void AddCharacterAbilities();	// Ìí¼Ó½ÇÉ«ÄÜÁ¦
+	void AddCharacterAbilities();	// æ·»åŠ è§’è‰²èƒ½åŠ›
 
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")
-	bool bIsHitReact = false;	// ÊÇ·ñÊÜ»÷
+	bool bIsHitReact = false;	// æ˜¯å¦å—å‡»
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
-	float BaseWalkSpeed = 250.f;	// »ù´¡ĞĞ×ßËÙ¶È
+	float BaseWalkSpeed = 250.f;	// åŸºç¡€è¡Œèµ°é€Ÿåº¦
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
-	TObjectPtr<UAnimMontage> HitReactMontage;	// ÊÜ»÷·´Ó¦¶¯»­
+	TObjectPtr<UAnimMontage> HitReactMontage;	// å—å‡»ååº”åŠ¨ç”»
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
-	TObjectPtr<UAnimMontage> DeathMontage;	// ËÀÍö¶¯»­
+	TObjectPtr<UAnimMontage> DeathMontage;	// æ­»äº¡åŠ¨ç”»
 
 	/*
-	 * Dissolve Effect ÈÜ½âĞ§¹û
+	 * Dissolve Effect æº¶è§£æ•ˆæœ
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;	// ÈÜ½â²ÄÖÊÊµÀı
+	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;	// æº¶è§£æè´¨å®ä¾‹
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UMaterialInstance> DissolveMaterialInstance2;	// ÈÜ½â²ÄÖÊÊµÀı(ÓĞĞ©½ÇÉ«ÓĞÁ½¸öÈÜ½â²ÄÖÊ)
+	TObjectPtr<UMaterialInstance> DissolveMaterialInstance2;	// æº¶è§£æè´¨å®ä¾‹(æœ‰äº›è§’è‰²æœ‰ä¸¤ä¸ªæº¶è§£æè´¨)
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;	// ÎäÆ÷ÈÜ½â²ÄÖÊÊµÀı
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;	// æ­¦å™¨æº¶è§£æè´¨å®ä¾‹
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UMaterialInstance> BowWeaponDissolveMaterialInstance;	// ¹­¼ıÎäÆ÷ÈÜ½â²ÄÖÊÊµÀı
+	TObjectPtr<UMaterialInstance> BowWeaponDissolveMaterialInstance;	// å¼“ç®­æ­¦å™¨æº¶è§£æè´¨å®ä¾‹
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UMaterialInstance> BowArrowDissolveMaterialInstance;		// ¼ıÈÜ½â²ÄÖÊÊµÀı
+	TObjectPtr<UMaterialInstance> BowArrowDissolveMaterialInstance;		// ç®­æº¶è§£æè´¨å®ä¾‹
 
-	void Dissolve();	// ÈÜ½â
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// ¿ªÊ¼ÈÜ½âÊ±¼äÖá
+	void Dissolve();	// æº¶è§£
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void StartWeaponDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// ¿ªÊ¼ÈÜ½âÊ±¼äÖá
+	void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// å¼€å§‹æº¶è§£æ—¶é—´è½´
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void StartBowDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// ¿ªÊ¼ÈÜ½âÊ±¼äÖá
+	void StartWeaponDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// å¼€å§‹æº¶è§£æ—¶é—´è½´
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void StartArrowDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// ¿ªÊ¼ÈÜ½âÊ±¼äÖá
+	void StartBowDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// å¼€å§‹æº¶è§£æ—¶é—´è½´
 
-	bool bDead = false;	// ÊÇ·ñËÀÍö
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartArrowDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// å¼€å§‹æº¶è§£æ—¶é—´è½´
+
+	bool bDead = false;	// æ˜¯å¦æ­»äº¡
 
 	/*
 	 * Niagara Effect
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
-	UNiagaraSystem* BloodEffect;	// ÑªÒºÌØĞ§
+	UNiagaraSystem* BloodEffect;	// è¡€æ¶²ç‰¹æ•ˆ
 
 	/*
-	 * Minions ÕÙ»½Îï
+	 * Minions å¬å”¤ç‰©
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
-	int32 NumMinions = 0;	// ÕÙ»½µÄÊıÁ¿
+	int32 NumMinions = 0;	// å¬å”¤çš„æ•°é‡
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Default")
-	ECharacterClass CharacterClass = ECharacterClass::Warrior;	// µĞÈËÖ°Òµ
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;	// æ•ŒäººèŒä¸š
 
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")
-	TArray<TSubclassOf<UAuraGameplayAbility>> StartupAbilities;	// Ä¬ÈÏÄÜÁ¦
+	TArray<TSubclassOf<UAuraGameplayAbility>> StartupAbilities;	// é»˜è®¤èƒ½åŠ›
 
 
 	UPROPERTY(EditAnywhere, Category="Abilities")
-	TArray<TSubclassOf<UAuraGameplayAbility>> StartupPassiveAbilities;	// Ä¬ÈÏ±»¶¯ÄÜÁ¦
+	TArray<TSubclassOf<UAuraGameplayAbility>> StartupPassiveAbilities;	// é»˜è®¤è¢«åŠ¨èƒ½åŠ›
 };

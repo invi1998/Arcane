@@ -472,6 +472,16 @@ FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const 
 
 		return ContextHandle;
 	}
-
+	   
 	return FGameplayEffectContextHandle();
+}
+
+UAbilitySystemComponent* UAuraAbilitySystemLibrary::GetAbilitySystemComponent(const UObject* WorldContextObject)
+{
+	if (const APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	{
+		const AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(PlayerController->PlayerState);	// 获取玩家状态
+		return AuraPlayerState->GetAbilitySystemComponent();	// 获取玩家的能力系统组件
+	}
+	return nullptr;
 }

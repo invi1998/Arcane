@@ -13,36 +13,36 @@ AAuraCharacterBase::AAuraCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);	// ÉèÖÃ½ºÄÒÌåÅö×²ÏìÓ¦
-	GetCapsuleComponent()->SetGenerateOverlapEvents(false);		// Ö»ÈÃCapsuleºÍMeshÍø¸ñÖĞµÄÒ»¸öÉú³ÉÖØµşÊÂ¼ş£¬±ÜÃâÖØµşÊÂ¼şÖØ¸´£¬ÕÕ³ÉÀàËÆÒÔ¶ş´ÎÉËº¦µÄÎÊÌâ
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);	// è®¾ç½®èƒ¶å›Šä½“ç¢°æ’å“åº”
+	GetCapsuleComponent()->SetGenerateOverlapEvents(false);		// åªè®©Capsuleå’ŒMeshç½‘æ ¼ä¸­çš„ä¸€ä¸ªç”Ÿæˆé‡å äº‹ä»¶ï¼Œé¿å…é‡å äº‹ä»¶é‡å¤ï¼Œç…§æˆç±»ä¼¼ä»¥äºŒæ¬¡ä¼¤å®³çš„é—®é¢˜
 
-	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);	// ÉèÖÃMeshÅö×²ÏìÓ¦
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);	// è®¾ç½®Meshç¢°æ’å“åº”
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
-	GetMesh()->SetGenerateOverlapEvents(true);	// ÉèÖÃMeshÉú³ÉÖØµşÊÂ¼ş
+	GetMesh()->SetGenerateOverlapEvents(true);	// è®¾ç½®Meshç”Ÿæˆé‡å äº‹ä»¶
 
-	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("Weapon"));	// ´´½¨ÎäÆ÷×é¼ş
-	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));		// ÉèÖÃÎäÆ÷×é¼şµÄ¸¸×é¼ş£¨Mesh£©ºÍ¹ÒÔØµã
-	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// ÉèÖÃÎäÆ÷×é¼şµÄÅö×²×´Ì¬
+	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("Weapon"));	// åˆ›å»ºæ­¦å™¨ç»„ä»¶
+	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));		// è®¾ç½®æ­¦å™¨ç»„ä»¶çš„çˆ¶ç»„ä»¶ï¼ˆMeshï¼‰å’ŒæŒ‚è½½ç‚¹
+	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// è®¾ç½®æ­¦å™¨ç»„ä»¶çš„ç¢°æ’çŠ¶æ€
 	Weapon->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
-	BowWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("BowWeapon"));	// ´´½¨¹­¼ıÎäÆ÷×é¼ş
-	BowWeapon->SetupAttachment(GetMesh(), FName("SKT_Bow"));		// ÉèÖÃÎäÆ÷×é¼şµÄ¸¸×é¼ş£¨Mesh£©ºÍ¹ÒÔØµã
-	BowWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// ÉèÖÃÎäÆ÷×é¼şµÄÅö×²×´Ì¬
+	BowWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("BowWeapon"));	// åˆ›å»ºå¼“ç®­æ­¦å™¨ç»„ä»¶
+	BowWeapon->SetupAttachment(GetMesh(), FName("SKT_Bow"));		// è®¾ç½®æ­¦å™¨ç»„ä»¶çš„çˆ¶ç»„ä»¶ï¼ˆMeshï¼‰å’ŒæŒ‚è½½ç‚¹
+	BowWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// è®¾ç½®æ­¦å™¨ç»„ä»¶çš„ç¢°æ’çŠ¶æ€
 	BowWeapon->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
-	BowArrow = CreateDefaultSubobject<USkeletalMeshComponent>(FName("BowArrow"));	// ´´½¨¼ı×é¼ş
-	BowArrow->SetupAttachment(GetMesh(), FName("SKT_Arrow"));		// ÉèÖÃÎäÆ÷×é¼şµÄ¸¸×é¼ş£¨Mesh£©ºÍ¹ÒÔØµã
-	BowArrow->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// ÉèÖÃÎäÆ÷×é¼şµÄÅö×²×´Ì¬
+	BowArrow = CreateDefaultSubobject<USkeletalMeshComponent>(FName("BowArrow"));	// åˆ›å»ºç®­ç»„ä»¶
+	BowArrow->SetupAttachment(GetMesh(), FName("SKT_Arrow"));		// è®¾ç½®æ­¦å™¨ç»„ä»¶çš„çˆ¶ç»„ä»¶ï¼ˆMeshï¼‰å’ŒæŒ‚è½½ç‚¹
+	BowArrow->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// è®¾ç½®æ­¦å™¨ç»„ä»¶çš„ç¢°æ’çŠ¶æ€
 	BowArrow->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
-	LeftWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("LeftWeapon"));	// ´´½¨×óÊÖÎäÆ÷×é¼ş
-	LeftWeapon->SetupAttachment(GetMesh(), FName("LeftWeaponSocket"));		// ÉèÖÃ×óÊÖÎäÆ÷×é¼şµÄ¸¸×é¼ş£¨Mesh£©ºÍ¹ÒÔØµã
-	LeftWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// ÉèÖÃ×óÊÖÎäÆ÷×é¼şµÄÅö×²×´Ì¬
+	LeftWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("LeftWeapon"));	// åˆ›å»ºå·¦æ‰‹æ­¦å™¨ç»„ä»¶
+	LeftWeapon->SetupAttachment(GetMesh(), FName("LeftWeaponSocket"));		// è®¾ç½®å·¦æ‰‹æ­¦å™¨ç»„ä»¶çš„çˆ¶ç»„ä»¶ï¼ˆMeshï¼‰å’ŒæŒ‚è½½ç‚¹
+	LeftWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// è®¾ç½®å·¦æ‰‹æ­¦å™¨ç»„ä»¶çš„ç¢°æ’çŠ¶æ€
 	LeftWeapon->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
-	RightWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("RightWeapon"));	// ´´½¨ÓÒÊÖÎäÆ÷×é¼ş
-	RightWeapon->SetupAttachment(GetMesh(), FName("RightWeaponSocket"));		// ÉèÖÃÓÒÊÖÎäÆ÷×é¼şµÄ¸¸×é¼ş£¨Mesh£©ºÍ¹ÒÔØµã
-	RightWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// ÉèÖÃÓÒÊÖÎäÆ÷×é¼şµÄÅö×²×´Ì¬
+	RightWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("RightWeapon"));	// åˆ›å»ºå³æ‰‹æ­¦å™¨ç»„ä»¶
+	RightWeapon->SetupAttachment(GetMesh(), FName("RightWeaponSocket"));		// è®¾ç½®å³æ‰‹æ­¦å™¨ç»„ä»¶çš„çˆ¶ç»„ä»¶ï¼ˆMeshï¼‰å’ŒæŒ‚è½½ç‚¹
+	RightWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// è®¾ç½®å³æ‰‹æ­¦å™¨ç»„ä»¶çš„ç¢°æ’çŠ¶æ€
 	RightWeapon->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
 }
@@ -69,37 +69,37 @@ UAnimMontage* AAuraCharacterBase::GetDeathMontage_Implementation()
 
 void AAuraCharacterBase::Die()
 {
-	//Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// ½â³ıÎäÆ÷×é¼şµÄ¹ÒÔØ
-	//BowWeapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// ½â³ı¹­¼ıÎäÆ÷×é¼şµÄ¹ÒÔØ
-	//BowArrow->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// ½â³ı¼ı×é¼şµÄ¹ÒÔØ
+	//Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// è§£é™¤æ­¦å™¨ç»„ä»¶çš„æŒ‚è½½
+	//BowWeapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// è§£é™¤å¼“ç®­æ­¦å™¨ç»„ä»¶çš„æŒ‚è½½
+	//BowArrow->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// è§£é™¤ç®­ç»„ä»¶çš„æŒ‚è½½
 	MulticastHandleDeath();
 }
 
 void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 {
-	//Weapon->SetSimulatePhysics(true);	// ÉèÖÃÎäÆ÷×é¼şÄ£ÄâÎïÀí
-	//Weapon->SetEnableGravity(true);		// ÉèÖÃÎäÆ÷×é¼şÆôÓÃÖØÁ¦
-	//Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// ÉèÖÃÎäÆ÷×é¼şÅö×²×´Ì¬,Ö»ÓĞÎïÀí
+	//Weapon->SetSimulatePhysics(true);	// è®¾ç½®æ­¦å™¨ç»„ä»¶æ¨¡æ‹Ÿç‰©ç†
+	//Weapon->SetEnableGravity(true);		// è®¾ç½®æ­¦å™¨ç»„ä»¶å¯ç”¨é‡åŠ›
+	//Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// è®¾ç½®æ­¦å™¨ç»„ä»¶ç¢°æ’çŠ¶æ€,åªæœ‰ç‰©ç†
 
-	//BowWeapon->SetSimulatePhysics(true);	// ÉèÖÃ¹­¼ıÎäÆ÷×é¼şÄ£ÄâÎïÀí
-	//BowWeapon->SetEnableGravity(true);		// ÉèÖÃ¹­¼ıÎäÆ÷×é¼şÆôÓÃÖØÁ¦
-	//BowWeapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// ÉèÖÃ¹­¼ıÎäÆ÷×é¼şÅö×²×´Ì¬,Ö»ÓĞÎïÀí
+	//BowWeapon->SetSimulatePhysics(true);	// è®¾ç½®å¼“ç®­æ­¦å™¨ç»„ä»¶æ¨¡æ‹Ÿç‰©ç†
+	//BowWeapon->SetEnableGravity(true);		// è®¾ç½®å¼“ç®­æ­¦å™¨ç»„ä»¶å¯ç”¨é‡åŠ›
+	//BowWeapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// è®¾ç½®å¼“ç®­æ­¦å™¨ç»„ä»¶ç¢°æ’çŠ¶æ€,åªæœ‰ç‰©ç†
 
-	//BowArrow->SetSimulatePhysics(true);	// ÉèÖÃ¼ı×é¼şÄ£ÄâÎïÀí
-	//BowArrow->SetEnableGravity(true);		// ÉèÖÃ¼ı×é¼şÆôÓÃÖØÁ¦
-	//BowArrow->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// ÉèÖÃ¼ı×é¼şÅö×²×´Ì¬,Ö»ÓĞÎïÀí
+	//BowArrow->SetSimulatePhysics(true);	// è®¾ç½®ç®­ç»„ä»¶æ¨¡æ‹Ÿç‰©ç†
+	//BowArrow->SetEnableGravity(true);		// è®¾ç½®ç®­ç»„ä»¶å¯ç”¨é‡åŠ›
+	//BowArrow->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// è®¾ç½®ç®­ç»„ä»¶ç¢°æ’çŠ¶æ€,åªæœ‰ç‰©ç†
 
-	//GetMesh()->SetEnableGravity(true);	// ÉèÖÃMeshÆôÓÃÖØÁ¦
-	//GetMesh()->SetSimulatePhysics(true);	// ÉèÖÃMeshÄ£ÄâÎïÀí
-	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// ÉèÖÃMeshÅö×²×´Ì¬,Ö»ÓĞÎïÀí
+	//GetMesh()->SetEnableGravity(true);	// è®¾ç½®Meshå¯ç”¨é‡åŠ›
+	//GetMesh()->SetSimulatePhysics(true);	// è®¾ç½®Meshæ¨¡æ‹Ÿç‰©ç†
+	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// è®¾ç½®Meshç¢°æ’çŠ¶æ€,åªæœ‰ç‰©ç†
 
-	//GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);	// ÉèÖÃMeshÅö×²ÏìÓ¦
+	//GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);	// è®¾ç½®Meshç¢°æ’å“åº”
 
-	bDead = true;	// ÉèÖÃËÀÍö×´Ì¬
+	bDead = true;	// è®¾ç½®æ­»äº¡çŠ¶æ€
 
-	Dissolve();	// ÈÜ½â
+	Dissolve();	// æº¶è§£
 
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// ÉèÖÃ½ºÄÒÌåÅö×²×´Ì¬
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// è®¾ç½®èƒ¶å›Šä½“ç¢°æ’çŠ¶æ€
 
 }
 
@@ -113,42 +113,42 @@ FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGamepl
 	const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_Weapon) && IsValid(Weapon))
 	{
-		// »ñÈ¡ÎäÆ÷¼â¶Ë²å²ÛµÄÎ»ÖÃ
+		// è·å–æ­¦å™¨å°–ç«¯æ’æ§½çš„ä½ç½®
 		return Weapon->GetSocketLocation(WeaponTipSocketName);
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_LeftWeaponLeftSwing) && IsValid(LeftWeapon))
 	{
-		// »ñÈ¡×óÊÖÎäÆ÷²å²ÛµÄÎ»ÖÃ
+		// è·å–å·¦æ‰‹æ­¦å™¨æ’æ§½çš„ä½ç½®
 		return LeftWeapon->GetSocketLocation(LeftWeaponTipSocketName);
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_LeftWeaponRightSwing) && IsValid(LeftWeapon))
 	{
-		// »ñÈ¡×óÊÖÎäÆ÷²å²ÛµÄÎ»ÖÃ
+		// è·å–å·¦æ‰‹æ­¦å™¨æ’æ§½çš„ä½ç½®
 		return LeftWeapon->GetSocketLocation(LeftWeaponTipSocketName);
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_RightWeaponLeftSwing) && IsValid(RightWeapon))
 	{
-		// »ñÈ¡ÓÒÊÖÎäÆ÷²å²ÛµÄÎ»ÖÃ
+		// è·å–å³æ‰‹æ­¦å™¨æ’æ§½çš„ä½ç½®
 		return RightWeapon->GetSocketLocation(RightWeaponTipSocketName);
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_RightWeaponRightSwing) && IsValid(RightWeapon))
 	{
-		// »ñÈ¡ÓÒÊÖÎäÆ÷²å²ÛµÄÎ»ÖÃ
+		// è·å–å³æ‰‹æ­¦å™¨æ’æ§½çš„ä½ç½®
 		return RightWeapon->GetSocketLocation(RightWeaponTipSocketName);
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_LeftUnarmed))
 	{
-		// »ñÈ¡×óÊÖ¿ÕÊÖ¹¥»÷²å²ÛµÄÎ»ÖÃ
+		// è·å–å·¦æ‰‹ç©ºæ‰‹æ”»å‡»æ’æ§½çš„ä½ç½®
 		return GetMesh()->GetSocketLocation(LeftHandSocketName);
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_RightUnarmed))
 	{
-		// »ñÈ¡ÓÒÊÖ¿ÕÊÖ¹¥»÷²å²ÛµÄÎ»ÖÃ
+		// è·å–å³æ‰‹ç©ºæ‰‹æ”»å‡»æ’æ§½çš„ä½ç½®
 		return GetMesh()->GetSocketLocation(RightHandSocketName);
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_Bow))
 	{
-		// »ñÈ¡¹­¼ı¼â¶Ë²å²ÛµÄÎ»ÖÃ
+		// è·å–å¼“ç®­å°–ç«¯æ’æ§½çš„ä½ç½®
 		return BowArrow->GetSocketLocation(BowArrowTipSocketName);
 	}
 
@@ -160,42 +160,42 @@ FVector AAuraCharacterBase::GetCombatSocketForward_Implementation(const FGamepla
 	const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_Weapon) && IsValid(Weapon))
 	{
-		// »ñÈ¡ÎäÆ÷¼â¶Ë²å²ÛµÄÇ°ÏòÏòÁ¿
+		// è·å–æ­¦å™¨å°–ç«¯æ’æ§½çš„å‰å‘å‘é‡
 		return Weapon->GetSocketTransform(WeaponTipSocketName).GetRotation().GetForwardVector();
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_LeftWeaponLeftSwing) && IsValid(LeftWeapon))
 	{
-		// »ñÈ¡×óÊÖÎäÆ÷²å²ÛµÄÇ°ÏòÏòÁ¿
+		// è·å–å·¦æ‰‹æ­¦å™¨æ’æ§½çš„å‰å‘å‘é‡
 		return LeftWeapon->GetSocketTransform(WeaponTipSocketName).GetRotation().GetForwardVector();
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_LeftWeaponRightSwing) && IsValid(LeftWeapon))
 	{
-		// »ñÈ¡×óÊÖÎäÆ÷²å²ÛµÄÇ°ÏòÏòÁ¿
+		// è·å–å·¦æ‰‹æ­¦å™¨æ’æ§½çš„å‰å‘å‘é‡
 		return LeftWeapon->GetSocketTransform(WeaponTipSocketName).GetRotation().GetForwardVector();
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_RightWeaponLeftSwing) && IsValid(RightWeapon))
 	{
-		// »ñÈ¡ÓÒÊÖÎäÆ÷²å²ÛµÄÇ°ÏòÏòÁ¿
+		// è·å–å³æ‰‹æ­¦å™¨æ’æ§½çš„å‰å‘å‘é‡
 		return RightWeapon->GetSocketTransform(WeaponTipSocketName).GetRotation().GetForwardVector();
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_RightWeaponRightSwing) && IsValid(RightWeapon))
 	{
-		// »ñÈ¡ÓÒÊÖÎäÆ÷²å²ÛµÄÇ°ÏòÏòÁ¿
+		// è·å–å³æ‰‹æ­¦å™¨æ’æ§½çš„å‰å‘å‘é‡
 		return RightWeapon->GetSocketTransform(WeaponTipSocketName).GetRotation().GetForwardVector();
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_LeftUnarmed))
 	{
-		// »ñÈ¡×óÊÖ¿ÕÊÖ¹¥»÷²å²ÛµÄÇ°ÏòÏòÁ¿
+		// è·å–å·¦æ‰‹ç©ºæ‰‹æ”»å‡»æ’æ§½çš„å‰å‘å‘é‡
 		return GetMesh()->GetSocketTransform(LeftHandSocketName).GetRotation().GetForwardVector();
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_RightUnarmed))
 	{
-		// »ñÈ¡ÓÒÊÖ¿ÕÊÖ¹¥»÷²å²ÛµÄÇ°ÏòÏòÁ¿
+		// è·å–å³æ‰‹ç©ºæ‰‹æ”»å‡»æ’æ§½çš„å‰å‘å‘é‡
 		return GetMesh()->GetSocketTransform(RightHandSocketName).GetRotation().GetForwardVector();
 	}
 	if (MontageTag.MatchesTagExact(AuraTags.Montage_Attack_Bow))
 	{
-		// »ñÈ¡¹­¼ı¼â¶Ë²å²ÛµÄÇ°ÏòÏòÁ¿
+		// è·å–å¼“ç®­å°–ç«¯æ’æ§½çš„å‰å‘å‘é‡
 		return BowArrow->GetSocketTransform(BowArrowTipSocketName).GetRotation().GetForwardVector();
 	}
 
@@ -208,16 +208,16 @@ void AAuraCharacterBase::InitAbilityActorInfo()
 
 void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> EffectClass, float Level) const
 {
-	checkf(IsValid(GetAbilitySystemComponent()), TEXT("AbilitySystemComponent is nullptr!"));	// ¼ì²éAbilitySystemComponentÊÇ·ñÎª¿Õ
-	checkf(EffectClass, TEXT("EffectClass is nullptr!"));	// ¼ì²éEffectClassÊÇ·ñÎª¿Õ
+	checkf(IsValid(GetAbilitySystemComponent()), TEXT("AbilitySystemComponent is nullptr!"));	// æ£€æŸ¥AbilitySystemComponentæ˜¯å¦ä¸ºç©º
+	checkf(EffectClass, TEXT("EffectClass is nullptr!"));	// æ£€æŸ¥EffectClassæ˜¯å¦ä¸ºç©º
 
-	// 1£º»ñÈ¡ÉÏÏÂÎÄ
+	// 1ï¼šè·å–ä¸Šä¸‹æ–‡
 	FGameplayEffectContextHandle EffectContext = GetAbilitySystemComponent()->MakeEffectContext();
-	// 2£ºÉèÖÃSourceObject
+	// 2ï¼šè®¾ç½®SourceObject
 	EffectContext.AddSourceObject(this);
-	// 3£º´´½¨Ğ§¹û
+	// 3ï¼šåˆ›å»ºæ•ˆæœ
 	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, Level, EffectContext);
-	// 4£ºÓ¦ÓÃĞ§¹ûµ½Ä¿±ê
+	// 4ï¼šåº”ç”¨æ•ˆæœåˆ°ç›®æ ‡
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 }
 
@@ -232,7 +232,7 @@ void AAuraCharacterBase::AddCharacterAbilities()
 {
 	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
 
-	// ¸ø½ÇÉ«Ìí¼Ó¼¼ÄÜ£¬ÕâÒ»ĞĞÎªÓ¦¸ÃÖ»ÄÜÔÚ·şÎñ¶Ë½øĞĞ
+	// ç»™è§’è‰²æ·»åŠ æŠ€èƒ½ï¼Œè¿™ä¸€è¡Œä¸ºåº”è¯¥åªèƒ½åœ¨æœåŠ¡ç«¯è¿›è¡Œ
 	if (!HasAuthority() || !AuraASC) return;
 
 	AuraASC->AddCharacterAbilities(StartupAbilities);
@@ -244,17 +244,17 @@ void AAuraCharacterBase::Dissolve()
 {
 	if (IsValid(DissolveMaterialInstance))
 	{
-		// ´´½¨¶¯Ì¬²ÄÖÊÊµÀı
+		// åˆ›å»ºåŠ¨æ€æè´¨å®ä¾‹
 		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(DissolveMaterialInstance, this);
-		// ÉèÖÃ¶¯Ì¬²ÄÖÊÊµÀıµÄ²ÎÊı
+		// è®¾ç½®åŠ¨æ€æè´¨å®ä¾‹çš„å‚æ•°
 		GetMesh()->SetMaterial(0, MID);
 		StartDissolveTimeline(MID);
 	}
 	if (IsValid(DissolveMaterialInstance2))
 	{
-		// ´´½¨¶¯Ì¬²ÄÖÊÊµÀı
+		// åˆ›å»ºåŠ¨æ€æè´¨å®ä¾‹
 		UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(DissolveMaterialInstance2, this);
-		// ÉèÖÃ¶¯Ì¬²ÄÖÊÊµÀıµÄ²ÎÊı
+		// è®¾ç½®åŠ¨æ€æè´¨å®ä¾‹çš„å‚æ•°
 		GetMesh()->SetMaterial(1, MID);
 		StartDissolveTimeline(MID);
 	}
@@ -295,6 +295,11 @@ bool AAuraCharacterBase::IsDead_Implementation() const
 	return bDead;
 }
 
+FOnASCRegistered AAuraCharacterBase::GetOnASCRegisteredDelegate()
+{
+	return OnASCRegistered;
+}
+
 AActor* AAuraCharacterBase::GetActor_Implementation()
 {
 	return this;
@@ -309,7 +314,7 @@ FTaggedMontage AAuraCharacterBase::GetRandomAttackMontage_Implementation(const F
 {
 	if (AttackMontages.Num() == 0) return FTaggedMontage();
 
-	// ´ÓAttackMontagesÊı×éÖĞ»ñÈ¡AbilityTag±êÇ©µÄMontageÊı×éÏÂ±ê
+	// ä»AttackMontagesæ•°ç»„ä¸­è·å–AbilityTagæ ‡ç­¾çš„Montageæ•°ç»„ä¸‹æ ‡
 	TArray<int32> MontageIndices;
 	for (int32 i = 0; i < AttackMontages.Num(); i++)
 	{
@@ -319,7 +324,7 @@ FTaggedMontage AAuraCharacterBase::GetRandomAttackMontage_Implementation(const F
 		}
 	}
 	if (MontageIndices.Num() == 0) return FTaggedMontage();
-	// Ëæ»ú´Ó¹¥»÷¶¯»­Êı×éÖĞ»ñÈ¡Ò»¸ö¶¯»­
+	// éšæœºä»æ”»å‡»åŠ¨ç”»æ•°ç»„ä¸­è·å–ä¸€ä¸ªåŠ¨ç”»
 	const int32 RandomIndex = FMath::RandRange(0, MontageIndices.Num() - 1);
 	return AttackMontages[MontageIndices[RandomIndex]];
 }
