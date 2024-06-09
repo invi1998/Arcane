@@ -14,6 +14,7 @@
 #include "Interaction/CombatInterface.h"
 #include "Interaction/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
 
 #include "Net/UnrealNetwork.h"
 #include "Player/AuraPlayerController.h"
@@ -182,13 +183,13 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	DebuffEffect->DurationMagnitude = FScalableFloat(DebuffDuration);	// 设置持续时间
 
 	// 同时，我希望Debuff效果能动态添加GameplayTag，因为我们希望Actor能够知道什么时候受到Debuff，什么时候结束Debuff
-	DebuffEffect->InheritableGameplayEffectTags.AddTag(AuraTags.DamageTypesToDebuff[DamageTypeTag]);	// 添加Debuff标签
+	// DebuffEffect->InheritableGameplayEffectTags.AddTag(AuraTags.DamageTypesToDebuff[DamageTypeTag]);	// 添加Debuff标签
 
 	// 因为在UE5.4中，InheritedTagContainer已经被移除，所以我们需要手动添加Tag，代码如下
-	/*FInheritedTagContainer InheritedTags;
+	FInheritedTagContainer InheritedTags;
 	InheritedTags.AddTag(AuraTags.DamageTypesToDebuff[DamageTypeTag]);
 	UTargetTagsGameplayEffectComponent& Component = DebuffEffect->AddComponent<UTargetTagsGameplayEffectComponent>();
-	Component.SetAndApplyTargetTagChanges(InheritedTags);*/
+	Component.SetAndApplyTargetTagChanges(InheritedTags);
 
 	// 设置Effect堆叠类型
 	DebuffEffect->StackingType = EGameplayEffectStackingType::AggregateBySource;	// 设置堆叠类型，按来源聚合，也就是说，如果来源相同，那么就堆叠

@@ -15,6 +15,7 @@ class UAttributeSet;
 class UGameplayEffect;
 class UAuraGameplayAbility;
 class UAnimMontage;
+class UDebuffNiagaraComponent;
 
 UCLASS(Abstract)	// 添加Abstract关键字，表示这个类是一个抽象类
 class ARCANE_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -40,6 +41,7 @@ public:
 	virtual void Die() override;	// 死亡
 	virtual bool IsDead_Implementation() const override;	// 是否死亡
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;		// 获取ASC注册委托
+	virtual FOnCharacterDeath GetOnCharacterDeathDelegate() override;	// 获取角色死亡委托
 	virtual AActor* GetActor_Implementation() override;	// 获取角色
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() const override;	// 获取攻击动画
 	virtual FTaggedMontage GetRandomAttackMontage_Implementation(const FGameplayTag& AbilityTag) const override;
@@ -51,6 +53,8 @@ public:
 	/* Combat Interface End*/
 
 	FOnASCRegistered OnASCRegistered;	// ASC注册委托
+
+	FOnCharacterDeath OnCharacterDeath;	// 角色死亡委托
 
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TArray<FTaggedMontage> AttackMontages;	// 攻击动画
@@ -173,6 +177,12 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	UNiagaraSystem* BloodEffect;	// 血液特效
+
+	/*
+	 * Debuff Niagara Effect 减益buff特效
+	 */
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDebuffNiagaraComponent> BurnDebuffEffect;	// 灼烧特效
 
 	/*
 	 * Minions 召唤物

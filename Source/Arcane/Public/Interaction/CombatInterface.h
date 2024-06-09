@@ -10,9 +10,12 @@
 
 class UAnimMontage;
 class UNiagaraSystem;
+class UAbilitySystemComponent;
 
 // 该委托用于注册ASC，当ASC被创建时，调用该委托
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, class UAbilitySystemComponent*);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*);
+// 角色死亡委托
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterDeath, AActor*, DeadActor);
 
 USTRUCT(BlueprintType)
 struct FTaggedMontage
@@ -71,6 +74,8 @@ public:
 	virtual void Die() = 0;	// 死亡
 
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() = 0;	// 获取ASC注册委托
+
+	virtual FOnCharacterDeath GetOnCharacterDeathDelegate() = 0;	// 获取角色死亡委托
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
 	bool IsDead() const;	// 是否死亡

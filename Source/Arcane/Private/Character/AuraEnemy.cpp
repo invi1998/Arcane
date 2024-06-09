@@ -166,6 +166,9 @@ void AAuraEnemy::InitAbilityActorInfo()
 	{
 		InitializeDefaultAttributes();
 	}
+
+	// 到这里，我们已经初始化了ASC，这样我们就能够在这里广播ASC注册委托
+	OnASCRegistered.Broadcast(AbilitySystemComponent);	// 广播ASC注册委托
 }
 
 void AAuraEnemy::InitializeDefaultAttributes() const

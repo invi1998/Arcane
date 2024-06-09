@@ -8,10 +8,15 @@
 #include "Arcane/Arcane.h"
 #include "Components/CapsuleComponent.h"
 #include "NiagaraSystem.h"
+#include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = false;	// 设置是否可以每帧调用Tick函数
+
+	BurnDebuffEffect = CreateDefaultSubobject<UDebuffNiagaraComponent>(TEXT("BurnDebuffEffect"));	// 创建燃烧Debuff特效
+	BurnDebuffEffect->SetupAttachment(GetMesh());	// 设置特效附加到Mesh
+	BurnDebuffEffect->DebuffTag = FAuraGameplayTags::Get().Debuff_FireBurn;		// 设置DebuffTag
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);	// 设置胶囊体碰撞响应
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);		// 只让Capsule和Mesh网格中的一个生成重叠事件，避免重叠事件重复，照成类似以二次伤害的问题
@@ -101,6 +106,7 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// 设置胶囊体碰撞状态
 
+	OnCharacterDeath.Broadcast(this);	// 角色死亡委托
 }
 
 void AAuraCharacterBase::BeginPlay()
@@ -298,6 +304,11 @@ bool AAuraCharacterBase::IsDead_Implementation() const
 FOnASCRegistered AAuraCharacterBase::GetOnASCRegisteredDelegate()
 {
 	return OnASCRegistered;
+}
+
+FOnCharacterDeath AAuraCharacterBase::GetOnCharacterDeathDelegate()
+{
+	return OnCharacterDeath;
 }
 
 AActor* AAuraCharacterBase::GetActor_Implementation()

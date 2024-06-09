@@ -151,8 +151,4 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams& Params);
 
-	// 获取AbilitySystemComponent
-	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|AbilitySystem")
-	static UAbilitySystemComponent* GetAbilitySystemComponent(const UObject* WorldContextObject);
-
 };

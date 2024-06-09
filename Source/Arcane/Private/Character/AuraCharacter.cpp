@@ -247,6 +247,8 @@ void AAuraCharacter::InitAbilityActorInfo()
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();	// 获取技能系统组件
 	AttributeSet = AuraPlayerState->GetAttributeSet();	// 获取属性集
 
+	OnASCRegistered.Broadcast(AbilitySystemComponent);	// 广播ASC注册委托
+
 	// 很多人纠结到底在什么情况下应该断言PlayerController*，什么时候只需要判断指针是否为空？
 	// 因为我们这个是一个多人游戏，而控制器在客户端只有自己角色的控制器，其他角色的控制器是空的，服务端有所有角色的控制器。
 	// 所以控制器这个指针是会存在空的情况的，这是正常的，说明这个控制器不是自己的控制器。
