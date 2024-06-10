@@ -22,13 +22,11 @@ void UDebuffNiagaraComponent::BeginPlay()
 
 	if (ASC)
 	{
-		UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("ASC Found: %s"), *ASC->GetName()), true, false, FLinearColor::Red, 5.f);
 		// 注册减益Buff的Tag，当Tag的数量发生变化时，调用DebuffTagChanged函数
 		ASC->RegisterGameplayTagEvent(DebuffTag, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UDebuffNiagaraComponent::DebuffTagChanged);
 	}
 	else if (CombatInterface)
 	{
-		UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("ASC Not Found, Registering Delegate")), true, false, FLinearColor::Red, 5.f);
 		// 如果没有找到AbilitySystemComponent，那就创建一个委托，当ASC被创建时，调用DebuffTagChanged函数
 		// 但是我们不希望DebuffNiagaraComponent依赖于ASC，所以我们需要在CombatInterface中添加一个委托，当ASC被创建时，调用这个委托
 		// 然后我们就可以在这里注册DebuffTagChanged函数，去响应减益Buff的Tag以及消费ASC委托
@@ -41,7 +39,6 @@ void UDebuffNiagaraComponent::BeginPlay()
 		// 这样的特性正是我们在这里所需要的，因为我们不希望DebuffNiagaraComponent依赖于ASC，所以我们需要一个弱引用的委托
 		CombatInterface->GetOnASCRegisteredDelegate().AddWeakLambda(this, [this](UAbilitySystemComponent* InASC)
 		{
-			UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("22 ASC Found: %s"), *InASC->GetName()), true, false, FLinearColor::Red, 5.f);
 			InASC->RegisterGameplayTagEvent(DebuffTag, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UDebuffNiagaraComponent::DebuffTagChanged);
 		});
 	}
@@ -57,7 +54,10 @@ void UDebuffNiagaraComponent::BeginPlay()
 
 void UDebuffNiagaraComponent::DebuffTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
-	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("DebuffTagChanged: %s, %d"), *CallbackTag.ToString(), NewCount), true, false, FLinearColor::Red, 5.f);
+	if (CallbackTag != DebuffTag)
+	{
+		return;
+	}
 	if (NewCount > 0)
 	{
 		Activate();
