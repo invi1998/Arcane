@@ -323,8 +323,6 @@ void UAuraAttributeSet::SendEXPEvent(const FEffectProperties& Props) const
 			// 发送游戏事件
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, AuraGameplayTags.Attributes_Meta_RewardExperience, Payload);
 		}
-
-	
 	}
 }
 

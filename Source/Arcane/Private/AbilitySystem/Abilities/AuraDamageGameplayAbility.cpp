@@ -6,21 +6,27 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AuraAbilityTypes.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Arcane/ArcaneLogChannels.h"
 
 void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 {
 	if (TargetActor)
 	{
-		const FGameplayEffectSpecHandle DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, 1);
+		 // const FGameplayEffectSpecHandle DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, 1);
 		for (TTuple<FGameplayTag, FScalableFloat> Pair : DamageType)
 		{
-			const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
-			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Pair.Key, ScaledDamage);	// Assign the damage value to the tag（注册伤害值到标签）
+			//const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+			//UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Pair.Key, ScaledDamage);	// Assign the damage value to the tag（注册伤害值到标签）
+
+			FDamageEffectParams Params;
+			Params = MakeDamageEffectParamsFromClassDefaults(Pair.Key, TargetActor);
+			// 应用伤害效果
+			UAuraAbilitySystemLibrary::ApplyDamageEffect(Params);
 		}
 
 		// Apply the damage to the target actor(对目标角色应用伤害)
-		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*DamageSpecHandle.Data.Get(), UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor));
+		// GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*DamageSpecHandle.Data.Get(), UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor));
 	}
 }
 
