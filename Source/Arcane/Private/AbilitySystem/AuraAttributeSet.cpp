@@ -136,6 +136,13 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 			FGameplayTagContainer HitReactTagContainer;
 			HitReactTagContainer.AddTag(FAuraGameplayTags::Get().Effect_HitReact);	// 添加受击标签
 			Props.TargetASC->TryActivateAbilitiesByTag(HitReactTagContainer);	// 尝试激活标签的能力
+
+			const FVector KnockbackImpulse = UAuraAbilitySystemLibrary::GetKnockbackImpulse(Props.EffectContextHandle);	// 获取击退冲量
+			if (!KnockbackImpulse.IsZero())
+			{
+				// 如果击退冲量d不等于0，那么就击退
+				Props.TargetCharacter->LaunchCharacter(KnockbackImpulse, true, true);
+			}
 		}
 
 		ShowFloatingText(

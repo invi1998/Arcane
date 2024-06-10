@@ -44,6 +44,8 @@ FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 	Params.DebuffFrequency = DebuffFrequencies.Contains(InDamageType) ? DebuffFrequencies[InDamageType] : 0.f;
 	Params.DebuffDuration = DebuffDurations.Contains(InDamageType) ? DebuffDurations[InDamageType] : 0.f;
 	Params.DeathImpulseMagnitude = DeathImpulseMagnitudes.Contains(InDamageType) ? DeathImpulseMagnitudes[InDamageType] : 0.f;
+	Params.KnockbackMagnitude = KnockbackMagnitudes.Contains(InDamageType) ? KnockbackMagnitudes[InDamageType] : 0.f;
+	Params.KnockbackChance = KnockbackChances.Contains(InDamageType) ? KnockbackChances[InDamageType] : 0.f;
 
 	return Params;
 }

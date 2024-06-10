@@ -240,6 +240,24 @@ FVector UAuraAbilitySystemLibrary::GetDeathImpulse(const FGameplayEffectContextH
 	return FVector::ZeroVector;
 }
 
+FVector UAuraAbilitySystemLibrary::GetKnockbackImpulse(const FGameplayEffectContextHandle& ContextHandle)
+{
+	if (const FAuraGameplayEffectContext* AuraContext = static_cast<const FAuraGameplayEffectContext*>(ContextHandle.Get()))
+	{
+		return AuraContext->GetKnockbackImpulse();
+	}
+	return FVector::ZeroVector;
+}
+
+void UAuraAbilitySystemLibrary::SetKnockbackImpulse(FGameplayEffectContextHandle& ContextHandle,
+	const FVector& KnockbackImpulse)
+{
+	if (FAuraGameplayEffectContext* AuraContext = static_cast<FAuraGameplayEffectContext*>(ContextHandle.Get()))
+	{
+		AuraContext->SetKnockbackImpulse(KnockbackImpulse);
+	}
+}
+
 void UAuraAbilitySystemLibrary::SetDeathImpulse(FGameplayEffectContextHandle& ContextHandle, const FVector& DeathImpulse)
 {
 	if (FAuraGameplayEffectContext* AuraContext = static_cast<FAuraGameplayEffectContext*>(ContextHandle.Get()))
@@ -477,6 +495,7 @@ FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const 
 		FGameplayEffectContextHandle ContextHandle = Params.InstigatorASC->MakeEffectContext();	// 创建效果上下文
 		ContextHandle.AddSourceObject(Params.WorldContextObject);	// 添加源对象
 		SetDeathImpulse(ContextHandle, Params.DeathImpulse);	// 设置死亡冲量
+		SetKnockbackImpulse(ContextHandle, Params.KnockbackImpulse);	// 设置击退冲量
 
 		const FGameplayEffectSpecHandle DamageSpecHandle = Params.InstigatorASC->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, ContextHandle);	// 创建效果规格
 

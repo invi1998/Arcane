@@ -115,6 +115,18 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 				// 设置死亡冲量，投射物的前向量乘以死亡冲量大小
 				Params.DeathImpulse = GetActorForwardVector() * Params.DeathImpulseMagnitude;
 
+				const bool bIsKnockback = FMath::RandRange(0, 100) <= Params.KnockbackChance;
+				if (bIsKnockback)
+				{
+					// 设置击退冲量，投射物的前向量乘以击退冲量大小
+
+					// 旋转击退冲量方向, 我们让其做一点随机旋转，这样击退效果看起来更加自然
+					FRotator KnockbackRotator = GetActorRotation();
+					KnockbackRotator.Pitch += FMath::RandRange(0.f, 45.f);
+					const FVector KnockbackImpulseDir = KnockbackRotator.Vector();
+					Params.KnockbackImpulse = KnockbackImpulseDir * Params.KnockbackMagnitude;
+				}
+
 				// 设置Params的目标Actor
 				Params.TargetASC = TargetASC;
 
