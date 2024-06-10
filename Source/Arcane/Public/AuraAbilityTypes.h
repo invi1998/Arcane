@@ -14,52 +14,52 @@ struct FDamageEffectParams
 
 	FDamageEffectParams() {}
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UObject> WorldContextObject = nullptr;		// 世界上下文对象
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TSubclassOf<UGameplayEffect> DamageEffectClass;		// 伤害效果
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UAbilitySystemComponent> InstigatorASC;	// 施加者ASC
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UAbilitySystemComponent> TargetASC;		// 目标ASC
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float BaseDamage = 0.f;		// 基础伤害
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float AbilityLevel = 1.f;	// 技能等级
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FGameplayTag DamageType = FGameplayTag::EmptyTag;	// 伤害类型
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float DebuffChance = 0.f;	// Debuff几率
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float DebuffDamage = 0.f;	// Debuff伤害
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float DebuffFrequency = 0.f;	// Debuff频率
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float DebuffDuration = 0.f;	// Debuff持续时间
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float DeathImpulseMagnitude = 0.f;	// 死亡冲量大小
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FVector DeathImpulse = FVector::ZeroVector;	// 死亡冲量
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float KnockbackMagnitude = 0.f;	// 击退大小
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float KnockbackChance = 0.f;	// 击退几率
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	FVector KnockbackImpulse = FVector::ZeroVector;	// 击退冲量
 };
 

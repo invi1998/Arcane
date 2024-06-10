@@ -20,6 +20,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CauseDamage(AActor* TargetActor);	// 造成伤害
 
+	UFUNCTION(BlueprintPure)
 	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(FGameplayTag InDamageType, AActor* TargetActor = nullptr) const;	// 从类默认值创建伤害效果参数
 
 protected:

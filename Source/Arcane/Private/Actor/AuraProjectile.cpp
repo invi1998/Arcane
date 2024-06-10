@@ -122,7 +122,7 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 
 					// 旋转击退冲量方向, 我们让其做一点随机旋转，这样击退效果看起来更加自然
 					FRotator KnockbackRotator = GetActorRotation();
-					KnockbackRotator.Pitch += FMath::RandRange(0.f, 45.f);
+					KnockbackRotator.Pitch = FMath::RandRange(0.f, 45.f);
 					const FVector KnockbackImpulseDir = KnockbackRotator.Vector();
 					Params.KnockbackImpulse = KnockbackImpulseDir * Params.KnockbackMagnitude;
 				}

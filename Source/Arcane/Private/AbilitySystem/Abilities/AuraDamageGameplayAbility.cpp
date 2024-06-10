@@ -47,5 +47,14 @@ FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 	Params.KnockbackMagnitude = KnockbackMagnitudes.Contains(InDamageType) ? KnockbackMagnitudes[InDamageType] : 0.f;
 	Params.KnockbackChance = KnockbackChances.Contains(InDamageType) ? KnockbackChances[InDamageType] : 0.f;
 
+	if (IsValid(TargetActor))
+	{
+		// Set the death impulse, the forward vector of the projectile multiplied by the death impulse magnitude（设置死亡冲量，投射物的前向量乘以死亡冲量大小）
+		FRotator KnockbackRotator = (TargetActor->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation();
+		KnockbackRotator.Yaw = FMath::RandRange(0.f, 45.f);
+		Params.KnockbackImpulse = KnockbackRotator.Vector() * Params.KnockbackMagnitude;
+		Params.DeathImpulse = KnockbackRotator.Vector() * Params.DeathImpulseMagnitude;
+	}
+
 	return Params;
 }
