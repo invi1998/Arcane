@@ -5,7 +5,6 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -40,10 +39,10 @@ void UDebuffNiagaraComponent::BeginPlay()
 		// AddWeakLambda：此函数允许你以弱引用的方式添加一个lambda表达式作为委托或事件的监听器。
 		// 当使用AddWeakLambda注册事件处理器时，即使触发该事件的对象被销毁，也不会因为lambda内部持有该对象的强引用而导致对象无法被正确清理。
 		// 这样的特性正是我们在这里所需要的，因为我们不希望DebuffNiagaraComponent依赖于ASC，所以我们需要一个弱引用的委托
-		CombatInterface->GetOnASCRegisteredDelegate().AddWeakLambda(this, [this](UAbilitySystemComponent* ASC)
+		CombatInterface->GetOnASCRegisteredDelegate().AddWeakLambda(this, [this](UAbilitySystemComponent* InASC)
 		{
-			UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("22 ASC Found: %s"), *ASC->GetName()), true, false, FLinearColor::Red, 5.f);
-			ASC->RegisterGameplayTagEvent(DebuffTag, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UDebuffNiagaraComponent::DebuffTagChanged);
+			UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("22 ASC Found: %s"), *InASC->GetName()), true, false, FLinearColor::Red, 5.f);
+			InASC->RegisterGameplayTagEvent(DebuffTag, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UDebuffNiagaraComponent::DebuffTagChanged);
 		});
 	}
 

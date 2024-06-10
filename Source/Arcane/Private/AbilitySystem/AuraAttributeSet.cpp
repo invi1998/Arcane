@@ -186,10 +186,10 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	// DebuffEffect->InheritableGameplayEffectTags.AddTag(AuraTags.DamageTypesToDebuff[DamageTypeTag]);	// 添加Debuff标签
 
 	// 因为在UE5.4中，InheritedTagContainer已经被移除，所以我们需要手动添加Tag，代码如下
-	FInheritedTagContainer InheritedTags;
-	InheritedTags.AddTag(AuraTags.DamageTypesToDebuff[DamageTypeTag]);
-	UTargetTagsGameplayEffectComponent& Component = DebuffEffect->AddComponent<UTargetTagsGameplayEffectComponent>();
-	Component.SetAndApplyTargetTagChanges(InheritedTags);
+	FInheritedTagContainer InheritedTags;	// 创建继承标签容器
+	InheritedTags.Added.AddTag(AuraTags.DamageTypesToDebuff[DamageTypeTag]);	// 添加Debuff标签
+	UTargetTagsGameplayEffectComponent& Component = DebuffEffect->AddComponent<UTargetTagsGameplayEffectComponent>();	// 添加目标标签效果组件
+	Component.SetAndApplyTargetTagChanges(InheritedTags);	// 设置并应用目标标签更改
 
 	// 设置Effect堆叠类型
 	DebuffEffect->StackingType = EGameplayEffectStackingType::AggregateBySource;	// 设置堆叠类型，按来源聚合，也就是说，如果来源相同，那么就堆叠
