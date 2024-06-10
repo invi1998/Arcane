@@ -23,34 +23,33 @@ class ARCANE_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 public:
 	AAuraEnemy();
 
-	virtual void PossessedBy(AController* NewController) override;	// ±»¿ØÖÆÆ÷¿ØÖÆ
+	virtual void PossessedBy(AController* NewController) override;	// è¢«æ§åˆ¶å™¨æ§åˆ¶
 
-	/*begin Enemy ½Ó¿Ú*/
+	/*begin Enemy æ¥å£*/
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
-	/*end Enemy ½Ó¿Ú*/
+	/*end Enemy æ¥å£*/
 
 	/** CombatInterface begin */
 	virtual int32 GetCharacterLevel_Implementation() const override;
+	virtual void Die(const FVector& DeathImpulse) override;
 	/** CombatInterface end */
 
 	UPROPERTY(BlueprintAssignable, Category="Combat")
-	FOnAttributeChangeSignature OnHealthChanged;	// ¹ÖÎïÉúÃüÖµ¸Ä±ä
+	FOnAttributeChangeSignature OnHealthChanged;	// æ€ªç‰©ç”Ÿå‘½å€¼æ”¹å˜
 
 	UPROPERTY(BlueprintAssignable, Category = "Combat")
-	FOnAttributeChangeSignature OnMaxHealthChanged;	// ¹ÖÎï×î´óÉúÃüÖµ¸Ä±ä
+	FOnAttributeChangeSignature OnMaxHealthChanged;	// æ€ªç‰©æœ€å¤§ç”Ÿå‘½å€¼æ”¹å˜
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Default")
-	float LifeSpan = 3.0f;	// ÉúÃüÖÜÆÚ
+	float LifeSpan = 3.0f;	// ç”Ÿå‘½å‘¨æœŸ
 
-	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);	//	ÊÜ»÷·´Ó¦±êÇ©¸Ä±ä
+	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);	//	å—å‡»ååº”æ ‡ç­¾æ”¹å˜
 
-	// void DeathTagChanged(const FGameplayTag CallbackTag, int32 NewCount);	//	ËÀÍö±êÇ©¸Ä±ä
-
-	virtual void Die() override;
+	// void DeathTagChanged(const FGameplayTag CallbackTag, int32 NewCount);	//	æ­»äº¡æ ‡ç­¾æ”¹å˜
 
 	UPROPERTY(BlueprintReadWrite, Category = "Combat")
-	TObjectPtr<AActor> CombatTarget;	// ¹¥»÷Ä¿±ê
+	TObjectPtr<AActor> CombatTarget;	// æ”»å‡»ç›®æ ‡
 
 	virtual void SetCombatTarget_Implementation(AActor* NewTarget) override;
 	virtual AActor* GetCombatTarget_Implementation() const override;
@@ -63,7 +62,7 @@ protected:
 	virtual void InitializeDefaultAttributes() const override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Default")
-	int32 Level = 1;	// µĞÈËµÈ¼¶
+	int32 Level = 1;	// æ•Œäººç­‰çº§
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UWidgetComponent> HealthBar;

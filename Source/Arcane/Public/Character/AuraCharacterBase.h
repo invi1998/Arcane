@@ -29,7 +29,7 @@ public:
 	UAttributeSet* GetAttributeSet() const;
 
 	UFUNCTION(NetMulticast, Reliable)
-	virtual void MulticastHandleDeath();	// 多播处理死亡
+	virtual void MulticastHandleDeath(const FVector& DeathImpulse);	// 多播处理死亡
 
 	/*
 	* Combat Interface begin
@@ -38,7 +38,7 @@ public:
 	virtual FVector GetCombatSocketForward_Implementation(const FGameplayTag& MontageTag) const override;	// 获取战斗插槽前向向量
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;	// 获取受击反应动画
 	virtual UAnimMontage* GetDeathMontage_Implementation() override;	// 获取死亡动画
-	virtual void Die() override;	// 死亡
+	virtual void Die(const FVector& DeathImpulse) override;	// 死亡
 	virtual bool IsDead_Implementation() const override;	// 是否死亡
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;		// 获取ASC注册委托
 	virtual FOnCharacterDeath GetOnCharacterDeathDelegate() override;	// 获取角色死亡委托

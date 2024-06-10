@@ -75,9 +75,9 @@ int32 AAuraCharacter::GetCharacterLevel_Implementation() const
 	return 0;
 }
 
-void AAuraCharacter::Die()
+void AAuraCharacter::Die(const FVector& DeathImpulse)
 {
-	Super::Die();
+	Super::Die(DeathImpulse);
 
 
 }

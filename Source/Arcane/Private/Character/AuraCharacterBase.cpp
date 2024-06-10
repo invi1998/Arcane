@@ -24,31 +24,38 @@ AAuraCharacterBase::AAuraCharacterBase()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);	// 设置Mesh碰撞响应
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);	// 设置Mesh生成重叠事件
+	// 要应用冲量，必须设置模拟物理和启用重力
+	// GetMesh()->SetSimulatePhysics(true);	// 设置Mesh模拟物理
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("Weapon"));	// 创建武器组件
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));		// 设置武器组件的父组件（Mesh）和挂载点
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// 设置武器组件的碰撞状态
 	Weapon->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	// Weapon->SetSimulatePhysics(true);	// 设置武器组件模拟物理
 
 	BowWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("BowWeapon"));	// 创建弓箭武器组件
 	BowWeapon->SetupAttachment(GetMesh(), FName("SKT_Bow"));		// 设置武器组件的父组件（Mesh）和挂载点
 	BowWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// 设置武器组件的碰撞状态
 	BowWeapon->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	// BowWeapon->SetSimulatePhysics(true);	// 设置武器组件模拟物理
 
 	BowArrow = CreateDefaultSubobject<USkeletalMeshComponent>(FName("BowArrow"));	// 创建箭组件
 	BowArrow->SetupAttachment(GetMesh(), FName("SKT_Arrow"));		// 设置武器组件的父组件（Mesh）和挂载点
 	BowArrow->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// 设置武器组件的碰撞状态
 	BowArrow->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	// BowArrow->SetSimulatePhysics(true);	// 设置武器组件模拟物理
 
 	LeftWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("LeftWeapon"));	// 创建左手武器组件
 	LeftWeapon->SetupAttachment(GetMesh(), FName("LeftWeaponSocket"));		// 设置左手武器组件的父组件（Mesh）和挂载点
 	LeftWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// 设置左手武器组件的碰撞状态
 	LeftWeapon->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	// LeftWeapon->SetSimulatePhysics(true);	// 设置左手武器组件模拟物理
 
 	RightWeapon = CreateDefaultSubobject<USkeletalMeshComponent>(FName("RightWeapon"));	// 创建右手武器组件
 	RightWeapon->SetupAttachment(GetMesh(), FName("RightWeaponSocket"));		// 设置右手武器组件的父组件（Mesh）和挂载点
 	RightWeapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);			// 设置右手武器组件的碰撞状态
 	RightWeapon->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	// RightWeapon->SetSimulatePhysics(true);	// 设置右手武器组件模拟物理
 
 }
 
@@ -72,35 +79,52 @@ UAnimMontage* AAuraCharacterBase::GetDeathMontage_Implementation()
 	return DeathMontage;
 }
 
-void AAuraCharacterBase::Die()
+void AAuraCharacterBase::Die(const FVector& DeathImpulse)
 {
-	//Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除武器组件的挂载
-	//BowWeapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除弓箭武器组件的挂载
-	//BowArrow->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除箭组件的挂载
-	MulticastHandleDeath();
+	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除武器组件的挂载
+	BowWeapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除弓箭武器组件的挂载
+	BowArrow->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除箭组件的挂载
+	LeftWeapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除左手武器组件的挂载
+	RightWeapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));	// 解除右手武器组件的挂载
+	MulticastHandleDeath(DeathImpulse);
 }
 
-void AAuraCharacterBase::MulticastHandleDeath_Implementation()
+void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathImpulse)
 {
-	//Weapon->SetSimulatePhysics(true);	// 设置武器组件模拟物理
-	//Weapon->SetEnableGravity(true);		// 设置武器组件启用重力
-	//Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置武器组件碰撞状态,只有物理
+	Weapon->SetSimulatePhysics(true);	// 设置武器组件模拟物理
+	Weapon->SetEnableGravity(true);		// 设置武器组件启用重力
+	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置武器组件碰撞状态,只有物理
+	Weapon->AddImpulse(DeathImpulse, NAME_None, true);	// 添加冲量，使武器飞起来，第一个参数是冲量方向，第二个参数是骨骼名称，第三个参数是是否是速度冲量
 
-	//BowWeapon->SetSimulatePhysics(true);	// 设置弓箭武器组件模拟物理
-	//BowWeapon->SetEnableGravity(true);		// 设置弓箭武器组件启用重力
-	//BowWeapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置弓箭武器组件碰撞状态,只有物理
+	BowWeapon->SetSimulatePhysics(true);	// 设置弓箭武器组件模拟物理
+	BowWeapon->SetEnableGravity(true);		// 设置弓箭武器组件启用重力
+	BowWeapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置弓箭武器组件碰撞状态,只有物理
+	BowWeapon->AddImpulse(DeathImpulse, NAME_None, true);	// 添加冲量，使弓箭武器飞起来，第一个参数是冲量方向，第二个参数是骨骼名称，第三个参数是是否是速度冲量
 
-	//BowArrow->SetSimulatePhysics(true);	// 设置箭组件模拟物理
-	//BowArrow->SetEnableGravity(true);		// 设置箭组件启用重力
-	//BowArrow->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置箭组件碰撞状态,只有物理
+	BowArrow->SetSimulatePhysics(true);	// 设置箭组件模拟物理
+	BowArrow->SetEnableGravity(true);		// 设置箭组件启用重力
+	BowArrow->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置箭组件碰撞状态,只有物理
+	BowArrow->AddImpulse(DeathImpulse, NAME_None, true);	// 添加冲量，使箭飞起来，第一个参数是冲量方向，第二个参数是骨骼名称，第三个参数是是否是速度冲量
 
-	//GetMesh()->SetEnableGravity(true);	// 设置Mesh启用重力
-	//GetMesh()->SetSimulatePhysics(true);	// 设置Mesh模拟物理
-	//GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置Mesh碰撞状态,只有物理
+	LeftWeapon->SetSimulatePhysics(true);	// 设置左手武器组件模拟物理
+	LeftWeapon->SetEnableGravity(true);		// 设置左手武器组件启用重力
+	LeftWeapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置左手武器组件碰撞状态,只有物理
+	LeftWeapon->AddImpulse(DeathImpulse, NAME_None, true);	// 添加冲量，使左手武器飞起来，第一个参数是冲量方向，第二个参数是骨骼名称，第三个参数是是否是速度冲量
 
-	//GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);	// 设置Mesh碰撞响应
+	RightWeapon->SetSimulatePhysics(true);	// 设置右手武器组件模拟物理
+	RightWeapon->SetEnableGravity(true);		// 设置右手武器组件启用重力
+	RightWeapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置右手武器组件碰撞状态,只有物理
+	RightWeapon->AddImpulse(DeathImpulse, NAME_None, true);	// 添加冲量，使右手武器飞起来，第一个参数是冲量方向，第二个参数是骨骼名称，第三个参数是是否是速度冲量
+
+	GetMesh()->SetEnableGravity(true);	// 设置Mesh启用重力
+	GetMesh()->SetSimulatePhysics(true);	// 设置Mesh模拟物理
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);	// 设置Mesh碰撞状态,只有物理
+
+	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);	// 设置Mesh碰撞响应
 
 	bDead = true;	// 设置死亡状态
+
+	GetMesh()->AddImpulse(DeathImpulse, NAME_None, true);	// 添加冲量，使角色飞起来，第一个参数是冲量方向，第二个参数是骨骼名称，第三个参数是是否是速度冲量
 
 	Dissolve();	// 溶解
 

@@ -135,7 +135,7 @@ void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCou
 	
 }
 
-void AAuraEnemy::Die()
+void AAuraEnemy::Die(const FVector& DeathImpulse)
 {
 	if (AuraAIController && AuraAIController->GetBlackboardComponent())
 	{
@@ -143,7 +143,7 @@ void AAuraEnemy::Die()
 	}
 	
 	SetLifeSpan(LifeSpan);
-	Super::Die();
+	Super::Die(DeathImpulse);
 }
 
 void AAuraEnemy::SetCombatTarget_Implementation(AActor* NewTarget)

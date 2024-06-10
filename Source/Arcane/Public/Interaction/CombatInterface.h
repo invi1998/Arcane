@@ -71,7 +71,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)	// 蓝图原生事件，蓝图可以重写
 	UAnimMontage* GetDeathMontage();	// 获取死亡动画
 
-	virtual void Die() = 0;	// 死亡
+	virtual void Die(const FVector& DeathImpulse) = 0;	// 死亡
 
 	virtual FOnASCRegistered GetOnASCRegisteredDelegate() = 0;	// 获取ASC注册委托
 

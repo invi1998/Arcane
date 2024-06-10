@@ -27,7 +27,7 @@ public:
 
 	/* Combat Interface */
 	virtual int32 GetCharacterLevel_Implementation() const override;	// 获取等级
-	virtual void Die() override;	// 死亡
+	virtual void Die(const FVector& DeathImpulse) override;	// 死亡
 	/* Combat Interface End*/
 
 	/* Player Interface Start*/

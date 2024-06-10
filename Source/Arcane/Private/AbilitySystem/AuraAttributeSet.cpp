@@ -125,7 +125,8 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 			Props.TargetASC->TryActivateAbilitiesByTag(FatalTagContainer);	// 尝试激活标签的能力
 			if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor))
 			{
-				CombatInterface->Die();	// 死亡
+				FVector DeathImpulse = UAuraAbilitySystemLibrary::GetDeathImpulse(Props.EffectContextHandle);	// 获取死亡冲量
+				CombatInterface->Die(DeathImpulse);	// 死亡
 			}
 			SendEXPEvent(Props);	// 发送经验事件
 		}

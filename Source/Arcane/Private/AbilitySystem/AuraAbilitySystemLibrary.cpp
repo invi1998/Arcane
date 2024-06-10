@@ -476,7 +476,7 @@ FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const 
 
 		FGameplayEffectContextHandle ContextHandle = Params.InstigatorASC->MakeEffectContext();	// 创建效果上下文
 		ContextHandle.AddSourceObject(Params.WorldContextObject);	// 添加源对象
-		SetDebuffDamage(ContextHandle, Params.DebuffDamage);	// 设置Debuff死亡冲量
+		SetDeathImpulse(ContextHandle, Params.DeathImpulse);	// 设置死亡冲量
 
 		const FGameplayEffectSpecHandle DamageSpecHandle = Params.InstigatorASC->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, ContextHandle);	// 创建效果规格
 
