@@ -119,6 +119,9 @@ protected:
 	float DebuffDuration = 0.f;	// Debuff持续时间
 
 	TSharedPtr<FGameplayTag> DamageType = nullptr;	// 伤害类型
+
+	UPROPERTY()
+	FVector DeathImpulse = FVector::ZeroVector;	// 死亡冲量
 	
 };
 

@@ -43,6 +43,6 @@ protected:
 	TMap<FGameplayTag, float> DebuffDurations;		// Debuff持续时间
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-	TMap<FGameplayTag, float> DeathImpulseMagnitudes;	// 死亡冲量大小（因为我们希望击杀敌人时有一个冲量效果）
+	TMap<FGameplayTag, float> DeathImpulseMagnitudes;	// 死亡冲量大小（因为我们希望击杀敌人时有一个冲量效果）这里我们只设置了冲凉量大小，没有指定其方向，因为方向是在具体受击时决定的
 
 };

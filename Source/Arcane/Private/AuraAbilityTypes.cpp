@@ -61,9 +61,14 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		{
 			RepBits |= 1 << 13;
 		}
+		// 判断死亡冲量是否是非零向量，是才序列化
+		if (!DeathImpulse.IsZero())
+		{
+			RepBits |= 1 << 14;
+		}
 	}
 
-	Ar.SerializeBits(&RepBits, 13);
+	Ar.SerializeBits(&RepBits, 14);
 
 	if (RepBits & (1 << 0))
 	{
@@ -140,6 +145,13 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 			}
 		}
 		DamageType->NetSerialize(Ar, Map, bOutSuccess);
+	}
+	if (RepBits & (1 << 14))
+	{
+		// 虽然DeathImpulse和其他结构体变量一样，都是结构体
+		// 但是在反序列化时，我们不需要像其他结构体一样，通过传递指针的方式来序列化
+		// 因为DeathImpulse是Vector类型，而Vector类型是可以直接序列化的，它内部有独特的NetSerialize方法，我们只需要调用即可
+		DeathImpulse.NetSerialize(Ar, Map, bOutSuccess);
 	}
 
 	if (Ar.IsLoading())
