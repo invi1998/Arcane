@@ -231,6 +231,23 @@ FGameplayTag UAuraAbilitySystemLibrary::GetDamageType(const FGameplayEffectConte
 	return FGameplayTag::EmptyTag;
 }
 
+FVector UAuraAbilitySystemLibrary::GetDeathImpulse(const FGameplayEffectContextHandle& ContextHandle)
+{
+	if (const FAuraGameplayEffectContext* AuraContext = static_cast<const FAuraGameplayEffectContext*>(ContextHandle.Get()))
+	{
+		return AuraContext->GetDeathImpulse();
+	}
+	return FVector::ZeroVector;
+}
+
+void UAuraAbilitySystemLibrary::SetDeathImpulse(FGameplayEffectContextHandle& ContextHandle, const FVector& DeathImpulse)
+{
+	if (FAuraGameplayEffectContext* AuraContext = static_cast<FAuraGameplayEffectContext*>(ContextHandle.Get()))
+	{
+		AuraContext->SetDeathImpulse(DeathImpulse);
+	}
+}
+
 void UAuraAbilitySystemLibrary::SetSuccessfulDebuff(FGameplayEffectContextHandle& ContextHandle, bool bSuccessfulDebuff)
 {
 	if (FAuraGameplayEffectContext* AuraContext = static_cast<FAuraGameplayEffectContext*>(ContextHandle.Get()))
@@ -459,6 +476,7 @@ FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const 
 
 		FGameplayEffectContextHandle ContextHandle = Params.InstigatorASC->MakeEffectContext();	// 创建效果上下文
 		ContextHandle.AddSourceObject(Params.WorldContextObject);	// 添加源对象
+		SetDebuffDamage(ContextHandle, Params.DebuffDamage);	// 设置Debuff死亡冲量
 
 		const FGameplayEffectSpecHandle DamageSpecHandle = Params.InstigatorASC->MakeOutgoingSpec(Params.DamageEffectClass, Params.AbilityLevel, ContextHandle);	// 创建效果规格
 

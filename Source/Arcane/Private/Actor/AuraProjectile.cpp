@@ -112,6 +112,9 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 			// 应用伤害效果
 			if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 			{
+				// 设置死亡冲量，投射物的前向量乘以死亡冲量大小
+				Params.DeathImpulse = GetActorForwardVector() * Params.DeathImpulseMagnitude;
+
 				// 设置Params的目标Actor
 				Params.TargetASC = TargetASC;
 
