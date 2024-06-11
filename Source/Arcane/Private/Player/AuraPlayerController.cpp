@@ -8,6 +8,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
+#include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
@@ -243,6 +244,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 					bAutoRunning = true;	// 设置为自动寻路
 				}
 			}
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CashedDestination);	// 在鼠标点击的位置生成特效
 		}
 
 		FollowTime = 0.f;	// 重置跟随时间

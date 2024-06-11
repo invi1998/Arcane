@@ -13,8 +13,9 @@ struct FInputActionValue;
 class IEnemyInterface;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
-class USplineComponent;		// ÑùÌõÇúÏß×é¼ş
+class USplineComponent;		// æ ·æ¡æ›²çº¿ç»„ä»¶
 class UDamageTextComponent;
+class UNiagaraSystem;
 
 /**
  * 
@@ -28,76 +29,79 @@ public:
 	AAuraPlayerController();
 	virtual void PlayerTick(float DeltaTime) override;
 
-	FHitResult GetCursorHitResult() const;	// »ñÈ¡¹â±êÅö×²½á¹û
+	FHitResult GetCursorHitResult() const;	// è·å–å…‰æ ‡ç¢°æ’ç»“æœ
 
 	UFUNCTION(Client, Reliable)
-	void ShowDamageText(float Damage, ACharacter* Target, bool bBlockedHit, bool bCriticalHit);	// ÏÔÊ¾ÉËº¦ÎÄ±¾
+	void ShowDamageText(float Damage, ACharacter* Target, bool bBlockedHit, bool bCriticalHit);	// æ˜¾ç¤ºä¼¤å®³æ–‡æœ¬
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void SetupInputComponent() override;	// ¸Ãº¯ÊıÔÚ¿ØÖÆÆ÷±»´´½¨Ê±µ÷ÓÃ£¬ÓÃÓÚÉèÖÃÊäÈë×é¼ş
+	virtual void SetupInputComponent() override;	// è¯¥å‡½æ•°åœ¨æ§åˆ¶å™¨è¢«åˆ›å»ºæ—¶è°ƒç”¨ï¼Œç”¨äºè®¾ç½®è¾“å…¥ç»„ä»¶
 
-	void CursorTrace();	// ¹â±ê×·×Ù£¬×·×ÙÊó±êÖ¸ÏòµÄÎïÌå
+	void CursorTrace();	// å…‰æ ‡è¿½è¸ªï¼Œè¿½è¸ªé¼ æ ‡æŒ‡å‘çš„ç‰©ä½“
 
-	FHitResult CursorHitResult;	// ´´½¨Ò»¸öÅö×²½á¹û
+	FHitResult CursorHitResult;	// åˆ›å»ºä¸€ä¸ªç¢°æ’ç»“æœ
 
 private:
 	UPROPERTY(EditAnywhere, Category="Input")
-	TObjectPtr<UInputMappingContext> AuraContext;	// ÊäÈëÓ³ÉäÉÏÏÂÎÄ
+	TObjectPtr<UInputMappingContext> AuraContext;	// è¾“å…¥æ˜ å°„ä¸Šä¸‹æ–‡
 
 	UPROPERTY(EditAnywhere, Category="Input")
-	TObjectPtr<UInputAction> ShiftAction;	// Shit¶¯×÷
+	TObjectPtr<UInputAction> ShiftAction;	// ShitåŠ¨ä½œ
 
 	UPROPERTY(EditAnywhere, Category="Input")
-	TObjectPtr<UInputAction> MoveAction;	// ÒÆ¶¯¶¯×÷
+	TObjectPtr<UInputAction> MoveAction;	// ç§»åŠ¨åŠ¨ä½œ
 
-	// ÓĞÁËÒÆ¶¯¶¯×÷£¬ÎÒÃÇ»¹ĞèÒªÒ»¸öÊäÈë´¦Àíº¯Êı
-	void Move(const FInputActionValue& Value);	// ÒÆ¶¯º¯Êı
+	// æœ‰äº†ç§»åŠ¨åŠ¨ä½œï¼Œæˆ‘ä»¬è¿˜éœ€è¦ä¸€ä¸ªè¾“å…¥å¤„ç†å‡½æ•°
+	void Move(const FInputActionValue& Value);	// ç§»åŠ¨å‡½æ•°
 
-	void ShiftPressed() { bShiftKeyDown = true; }	// Shift°´ÏÂ
-	void ShiftReleased() { bShiftKeyDown = false; }	// ShiftÊÍ·Å
+	void ShiftPressed() { bShiftKeyDown = true; }	// ShiftæŒ‰ä¸‹
+	void ShiftReleased() { bShiftKeyDown = false; }	// Shifté‡Šæ”¾
 	bool bShiftKeyDown = false;
 
-	IEnemyInterface* LastActor;		// ÉÏÒ»¸öÃüÖĞµÄActor
-	IEnemyInterface* ThisActor;		// µ±Ç°ÃüÖĞµÄActor
+	IEnemyInterface* LastActor;		// ä¸Šä¸€ä¸ªå‘½ä¸­çš„Actor
+	IEnemyInterface* ThisActor;		// å½“å‰å‘½ä¸­çš„Actor
 
-	void AbilityInputTagPressed(FGameplayTag InputTag);	// ¼¼ÄÜÊäÈë±êÇ©°´ÏÂ
-	void AbilityInputTagReleased(FGameplayTag InputTag);	// ¼¼ÄÜÊäÈë±êÇ©ÊÍ·Å
-	void AbilityInputTagHeld(FGameplayTag InputTag);	// ¼¼ÄÜÊäÈë±êÇ©°´×¡
+	void AbilityInputTagPressed(FGameplayTag InputTag);	// æŠ€èƒ½è¾“å…¥æ ‡ç­¾æŒ‰ä¸‹
+	void AbilityInputTagReleased(FGameplayTag InputTag);	// æŠ€èƒ½è¾“å…¥æ ‡ç­¾é‡Šæ”¾
+	void AbilityInputTagHeld(FGameplayTag InputTag);	// æŠ€èƒ½è¾“å…¥æ ‡ç­¾æŒ‰ä½
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
-	TObjectPtr<UAuraInputConfig> InputConfig;	// ÊäÈëÅäÖÃ
+	TObjectPtr<UAuraInputConfig> InputConfig;	// è¾“å…¥é…ç½®
 
 	UPROPERTY()
-	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;	// ÄÜÁ¦ÏµÍ³×é¼ş£¬ÒòÎªÔÚ´¦ÀíInputÊ±ĞèÒªÓÃµ½ÄÜÁ¦ÏµÍ³×é¼ş£¬¶øÕâĞ©InputÍùÍù»áÆµ·±´¥·¢£¬CastÏûºÄ½Ï´ó£¬ËùÒÔÎÒÃÇÔÚÕâÀï»º´æÒ»ÏÂ
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;	// èƒ½åŠ›ç³»ç»Ÿç»„ä»¶ï¼Œå› ä¸ºåœ¨å¤„ç†Inputæ—¶éœ€è¦ç”¨åˆ°èƒ½åŠ›ç³»ç»Ÿç»„ä»¶ï¼Œè€Œè¿™äº›Inputå¾€å¾€ä¼šé¢‘ç¹è§¦å‘ï¼ŒCastæ¶ˆè€—è¾ƒå¤§ï¼Œæ‰€ä»¥æˆ‘ä»¬åœ¨è¿™é‡Œç¼“å­˜ä¸€ä¸‹
 
-	UAuraAbilitySystemComponent* GetASC();	// »ñÈ¡ÄÜÁ¦ÏµÍ³×é¼ş
+	UAuraAbilitySystemComponent* GetASC();	// è·å–èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
 
 	/*
-	 * Ñ°Â·±ÜÕÏ
+	 * å¯»è·¯é¿éšœ
 	 */
-	FVector CashedDestination = FVector::ZeroVector;	// »º´æµÄÄ¿±êÎ»ÖÃ
+	FVector CashedDestination = FVector::ZeroVector;	// ç¼“å­˜çš„ç›®æ ‡ä½ç½®
 
-	float FollowTime = 0.1f;	// ¸úËæÊ±¼ä
+	float FollowTime = 0.1f;	// è·Ÿéšæ—¶é—´
 
-	float ShortPressThreshold = 0.5f;	// ¶Ì°´ãĞÖµ
+	float ShortPressThreshold = 0.5f;	// çŸ­æŒ‰é˜ˆå€¼
 
-	bool bAutoRunning = false;	// ÊÇ·ñ×Ô¶¯Ñ°Â·
+	bool bAutoRunning = false;	// æ˜¯å¦è‡ªåŠ¨å¯»è·¯
 
-	bool bTargeting = false;	// ÊÇ·ñÔÚÃé×¼
+	bool bTargeting = false;	// æ˜¯å¦åœ¨ç„å‡†
 
 	UPROPERTY(EditDefaultsOnly)
-	float AutoRunAcceptanceRadius = 50.0f;	// ×Ô¶¯Ñ°Â·½ÓÊÜ°ë¾¶
+	float AutoRunAcceptanceRadius = 50.0f;	// è‡ªåŠ¨å¯»è·¯æ¥å—åŠå¾„
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USplineComponent> Spline;	// ÑùÌõÇúÏß×é¼ş
+	TObjectPtr<USplineComponent> Spline;	// æ ·æ¡æ›²çº¿ç»„ä»¶
 
-	void AutoRun();	// ×Ô¶¯Ñ°Â·
+	void AutoRun();	// è‡ªåŠ¨å¯»è·¯
 
 	/*
 	 * Damage Text
 	 */
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UNiagaraSystem> ClickNiagaraSystem;	// ç‚¹å‡»ç‰¹æ•ˆ
 
 };
