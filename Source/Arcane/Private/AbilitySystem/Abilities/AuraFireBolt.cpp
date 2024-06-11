@@ -87,18 +87,16 @@ void UAuraFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, co
 		// 因为我们希望投射物能尽可能平行，所以这里把Pith调整为0
 		// Rotation.Pitch = 0.f;
 
-		FTransform SpawnTransform;
-		SpawnTransform.SetLocation(SocketLocation);		// 使用武器插槽位置
-		SpawnTransform.SetRotation(Rotation.Quaternion());	// 设置旋转(这里需要传入四元数）
-
 		if (bOverridePitch)
 		{
-			SpawnTransform.SetRotation(FRotator(Pitch, Rotation.Yaw, Rotation.Roll).Quaternion());
+			Rotation.Pitch = Pitch;
 		}
 
 		const FVector ForwardVector = Rotation.Vector();
 
-		const TArray<FRotator> Rotations = UAuraAbilitySystemLibrary::EvenlySpacedRotators(ForwardVector, FVector::UpVector, ProjectileSpread, NumProjectiles);
+		const int32 EffectiveNumProjectiles = FMath::Min(NumProjectiles, GetAbilityLevel());
+
+		const TArray<FRotator> Rotations = UAuraAbilitySystemLibrary::EvenlySpacedRotators(ForwardVector, FVector::UpVector, ProjectileSpread, EffectiveNumProjectiles);
 
 		for (const FRotator& Rot : Rotations)
 		{
@@ -134,6 +132,8 @@ void UAuraFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, co
 			// 设置追踪参数
 			Projectile->ProjectileMovement->HomingAccelerationMagnitude = FMath::RandRange(HomingAccelerationMin, HomingAccelerationMax);	// 追踪加速度
 			Projectile->ProjectileMovement->bIsHomingProjectile = bIsHomingProjectile;		// 是否追踪
+			Projectile->ProjectileMovement->InitialSpeed = HomingProjectileSpeed;
+			Projectile->ProjectileMovement->MaxSpeed = HomingAccelerationMax;
 
 			Projectile->FinishSpawning(NewSpawnTransform);
 		}
