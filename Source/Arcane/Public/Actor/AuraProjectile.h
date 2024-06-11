@@ -27,6 +27,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))	// ExposeOnSpawn 表示可以在创建实例时设置该属性
 	TMap<FGameplayTag, FDamageEffectParams> DamageEffectParams;	// 伤害效果参数
 
+	UPROPERTY()
+	TObjectPtr<USceneComponent> HomingTargetSceneComponent;	// 导弹追踪目标
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

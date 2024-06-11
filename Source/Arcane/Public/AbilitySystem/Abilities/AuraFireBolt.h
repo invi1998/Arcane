@@ -28,4 +28,13 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Aura Ability")
 	int32 MaxProjectileCount = 10;		// 最大投射物数量
+
+	UPROPERTY(EditDefaultsOnly, Category = "Aura Ability")
+	float HomingAccelerationMin = 1600.0f;	// 导弹最小加速度
+
+	UPROPERTY(EditDefaultsOnly, Category = "Aura Ability")
+	float HomingAccelerationMax = 3200.f;	// 导弹最大加速度
+
+	UPROPERTY(EditDefaultsOnly, Category = "Aura Ability")
+	bool bIsHomingProjectile = true;
 };

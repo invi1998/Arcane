@@ -6,6 +6,7 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Actor/AuraProjectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -115,7 +116,28 @@ void UAuraFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, co
 				Projectile->DamageEffectParams.Add(DamagePair.Key, DmageEffectParam);
 			}
 
+			// 实现了ICombatInterface接口，说明我们点击的不是地面，而是怪物
+			if (IsValid(HomingTarget) && HomingTarget->Implements<UCombatInterface>())
+			{
+				Projectile->ProjectileMovement->HomingTargetComponent = HomingTarget->GetRootComponent();	// 设置追踪目标
+			}
+			else
+			{
+				// Projectile->ProjectileMovement->HomingTargetComponent = NewObject<USceneComponent>(USceneComponent::StaticClass());	// 设置追踪目标，这里设置一个空的组件，让投射物飞向目标点
+				// 现在，因为HomingTargetComponent是一个弱指针，意味着在投射物销毁后，HomingTarget这个我们新建的对象不会被销毁，所以这里要怎么进行垃圾回收呢？
+				// 我们可以在类中新增一个UPROPERTY属性，用来指向这个对象，这样在投射物销毁时，这个对象也会被销毁
+				Projectile->HomingTargetSceneComponent = NewObject<USceneComponent>(USceneComponent::StaticClass());
+				Projectile->HomingTargetSceneComponent->SetWorldLocation(ProjectileTargetLocation);	// 设置追踪目标位置
+				Projectile->ProjectileMovement->HomingTargetComponent = Projectile->HomingTargetSceneComponent;
+			}
+
+			// 设置追踪参数
+			Projectile->ProjectileMovement->HomingAccelerationMagnitude = FMath::RandRange(HomingAccelerationMin, HomingAccelerationMax);	// 追踪加速度
+			Projectile->ProjectileMovement->bIsHomingProjectile = bIsHomingProjectile;		// 是否追踪
+
 			Projectile->FinishSpawning(NewSpawnTransform);
 		}
+
+		
 	}
 }
