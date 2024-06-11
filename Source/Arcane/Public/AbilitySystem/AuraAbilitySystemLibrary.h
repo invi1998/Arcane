@@ -163,4 +163,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams& Params);
 
+	// 传入前向向量，以及旋转轴，以及展开角度，以及角度数量，获取一堆向量
+	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayMechanice")
+	static TArray<FVector> EvenlySpacedVectors(const FVector& Forward, const FVector& Axis, float SpreadAngle, int32 VectorNum);
+
+	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayMechanice")
+	static TArray<FRotator> EvenlySpacedRotators(const FVector& Forward, const FVector& Axis, float SpreadAngle, int32 RotatorNum);
+
 };

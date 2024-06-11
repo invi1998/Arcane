@@ -4,6 +4,8 @@
 #include "AbilitySystem/Abilities/AuraFireBolt.h"
 
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -94,32 +96,26 @@ void UAuraFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, co
 		}
 
 		const FVector ForwardVector = Rotation.Vector();
-		const FVector LeftVector = ForwardVector.RotateAngleAxis(-ProjectileSpread / 2.f, FVector::UpVector);
 
-		// const int32 RealNumProjectiles = FMath::Min(MaxProjectileCount, GetAbilityLevel());
+		const TArray<FRotator> Rotations = UAuraAbilitySystemLibrary::EvenlySpacedRotators(ForwardVector, FVector::UpVector, ProjectileSpread, NumProjectiles);
 
-		const int32 RealNumProjectiles = 10;
-
-		const float DeltaSpread = ProjectileSpread / FMath::Max(1, RealNumProjectiles - 1);
-
-		
-		if (RealNumProjectiles > 1)
+		for (const FRotator& Rot : Rotations)
 		{
-			for (int32 i = 0; i < RealNumProjectiles; ++i)
+			FTransform NewSpawnTransform;
+			NewSpawnTransform.SetLocation(SocketLocation);
+			NewSpawnTransform.SetRotation(Rot.Quaternion());
+
+			AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(ProjectileClass, NewSpawnTransform, GetOwningActorFromActorInfo(), Cast<APawn>(GetOwningActorFromActorInfo()), ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+			Projectile->DamageEffectParams.Empty();
+
+			for (auto& DamagePair : DamageType)
 			{
-				const FVector SpreadVector = LeftVector.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
-				const FRotator SpreadRotation = SpreadVector.Rotation();
-
-				// 在生成点和目标点之间生成贝塞尔曲线
-
-				UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), SocketLocation, SocketLocation + SpreadVector * 1000.f, 100.f, FLinearColor::Green, 125.f, 1.f);
+				FDamageEffectParams DmageEffectParam = MakeDamageEffectParamsFromClassDefaults(DamagePair.Key);
+				Projectile->DamageEffectParams.Add(DamagePair.Key, DmageEffectParam);
 			}
-		}
-		else
-		{
-			
-		}
 
-		UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), SocketLocation, SocketLocation + Rotation.Vector() * 1000.f, 100.f, FLinearColor::Red, 125.f, 5.f);
+			Projectile->FinishSpawning(NewSpawnTransform);
+		}
 	}
 }
