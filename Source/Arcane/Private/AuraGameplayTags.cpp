@@ -686,4 +686,26 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Attack Montage for LichSpell")
 	);
 
+	/*
+	 * Player Block Tags（阻挡输入）
+	 */
+	GameplayTags.Player_Block_InputPressed = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.InputPressed"),
+		FString("Player Press is Blocking")
+	);
+
+	GameplayTags.Player_Block_InputReleased = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.InputReleased"),
+		FString("Player Release is Blocking")
+	);
+
+	GameplayTags.Player_Block_InputHeld = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.InputHeld"),
+		FString("Player is Holding Block")
+	);
+
+	GameplayTags.Player_Block_CursorTrace = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Player.Block.CursorTrace"),
+		FString("Player is Blocking Cursor Trace")
+	);
 }

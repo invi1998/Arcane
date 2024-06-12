@@ -112,6 +112,25 @@ void AAuraPlayerController::AutoRun()
 
 void AAuraPlayerController::CursorTrace()
 {
+	if (GetASC())
+	{
+		// 查看是否有技能禁用了鼠标跟踪（激活了Player_Block_CursorTrace标签）
+		if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))	// 如果有匹配的游戏标签
+		{
+			if (LastActor)
+			{
+				LastActor->UnHighlightActor();		// 取消上一个物体的高亮
+				LastActor = nullptr;	// 重置上一个物体
+			}
+			if (ThisActor)
+			{
+				ThisActor->UnHighlightActor();		// 取消当前物体的高亮
+				ThisActor = nullptr;	// 重置当前物体
+			}
+			return;	// 返回
+		}
+		
+	}
 	
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);	// 获取鼠标光标下的碰撞结果，ECC_Visibility表示只检测可见性通道，false表示不检测复杂碰撞，CursorHitResult是碰撞结果
 
@@ -186,6 +205,11 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AbilityInputTagPressed: %s"), *InputTag.ToString()));
 
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))	// 如果能力系统组件有匹配的游戏标签（Player_Block_AbilityInput）
+	{
+		return;	// 返回
+	}
+
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RightMouseButton))	// 如果输入标签匹配自动寻路标签（右键点地板）
 	{
 		bTargeting = ThisActor != nullptr;	// 如果当前命中的Actor不为空，则设置为瞄准状态
@@ -207,6 +231,11 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("AbilityInputTagReleased: %s"), *InputTag.ToString()));
+
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputReleased))	// 如果能力系统组件有匹配的游戏标签（Player_Block_AbilityInput）
+	{
+		return;	// 返回
+	}
 
 	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RightMouseButton))	// 如果输入标签不匹配自动寻路标签（右键点地板）
 	{
@@ -249,13 +278,16 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 					bAutoRunning = true;	// 设置为自动寻路
 				}
 			}
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CashedDestination);	// 在鼠标点击的位置生成特效
+
+			if (GetASC() && !GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CashedDestination);	// 在鼠标点击的位置生成特效
+			}
 		}
 
 		FollowTime = 0.f;	// 重置跟随时间
 		bTargeting = false;	// 取消瞄准
 
-		
 	}
 
 }
@@ -263,6 +295,11 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AbilityInputTagHeld: %s"), *InputTag.ToString()));
+
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputHeld))	// 如果能力系统组件有匹配的游戏标签（Player_Block_AbilityInput）
+	{
+		return;	// 返回
+	}
 
 	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RightMouseButton))	// 如果输入标签不匹配自动寻路标签（右键点地板）
 	{

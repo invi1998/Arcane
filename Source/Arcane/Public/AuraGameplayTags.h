@@ -223,7 +223,10 @@ public:
 	FGameplayTag Montage_Attack_LichCall;			// 蒙太奇：巫妖召唤
 	FGameplayTag Montage_Attack_LichSpell;			// 蒙太奇：巫妖法术
 	
-
+	FGameplayTag Player_Block_InputPressed;			// 玩家：阻挡输入按下
+	FGameplayTag Player_Block_InputReleased;		// 玩家：阻挡输入释放
+	FGameplayTag Player_Block_InputHeld;			// 玩家：阻挡输入按住
+	FGameplayTag Player_Block_CursorTrace;			// 玩家：阻挡光标追踪
 
 protected:
 
