@@ -113,4 +113,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
 	ECharacterClass GetCharacterClass() const;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetInShockLoop(bool bInLoop);		// 设置是否处于震荡循环中
 };
