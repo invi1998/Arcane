@@ -78,10 +78,9 @@ void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
             if (Spec.DynamicAbilityTags.HasTagExact(InputTag))
             {
                // 5： 判断能力是否已经激活
-                if (!Spec.IsActive())
+                if (Spec.IsActive())
                 {
-                    // 6：尝试激活能力
-					TryActivateAbility(Spec.Handle);    // 尝试激活能力
+                    InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());    // 调用复制事件
 				}
             }
 		}
@@ -98,11 +97,15 @@ void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
         // 3：遍历所有的激活的能力
         for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
         {
-            // 4：检测能力的输入标签是否与输入的标签相同，这里采用的是精确匹配
-            if (Spec.DynamicAbilityTags.HasTagExact(InputTag))
+            // 4：检测能力的输入标签是否与输入的标签相同，这里采用的是精确匹配，及检测能力是否已经激活
+            if (Spec.DynamicAbilityTags.HasTagExact(InputTag) && Spec.IsActive())
             {
 				// 5：释放输入标签
                 AbilitySpecInputReleased(Spec);    // 释放输入标签
+
+                // 为能力输入标签的释放调用复制事件，我们在蓝图中就可以使用WaitInputRelease来等待这个事件
+                // 比如对于一个持续性技能，我们可以在按下输入标签时激活技能，然后在释放输入标签时停止技能
+                InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());    // 调用复制事件
             }
         }
     }

@@ -57,7 +57,11 @@ void AAuraProjectile::BeginPlay()
 void AAuraProjectile::OnHit()
 {
 	// 停止飞行音效
-	if (LoopingSoundComponent) LoopingSoundComponent->Stop();
+	if (LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
 
 	// 播放声音
 	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator);
@@ -70,6 +74,13 @@ void AAuraProjectile::OnHit()
 
 void AAuraProjectile::Destroyed()
 {
+	// 停止飞行音效
+	if (LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
+
 	if (!bHit && !HasAuthority())
 	{
 		OnHit();

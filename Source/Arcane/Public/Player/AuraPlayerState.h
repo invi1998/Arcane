@@ -11,7 +11,7 @@ class UAbilitySystemComponent;
 class UAttributeSet;
 class ULevelUpInfo;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnplayerStatChanged, int32/*×´Ì¬Öµ£¨exp£¬level..)*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnplayerStatChanged, int32/*çŠ¶æ€å€¼ï¼ˆexpï¼Œlevel..)*/);
 
 /**
  * 
@@ -25,67 +25,67 @@ public:
 	AAuraPlayerState();
 	virtual void BeginPlay() override;
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;	// »ñÈ¡ÉúÃüÖÜÆÚ¸´ÖÆÊôĞÔ
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;	// è·å–ç”Ÿå‘½å‘¨æœŸå¤åˆ¶å±æ€§
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;		// »ñÈ¡ÄÜÁ¦ÏµÍ³×é¼ş
-	UAttributeSet* GetAttributeSet() const;												// »ñÈ¡ÊôĞÔ¼¯
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;		// è·å–èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
+	UAttributeSet* GetAttributeSet() const;												// è·å–å±æ€§é›†
 
 	UPROPERTY(EditDefaultsOnly, Category="Attributes")
-	TObjectPtr<ULevelUpInfo> LevelUpInfo;		// µÈ¼¶Éı¼¶ĞÅÏ¢
+	TObjectPtr<ULevelUpInfo> LevelUpInfo;		// ç­‰çº§å‡çº§ä¿¡æ¯
 
-	FOnplayerStatChanged OnExpChangedDelegate;		// ¾­Ñé¸Ä±äÊÂ¼ş
-	FOnplayerStatChanged OnLevelChangedDelegate;	// µÈ¼¶¸Ä±äÊÂ¼ş
-	FOnplayerStatChanged OnAttributePointChangedDelegate;	// ÊôĞÔµã¸Ä±äÊÂ¼ş
-	FOnplayerStatChanged OnSkillPointChangedDelegate;		// ¼¼ÄÜµã¸Ä±äÊÂ¼ş
+	FOnplayerStatChanged OnExpChangedDelegate;		// ç»éªŒæ”¹å˜äº‹ä»¶
+	FOnplayerStatChanged OnLevelChangedDelegate;	// ç­‰çº§æ”¹å˜äº‹ä»¶
+	FOnplayerStatChanged OnAttributePointChangedDelegate;	// å±æ€§ç‚¹æ”¹å˜äº‹ä»¶
+	FOnplayerStatChanged OnSkillPointChangedDelegate;		// æŠ€èƒ½ç‚¹æ”¹å˜äº‹ä»¶
 
-	FORCEINLINE int32 GetPlayerLevel() const { return Level; }		// »ñÈ¡µÈ¼¶
-	FORCEINLINE int32 GetPlayerEXP() const { return EXP; }			// »ñÈ¡¾­Ñé
-	FORCEINLINE int32 GetAttributePoints() const { return AttributePoints; }	// »ñÈ¡ÊôĞÔµã
-	FORCEINLINE int32 GetSkillPoints() const { return SkillPoints; }		// »ñÈ¡¼¼ÄÜµã
+	FORCEINLINE int32 GetPlayerLevel() const { return Level; }		// è·å–ç­‰çº§
+	FORCEINLINE int32 GetPlayerEXP() const { return EXP; }			// è·å–ç»éªŒ
+	FORCEINLINE int32 GetAttributePoints() const { return AttributePoints; }	// è·å–å±æ€§ç‚¹
+	FORCEINLINE int32 GetSkillPoints() const { return SkillPoints; }		// è·å–æŠ€èƒ½ç‚¹
 
-	void AddEXP(int32 Value);		// Ôö¼Ó¾­Ñé
-	void SetEXP(int32 Value);		// ÉèÖÃ¾­Ñé
+	void AddEXP(int32 Value);		// å¢åŠ ç»éªŒ
+	void SetEXP(int32 Value);		// è®¾ç½®ç»éªŒ
 
-	void AddLevel(int32 Value);		// Ôö¼ÓµÈ¼¶
-	void SetLevel(int32 Value);		// ÉèÖÃµÈ¼¶
+	void AddLevel(int32 Value);		// å¢åŠ ç­‰çº§
+	void SetLevel(int32 Value);		// è®¾ç½®ç­‰çº§
 
-	void AddAttributePoint(int32 Value);		// Ôö¼ÓÊôĞÔµã
-	void SetAttributePoint(int32 Value);		// ÉèÖÃÊôĞÔµã
+	void AddAttributePoint(int32 Value);		// å¢åŠ å±æ€§ç‚¹
+	void SetAttributePoint(int32 Value);		// è®¾ç½®å±æ€§ç‚¹
 
-	void AddSkillPoint(int32 Value);		// Ôö¼Ó¼¼ÄÜµã
-	void SetSkillPoint(int32 Value);		// ÉèÖÃ¼¼ÄÜµã
+	void AddSkillPoint(int32 Value);		// å¢åŠ æŠ€èƒ½ç‚¹
+	void SetSkillPoint(int32 Value);		// è®¾ç½®æŠ€èƒ½ç‚¹
 
 protected:
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;		// ÄÜÁ¦ÏµÍ³×é¼ş
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;		// èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
 
 	UPROPERTY()
-	TObjectPtr<UAttributeSet> AttributeSet;							// ÊôĞÔ¼¯
+	TObjectPtr<UAttributeSet> AttributeSet;							// å±æ€§é›†
 
 private:
 	UPROPERTY(ReplicatedUsing= OnRep_Level, VisibleAnywhere, Category="Attributes")
-	int32 Level = 1;		// Íæ¼ÒµÈ¼¶
+	int32 Level = 2;		// ç©å®¶ç­‰çº§
 
 	UFUNCTION()
-	void OnRep_Level(int32 OldLevel);	// µ±Íæ¼ÒµÈ¼¶±»¸´ÖÆÊ±µ÷ÓÃ
+	void OnRep_Level(int32 OldLevel);	// å½“ç©å®¶ç­‰çº§è¢«å¤åˆ¶æ—¶è°ƒç”¨
 
 	UPROPERTY(ReplicatedUsing = OnRep_EXP, VisibleAnywhere, Category = "Attributes")
-	int32 EXP = 0;		// Íæ¼Ò¾­Ñé
+	int32 EXP = 0;		// ç©å®¶ç»éªŒ
 
 	UFUNCTION()
-	void OnRep_EXP(int32 OldEXP);	// µ±Íæ¼Ò¾­Ñé±»¸´ÖÆÊ±µ÷ÓÃ
+	void OnRep_EXP(int32 OldEXP);	// å½“ç©å®¶ç»éªŒè¢«å¤åˆ¶æ—¶è°ƒç”¨
 
 	UPROPERTY(ReplicatedUsing = OnRep_AttributePoint, VisibleAnywhere, Category = "PlayerStat")
-	int32 AttributePoints = 0;		// ÊôĞÔµã
+	int32 AttributePoints = 0;		// å±æ€§ç‚¹
 
 	UFUNCTION()
-	void OnRep_AttributePoint(int32 OldAttributePoint);	// µ±ÊôĞÔµã±»¸´ÖÆÊ±µ÷ÓÃ
+	void OnRep_AttributePoint(int32 OldAttributePoint);	// å½“å±æ€§ç‚¹è¢«å¤åˆ¶æ—¶è°ƒç”¨
 
 	UPROPERTY(ReplicatedUsing = OnRep_SkillPoint, VisibleAnywhere, Category = "PlayerStat")
-	int32 SkillPoints = 0;		// ¼¼ÄÜµã
+	int32 SkillPoints = 0;		// æŠ€èƒ½ç‚¹
 
 	UFUNCTION()
-	void OnRep_SkillPoint(int32 OldSkillPoint);	// µ±¼¼ÄÜµã±»¸´ÖÆÊ±µ÷ÓÃ
+	void OnRep_SkillPoint(int32 OldSkillPoint);	// å½“æŠ€èƒ½ç‚¹è¢«å¤åˆ¶æ—¶è°ƒç”¨
 
 };
