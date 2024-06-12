@@ -19,7 +19,7 @@ public:
 	void StoreMouseInfo(const FHitResult& HitResult);
 
 	UFUNCTION(BlueprintCallable)
-	void StoreOwnerPlayerController();
+	void StoreOwnerPlayer();
 
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")
@@ -30,4 +30,7 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")
 	TObjectPtr<APlayerController> OwnerPlayerController;	// 玩家控制器
+
+	UPROPERTY(BlueprintReadWrite, Category = "Beam")
+	TObjectPtr<ACharacter> OwnerCharacter;	// 执行技能的角色
 };

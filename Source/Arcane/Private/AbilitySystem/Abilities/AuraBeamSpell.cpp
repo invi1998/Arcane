@@ -3,6 +3,8 @@
 
 #include "AbilitySystem/Abilities/AuraBeamSpell.h"
 
+#include "GameFramework/Character.h"
+
 void UAuraBeamSpell::StoreMouseInfo(const FHitResult& HitResult)
 {
 	if (HitResult.bBlockingHit)
@@ -17,10 +19,12 @@ void UAuraBeamSpell::StoreMouseInfo(const FHitResult& HitResult)
 	}
 }
 
-void UAuraBeamSpell::StoreOwnerPlayerController()
+void UAuraBeamSpell::StoreOwnerPlayer()
 {
 	if (CurrentActorInfo)
 	{
 		OwnerPlayerController = CurrentActorInfo->PlayerController.Get();
+
+		OwnerCharacter = Cast<ACharacter>(CurrentActorInfo->AvatarActor.Get());
 	}
 }
