@@ -132,8 +132,6 @@ void UAuraFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, co
 			// 设置追踪参数
 			Projectile->ProjectileMovement->HomingAccelerationMagnitude = FMath::RandRange(HomingAccelerationMin, HomingAccelerationMax);	// 追踪加速度
 			Projectile->ProjectileMovement->bIsHomingProjectile = bIsHomingProjectile;		// 是否追踪
-			Projectile->ProjectileMovement->InitialSpeed = HomingProjectileSpeed;
-			Projectile->ProjectileMovement->MaxSpeed = HomingAccelerationMax;
 
 			Projectile->FinishSpawning(NewSpawnTransform);
 		}

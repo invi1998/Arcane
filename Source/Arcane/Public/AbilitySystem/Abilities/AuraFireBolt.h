@@ -37,10 +37,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Aura Ability")
 	bool bIsHomingProjectile = true;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Aura Ability")
-	float HomingProjectileSpeed = 1000.0f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Aura Ability")
-	float HomingProjectileSpeedMax = 2000.0f;
 };
