@@ -96,6 +96,12 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		// 获取伤害效果参数
 		FDamageEffectParams& Params = Pair.Value;
 
+		if (!IsValid(Params.InstigatorASC))
+		{
+			// 如果没有施法者ASC，不处理 添加这一行。这将解决客户端火球问题。
+			return;
+		}
+
 		AActor* SourceActor = Params.InstigatorASC->GetAvatarActor();
 
 		// 如果没有施法者，不处理
