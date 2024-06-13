@@ -396,4 +396,9 @@ ECharacterClass AAuraCharacterBase::GetCharacterClass_Implementation() const
 	return CharacterClass;
 }
 
+USkeletalMeshComponent* AAuraCharacterBase::GetWeaponMesh_Implementation() const
+{
+	return Weapon;
+}
+
 

@@ -115,4 +115,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void SetInShockLoop(bool bInLoop);		// 设置是否处于震荡循环中
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	USkeletalMeshComponent* GetWeaponMesh() const;	// 获取武器Mesh
 };

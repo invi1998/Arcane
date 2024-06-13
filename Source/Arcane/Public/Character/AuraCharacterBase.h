@@ -50,6 +50,7 @@ public:
 	virtual int32 GetSummonCount_Implementation() override;	// 获取召唤物数量
 	virtual void IncrementSummonCount_Implementation(int32 Amount) override;	// 设置召唤物数量
 	virtual ECharacterClass GetCharacterClass_Implementation() const override;	// 获取角色类别
+	virtual USkeletalMeshComponent* GetWeaponMesh_Implementation() const override;	// 获取武器网格
 	/* Combat Interface End*/
 
 	FOnASCRegistered OnASCRegistered;	// ASC注册委托
