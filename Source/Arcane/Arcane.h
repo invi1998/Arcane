@@ -4,8 +4,9 @@
 
 #include "CoreMinimal.h"
 
-#define CUSTOM_DEPTH_STENCIL_RED 250	// ºìÉ«×Ô¶¨ÒåÉî¶È»º³åÖµ
+#define CUSTOM_DEPTH_STENCIL_RED 250	// çº¢è‰²è‡ªå®šä¹‰æ·±åº¦ç¼“å†²å€¼
 
-#define ECC_Projectile ECollisionChannel::ECC_GameTraceChannel1	// ×Óµ¯Åö×²ÆµµÀ
+#define ECC_Projectile ECollisionChannel::ECC_GameTraceChannel1	// å­å¼¹ç¢°æ’é¢‘é“
+#define ECC_Target ECollisionChannel::ECC_GameTraceChannel2		// ç›®æ ‡ç¢°æ’é¢‘é“
 
 
