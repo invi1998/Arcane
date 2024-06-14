@@ -65,7 +65,7 @@ protected:
 
 private:
 	UPROPERTY(ReplicatedUsing= OnRep_Level, VisibleAnywhere, Category="Attributes")
-	int32 Level = 2;		// 玩家等级
+	int32 Level = 1;		// 玩家等级
 
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);	// 当玩家等级被复制时调用

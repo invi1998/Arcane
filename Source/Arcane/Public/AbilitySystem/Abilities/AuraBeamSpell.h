@@ -21,6 +21,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StoreOwnerPlayer();
 
+	UFUNCTION(BlueprintCallable)
+	void TraceFirstTarget(const FVector& BeamTargetLocation);
+
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")
 	FVector MouseHitLocation;		// 鼠标点击位置
