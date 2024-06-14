@@ -4,6 +4,7 @@
 #include "AbilitySystem/AbilityTasks/TargetDataUnderMouse.h"
 
 #include "AbilitySystemComponent.h"
+#include "Arcane/Arcane.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Player/AuraPlayerController.h"
 
@@ -61,7 +62,9 @@ void UTargetDataUnderMouse::SendMouseTargetData()
 	FGameplayAbilityTargetDataHandle DataHandle;	// 创建一个FGameplayAbilityTargetDataHandle对象
 
 	AAuraPlayerController* PC = Cast<AAuraPlayerController>(Ability->GetCurrentActorInfo()->PlayerController.Get());	// 获取玩家控制器
-	Data->HitResult = PC->GetCursorHitResult();	// 获取玩家控制器的光标命中结果
+	FHitResult CursorHotResult;	// 创建一个FHitResult对象
+	PC->GetHitResultUnderCursor(ECC_Target, false, CursorHotResult);	// 获取光标下的命中结果
+	Data->HitResult = CursorHotResult;	// 将命中结果赋值给Data->HitResult
 	DataHandle.Add(Data);	// 将Data添加到DataHandle中
 
 	FGameplayTag ApplicationTag;
