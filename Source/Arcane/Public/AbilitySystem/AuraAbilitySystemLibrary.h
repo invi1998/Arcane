@@ -170,4 +170,8 @@ public:
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayMechanice")
 	static TArray<FRotator> EvenlySpacedRotators(const FVector& Forward, const FVector& Axis, float SpreadAngle, int32 RotatorNum);
 
+	// 获取最近的目标
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayMechanice")
+	static void GetClosestTargets(int32 MaxTargets, const TArray<AActor*>& TargetActors, const FVector& Origin, TArray<AActor*>& OutClosestTargets);
+
 };

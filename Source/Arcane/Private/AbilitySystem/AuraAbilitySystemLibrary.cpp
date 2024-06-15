@@ -566,3 +566,22 @@ TArray<FRotator> UAuraAbilitySystemLibrary::EvenlySpacedRotators(const FVector& 
 	return Rotators;
 }
 
+void UAuraAbilitySystemLibrary::GetClosestTargets(int32 MaxTargets, const TArray<AActor*>& TargetActors,
+	const FVector& Origin, TArray<AActor*>& OutClosestTargets)
+{
+	TArray<AActor*> SortedActors = TargetActors;
+	SortedActors.Sort([Origin](const AActor& A, const AActor& B)
+	{
+		return FVector::DistSquared(A.GetActorLocation(), Origin) < FVector::DistSquared(B.GetActorLocation(), Origin);
+	});
+	/*Algo::Sort(SortedActors, [Origin](const AActor& A, const AActor& B)
+	{
+		return FVector::DistSquared(A.GetActorLocation(), Origin) < FVector::DistSquared(B.GetActorLocation(), Origin);
+	});*/
+
+	for (int32 i = 0; i < FMath::Min(MaxTargets, SortedActors.Num()); i++)
+	{
+		OutClosestTargets.Add(SortedActors[i]);
+	}
+}
+

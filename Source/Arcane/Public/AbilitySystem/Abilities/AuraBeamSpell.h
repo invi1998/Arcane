@@ -24,6 +24,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TraceFirstTarget(const FVector& BeamTargetLocation);
 
+	UFUNCTION(BlueprintCallable)
+	void StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTargets);		// 存储额外的目标
+
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")
 	FVector MouseHitLocation;		// 鼠标点击位置
@@ -36,4 +39,8 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")
 	TObjectPtr<ACharacter> OwnerCharacter;	// 执行技能的角色
+
+	UPROPERTY(BlueprintReadWrite, Category = "Beam")
+	int32 MaxNumOfTargets = 5;	// 最大目标数量
+
 };

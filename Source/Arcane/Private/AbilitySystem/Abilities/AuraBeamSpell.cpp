@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Abilities/AuraBeamSpell.h"
 
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -72,4 +73,25 @@ void UAuraBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 	}
 
 	
+}
+
+void UAuraBeamSpell::StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTargets)
+{
+	TArray<AActor*> IgnoredActors;
+	IgnoredActors.Add(GetAvatarActorFromActorInfo());
+	IgnoredActors.Add(MouseHitActor);
+
+	TArray<AActor*> OverlappingActors;
+	UAuraAbilitySystemLibrary::GetLivePlayerWithinRadius(
+		GetAvatarActorFromActorInfo(),
+		OverlappingActors,
+		IgnoredActors,
+		MouseHitActor->GetActorLocation(),
+		1000.f
+	);
+
+	// 将所有的Actor按照距离MouseHitActor的距离进行排序，将前MaxNumOfTargets个Actor加入到OutAdditionalTargets中
+	// const int32 RealNumOfTargets = FMath::Min(GetAbilityLevel(), MaxNumOfTargets);
+	const int32 RealNumOfTargets = 5;
+	UAuraAbilitySystemLibrary::GetClosestTargets(RealNumOfTargets, OverlappingActors, MouseHitActor->GetActorLocation(), OutAdditionalTargets);
 }
