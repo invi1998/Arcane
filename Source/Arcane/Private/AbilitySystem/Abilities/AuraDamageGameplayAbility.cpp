@@ -11,7 +11,7 @@
 
 void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 {
-	if (TargetActor)
+	if (IsValid(TargetActor))
 	{
 		 // const FGameplayEffectSpecHandle DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, 1);
 		for (TTuple<FGameplayTag, FScalableFloat> Pair : DamageType)
@@ -63,4 +63,11 @@ FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 	}
 
 	return Params;
+}
+
+float UAuraDamageGameplayAbility::GetDamageAtLevel(FGameplayTag InDamageType) const
+{
+	const int32 Level = GetAbilityLevel();
+
+	return DamageType.Contains(InDamageType) ? DamageType[InDamageType].GetValueAtLevel(Level) : 0.f;
 }
