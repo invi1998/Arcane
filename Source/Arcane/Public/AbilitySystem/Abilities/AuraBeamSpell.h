@@ -43,4 +43,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")
 	int32 MaxNumOfTargets = 5;	// 最大目标数量
 
+	UPROPERTY(BlueprintReadWrite, Category = "Beam")
+	float BeamRange = 500.f;	// 射线范围
+
 };

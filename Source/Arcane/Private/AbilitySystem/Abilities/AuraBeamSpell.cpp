@@ -87,7 +87,7 @@ void UAuraBeamSpell::StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTargets
 		OverlappingActors,
 		IgnoredActors,
 		MouseHitActor->GetActorLocation(),
-		1000.f
+		BeamRange
 	);
 
 	// 将所有的Actor按照距离MouseHitActor的距离进行排序，将前MaxNumOfTargets个Actor加入到OutAdditionalTargets中
