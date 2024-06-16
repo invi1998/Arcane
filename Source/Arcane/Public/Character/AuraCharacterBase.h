@@ -66,8 +66,14 @@ public:
 	UPROPERTY(ReplicatedUsing = OnRep_Stunned, BlueprintReadOnly, Category = "Combat")
 	bool bIsStunned = false;	// 是否被眩晕
 
+	UPROPERTY(ReplicatedUsing = OnRep_Burned, BlueprintReadOnly, Category = "Combat")
+	bool bIsBurn = false;	// 是否被灼烧
+
 	UFUNCTION()
 	virtual void OnRep_Stunned();	// 眩晕改变
+
+	UFUNCTION()
+	virtual void OnRep_Burned();	// 灼烧改变
 
 protected:
 	virtual void BeginPlay() override;

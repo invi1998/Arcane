@@ -286,6 +286,18 @@ void AAuraCharacter::OnRep_Stunned()
 		}
 	}
 }
+
+void AAuraCharacter::OnRep_Burned()
+{
+	if (bIsBurn)
+	{
+		BurnDebuffEffect->Activate();	// 激活灼烧Debuff特效
+	}
+	else
+	{
+		BurnDebuffEffect->Deactivate();	// 停止灼烧Debuff特效
+	}
+}
 ;
 void AAuraCharacter::InitAbilityActorInfo()
 {
