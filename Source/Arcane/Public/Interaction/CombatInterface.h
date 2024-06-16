@@ -73,9 +73,9 @@ public:
 
 	virtual void Die(const FVector& DeathImpulse) = 0;	// 死亡
 
-	virtual FOnASCRegistered GetOnASCRegisteredDelegate() = 0;	// 获取ASC注册委托
+	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() = 0;	// 获取ASC注册委托
 
-	virtual FOnCharacterDeath GetOnCharacterDeathDelegate() = 0;	// 获取角色死亡委托
+	virtual FOnCharacterDeath& GetOnCharacterDeathDelegate() = 0;	// 获取角色死亡委托
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
 	bool IsDead() const;	// 是否死亡

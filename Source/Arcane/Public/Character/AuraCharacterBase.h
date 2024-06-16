@@ -40,8 +40,8 @@ public:
 	virtual UAnimMontage* GetDeathMontage_Implementation() override;	// 获取死亡动画
 	virtual void Die(const FVector& DeathImpulse) override;	// 死亡
 	virtual bool IsDead_Implementation() const override;	// 是否死亡
-	virtual FOnASCRegistered GetOnASCRegisteredDelegate() override;		// 获取ASC注册委托
-	virtual FOnCharacterDeath GetOnCharacterDeathDelegate() override;	// 获取角色死亡委托
+	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;		// 获取ASC注册委托
+	virtual FOnCharacterDeath& GetOnCharacterDeathDelegate() override;	// 获取角色死亡委托
 	virtual AActor* GetActor_Implementation() override;	// 获取角色
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() const override;	// 获取攻击动画
 	virtual FTaggedMontage GetRandomAttackMontage_Implementation(const FGameplayTag& AbilityTag) const override;

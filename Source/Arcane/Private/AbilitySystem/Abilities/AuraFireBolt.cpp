@@ -24,8 +24,30 @@ FString UAuraFireBolt::GetDescription(int32 Level)
 		const FScalableFloat& DamageValue = DamagePair.Value;
 		const float ScaledDamageValue = DamageValue.GetValueAtLevel(Level);
 		const FString TagName = FAuraGameplayTags::GetDamageCnName(DamageTag);
-		DamageTypeString += FString::Printf(TEXT("\t<Default>%s：</><Damage>%.2f</>\n"), *TagName, ScaledDamageValue);
+		DamageTypeString += FString::Printf(TEXT("\t<Default>%s：</><Damage>%.0f</>\n"), *TagName, ScaledDamageValue);
+
+		// 如果该技能有击退效果，那么我们需要在描述中添加击退效果
+		if (KnockbackChances.Contains(DamageTag))
+		{
+			const float KnockbackChance = KnockbackChances[DamageTag];
+			DamageTypeString += FString::Printf(TEXT("\t<Default>该技能有</><Chance>%.0f</><Default>概率照成击退</>\n"), KnockbackChance);
+		}
+
+		// 如果该技能有Debuff效果，那么我们需要在描述中添加Debuff效果
+		if (DebuffChances.Contains(DamageTag))
+		{
+			const float DebuffChance = DebuffChances[DamageTag];
+			const float DebuffDamage = DebuffDamages[DamageTag];
+			const float DebuffFrequency = DebuffFrequencies[DamageTag];
+			const float DebuffDuration = DebuffDurations[DamageTag];
+			DamageTypeString += FString::Printf(TEXT("\t<Default>该技能有</><Chance>%.0f</><Default>概率触发灼烧效果，灼烧伤害为</><Damage>%.0f</><Default>，灼烧频率为</><Time>%.1f</><Default>，灼烧持续时间为</><Time>%.0f</>\n"), DebuffChance, DebuffDamage, DebuffFrequency, DebuffDuration);
+		}
+
+		DamageTypeString += TEXT("\n");
+
 	}
+
+	const int32 RealMaxNumOfTargets = FMath::Min(NumProjectiles, Level);
 
 	FString Desc = FString::Printf(TEXT("<Title>火球术</>\t<Small>FIRE BOLT</>\n\n"
 		"<Default>发射一道火焰，在撞击和造成伤害时爆炸 </>\n\n"
@@ -34,7 +56,7 @@ FString UAuraFireBolt::GetDescription(int32 Level)
 		"\t<Default>法力消耗：</><ManaCast>%.1f</>\n"
 		"\t<Default>火球数量：</><Time>%d</>\n\n"
 		"<Default>技能详细伤害描述：</>\n"
-	), Level, Cooldown, ManaCost, NumProjectiles);
+	), Level, Cooldown, ManaCost, RealMaxNumOfTargets);
 	Desc += DamageTypeString;
 
 	return Desc;
@@ -54,8 +76,29 @@ FString UAuraFireBolt::GetNextLevelDescription(int32 Level)
 		const FScalableFloat& DamageValue = DamagePair.Value;
 		const float ScaledDamageValue = DamageValue.GetValueAtLevel(Level + 1);
 		const FString TagName = FAuraGameplayTags::GetDamageCnName(DamageTag);
-		DamageTypeString += FString::Printf(TEXT("\t<Default>%s：</><Damage>%.2f</>\n"), *TagName, ScaledDamageValue);
+		DamageTypeString += FString::Printf(TEXT("\t<Default>%s：</><Damage>%.0f</>\n"), *TagName, ScaledDamageValue);
+
+		// 如果该技能有击退效果，那么我们需要在描述中添加击退效果
+		if (KnockbackChances.Contains(DamageTag))
+		{
+			const float KnockbackChance = KnockbackChances[DamageTag];
+			DamageTypeString += FString::Printf(TEXT("\t<Default>该技能有</><Chance>%.0f</><Default>概率照成击退</>\n"), KnockbackChance);
+		}
+
+		// 如果该技能有Debuff效果，那么我们需要在描述中添加Debuff效果
+		if (DebuffChances.Contains(DamageTag))
+		{
+			const float DebuffChance = DebuffChances[DamageTag];
+			const float DebuffDamage = DebuffDamages[DamageTag];
+			const float DebuffFrequency = DebuffFrequencies[DamageTag];
+			const float DebuffDuration = DebuffDurations[DamageTag];
+			DamageTypeString += FString::Printf(TEXT("\t<Default>该技能有</><Chance>%.0f</><Default>概率触发灼烧效果，灼烧伤害为</><Damage>%.0f</><Default>，灼烧频率为</><Time>%.1f</><Default>，灼烧持续时间为</><Time>%.0f</>\n"), DebuffChance, DebuffDamage, DebuffFrequency, DebuffDuration);
+		}
+
+		DamageTypeString += TEXT("\n");
 	}
+
+	const int32 RealMaxNumOfTargets = FMath::Min(NumProjectiles, Level + 1);
 
 	FString Desc = FString::Printf(TEXT("<Title>火球术</>\t<Small>FIRE BOLT</>\n\n"
 		"<Default>发射一道火焰，在撞击和造成伤害时爆炸 </>\n\n"
@@ -64,7 +107,7 @@ FString UAuraFireBolt::GetNextLevelDescription(int32 Level)
 		"\t<Default>法力消耗：</><ManaCast>%.1f</>\n"
 		"\t<Default>火球数量：</><Time>%d</>\n\n"
 		"<Default>技能详细伤害描述：</>\n\n"
-	), Level + 1, Cooldown, ManaCost, NumProjectiles);
+	), Level + 1, Cooldown, ManaCost, RealMaxNumOfTargets);
 	Desc += DamageTypeString;
 
 	return Desc;

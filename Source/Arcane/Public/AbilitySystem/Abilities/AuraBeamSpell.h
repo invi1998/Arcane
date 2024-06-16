@@ -27,6 +27,19 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTargets);		// 存储额外的目标
 
+	UFUNCTION(BlueprintImplementableEvent)	// 蓝图实现事件
+	void PrimaryBeamTargetDied(AActor* DeadActor);	// 主要目标死亡
+
+	UFUNCTION(BlueprintImplementableEvent)	// 蓝图实现事件
+	void AdditionalBeamTargetDied(AActor* DeadActor);	// 额外目标死亡
+
+	UFUNCTION(BlueprintCallable)
+	float GetMaxSpellContinuationTime() const;	// 获取技能持续时间
+
+	virtual FString GetDescription(int32 Level) override;
+
+	virtual FString GetNextLevelDescription(int32 Level) override;
+
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")
 	FVector MouseHitLocation;		// 鼠标点击位置
@@ -45,5 +58,11 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Beam")
 	float BeamRange = 500.f;	// 射线范围
+
+	UPROPERTY(BlueprintReadWrite, Category = "Beam")
+	float MinSpellCooldownTime = 0.5f;	// 技能进入冷却的最小时间
+
+	UPROPERTY(EditDefaultsOnly, Category = "Beam")
+	FScalableFloat MaxSpellContinuationTime;	// 技能最大持续时间
 
 };

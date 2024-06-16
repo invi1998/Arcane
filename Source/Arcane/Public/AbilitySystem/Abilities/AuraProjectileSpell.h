@@ -32,6 +32,6 @@ protected:
 	TSubclassOf<AAuraProjectile> ProjectileClass;	// 投射物类
 
 	UPROPERTY(EditDefaultsOnly)
-	int32 NumProjectiles = 1;	// 投射物数量
+	int32 NumProjectiles = 10;	// 投射物数量
 
 };

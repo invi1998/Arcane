@@ -488,7 +488,7 @@ int32 UAuraAbilitySystemLibrary::GetAbilityLevelByTag(const UObject* WorldContex
 
 FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)
 {
-	if (Params.WorldContextObject && Params.DamageEffectClass && Params.InstigatorASC)
+	if (Params.WorldContextObject && Params.DamageEffectClass && IsValid(Params.InstigatorASC) && IsValid(Params.TargetASC))
 	{
 		FAuraGameplayTags Tags = FAuraGameplayTags::Get();	// 获取游戏标签
 

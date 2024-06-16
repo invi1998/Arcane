@@ -3,7 +3,9 @@
 
 #include "AbilitySystem/Abilities/AuraBeamSpell.h"
 
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "Character/AuraCharacterBase.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -72,7 +74,15 @@ void UAuraBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 		}
 	}
 
-	
+	// 绑定角色死亡委托
+	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(OwnerCharacter))
+	{
+		// 如果该委托没有绑定当前对象，则绑定
+		if (!CombatInterface->GetOnCharacterDeathDelegate().IsAlreadyBound(this, &UAuraBeamSpell::PrimaryBeamTargetDied))
+		{
+			CombatInterface->GetOnCharacterDeathDelegate().AddDynamic(this, &UAuraBeamSpell::PrimaryBeamTargetDied);
+		}
+	}
 }
 
 void UAuraBeamSpell::StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTargets)
@@ -94,4 +104,97 @@ void UAuraBeamSpell::StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTargets
 	// const int32 RealNumOfTargets = FMath::Min(GetAbilityLevel(), MaxNumOfTargets);
 	const int32 RealNumOfTargets = 5;
 	UAuraAbilitySystemLibrary::GetClosestTargets(RealNumOfTargets, OverlappingActors, MouseHitActor->GetActorLocation(), OutAdditionalTargets);
+
+	// 为每个额外的目标绑定死亡委托
+	for (AActor* AdditionalTarget : OutAdditionalTargets)
+	{
+		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(AdditionalTarget))
+		{
+			if (!CombatInterface->GetOnCharacterDeathDelegate().IsAlreadyBound(this, &UAuraBeamSpell::AdditionalBeamTargetDied))
+			{
+				CombatInterface->GetOnCharacterDeathDelegate().AddDynamic(this, &UAuraBeamSpell::AdditionalBeamTargetDied);
+			}
+		}
+	}
+}
+
+float UAuraBeamSpell::GetMaxSpellContinuationTime() const
+{
+	if (!MaxSpellContinuationTime.IsValid())
+	{
+		return 0.f;
+	}
+	return MaxSpellContinuationTime.GetValueAtLevel(GetAbilityLevel());
+}
+
+FString UAuraBeamSpell::GetDescription(int32 Level)
+{
+	// 获取法力消耗，获取技能冷却时间
+	const float ManaCost = GetManaCost(Level);
+	const float Cooldown = GetCooldown(Level);
+
+	// 遍历伤害类型，获取每种类型的伤害值，然后拼接字符串
+	FString DamageTypeString;
+	for (auto& DamagePair : DamageType)
+	{
+		const FGameplayTag& DamageTag = DamagePair.Key;
+		const FScalableFloat& DamageValue = DamagePair.Value;
+		const float ScaledDamageValue = DamageValue.GetValueAtLevel(Level);
+		const FString TagName = FAuraGameplayTags::GetDamageCnName(DamageTag);
+		DamageTypeString += FString::Printf(TEXT("\t<Default>%s：</><Damage>%.0f</>\n"), *TagName, ScaledDamageValue);
+	}
+
+	const int32 RealMaxNumOfTargets = FMath::Min(Level, MaxNumOfTargets);
+
+	FString Desc = FString::Printf(TEXT("<Title>连锁闪电</>\t<Small>Electrocube</>\n\n"
+			"<Default>发射一道闪电，对目标造成伤害 </>\n\n"
+			"\t<Default>技能等级：</><Level>%d</>\n"
+			"\t<Default>冷却时间：</><Cooldown>%.1f s</>\n"
+			"\t<Default>法力消耗：</><ManaCast>%.1f</>\n"
+			"\t<Default>闪电索敌范围：</><Time>%.1f</>\n"
+			"\t<Default>闪电索敌最大数量：</><Time>%d</>\n"
+			"\t<Default>技能持续时间：</><Time>%.1f</>\n\n"
+			"<Default>技能详细伤害描述：</>\n\n"
+		), Level, Cooldown, ManaCost, BeamRange, RealMaxNumOfTargets, GetMaxSpellContinuationTime());
+
+	Desc += DamageTypeString;
+
+	return Desc;
+
+}
+
+FString UAuraBeamSpell::GetNextLevelDescription(int32 Level)
+{
+	// 获取法力消耗，获取技能冷却时间
+	const float ManaCost = GetManaCost(Level + 1);
+	const float Cooldown = GetCooldown(Level + 1);
+
+	// 遍历伤害类型，获取每种类型的伤害值，然后拼接字符串
+	FString DamageTypeString;
+	for (auto& DamagePair : DamageType)
+	{
+		const FGameplayTag& DamageTag = DamagePair.Key;
+		const FScalableFloat& DamageValue = DamagePair.Value;
+		const float ScaledDamageValue = DamageValue.GetValueAtLevel(Level + 1);
+		const FString TagName = FAuraGameplayTags::GetDamageCnName(DamageTag);
+
+		DamageTypeString += FString::Printf(TEXT("\t<Default>%s：</><Damage>%.0f</>\n"), *TagName, ScaledDamageValue);
+	}
+
+	const int32 RealMaxNumOfTargets = FMath::Min(Level + 1, MaxNumOfTargets);
+
+	FString Desc = FString::Printf(TEXT("<Title>连锁闪电</>\t<Small>Electrocube</>\n\n"
+				"<Default>发射一道闪电，对目标造成伤害 </>\n\n"
+				"\t<Default>技能等级：</><Level>%d</>\n"
+				"\t<Default>冷却时间：</><Cooldown>%.1f s</>\n"
+				"\t<Default>法力消耗：</><ManaCast>%.1f</>\n"
+				"\t<Default>闪电索敌范围：</><Time>%.1f</>\n"
+				"\t<Default>闪电索敌最大数量：</><Time>%d</>\n"
+				"\t<Default>技能持续时间：</><Time>%.1f</>\n\n"
+				"<Default>技能详细伤害描述：</>\n\n"
+			), Level + 1, Cooldown, ManaCost, BeamRange, RealMaxNumOfTargets, GetMaxSpellContinuationTime());
+
+	Desc += DamageTypeString;
+
+	return Desc;
 }

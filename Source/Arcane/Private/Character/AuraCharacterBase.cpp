@@ -325,12 +325,12 @@ bool AAuraCharacterBase::IsDead_Implementation() const
 	return bDead;
 }
 
-FOnASCRegistered AAuraCharacterBase::GetOnASCRegisteredDelegate()
+FOnASCRegistered& AAuraCharacterBase::GetOnASCRegisteredDelegate()
 {
 	return OnASCRegistered;
 }
 
-FOnCharacterDeath AAuraCharacterBase::GetOnCharacterDeathDelegate()
+FOnCharacterDeath& AAuraCharacterBase::GetOnCharacterDeathDelegate()
 {
 	return OnCharacterDeath;
 }
