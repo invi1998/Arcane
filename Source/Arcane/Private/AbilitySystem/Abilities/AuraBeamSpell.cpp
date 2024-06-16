@@ -101,8 +101,8 @@ void UAuraBeamSpell::StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTargets
 	);
 
 	// 将所有的Actor按照距离MouseHitActor的距离进行排序，将前MaxNumOfTargets个Actor加入到OutAdditionalTargets中
-	// const int32 RealNumOfTargets = FMath::Min(GetAbilityLevel(), MaxNumOfTargets);
-	const int32 RealNumOfTargets = 5;
+	const int32 RealNumOfTargets = FMath::Min(GetAbilityLevel(), MaxNumOfTargets);
+	// const int32 RealNumOfTargets = 5;
 	UAuraAbilitySystemLibrary::GetClosestTargets(RealNumOfTargets, OverlappingActors, MouseHitActor->GetActorLocation(), OutAdditionalTargets);
 
 	// 为每个额外的目标绑定死亡委托
