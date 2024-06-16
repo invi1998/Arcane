@@ -161,6 +161,11 @@ AActor* AAuraEnemy::GetCombatTarget_Implementation() const
 void AAuraEnemy::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
 	Super::StunTagChanged(CallbackTag, NewCount);
+
+	if (AuraAIController && AuraAIController->GetBlackboardComponent())
+	{
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsStun", bIsStunned);	// 设置黑板值, 是否被眩晕
+	}
 }
 
 void AAuraEnemy::InitAbilityActorInfo()

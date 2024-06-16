@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
+#include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "NiagaraComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Camera/CameraComponent.h"
@@ -246,27 +247,43 @@ void AAuraCharacter::OnRep_Stunned()
 	{
 		const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();
 
-		FInheritedTagContainer InheritedTags;	// 创建继承标签容器
-		InheritedTags.AddTag(AuraTags.Player_Block_CursorTrace);	// 禁止鼠标追踪
-		InheritedTags.AddTag(AuraTags.Player_Block_InputHeld);	// 禁止输入保持
-		InheritedTags.AddTag(AuraTags.Player_Block_InputPressed);	// 禁止输入按下
-		InheritedTags.AddTag(AuraTags.Player_Block_InputReleased);	// 禁止输入释放
+		//FInheritedTagContainer InheritedTags;	// 创建继承标签容器
+		//InheritedTags.AddTag(AuraTags.Player_Block_CursorTrace);	// 禁止鼠标追踪
+		//InheritedTags.AddTag(AuraTags.Player_Block_InputHeld);	// 禁止输入保持
+		//InheritedTags.AddTag(AuraTags.Player_Block_InputPressed);	// 禁止输入按下
+		//InheritedTags.AddTag(AuraTags.Player_Block_InputReleased);	// 禁止输入释放
 
-		const FString DebuffName = FString::Printf(TEXT("DynamicDebuff_%s"), *AuraTags.Debuff_LightningStun.ToString());	 // 获取Debuff名称
-		UGameplayEffect* DebuffEffect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(*DebuffName));	// 创建Debuff效果
-		UTargetTagsGameplayEffectComponent& Component = DebuffEffect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
+		//const FString DebuffName = FString::Printf(TEXT("DynamicDebuff_%s"), *AuraTags.Debuff_LightningStun.ToString());	 // 获取Debuff名称
+		//UGameplayEffect* DebuffEffect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(*DebuffName));	// 创建Debuff效果
+		//UTargetTagsGameplayEffectComponent& Component = DebuffEffect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
 
-		Component.SetAndApplyTargetTagChanges(InheritedTags);	// 添加继承标签容器
+		//Component.SetAndApplyTargetTagChanges(InheritedTags);	// 添加继承标签容器
+
+		//if (bIsStunned)
+		//{
+		//	AuraAbilitySystemComponent->AddLooseGameplayTag(AuraTags.Debuff_LightningStun);	// 添加眩晕标签
+		//}
+		//else
+		//{
+		//	AuraAbilitySystemComponent->RemoveLooseGameplayTag(AuraTags.Debuff_LightningStun);	// 移除眩晕标签
+		//}
+
+		FGameplayTagContainer BlockTags;	// 创建阻挡标签容器
+		BlockTags.AddTag(AuraTags.Player_Block_CursorTrace);	// 添加阻挡标签
+		BlockTags.AddTag(AuraTags.Player_Block_InputHeld);	// 添加阻挡标签
+		BlockTags.AddTag(AuraTags.Player_Block_InputPressed);	// 添加阻挡标签
+		BlockTags.AddTag(AuraTags.Player_Block_InputReleased);	// 添加阻挡标签
 
 		if (bIsStunned)
 		{
-			AuraAbilitySystemComponent->AddLooseGameplayTag(AuraTags.Debuff_LightningStun);	// 添加眩晕标签
+			AuraAbilitySystemComponent->AddLooseGameplayTags(BlockTags);	// 添加阻挡标签
+			StunDebuffEffect->Activate();	// 激活眩晕Debuff特效)
 		}
 		else
 		{
-			AuraAbilitySystemComponent->RemoveLooseGameplayTag(AuraTags.Debuff_LightningStun);	// 移除眩晕标签
+			AuraAbilitySystemComponent->RemoveLooseGameplayTags(BlockTags);	// 移除阻挡标签
+			StunDebuffEffect->Deactivate();	// 停止眩晕Debuff特效
 		}
-
 	}
 }
 ;

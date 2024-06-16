@@ -143,6 +143,8 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& Deat
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// 设置胶囊体碰撞状态
 
+	BurnDebuffEffect->Deactivate();	// 关闭燃烧Debuff特效
+	StunDebuffEffect->Deactivate();	// 关闭眩晕Debuff特效
 	OnCharacterDeath.Broadcast(this);	// 角色死亡委托
 }
 
