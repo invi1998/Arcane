@@ -396,8 +396,7 @@ bool UAuraAbilitySystemComponent::AbilityHasSlot(FGameplayAbilitySpec* Spec, con
 	return InputTag.IsValid() && InputTag.MatchesTagExact(SlotTag);    // 返回输入标签是否与槽标签相同
 }
 
-bool UAuraAbilitySystemComponent::GetDescriptionByTag(const FGameplayTag& AbilityTag, FString& OutDescription,
-                                                      FString& OutNextLevelDescription)
+bool UAuraAbilitySystemComponent::GetDescriptionByTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription)
 {
 	const UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
 
@@ -419,8 +418,11 @@ bool UAuraAbilitySystemComponent::GetDescriptionByTag(const FGameplayTag& Abilit
 	}
     else
     {
-	    
-        OutDescription = UAuraGameplayAbility::GetLockedDescription(AbilityInfo->FindAbilityInfoByTag(AbilityTag).LevelRequired);
+        if (AbilityTag.IsValid())
+        {
+	        OutDescription = UAuraGameplayAbility::GetLockedDescription(AbilityInfo->FindAbilityInfoByTag(AbilityTag).LevelRequired);
+        }
+        
         OutNextLevelDescription = FString();
         return false;
     }

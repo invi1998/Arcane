@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "Arcane/ArcaneLogChannels.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 FAuraAbilityInfo UAbilityInfo::FindAbilityInfoByTag(const FGameplayTag& AbilityTag, bool bLogNotFound) const
 {
