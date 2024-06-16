@@ -48,6 +48,8 @@ void AAuraProjectile::BeginPlay()
 	// 设置火球的生命周期
 	SetLifeSpan(LifeSpan);
 
+	SetReplicateMovement(true);	// 开启移动复制
+
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AAuraProjectile::OnSphereOverlap);
 
 	LoopingSoundComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());	// 播放循环声音,并绑定到根组件
