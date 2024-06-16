@@ -52,6 +52,8 @@ public:
 	virtual void IncrementSummonCount_Implementation(int32 Amount) override;	// 设置召唤物数量
 	virtual ECharacterClass GetCharacterClass_Implementation() const override;	// 获取角色类别
 	virtual USkeletalMeshComponent* GetWeaponMesh_Implementation() const override;	// 获取武器网格
+	virtual void SetIsBeingShock_Implementation(bool bShock) override;	// 设置是否被电击
+	virtual bool IsBeingShock_Implementation() const override;	// 是否被电击
 	/* Combat Interface End*/
 
 	FOnASCRegistered OnASCRegistered;	// ASC注册委托
@@ -68,6 +70,9 @@ public:
 
 	UPROPERTY(ReplicatedUsing = OnRep_Burned, BlueprintReadOnly, Category = "Combat")
 	bool bIsBurn = false;	// 是否被灼烧
+
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Combat")
+	bool bIsBeingShocked = false;	// 是否被电击
 
 	UFUNCTION()
 	virtual void OnRep_Stunned();	// 眩晕改变

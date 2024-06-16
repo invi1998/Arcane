@@ -71,6 +71,7 @@ void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 	DOREPLIFETIME(AAuraCharacterBase, bIsStunned);	// 复制眩晕状态
 	DOREPLIFETIME(AAuraCharacterBase, bIsBurn);	// 复制灼烧状态
+	DOREPLIFETIME(AAuraCharacterBase, bIsBeingShocked);	// 复制电击状态
 }
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
@@ -430,6 +431,16 @@ ECharacterClass AAuraCharacterBase::GetCharacterClass_Implementation() const
 USkeletalMeshComponent* AAuraCharacterBase::GetWeaponMesh_Implementation() const
 {
 	return Weapon;
+}
+
+void AAuraCharacterBase::SetIsBeingShock_Implementation(bool bShock)
+{
+	bIsBeingShocked = bShock;
+}
+
+bool AAuraCharacterBase::IsBeingShock_Implementation() const
+{
+	return bIsBeingShocked;
 }
 
 
