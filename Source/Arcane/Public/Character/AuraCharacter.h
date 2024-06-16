@@ -49,6 +49,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Effects")
 	TObjectPtr<UNiagaraComponent> LevelUpEffect;
 
+	virtual void OnRep_Stunned() override;
 
 private:
 	UPROPERTY(VisibleAnywhere)

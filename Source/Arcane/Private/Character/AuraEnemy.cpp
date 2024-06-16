@@ -73,6 +73,8 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsAlive", true);	// 设置黑板值, 是否存活
 
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsStun", bIsStunned);	// 设置黑板值, 是否被眩晕
+
 	}
 }
 
@@ -126,7 +128,7 @@ void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCou
 	bIsHitReact = NewCount > 0;	// 是否受击反应
 
 	// 受击，停止移动
-	GetCharacterMovement()->MaxWalkSpeed = bIsHitReact ? 0.f : BaseWalkSpeed;	// 如果受击，速度为0，否则为原来的速度
+	// GetCharacterMovement()->MaxWalkSpeed = bIsHitReact ? 0.f : BaseWalkSpeed;	// 如果受击，速度为0，否则为原来的速度
 
 	if (AuraAIController && AuraAIController->GetBlackboardComponent())
 	{
@@ -156,6 +158,11 @@ AActor* AAuraEnemy::GetCombatTarget_Implementation() const
 	return CombatTarget;
 }
 
+void AAuraEnemy::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	Super::StunTagChanged(CallbackTag, NewCount);
+}
+
 void AAuraEnemy::InitAbilityActorInfo()
 {
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);	// 初始化能力系统组件，设置拥有者和所有者
@@ -166,6 +173,9 @@ void AAuraEnemy::InitAbilityActorInfo()
 	{
 		InitializeDefaultAttributes();
 	}
+
+	// 绑定角色眩晕标签改变委托
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_LightningStun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AAuraEnemy::StunTagChanged);
 
 	// 到这里，我们已经初始化了ASC，这样我们就能够在这里广播ASC注册委托
 	OnASCRegistered.Broadcast(AbilitySystemComponent);	// 广播ASC注册委托

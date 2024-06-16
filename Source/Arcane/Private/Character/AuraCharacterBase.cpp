@@ -9,6 +9,8 @@
 #include "Components/CapsuleComponent.h"
 #include "NiagaraSystem.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 
 AAuraCharacterBase::AAuraCharacterBase()
 {
@@ -17,6 +19,10 @@ AAuraCharacterBase::AAuraCharacterBase()
 	BurnDebuffEffect = CreateDefaultSubobject<UDebuffNiagaraComponent>(TEXT("BurnDebuffEffect"));	// 创建燃烧Debuff特效
 	BurnDebuffEffect->SetupAttachment(GetMesh());	// 设置特效附加到Mesh
 	BurnDebuffEffect->DebuffTag = FAuraGameplayTags::Get().Debuff_FireBurn;		// 设置DebuffTag
+
+	StunDebuffEffect = CreateDefaultSubobject<UDebuffNiagaraComponent>(TEXT("StunDebuffEffect"));	// 创建眩晕Debuff特效
+	StunDebuffEffect->SetupAttachment(GetMesh());	// 设置特效附加到Mesh
+	StunDebuffEffect->DebuffTag = FAuraGameplayTags::Get().Debuff_LightningStun;		// 设置DebuffTag
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);	// 设置胶囊体碰撞响应
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);		// 只让Capsule和Mesh网格中的一个生成重叠事件，避免重叠事件重复，照成类似以二次伤害的问题
@@ -57,6 +63,13 @@ AAuraCharacterBase::AAuraCharacterBase()
 	RightWeapon->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	// RightWeapon->SetSimulatePhysics(true);	// 设置右手武器组件模拟物理
 
+}
+
+void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AAuraCharacterBase, bIsStunned);	// 复制眩晕状态
 }
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
@@ -131,6 +144,13 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& Deat
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// 设置胶囊体碰撞状态
 
 	OnCharacterDeath.Broadcast(this);	// 角色死亡委托
+}
+
+void AAuraCharacterBase::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	bIsStunned = NewCount > 0;	// 是否眩晕
+
+	GetCharacterMovement()->MaxWalkSpeed = bIsStunned ? 0.f : BaseWalkSpeed;	// 如果眩晕，速度为0，否则为原来的速度
 }
 
 void AAuraCharacterBase::BeginPlay()
@@ -318,6 +338,10 @@ void AAuraCharacterBase::Dissolve()
 		BowArrow->SetMaterial(0, MID);
 		StartArrowDissolveTimeline(MID);
 	}
+}
+
+void AAuraCharacterBase::OnRep_Stunned()
+{
 }
 
 bool AAuraCharacterBase::IsDead_Implementation() const

@@ -25,7 +25,8 @@ class ARCANE_API AAuraCharacterBase : public ACharacter, public IAbilitySystemIn
 public:
 	AAuraCharacterBase();
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;	// 获取生命周期复制属性
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;	// 获取能力系统组件
 	UAttributeSet* GetAttributeSet() const;
 
 	UFUNCTION(NetMulticast, Reliable)
@@ -59,6 +60,14 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TArray<FTaggedMontage> AttackMontages;	// 攻击动画
+	
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);	// 眩晕标签改变
+
+	UPROPERTY(ReplicatedUsing = OnRep_Stunned, BlueprintReadOnly, Category = "Combat")
+	bool bIsStunned = false;	// 是否被眩晕
+
+	UFUNCTION()
+	virtual void OnRep_Stunned();	// 眩晕改变
 
 protected:
 	virtual void BeginPlay() override;
@@ -130,7 +139,7 @@ protected:
 	bool bIsHitReact = false;	// 是否受击
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
-	float BaseWalkSpeed = 250.f;	// 基础行走速度
+	float BaseWalkSpeed = 600.f;	// 基础行走速度
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;	// 受击反应动画
@@ -184,6 +193,9 @@ protected:
 	 */
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UDebuffNiagaraComponent> BurnDebuffEffect;	// 灼烧特效
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDebuffNiagaraComponent> StunDebuffEffect;	// 眩晕特效
 
 	/*
 	 * Minions 召唤物

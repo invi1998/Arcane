@@ -151,10 +151,10 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 			UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle),
 			UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle));	// 显示浮动文字
 
-		if (UAuraAbilitySystemLibrary::IsSuccessfulDebuff(Props.EffectContextHandle))
-		{
-			Debuff(Props);	// Debuff
-		}
+	}
+	if (UAuraAbilitySystemLibrary::IsSuccessfulDebuff(Props.EffectContextHandle))
+	{
+		Debuff(Props);	// Debuff
 	}
 }
 
@@ -193,10 +193,21 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	// 同时，我希望Debuff效果能动态添加GameplayTag，因为我们希望Actor能够知道什么时候受到Debuff，什么时候结束Debuff
 	// DebuffEffect->InheritableGameplayEffectTags.AddTag(AuraTags.DamageTypesToDebuff[DamageTypeTag]);	// 添加Debuff标签
 
-	// 因为在UE5.4中，InheritedTagContainer已经被移除，所以我们需要手动添加Tag，代码如下
+	// 因为在UE5.4中，InheritedTagContainer已经被移除，所以我们需要手动添加Tag，代码如下（UE5.3下其实也不能使用InheritedTagContainer了，虽然不报错，但是也不生效）
 	FInheritedTagContainer InheritedTags;	// 创建继承标签容器
-	InheritedTags.Added.AddTag(AuraTags.DamageTypesToDebuff[DamageTypeTag]);	// 添加Debuff标签
+	const FGameplayTag& DebuffTag = AuraTags.DamageTypesToDebuff[DamageTypeTag];	// 获取Debuff标签
+	InheritedTags.Added.AddTag(DebuffTag);	// 添加Debuff标签
 	UTargetTagsGameplayEffectComponent& Component = DebuffEffect->AddComponent<UTargetTagsGameplayEffectComponent>();	// 添加目标标签效果组件
+
+	// 如果是StunDebuff，那么就继续添加BlockInput的标签，用来实现眩晕时禁止输入
+	if (DebuffTag == AuraTags.Debuff_LightningStun)
+	{
+		InheritedTags.Added.AddTag(AuraTags.Player_Block_InputPressed);	// 添加BlockInput标签
+		InheritedTags.Added.AddTag(AuraTags.Player_Block_CursorTrace);	// 添加BlockInput标签
+		InheritedTags.Added.AddTag(AuraTags.Player_Block_InputHeld);	// 添加BlockInput标签
+		InheritedTags.Added.AddTag(AuraTags.Player_Block_InputReleased);	// 添加BlockInput标签
+	}
+
 	Component.SetAndApplyTargetTagChanges(InheritedTags);	// 设置并应用目标标签更改
 
 	// 设置Effect堆叠类型

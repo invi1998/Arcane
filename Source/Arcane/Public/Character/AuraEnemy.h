@@ -54,6 +54,8 @@ public:
 	virtual void SetCombatTarget_Implementation(AActor* NewTarget) override;
 	virtual AActor* GetCombatTarget_Implementation() const override;
 
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) override;
+
 protected:
 	virtual void BeginPlay() override;
 

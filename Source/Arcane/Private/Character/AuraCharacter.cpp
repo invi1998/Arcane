@@ -4,6 +4,7 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -13,6 +14,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/HUD/AuraHUD.h"
 
@@ -238,6 +240,36 @@ int32 AAuraCharacter::GetSkillPoint_Implementation() const
 	return AuraPlayerState->GetSkillPoints();
 }
 
+void AAuraCharacter::OnRep_Stunned()
+{
+	if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();
+
+		FInheritedTagContainer InheritedTags;	// 创建继承标签容器
+		InheritedTags.AddTag(AuraTags.Player_Block_CursorTrace);	// 禁止鼠标追踪
+		InheritedTags.AddTag(AuraTags.Player_Block_InputHeld);	// 禁止输入保持
+		InheritedTags.AddTag(AuraTags.Player_Block_InputPressed);	// 禁止输入按下
+		InheritedTags.AddTag(AuraTags.Player_Block_InputReleased);	// 禁止输入释放
+
+		const FString DebuffName = FString::Printf(TEXT("DynamicDebuff_%s"), *AuraTags.Debuff_LightningStun.ToString());	 // 获取Debuff名称
+		UGameplayEffect* DebuffEffect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(*DebuffName));	// 创建Debuff效果
+		UTargetTagsGameplayEffectComponent& Component = DebuffEffect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
+
+		Component.SetAndApplyTargetTagChanges(InheritedTags);	// 添加继承标签容器
+
+		if (bIsStunned)
+		{
+			AuraAbilitySystemComponent->AddLooseGameplayTag(AuraTags.Debuff_LightningStun);	// 添加眩晕标签
+		}
+		else
+		{
+			AuraAbilitySystemComponent->RemoveLooseGameplayTag(AuraTags.Debuff_LightningStun);	// 移除眩晕标签
+		}
+
+	}
+}
+;
 void AAuraCharacter::InitAbilityActorInfo()
 {
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
@@ -246,6 +278,9 @@ void AAuraCharacter::InitAbilityActorInfo()
 	Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent())->AbilityActorInfoSet();	// 设置技能Actor信息
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();	// 获取技能系统组件
 	AttributeSet = AuraPlayerState->GetAttributeSet();	// 获取属性集
+
+	// 绑定角色眩晕标签改变委托
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_LightningStun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AAuraCharacter::StunTagChanged);
 
 	OnASCRegistered.Broadcast(AbilitySystemComponent);	// 广播ASC注册委托
 
