@@ -54,8 +54,11 @@ public:
 	FGameplayTag GetStatusTagByAbilityTag(const FGameplayTag& AbilityTag);	// 通过能力标签获取状态标签
 	FGameplayTag GetInputTagByAbilityTag(const FGameplayTag& AbilityTag);	// 通过能力标签获取输入标签
 	FGameplayTag GetAbilityTagByInputTag(const FGameplayTag& InputTag);		// 通过输入标签获取能力标签
-
 	FGameplayAbilitySpec* FindAbilitySpecByTag(const FGameplayTag& AbilityTag);	// 通过标签查找能力
+	bool IsEmptySlot(const FGameplayTag& SlotTag);	// 指定插槽是否为空
+	bool IsPassiveAbility(const FGameplayAbilitySpec* Spec) const;	// 是否是被动技能
+	static bool AbilityHasAnyInputTag(const FGameplayAbilitySpec* Spec);	// 技能是否有输入标签
+	static void AssignSlotToAbility(FGameplayAbilitySpec& AbilitySpec, const FGameplayTag& SlotTag);	// 将技能分配到插槽
 
 	int32 GetAbilityLevelByTag(const FGameplayTag& AbilityTag);	// 通过标签获取技能等级
 
@@ -76,9 +79,9 @@ public:
 	UFUNCTION(Client, Reliable)
 	void ClientEquipAbility(const FGameplayTag& AbilityTag, const FGameplayTag& Status, const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlotTag);	// 客户端装备技能
 
-	void ClearSlot(FGameplayAbilitySpec* Spec);	// 清除槽
+	static void ClearSlot(FGameplayAbilitySpec* Spec);	// 清除槽
 	void ClearAbilityOnSlot(const FGameplayTag& SlotTag);	// 清除槽上的技能
-	bool AbilityHasSlot(FGameplayAbilitySpec* Spec, const FGameplayTag& SlotTag);	// 技能是否有槽
+	static bool AbilityHasSlot(const FGameplayAbilitySpec* Spec, const FGameplayTag& SlotTag);	// 技能是否有槽
 
 	bool GetDescriptionByTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription);	// 通过标签获取技能描述
 

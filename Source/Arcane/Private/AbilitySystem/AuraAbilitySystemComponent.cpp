@@ -68,6 +68,8 @@ void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
     // 1：检测输入的标签是否有效
     if (InputTag.IsValid())
     {
+        FScopedAbilityListLock AbilityLock(*this);	// 创建一个作用域锁，锁住AbilitySystemComponent的能力列表
+
     	// 2：获取所有的激活的能力(激活的能力是指那些可以被激活的能力) 这取决于AbilitySystemComponent的激活策略
 		TArray<FGameplayAbilitySpec> AbilitiesOfTheActivatable = GetActivatableAbilities();
 
@@ -93,6 +95,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
     if (InputTag.IsValid())
     {
         // 2：获取所有的激活的能力(激活的能力是指那些可以被激活的能力) 这取决于AbilitySystemComponent的激活策略
+        FScopedAbilityListLock AbilityLock(*this);	// 创建一个作用域锁，锁住AbilitySystemComponent的能力列表
 
         // 3：遍历所有的激活的能力
         for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
@@ -116,6 +119,8 @@ void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
     // 1：检测输入的标签是否有效
     if (InputTag.IsValid())
     {
+        FScopedAbilityListLock AbilityLock(*this);	// 创建一个作用域锁，锁住AbilitySystemComponent的能力列表
+
         // 2：获取所有的激活的能力(激活的能力是指那些可以被激活的能力) 这取决于AbilitySystemComponent的激活策略
         TArray<FGameplayAbilitySpec> AbilitiesOfTheActivatable = GetActivatableAbilities();
 
@@ -221,6 +226,7 @@ FGameplayTag UAuraAbilitySystemComponent::GetInputTagByAbilityTag(const FGamepla
 
 FGameplayTag UAuraAbilitySystemComponent::GetAbilityTagByInputTag(const FGameplayTag& InputTag)
 {
+    FScopedAbilityListLock AbilityLock(*this);	// 创建一个作用域锁，锁住AbilitySystemComponent的能力列表
 	// 1：遍历所有的激活的能力
 	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
 	{
@@ -256,6 +262,57 @@ FGameplayAbilitySpec* UAuraAbilitySystemComponent::FindAbilitySpecByTag(const FG
 	}
 
 	return nullptr;    // 返回空指针
+}
+
+bool UAuraAbilitySystemComponent::IsEmptySlot(const FGameplayTag& SlotTag)
+{
+    // 在我们遍历所有的激活的能力之前，我们需要锁住AbilitySystemComponent的能力列表
+    FScopedAbilityListLock AbilityLock(*this);	// 创建一个作用域锁，锁住AbilitySystemComponent的能力列表
+	// 1：遍历所有的激活的能力
+	for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	{
+		// 2：获取能力的输入标签
+		if (AbilityHasSlot(&Spec, SlotTag))
+		{
+			return false;    // 返回false
+		}
+	}
+
+	return true;    // 返回true
+}
+
+bool UAuraAbilitySystemComponent::IsPassiveAbility(const FGameplayAbilitySpec* Spec) const
+{
+	// 1：检测能力是否有效
+	if (Spec)
+	{
+		// 2：获取能力的标签 (通过获取指定Tag的AbilityInfo来判断是否是被动技能)
+		const UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
+
+        if (AbilityInfo)
+        {
+        	const FGameplayTag AbilityTypeTag = AbilityInfo->FindAbilityInfoByTag(GetAbilityTagBySpec(*Spec)).AbilityTypeTag;    // 获取技能类型标签
+
+	        if (AbilityTypeTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Type_Passive))
+	        {
+        		return true;    // 返回true
+			}
+        }
+	
+	}
+
+	return false;    // 返回false
+}
+
+bool UAuraAbilitySystemComponent::AbilityHasAnyInputTag(const FGameplayAbilitySpec* Spec)
+{
+    return Spec->DynamicAbilityTags.HasTagExact(FGameplayTag::RequestGameplayTag(FName("InputTag")));    // 返回是否有输入标签
+}
+
+void UAuraAbilitySystemComponent::AssignSlotToAbility(FGameplayAbilitySpec& AbilitySpec, const FGameplayTag& SlotTag)
+{
+    ClearSlot(&AbilitySpec);    // 清除槽
+    AbilitySpec.DynamicAbilityTags.AddTag(SlotTag);    // 添加槽标签
 }
 
 int32 UAuraAbilitySystemComponent::GetAbilityLevelByTag(const FGameplayTag& AbilityTag)
@@ -333,20 +390,55 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
         const FGameplayTag& StatusTag = GetAbilityStateTag(*AbilitySpec);    // 获取技能状态标签
         const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();    // 获取AuraGameplayTags
 
-        const bool bStatusValid = StatusTag.IsValid() && (StatusTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_State_UnLocked) || StatusTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_State_Equipped));
+        const bool bStatusValid = StatusTag.IsValid() && (StatusTag.MatchesTagExact(AuraTags.Abilities_State_UnLocked) || StatusTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_State_Equipped));
         if (bStatusValid)
         {
-	        ClearAbilityOnSlot(SlotTag);    // 清除槽上的技能
+            if (!IsEmptySlot(SlotTag))
+            {
+            	// 如果槽不为空
+            	FGameplayAbilitySpec* PreSlotAbilitySpec = FindAbilitySpecByTag(GetAbilityTagByInputTag(SlotTag));    // 通过输入标签查找技能
+
+                // 判断是否是被动技能
+                if (PreSlotAbilitySpec)
+                {
+                    const FGameplayTag& PreSlotAbilityTag = GetAbilityTagBySpec(*PreSlotAbilitySpec);    // 获取技能标签
+	                // 判断两个技能是否相同
+					if (PreSlotAbilitySpec->Ability == AbilitySpec->Ability)
+					{
+						// 如果是相同的技能，那么就直接返回
+                        return;
+					}
+
+                    // 判断是否是被动技能，同时两个技能也都得相同，同是被动技能
+                    if (IsPassiveAbility(PreSlotAbilitySpec))
+					{
+                        DeactivatePassiveAbilitiesDelegate.Broadcast(PreSlotAbilityTag);    // 广播取消被动技能
+					}
+
+                    ClearSlot(PreSlotAbilitySpec);    // 清除槽
+                    ClientEquipAbility(PreSlotAbilityTag, AuraTags.Abilities_State_Eligible, FGameplayTag::EmptyTag, SlotTag);    // 通知客户端装备技能
+				}
+            }
+
+            if (!AbilityHasAnyInputTag(AbilitySpec))
+            {
+            	// 如果技能没有输入标签，那么就说明该技能还没有添加，未激活
+				if (IsPassiveAbility(AbilitySpec))
+				{
+					TryActivateAbility(AbilitySpec->Handle);    // 尝试激活能力
+				}
+            }
+
 	        ClearSlot(AbilitySpec);    // 清除槽
 
             // 将新的槽标签添加到技能的DynamicAbilityTags中
             AbilitySpec->DynamicAbilityTags.AddTag(SlotTag);    // 添加槽标签
 
-            if (StatusTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_State_UnLocked))
+            if (StatusTag.MatchesTagExact(AuraTags.Abilities_State_UnLocked))
             {
             	// 如果技能状态是已解锁，那么就设置技能状态为已装备
-				AbilitySpec->DynamicAbilityTags.RemoveTag(FAuraGameplayTags::Get().Abilities_State_UnLocked);    // 移除技能状态标签
-				AbilitySpec->DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_State_Equipped);    // 添加技能状态标签
+				AbilitySpec->DynamicAbilityTags.RemoveTag(AuraTags.Abilities_State_UnLocked);    // 移除技能状态标签
+				AbilitySpec->DynamicAbilityTags.AddTag(AuraTags.Abilities_State_Equipped);    // 添加技能状态标签
 			}
 
             MarkAbilitySpecDirty(*AbilitySpec);    // 标记技能为脏，这样在下一帧就会更新技能状态
@@ -354,6 +446,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
         }
 
         ClientEquipAbility(AbilityTag, AuraTags.Abilities_State_Equipped, SlotTag, PreviousSlotTag);    // 通知客户端装备技能
+
 	}
 }
 
@@ -370,8 +463,6 @@ void UAuraAbilitySystemComponent::ClearSlot(FGameplayAbilitySpec* Spec)
     // 修改技能状态为已解锁
     Spec->DynamicAbilityTags.RemoveTag(FAuraGameplayTags::Get().Abilities_State_Equipped);    // 移除技能状态标签
     Spec->DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_State_UnLocked);    // 添加技能状态标签
-
-    MarkAbilitySpecDirty(*Spec);    // 标记技能为脏，这样在下一帧就会更新技能状态
 }
 
 void UAuraAbilitySystemComponent::ClearAbilityOnSlot(const FGameplayTag& SlotTag)
@@ -390,10 +481,9 @@ void UAuraAbilitySystemComponent::ClearAbilityOnSlot(const FGameplayTag& SlotTag
 	}
 }
 
-bool UAuraAbilitySystemComponent::AbilityHasSlot(FGameplayAbilitySpec* Spec, const FGameplayTag& SlotTag)
+bool UAuraAbilitySystemComponent::AbilityHasSlot(const FGameplayAbilitySpec* Spec, const FGameplayTag& SlotTag)
 {
-	const FGameplayTag& InputTag = GetAbilityInputTagBySpec(*Spec);    // 获取输入标签
-	return InputTag.IsValid() && InputTag.MatchesTagExact(SlotTag);    // 返回输入标签是否与槽标签相同
+	return Spec->DynamicAbilityTags.HasTagExact(SlotTag);    // 判断技能是否有槽
 }
 
 bool UAuraAbilitySystemComponent::GetDescriptionByTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription)
