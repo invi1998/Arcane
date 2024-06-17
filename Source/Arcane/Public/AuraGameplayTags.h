@@ -110,6 +110,13 @@ public:
 	FGameplayTag Abilities_None;				// 能力：无
 
 	/*
+	 * Passive Ability Tags
+	 */
+	FGameplayTag Abilities_Passive_HaloOfProtection;	// 被动：保护光环
+	FGameplayTag Abilities_Passive_LifeSiphon;			// 被动：生命虹吸
+	FGameplayTag Abilities_Passive_ManaSiphon;			// 被动：法力虹吸
+
+	/*
 	 * Fire Ability Tags
 	 */
 	FGameplayTag Abilities_Fire_FireBolt;				// 能力: 火焰：火球
