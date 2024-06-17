@@ -16,6 +16,8 @@ DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityInputTagChanged, const FGameplayTag
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged, const FGameplayTag& /* State Tag */, const FGameplayTag& /* Ability Tag */, const int32 /* Ability Level */);	// 定义一个委托，用于在技能状态改变时调用
 DECLARE_MULTICAST_DELEGATE_FourParams(FAbilitySlotChanged, const FGameplayTag& /* Ability Tag */, const FGameplayTag& /* Status */, const FGameplayTag& /* Slot Tag */, const FGameplayTag& /* Previous Slot Tag */);	// 定义一个委托，用于在技能槽改变时调用
 DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbilities, const FGameplayTag& /* Ability Tag */);	// 定义一个委托，用于在被动技能失效时调用
+DECLARE_MULTICAST_DELEGATE_TwoParams(FActivatePassiveEffect, const FGameplayTag& /* Ability Tag */, bool /* bActivate */);	// 定义一个委托，用于在被动效果激活或者失效时调用
+
 
 /**
  * 
@@ -34,6 +36,10 @@ public:
 	FAbilityStatusChanged AbilityStatusChangedDelegate;	// 定义一个委托，用于在技能状态改变时调用
 	FAbilitySlotChanged AbilitySlotChangedDelegate;	// 定义一个委托，用于在技能槽改变时调用
 	FDeactivatePassiveAbilities DeactivatePassiveAbilitiesDelegate;	// 定义一个委托，用于在被动技能失效时调用
+	FActivatePassiveEffect ActivatePassiveEffectDelegate;	// 定义一个委托，用于在被动效果激活或者失效时调用
+
+	UFUNCTION(NetMulticast, Unreliable)		// 因为该函数只是用于特效的通知，所以不需要可靠性
+	void MulticastActivatePassiveEffect(const FGameplayTag& AbilityTag, bool bActivate);	// 多播激活被动效果
 
 	void AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities);		// 添加角色的能力，这些能力在角色创建时就会被添加
 

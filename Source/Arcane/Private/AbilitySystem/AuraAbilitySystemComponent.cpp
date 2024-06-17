@@ -25,6 +25,13 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 
 }
 
+void UAuraAbilitySystemComponent::MulticastActivatePassiveEffect_Implementation(const FGameplayTag& AbilityTag,
+	bool bActivate)
+{
+	// 1：调用激活被动效果的委托
+	ActivatePassiveEffectDelegate.Broadcast(AbilityTag, bActivate);
+}
+
 void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities)
 {
 	for (TSubclassOf<UGameplayAbility> Ability : StartupAbilities)
@@ -412,6 +419,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
                     // 判断是否是被动技能，同时两个技能也都得相同，同是被动技能
                     if (IsPassiveAbility(PreSlotAbilitySpec))
 					{
+                        MulticastActivatePassiveEffect(PreSlotAbilityTag, false);    // 广播取消被动技能
                         DeactivatePassiveAbilitiesDelegate.Broadcast(PreSlotAbilityTag);    // 广播取消被动技能
 					}
 
@@ -426,6 +434,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 				if (IsPassiveAbility(AbilitySpec))
 				{
 					TryActivateAbility(AbilitySpec->Handle);    // 尝试激活能力
+                    MulticastActivatePassiveEffect(AbilityTag, true);    // 广播激活被动技能
 				}
             }
 

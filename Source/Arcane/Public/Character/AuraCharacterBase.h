@@ -16,6 +16,7 @@ class UGameplayEffect;
 class UAuraGameplayAbility;
 class UAnimMontage;
 class UDebuffNiagaraComponent;
+class UPassiveNiagaraComponent;
 
 UCLASS(Abstract)	// 添加Abstract关键字，表示这个类是一个抽象类
 class ARCANE_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -207,6 +208,21 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UDebuffNiagaraComponent> StunDebuffEffect;	// 眩晕特效
+
+	/*
+	 * Passive Niagara Effect 被动特效
+	 */
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPassiveNiagaraComponent> HalaOfProtectionPassiveEffect;	// 保护之光被动特效
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPassiveNiagaraComponent> LifeSiphonPassiveEffect;	// 生命吸取被动特效
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPassiveNiagaraComponent> ManaSiphonPassiveEffect;	// 法力吸取被动特效
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USceneComponent> EffectAttachPointComponent;	// 特效附着点
 
 	/*
 	 * Minions 召唤物

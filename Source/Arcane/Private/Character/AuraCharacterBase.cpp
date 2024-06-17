@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "NiagaraSystem.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
+#include "AbilitySystem/Passive/PassiveNiagaraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
@@ -16,13 +17,34 @@ AAuraCharacterBase::AAuraCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;	// 设置是否可以每帧调用Tick函数
 
+	const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();	// 获取AuraGameplayTags单例
+
 	BurnDebuffEffect = CreateDefaultSubobject<UDebuffNiagaraComponent>(TEXT("BurnDebuffEffect"));	// 创建燃烧Debuff特效
 	BurnDebuffEffect->SetupAttachment(GetMesh());	// 设置特效附加到Mesh
-	BurnDebuffEffect->DebuffTag = FAuraGameplayTags::Get().Debuff_FireBurn;		// 设置DebuffTag
+	BurnDebuffEffect->DebuffTag = AuraTags.Debuff_FireBurn;		// 设置DebuffTag
 
 	StunDebuffEffect = CreateDefaultSubobject<UDebuffNiagaraComponent>(TEXT("StunDebuffEffect"));	// 创建眩晕Debuff特效
 	StunDebuffEffect->SetupAttachment(GetMesh());	// 设置特效附加到Mesh
-	StunDebuffEffect->DebuffTag = FAuraGameplayTags::Get().Debuff_LightningStun;		// 设置DebuffTag
+	StunDebuffEffect->DebuffTag = AuraTags.Debuff_LightningStun;		// 设置DebuffTag
+
+	EffectAttachPointComponent = CreateDefaultSubobject<USceneComponent>(TEXT("EffectAttachPoint"));	// 创建特效附着点组件
+	EffectAttachPointComponent->SetupAttachment(GetMesh());	// 设置特效附着点组件的父组件（RootComponent）
+	EffectAttachPointComponent->SetUsingAbsoluteRotation(true);	// 设置绝对旋转，因为我们希末特效的旋转是相对于角色的绝对旋转
+	EffectAttachPointComponent->SetWorldRotation(FRotator::ZeroRotator);	// 设置特效附着点组件的世界旋转，设置为0，也就是我们不希望特效附着点组件有任何旋转
+
+	HalaOfProtectionPassiveEffect = CreateDefaultSubobject<UPassiveNiagaraComponent>(TEXT("HalaOfProtectionPassiveEffect"));	// 创建保护光环被动技能特效
+	HalaOfProtectionPassiveEffect->SetupAttachment(EffectAttachPointComponent);	// 设置特效附加到Mesh
+	HalaOfProtectionPassiveEffect->PassiveSpellTag = AuraTags.Abilities_Passive_HaloOfProtection;		// 设置被动技能Tag
+
+	LifeSiphonPassiveEffect = CreateDefaultSubobject<UPassiveNiagaraComponent>(TEXT("LifeSiphonPassiveEffect"));	// 创建生命吸取被动技能特效
+	LifeSiphonPassiveEffect->SetupAttachment(EffectAttachPointComponent);	// 设置特效附加到Mesh
+	LifeSiphonPassiveEffect->PassiveSpellTag = AuraTags.Abilities_Passive_LifeSiphon;		// 设置被动技能Tag
+
+	ManaSiphonPassiveEffect = CreateDefaultSubobject<UPassiveNiagaraComponent>(TEXT("ManaSiphonPassiveEffect"));	// 创建法力吸取被动技能特效
+	ManaSiphonPassiveEffect->SetupAttachment(EffectAttachPointComponent);	// 设置特效附加到Mesh
+	ManaSiphonPassiveEffect->PassiveSpellTag = AuraTags.Abilities_Passive_ManaSiphon;		// 设置被动技能Tag
+
+	
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);	// 设置胶囊体碰撞响应
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);		// 只让Capsule和Mesh网格中的一个生成重叠事件，避免重叠事件重复，照成类似以二次伤害的问题
