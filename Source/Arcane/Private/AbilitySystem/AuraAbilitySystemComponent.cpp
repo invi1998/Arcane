@@ -89,6 +89,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
                // 5： 判断能力是否已经激活
                 if (Spec.IsActive())
                 {
+                    // InvokeReplicatedEvent是一个复制事件，它会在服务端调用，然后在客户端广播。这是我们能对按下和释放事件进行预测响应的原因。
                     InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());    // 调用复制事件
 				}
             }

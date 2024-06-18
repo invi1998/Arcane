@@ -246,6 +246,7 @@ void AAuraCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMat
 	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 	{
 		AuraPlayerController->ShowMagicCircle();	// 显示法环
+		AuraPlayerController->bShowMouseCursor = false;	// 隐藏鼠标光标
 		if (DecalMaterial)
 		{
 			AuraPlayerController->SetDecalMaterial(DecalMaterial);	// 设置贴花材质
@@ -258,6 +259,7 @@ void AAuraCharacter::HideMagicCircle_Implementation()
 	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 	{
 		AuraPlayerController->HideMagicCircle();	// 隐藏法环
+		AuraPlayerController->bShowMouseCursor = true;	// 显示鼠标光标
 	}
 }
 

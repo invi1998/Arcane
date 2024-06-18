@@ -45,7 +45,7 @@ FHitResult AAuraPlayerController::GetCursorHitResult() const
 
 void AAuraPlayerController::ShowMagicCircle()
 {
-	if (!MagicCircle)
+	if (!MagicCircle || !IsValid(MagicCircle))
 	{
 		// 在鼠标点击的位置生成法环
 		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass, CursorHitResult.ImpactPoint, FRotator::ZeroRotator);
