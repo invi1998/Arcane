@@ -93,14 +93,14 @@ TArray<USceneComponent*> APointCollection::GetGroundPoints(const FVector& Ground
 
 		FHitResult HitResult;
 		TArray<AActor*> ActorsToIgnore;
-		UAuraAbilitySystemLibrary::GetLivePlayerWithinRadius(this, ActorsToIgnore, TArray<AActor*>(), Point->GetComponentLocation(), 1500.f);
+		UAuraAbilitySystemLibrary::GetLivePlayerWithinRadius(this, ActorsToIgnore, TArray<AActor*>(), GetActorLocation(), 1500.f);
 
 
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActors(ActorsToIgnore);
 		GetWorld()->LineTraceSingleByProfile(HitResult, RaisedLocation, LoweredLocation, "BlockAll", Params);	// 碰撞检测，追踪并忽略指定半径内的玩家
 
-		const FVector AdjustedLocation = HitResult.bBlockingHit ? Point->GetComponentLocation() + HitResult.ImpactPoint.Z : LoweredLocation;
+		const FVector AdjustedLocation = FVector(Point->GetComponentLocation().X, Point->GetComponentLocation().Y, HitResult.ImpactPoint.Z);
 
 		Point->SetWorldLocation(AdjustedLocation);
 		Point->SetWorldRotation(UKismetMathLibrary::MakeRotFromZ(HitResult.ImpactNormal));		// 调整点的位置和旋转，使其与地面接触，且法线与地面法线一致（比如坡度，就是让点的法线与坡度法线一致）
