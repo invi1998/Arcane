@@ -146,7 +146,7 @@ public:
 	FGameplayTag Abilities_Arcane_ArcaneMissile;	// 能力: 奥术：奥术飞弹
 	FGameplayTag Abilities_Arcane_Spellbind;		// 能力: 奥术：法术束缚
 	FGameplayTag Abilities_Arcane_Shield;			// 能力: 奥术：护盾
-	FGameplayTag Abilities_Arcane_Lgnition;			// 能力: 奥术：引燃
+	FGameplayTag Abilities_Arcane_Shards;			// 能力: 奥术: 碎片
 
 	/*
 	 * Poison Ability Tags
@@ -197,7 +197,7 @@ public:
 	FGameplayTag Cooldown_Arcane_ArcaneMissile;	// 冷却：奥术：奥术飞弹
 	FGameplayTag Cooldown_Arcane_Spellbind;		// 冷却：奥术：法术束缚
 	FGameplayTag Cooldown_Arcane_Shield;			// 冷却：奥术：护盾
-	FGameplayTag Cooldown_Arcane_Lgnition;		// 冷却：奥术：引燃
+	FGameplayTag Cooldown_Arcane_Shards;		// 冷却：奥术：碎片
 	FGameplayTag Cooldown_Poison_PoisonDart;		// 冷却：毒素：毒镖
 	FGameplayTag Cooldown_Poison_Venom;			// 冷却：毒素：毒液
 	FGameplayTag Cooldown_Poison_ToxicCloud;		// 冷却：毒素：毒云

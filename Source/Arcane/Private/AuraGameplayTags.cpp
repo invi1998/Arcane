@@ -468,9 +468,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Arcane.Shield"),
 		FString("Shield Ability")
 	);
-	GameplayTags.Abilities_Arcane_Lgnition = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Arcane.Lgnition"),
-		FString("Lgnition Ability")
+	GameplayTags.Abilities_Arcane_Shards = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Arcane.Shards"),
+		FString("Shards Ability")
 	);
 
 	/*
@@ -599,9 +599,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Cooldown.Arcane.Shield"),
 		FString("Shield Cooldown")
 	);
-	GameplayTags.Cooldown_Arcane_Lgnition = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Cooldown.Arcane.Lgnition"),
-		FString("Lgnition Cooldown")
+	GameplayTags.Cooldown_Arcane_Shards = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Cooldown.Arcane.Shards"),
+		FString("Shards Cooldown")
 	);
 	GameplayTags.Cooldown_Poison_PoisonDart = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Cooldown.Poison.PoisonDart"),
