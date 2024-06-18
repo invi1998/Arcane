@@ -16,9 +16,10 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDecalComponent> MagicCircleDecalComponent;		// 法环贴花组件
+
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UDecalComponent> MagicCircleDecalComponent;		// 法环贴花组件
 };

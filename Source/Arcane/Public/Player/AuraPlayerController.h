@@ -41,6 +41,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void HideMagicCircle();	// 隐藏法环
 
+	void SetDecalMaterial(UMaterialInterface* DecalMaterial) const;	// 设置贴花材质
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;	// 该函数在控制器被创建时调用，用于设置输入组件

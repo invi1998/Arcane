@@ -43,6 +43,8 @@ public:
 	virtual void AddSkillPoint_Implementation(int32 Point) override;	// 技能加点
 	virtual int32 GetAttributePoint_Implementation() const override;	// 获取属性点
 	virtual int32 GetSkillPoint_Implementation() const override;	// 获取技能点
+	virtual void ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial) override;	// 显示法环
+	virtual void HideMagicCircle_Implementation() override;	// 隐藏法环
 	/* Player Interface End*/
 
 	// 角色升级特效

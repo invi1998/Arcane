@@ -41,20 +41,26 @@ public:
 	int32 GetLevelByEXP(int32 EXP) const;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	int32 GetAttributePointReward() const;	// »ñÈ¡ÊôĞÔµã½±Àø
+	int32 GetAttributePointReward() const;	// è·å–å±æ€§ç‚¹å¥–åŠ±
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	int32 GetSkillPointReward() const;		// »ñÈ¡¼¼ÄÜµã½±Àø
+	int32 GetSkillPointReward() const;		// è·å–æŠ€èƒ½ç‚¹å¥–åŠ±
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void AddAttributePoint(int32 Point);	// ÊôĞÔ¼Óµã
+	void AddAttributePoint(int32 Point);	// å±æ€§åŠ ç‚¹
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void AddSkillPoint(int32 Point);		// ¼¼ÄÜ¼Óµã
+	void AddSkillPoint(int32 Point);		// æŠ€èƒ½åŠ ç‚¹
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	int32 GetAttributePoint() const;		// »ñÈ¡ÊôĞÔµã
+	int32 GetAttributePoint() const;		// è·å–å±æ€§ç‚¹
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	int32 GetSkillPoint() const;			// »ñÈ¡¼¼ÄÜµã
+	int32 GetSkillPoint() const;			// è·å–æŠ€èƒ½ç‚¹
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void ShowMagicCircle(UMaterialInterface* DecalMaterial = nullptr);	// æ˜¾ç¤ºæ³•ç¯
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void HideMagicCircle();	// éšè—æ³•ç¯
 };

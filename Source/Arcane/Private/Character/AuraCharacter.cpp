@@ -241,6 +241,26 @@ int32 AAuraCharacter::GetSkillPoint_Implementation() const
 	return AuraPlayerState->GetSkillPoints();
 }
 
+void AAuraCharacter::ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial)
+{
+	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	{
+		AuraPlayerController->ShowMagicCircle();	// 显示法环
+		if (DecalMaterial)
+		{
+			AuraPlayerController->SetDecalMaterial(DecalMaterial);	// 设置贴花材质
+		}
+	}
+}
+
+void AAuraCharacter::HideMagicCircle_Implementation()
+{
+	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	{
+		AuraPlayerController->HideMagicCircle();	// 隐藏法环
+	}
+}
+
 void AAuraCharacter::OnRep_Stunned()
 {
 	if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))

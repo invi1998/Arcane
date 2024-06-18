@@ -11,6 +11,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Actor/MagicCircle.h"
+#include "Components/DecalComponent.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
 #include "Input/AuraEnhancedInputComponent.h"
@@ -56,6 +57,14 @@ void AAuraPlayerController::HideMagicCircle()
 	if (MagicCircle)
 	{
 		MagicCircle->Destroy();	// 销毁法环
+	}
+}
+
+void AAuraPlayerController::SetDecalMaterial(UMaterialInterface* DecalMaterial) const
+{
+	if (IsValid(MagicCircle))
+	{
+		MagicCircle->MagicCircleDecalComponent->SetMaterial(0, DecalMaterial);	// 设置法环的材质
 	}
 }
 
