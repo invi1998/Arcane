@@ -10,6 +10,7 @@
 #include "NavigationSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Actor/MagicCircle.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
 #include "Input/AuraEnhancedInputComponent.h"
@@ -32,11 +33,30 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	CursorTrace();	// 鼠标点的射线检测
 
 	AutoRun();	// 自动奔跑
+
+	UpdateMagicCircleLocation();	// 更新法环位置
 }
 
 FHitResult AAuraPlayerController::GetCursorHitResult() const
 {
 	return CursorHitResult;	// 返回碰撞结果
+}
+
+void AAuraPlayerController::ShowMagicCircle()
+{
+	if (!MagicCircle)
+	{
+		// 在鼠标点击的位置生成法环
+		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass, CursorHitResult.ImpactPoint, FRotator::ZeroRotator);
+	}
+}
+
+void AAuraPlayerController::HideMagicCircle()
+{
+	if (MagicCircle)
+	{
+		MagicCircle->Destroy();	// 销毁法环
+	}
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -107,6 +127,14 @@ void AAuraPlayerController::AutoRun()
 		{
 			bAutoRunning = false;	// 取消自动寻路
 		}
+	}
+}
+
+void AAuraPlayerController::UpdateMagicCircleLocation()
+{
+	if (IsValid(MagicCircle))
+	{
+		MagicCircle->SetActorLocation(CursorHitResult.ImpactPoint);	// 设置法环的位置为鼠标点击的位置
 	}
 }
 

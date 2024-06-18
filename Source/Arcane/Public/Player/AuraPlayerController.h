@@ -16,6 +16,7 @@ class UAuraAbilitySystemComponent;
 class USplineComponent;		// 样条曲线组件
 class UDamageTextComponent;
 class UNiagaraSystem;
+class AMagicCircle;
 
 /**
  * 
@@ -33,6 +34,12 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void ShowDamageText(float Damage, ACharacter* Target, bool bBlockedHit, bool bCriticalHit);	// 显示伤害文本
+
+	UFUNCTION(BlueprintCallable)
+	void ShowMagicCircle();	// 显示法环
+
+	UFUNCTION(BlueprintCallable)
+	void HideMagicCircle();	// 隐藏法环
 
 protected:
 	virtual void BeginPlay() override;
@@ -103,5 +110,13 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UNiagaraSystem> ClickNiagaraSystem;	// 点击特效
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AMagicCircle> MagicCircleClass;	// 法环类
+
+	UPROPERTY()
+	TObjectPtr<AMagicCircle> MagicCircle;	// 法环
+
+	void UpdateMagicCircleLocation();	// 更新法环位置
 
 };
