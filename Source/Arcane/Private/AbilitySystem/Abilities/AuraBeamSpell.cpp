@@ -147,7 +147,7 @@ FString UAuraBeamSpell::GetDescription(int32 Level)
 	const int32 RealMaxNumOfTargets = FMath::Min(Level, MaxNumOfTargets);
 
 	FString Desc = FString::Printf(TEXT("<Title>连锁闪电</>\t<Small>Electrocube</>\n\n"
-			"<Default>发射一道闪电，对目标造成伤害 </>\n\n"
+			"<Default>发射一道闪电，对目标造成伤害和短暂眩晕。闪电索敌目标会跟随技能等级提升变化 </>\n\n"
 			"\t<Default>技能等级：</><Level>%d</>\n"
 			"\t<Default>冷却时间：</><Cooldown>%.1f s</>\n"
 			"\t<Default>法力消耗：</><ManaCast>%.1f</>\n"
