@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameplayEffectTypes.h"
+#include "Engine/DamageEvents.h"
 #include "AuraAbilityTypes.generated.h"
 
 class UAbilitySystemComponent;
@@ -61,6 +62,22 @@ struct FDamageEffectParams
 
 	UPROPERTY(BlueprintReadWrite)
 	FVector KnockbackImpulse = FVector::ZeroVector;	// 击退冲量
+
+	/*
+	 * 径向伤害
+	 */
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsRadialDamage = false;	// 是否径向伤害
+
+	UPROPERTY(BlueprintReadWrite)
+	float RadialDamageInnerRadius = 0.f;	// 径向伤害内半径
+
+	UPROPERTY(BlueprintReadWrite)
+	float RadialDamageOuterRadius = 0.f;	// 径向伤害外半径
+
+	UPROPERTY(BlueprintReadWrite)
+	FVector RadialDamageOrigin = FVector::ZeroVector;	// 径向伤害原点
+
 };
 
 USTRUCT(BlueprintType)
@@ -79,6 +96,10 @@ public:
 	TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType; }
 	FVector GetDeathImpulse() const { return DeathImpulse; }
 	FVector GetKnockbackImpulse() const { return KnockbackImpulse; }
+	bool IsRadialDamage() const { return bIsRadialDamage; }
+	float GetRadialDamageInnerRadius() const { return RadialDamageInnerRadius; }
+	float GetRadialDamageOuterRadius() const { return RadialDamageOuterRadius; }
+	FVector GetRadialDamageOrigin() const { return RadialDamageOrigin; }
 
 	void SetCriticalHit(bool bInIsCriticalHit) { bIsCriticalHit = bInIsCriticalHit; }
 	void SetBlockedHit(bool bInIsBlockedHit) { bIsBlockedHit = bInIsBlockedHit; }
@@ -89,6 +110,10 @@ public:
 	void SetDamageType(TSharedPtr<FGameplayTag> InDamageType) { DamageType = InDamageType; }
 	void SetDeathImpulse(const FVector& InDeathImpulse) { DeathImpulse = InDeathImpulse; }
 	void SetKnockbackImpulse(const FVector& InKnockbackImpulse) { KnockbackImpulse = InKnockbackImpulse; }
+	void SetRadialDamage(bool bInIsRadialDamage) { bIsRadialDamage = bInIsRadialDamage; }
+	void SetRadialDamageInnerRadius(float InRadialDamageInnerRadius) { RadialDamageInnerRadius = InRadialDamageInnerRadius; }
+	void SetRadialDamageOuterRadius(float InRadialDamageOuterRadius) { RadialDamageOuterRadius = InRadialDamageOuterRadius; }
+	void SetRadialDamageOrigin(const FVector& InRadialDamageOrigin) { RadialDamageOrigin = InRadialDamageOrigin; }
 
 	/** Returns the actual struct used for serialization, subclasses must override this! */
 	virtual UScriptStruct* GetScriptStruct() const
@@ -139,6 +164,21 @@ protected:
 
 	UPROPERTY()
 	FVector KnockbackImpulse = FVector::ZeroVector;	// 击退冲量
+
+	/*
+	 * 径向伤害
+	 */
+	UPROPERTY()
+	bool bIsRadialDamage = false;	// 是否径向伤害
+
+	UPROPERTY()
+	float RadialDamageInnerRadius = 0.f;	// 径向伤害内半径
+
+	UPROPERTY()
+	float RadialDamageOuterRadius = 0.f;	// 径向伤害外半径
+
+	UPROPERTY()
+	FVector RadialDamageOrigin = FVector::ZeroVector;	// 径向伤害原点
 	
 };
 

@@ -61,6 +61,14 @@ FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 		Params.KnockbackImpulse = KnockbackRotator.Vector() * Params.KnockbackMagnitude;
 		Params.DeathImpulse = KnockbackRotator.Vector() * Params.DeathImpulseMagnitude;
 	}
+	if (bRadialDamage.Contains(InDamageType) && bRadialDamage[InDamageType])
+	{
+		// 如果设置了径向伤害，那么我们需要设置径向伤害的参数
+		Params.bIsRadialDamage = true;
+		Params.RadialDamageInnerRadius = RadialDamageInnerRadius.Contains(InDamageType) ? RadialDamageInnerRadius[InDamageType] : 0.f;
+		Params.RadialDamageOuterRadius = RadialDamageOuterRadius.Contains(InDamageType) ? RadialDamageOuterRadius[InDamageType] : 0.f;
+		Params.RadialDamageOrigin = RadialDamageOrigin.Contains(InDamageType) ? RadialDamageOrigin[InDamageType] : FVector::ZeroVector;
+	}
 
 	return Params;
 }

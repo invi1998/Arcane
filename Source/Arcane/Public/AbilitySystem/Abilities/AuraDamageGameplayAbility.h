@@ -56,4 +56,23 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	TMap<FGameplayTag, float> KnockbackChances;		// 击退几率
 
+	/*
+	 * 径向伤害效果的各项参数
+	 */
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	TMap<FGameplayTag, bool> bRadialDamage;	// 是否是径向伤害
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	TMap<FGameplayTag, float> RadialDamageInnerRadius;	// 径向伤害内半径
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	TMap<FGameplayTag, float> RadialDamageOuterRadius;	// 径向伤害外半径
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	TMap<FGameplayTag, FVector> RadialDamageOrigin;		// 径向伤害原点
+
+
+
+
 };
