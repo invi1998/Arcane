@@ -18,10 +18,10 @@ class ARCANE_API UAuraDamageGameplayAbility : public UAuraGameplayAbility
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void CauseDamage(AActor* TargetActor);	// 造成伤害
+	void CauseDamage(AActor* TargetActor, const FVector& InRadialDamageOrigin =	FVector::ZeroVector);	// 造成伤害
 
 	UFUNCTION(BlueprintPure)
-	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(FGameplayTag InDamageType, AActor* TargetActor = nullptr) const;	// 从类默认值创建伤害效果参数
+	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(FGameplayTag InDamageType, AActor* TargetActor = nullptr, const FVector& InRadialDamageOrigin = FVector::ZeroVector) const;	// 从类默认值创建伤害效果参数
 
 	UFUNCTION(BlueprintPure)
 	float GetDamageAtLevel(FGameplayTag InDamageType) const;	// 获取指定等级的伤害
@@ -34,45 +34,40 @@ protected:
 	TMap<FGameplayTag, FScalableFloat> DamageType;	// 伤害类型
 
 	// Debuff效果的各项参数
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, float> DebuffChances;		// Debuff几率
 
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, float> DebuffDamages;		// Debuff伤害
 
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, float> DebuffFrequencies;	// Debuff频率
 
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, float> DebuffDurations;		// Debuff持续时间
 
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, float> DeathImpulseMagnitudes;	// 死亡冲量大小（因为我们希望击杀敌人时有一个冲量效果）这里我们只设置了冲凉量大小，没有指定其方向，因为方向是在具体受击时决定的
 
 	// 击退效果的各项参数
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, float> KnockbackMagnitudes;	// 击退大小
 
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, float> KnockbackChances;		// 击退几率
 
 	/*
 	 * 径向伤害效果的各项参数
 	 */
 
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, bool> bRadialDamage;	// 是否是径向伤害
 
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, float> RadialDamageInnerRadius;	// 径向伤害内半径
 
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, float> RadialDamageOuterRadius;	// 径向伤害外半径
-
-	UPROPERTY(EditDefaultsOnly, Category = "Damage")
-	TMap<FGameplayTag, FVector> RadialDamageOrigin;		// 径向伤害原点
-
-
 
 
 };

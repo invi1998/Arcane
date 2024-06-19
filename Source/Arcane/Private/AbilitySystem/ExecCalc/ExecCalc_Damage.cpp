@@ -138,13 +138,17 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 		float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag, false, 0);	// 获取伤害值，如果没有则返回0，同时不报警告和不打印日志
 
+		if (DamageTypeValue <= 0)
+		{
+			continue;
+		}
+
 		float ResistanceValue = 0.f;	// 伤害抗性值
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageTypeCaptureDef, EvaluationParameters, ResistanceValue);	// 计算捕获属性值
 		ResistanceValue = FMath::Clamp(ResistanceValue, 0.f, 100.f);	// 最小值为0
 
 		// 我们希望伤害抗性是百分比，它将以百分比减少伤害
 		DamageTypeValue *= (100 - ResistanceValue) / 100.f;
-
 
 		// 检测是否是径向伤害类型，如果是，我们则需要针对Tagetd到伤害中心的距离依据径向伤害参数进行修正
 		if (UAuraAbilitySystemLibrary::IsRadialDamage(ContextHandle))

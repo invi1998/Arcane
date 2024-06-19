@@ -9,7 +9,7 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Arcane/ArcaneLogChannels.h"
 
-void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
+void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor, const FVector& InRadialDamageOrigin)
 {
 	if (IsValid(TargetActor))
 	{
@@ -20,7 +20,7 @@ void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 			//UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Pair.Key, ScaledDamage);	// Assign the damage value to the tag（注册伤害值到标签）
 
 			FDamageEffectParams Params;
-			Params = MakeDamageEffectParamsFromClassDefaults(Pair.Key, TargetActor);
+			Params = MakeDamageEffectParamsFromClassDefaults(Pair.Key, TargetActor, InRadialDamageOrigin);
 			// 应用伤害效果
 			UAuraAbilitySystemLibrary::ApplyDamageEffect(Params);
 		}
@@ -30,7 +30,7 @@ void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor)
 	}
 }
 
-FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassDefaults(FGameplayTag InDamageType, AActor* TargetActor) const
+FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassDefaults(FGameplayTag InDamageType, AActor* TargetActor, const FVector& InRadialDamageOrigin) const
 {
 	if (DamageType.Contains(InDamageType) == false)
 	{
@@ -67,7 +67,7 @@ FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 		Params.bIsRadialDamage = true;
 		Params.RadialDamageInnerRadius = RadialDamageInnerRadius.Contains(InDamageType) ? RadialDamageInnerRadius[InDamageType] : 0.f;
 		Params.RadialDamageOuterRadius = RadialDamageOuterRadius.Contains(InDamageType) ? RadialDamageOuterRadius[InDamageType] : 0.f;
-		Params.RadialDamageOrigin = RadialDamageOrigin.Contains(InDamageType) ? RadialDamageOrigin[InDamageType] : FVector::ZeroVector;
+		Params.RadialDamageOrigin = InRadialDamageOrigin;
 	}
 
 	return Params;
