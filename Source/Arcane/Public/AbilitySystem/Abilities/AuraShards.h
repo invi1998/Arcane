@@ -20,6 +20,7 @@ public:
 	virtual FString GetNextLevelDescription(int32 Level) override;
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Shards")
 	int32 MaxNumOfShards = 11;	// 碎片数量
 
 };
