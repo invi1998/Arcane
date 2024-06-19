@@ -8,5 +8,6 @@
 
 #define ECC_Projectile ECollisionChannel::ECC_GameTraceChannel1	// 子弹碰撞频道
 #define ECC_Target ECollisionChannel::ECC_GameTraceChannel2		// 目标碰撞频道
+#define ECC_ExcludePlayer ECollisionChannel::ECC_GameTraceChannel3	// 排除玩家碰撞频道
 
 
