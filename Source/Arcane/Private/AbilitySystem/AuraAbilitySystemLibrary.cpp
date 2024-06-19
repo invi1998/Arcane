@@ -564,6 +564,7 @@ FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const 
 		ContextHandle.AddSourceObject(Params.WorldContextObject);	// 添加源对象
 		SetDeathImpulse(ContextHandle, Params.DeathImpulse);	// 设置死亡冲量
 		SetKnockbackImpulse(ContextHandle, Params.KnockbackImpulse);	// 设置击退冲量
+
 		SetIsRadialDamage(ContextHandle, Params.bIsRadialDamage);	// 设置是否径向伤害
 		SetRadialDamageInnerRadius(ContextHandle, Params.RadialDamageInnerRadius);	// 设置径向伤害内半径
 		SetRadialDamageOuterRadius(ContextHandle, Params.RadialDamageOuterRadius);	// 设置径向伤害外半径

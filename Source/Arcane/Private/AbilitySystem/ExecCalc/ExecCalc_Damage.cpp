@@ -9,6 +9,7 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Interaction/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 UExecCalc_Damage::UExecCalc_Damage()
@@ -98,11 +99,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	const UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
 
 	// 获取Avatar
-	const AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
-	const AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
+	AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
+	AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
 
-	const ICombatInterface* SourceCombatInterface = SourceAvatar->Implements<UCombatInterface>() ? Cast<ICombatInterface>(SourceAvatar) : nullptr;
-	const ICombatInterface* TargetCombatInterface = TargetAvatar->Implements<UCombatInterface>() ? Cast<ICombatInterface>(TargetAvatar) : nullptr;
+	ICombatInterface* SourceCombatInterface = SourceAvatar->Implements<UCombatInterface>() ? Cast<ICombatInterface>(SourceAvatar) : nullptr;
+	ICombatInterface* TargetCombatInterface = TargetAvatar->Implements<UCombatInterface>() ? Cast<ICombatInterface>(TargetAvatar) : nullptr;
 
 	// 获取等级
 	const int32 SourceLevel = SourceCombatInterface ? SourceCombatInterface->Execute_GetCharacterLevel(SourceAvatar) : 1;
@@ -143,6 +144,37 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 		// 我们希望伤害抗性是百分比，它将以百分比减少伤害
 		DamageTypeValue *= (100 - ResistanceValue) / 100.f;
+
+
+		// 检测是否是径向伤害类型，如果是，我们则需要针对Tagetd到伤害中心的距离依据径向伤害参数进行修正
+		if (UAuraAbilitySystemLibrary::IsRadialDamage(ContextHandle))
+		{
+			//1.覆盖AuraCharacterBase中的TakeDamage。
+			//2.创建委托0nDamageDelegate，在TakeDamage中接收广播Damage
+			//3.将lambda绑定到受害人的OnDamageDelegate。
+			//4.调用UGameplayStatics::ApplyRadialDamagelithfalloff造成伤害(这将调用受害者的TokeDamage)，然后广播OnDamageDelegate)
+			//5.在Lambda，将DamageTypeValue设置为从广播中收到的Damage数值
+
+			if (TargetCombatInterface)
+			{
+				TargetCombatInterface->GetOnDamageDelegate().AddLambda([&](float DamageAmount)
+				{
+					DamageTypeValue = DamageAmount;
+				});
+			}
+			UGameplayStatics::ApplyRadialDamageWithFalloff(
+				TargetAvatar, 
+				DamageTypeValue, 
+				0,
+				UAuraAbilitySystemLibrary::GetRadialDamageOrigin(ContextHandle), 
+				UAuraAbilitySystemLibrary::GetRadialDamageInnerRadius(ContextHandle),
+				UAuraAbilitySystemLibrary::GetRadialDamageOuterRadius(ContextHandle), 
+				1.f,
+				UDamageType::StaticClass(),
+				TArray<AActor*>(),
+				SourceAvatar,
+				nullptr);
+		}
 
 		Damage += DamageTypeValue;
 	}

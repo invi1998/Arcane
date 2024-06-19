@@ -101,6 +101,14 @@ UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+float AAuraCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	const float RetDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	OnDamageDelegate.Broadcast(RetDamage);	// 伤害委托
+	return RetDamage;
+}
+
 UAttributeSet* AAuraCharacterBase::GetAttributeSet() const
 {
 	return AttributeSet;
@@ -387,6 +395,11 @@ FOnASCRegistered& AAuraCharacterBase::GetOnASCRegisteredDelegate()
 FOnCharacterDeath& AAuraCharacterBase::GetOnCharacterDeathDelegate()
 {
 	return OnCharacterDeath;
+}
+
+FOnDamageSignature& AAuraCharacterBase::GetOnDamageDelegate()
+{
+	return OnDamageDelegate;
 }
 
 AActor* AAuraCharacterBase::GetActor_Implementation()

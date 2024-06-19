@@ -17,6 +17,8 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*);
 // 角色死亡委托
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterDeath, AActor*, DeadActor);
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageSignature, float/* DamageAmount */);	// 伤害委托
+
 USTRUCT(BlueprintType)
 struct FTaggedMontage
 {
@@ -76,6 +78,8 @@ public:
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() = 0;	// 获取ASC注册委托
 
 	virtual FOnCharacterDeath& GetOnCharacterDeathDelegate() = 0;	// 获取角色死亡委托
+
+	virtual FOnDamageSignature& GetOnDamageDelegate() = 0;	// 获取伤害委托
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)	// 蓝图可调用，蓝图原生事件
 	bool IsDead() const;	// 是否死亡

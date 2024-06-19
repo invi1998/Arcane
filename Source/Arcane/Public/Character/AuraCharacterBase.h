@@ -28,6 +28,8 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;	// 获取生命周期复制属性
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;	// 获取能力系统组件
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;	// 承受伤害
+
 	UAttributeSet* GetAttributeSet() const;
 
 	UFUNCTION(NetMulticast, Reliable)
@@ -44,6 +46,7 @@ public:
 	virtual bool IsDead_Implementation() const override;	// 是否死亡
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;		// 获取ASC注册委托
 	virtual FOnCharacterDeath& GetOnCharacterDeathDelegate() override;	// 获取角色死亡委托
+	virtual FOnDamageSignature& GetOnDamageDelegate() override;	// 获取伤害委托
 	virtual AActor* GetActor_Implementation() override;	// 获取角色
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() const override;	// 获取攻击动画
 	virtual FTaggedMontage GetRandomAttackMontage_Implementation(const FGameplayTag& AbilityTag) const override;
@@ -57,9 +60,9 @@ public:
 	virtual bool IsBeingShock_Implementation() const override;	// 是否被电击
 	/* Combat Interface End*/
 
-	FOnASCRegistered OnASCRegistered;	// ASC注册委托
-
-	FOnCharacterDeath OnCharacterDeath;	// 角色死亡委托
+	FOnASCRegistered OnASCRegistered;		// ASC注册委托
+	FOnCharacterDeath OnCharacterDeath;		// 角色死亡委托
+	FOnDamageSignature OnDamageDelegate;	// 伤害委托
 
 	UPROPERTY(EditAnywhere, Category="Combat")
 	TArray<FTaggedMontage> AttackMontages;	// 攻击动画
