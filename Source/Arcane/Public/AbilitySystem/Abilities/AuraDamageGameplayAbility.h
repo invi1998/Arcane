@@ -18,10 +18,25 @@ class ARCANE_API UAuraDamageGameplayAbility : public UAuraGameplayAbility
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void CauseDamage(AActor* TargetActor, const FVector& InRadialDamageOrigin =	FVector::ZeroVector);	// 造成伤害
+	void CauseDamage(AActor* TargetActor, 
+		FVector InRadialDamageOrigin = FVector::ZeroVector, 
+		bool bOverrideKnockbackDirection = false,
+		FVector KnockbackDirectionOverride = FVector::ZeroVector,
+		bool bOverrideDeathImpulse = false,
+		FVector DeathImpulseDirectionOverride = FVector::ZeroVector,
+		bool bOverridePitch = false,
+		float PitchOverride = 0.f);	// 造成伤害
 
 	UFUNCTION(BlueprintPure)
-	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(FGameplayTag InDamageType, AActor* TargetActor = nullptr, const FVector& InRadialDamageOrigin = FVector::ZeroVector) const;	// 从类默认值创建伤害效果参数
+	FDamageEffectParams MakeDamageEffectParamsFromClassDefaults(FGameplayTag InDamageType,
+		AActor* TargetActor = nullptr, 
+		FVector InRadialDamageOrigin = FVector::ZeroVector, 
+		bool bOverrideKnockbackDirection = false,
+		FVector KnockbackDirectionOverride = FVector::ZeroVector,
+		bool bOverrideDeathImpulse = false,
+		FVector DeathImpulseDirectionOverride = FVector::ZeroVector,
+		bool bOverridePitch = false,
+		float PitchOverride = 0.f) const;	// 从类默认值创建伤害效果参数
 
 	UFUNCTION(BlueprintPure)
 	float GetDamageAtLevel(FGameplayTag InDamageType) const;	// 获取指定等级的伤害

@@ -9,18 +9,21 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Arcane/ArcaneLogChannels.h"
 
-void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor, const FVector& InRadialDamageOrigin)
+
+void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor, FVector InRadialDamageOrigin,
+	bool bOverrideKnockbackDirection, FVector KnockbackDirectionOverride, bool bOverrideDeathImpulse,
+	FVector DeathImpulseDirectionOverride, bool bOverridePitch, float PitchOverride)
 {
 	if (IsValid(TargetActor))
 	{
-		 // const FGameplayEffectSpecHandle DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, 1);
+		// const FGameplayEffectSpecHandle DamageSpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass, 1);
 		for (TTuple<FGameplayTag, FScalableFloat> Pair : DamageType)
 		{
 			//const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
 			//UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(DamageSpecHandle, Pair.Key, ScaledDamage);	// Assign the damage value to the tag（注册伤害值到标签）
 
 			FDamageEffectParams Params;
-			Params = MakeDamageEffectParamsFromClassDefaults(Pair.Key, TargetActor, InRadialDamageOrigin);
+			Params = MakeDamageEffectParamsFromClassDefaults(Pair.Key, TargetActor, InRadialDamageOrigin, bOverrideKnockbackDirection, KnockbackDirectionOverride, bOverrideDeathImpulse, DeathImpulseDirectionOverride, bOverridePitch, PitchOverride);
 			// 应用伤害效果
 			UAuraAbilitySystemLibrary::ApplyDamageEffect(Params);
 		}
@@ -30,7 +33,10 @@ void UAuraDamageGameplayAbility::CauseDamage(AActor* TargetActor, const FVector&
 	}
 }
 
-FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassDefaults(FGameplayTag InDamageType, AActor* TargetActor, const FVector& InRadialDamageOrigin) const
+FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassDefaults(FGameplayTag InDamageType,
+	AActor* TargetActor, FVector InRadialDamageOrigin, bool bOverrideKnockbackDirection,
+	FVector KnockbackDirectionOverride, bool bOverrideDeathImpulse, FVector DeathImpulseDirectionOverride,
+	bool bOverridePitch, float PitchOverride) const
 {
 	if (DamageType.Contains(InDamageType) == false)
 	{
@@ -57,10 +63,33 @@ FDamageEffectParams UAuraDamageGameplayAbility::MakeDamageEffectParamsFromClassD
 	{
 		// Set the death impulse, the forward vector of the projectile multiplied by the death impulse magnitude（设置死亡冲量，投射物的前向量乘以死亡冲量大小）
 		FRotator KnockbackRotator = (TargetActor->GetActorLocation() - GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation();
-		KnockbackRotator.Yaw = FMath::RandRange(0.f, 45.f);
-		Params.KnockbackImpulse = KnockbackRotator.Vector() * Params.KnockbackMagnitude;
-		Params.DeathImpulse = KnockbackRotator.Vector() * Params.DeathImpulseMagnitude;
+		if (bOverridePitch)
+		{
+			KnockbackRotator.Pitch = PitchOverride;
+		}
+		const FVector KnockbackDirection = KnockbackRotator.Vector();
+		if (!bOverrideKnockbackDirection)
+		{
+			Params.KnockbackImpulse = KnockbackDirection * KnockbackDirectionOverride;
+		}
+		if (!bOverrideDeathImpulse)
+		{
+			Params.DeathImpulse = KnockbackDirection * DeathImpulseDirectionOverride;
+		}
 	}
+
+	if (bOverrideKnockbackDirection)
+	{
+		KnockbackDirectionOverride.Normalize();
+		Params.KnockbackImpulse = KnockbackDirectionOverride * Params.KnockbackMagnitude;
+		if (bOverridePitch)
+		{
+			FRotator KnockbackRotation = KnockbackDirectionOverride.Rotation();
+			KnockbackRotation.Pitch = PitchOverride;
+			Params.KnockbackImpulse = KnockbackRotation.Vector() * Params.KnockbackMagnitude;
+		}
+	}
+
 	if (bRadialDamage.Contains(InDamageType) && bRadialDamage[InDamageType])
 	{
 		// 如果设置了径向伤害，那么我们需要设置径向伤害的参数
