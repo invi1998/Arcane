@@ -22,6 +22,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<AActor> ReturnTarget;	// 返回目标
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxFlyDistance = 1000.0f;	// 最大飞行距离
+
 protected:
 
 	virtual void BeginPlay() override;

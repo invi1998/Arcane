@@ -93,6 +93,8 @@ TArray<AAuraFireBall*> UAuraFireBlast::SpawnFireBalls()
 		
 		FireBalls.Add(FireBall);
 
+		FireBall->MaxFlyDistance = FireBallMaxDistance.GetValueAtLevel(GetAbilityLevel());
+
 		FireBall->FinishSpawning(SpawnTransform);
 	}
 
