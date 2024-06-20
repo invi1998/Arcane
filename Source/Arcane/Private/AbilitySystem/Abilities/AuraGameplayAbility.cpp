@@ -4,6 +4,7 @@
 #include "AbilitySystem/Abilities/AuraGameplayAbility.h"
 
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 FString UAuraGameplayAbility::GetDescription(int32 Level)
 {
