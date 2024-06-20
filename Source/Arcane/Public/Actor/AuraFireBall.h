@@ -17,10 +17,7 @@ class ARCANE_API AAuraFireBall : public AAuraProjectile
 public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void StartOutgoingTimeLine();	// 开始飞行时间线
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void ContinueOutgoingTimeLine();	// 继续飞行时间线
-
+	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void EndOutgoingTimeLine();	// 结束飞行时间线
 
