@@ -7,7 +7,7 @@
 #include "AuraFireBall.generated.h"
 
 /**
- * 
+ * 使用Timeline来制作一个围绕角色绕圈散开并收拢的飞弹技能
  */
 UCLASS()
 class ARCANE_API AAuraFireBall : public AAuraProjectile
@@ -15,6 +15,12 @@ class ARCANE_API AAuraFireBall : public AAuraProjectile
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartOutgoingTimeLine();	// 开始飞行时间线
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<AActor> ReturnTarget;	// 返回目标
 
 protected:
 

@@ -657,3 +657,11 @@ void UAuraAbilitySystemLibrary::GetClosestTargets(int32 MaxTargets, const TArray
 	}
 }
 
+FVector UAuraAbilitySystemLibrary::GetPositionByAngleAndRadius(const FVector& Origin, const FVector& Forward, float Angle, float Radius)
+{
+	// 获取当前前向向量的以Origin为中心，以Forward为轴，Angle为角度，Radius为半径的位置
+	const FRotator TemRotator = FRotator(0.f, Angle, 0.f);
+	const FVector Position = Origin + TemRotator.RotateVector(Forward) * Radius;
+	return Position;
+}
+

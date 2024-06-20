@@ -65,7 +65,7 @@ FString UAuraFireBlast::GetNextLevelDescription(int32 Level)
 TArray<AAuraFireBall*> UAuraFireBlast::SpawnFireBalls()
 {
 	const FVector TemForward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
-	TArray<FRotator> FireBallRotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(TemForward, FVector::UpVector, 360.f, MaxNumOfFireBalls);
+	TArray<FRotator> FireBallRotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(TemForward, FVector::UpVector, 360.f, 4);
 
 	TArray<AAuraFireBall*> FireBalls;
 
@@ -88,6 +88,8 @@ TArray<AAuraFireBall*> UAuraFireBlast::SpawnFireBalls()
 			FDamageEffectParams DamageParams = MakeDamageEffectParamsFromClassDefaults(DamageTag);
 			FireBall->DamageEffectParams.Add(DamageTag, DamageParams);
 		}
+
+		FireBall->ReturnTarget = GetAvatarActorFromActorInfo();
 		
 		FireBalls.Add(FireBall);
 

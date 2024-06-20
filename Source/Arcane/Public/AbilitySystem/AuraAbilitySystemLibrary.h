@@ -206,4 +206,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayMechanice")
 	static void GetClosestTargets(int32 MaxTargets, const TArray<AActor*>& TargetActors, const FVector& Origin, TArray<AActor*>& OutClosestTargets);
 
+	// 传入中心位置, 传入前向向量，传入半径，传入角度，获取计算后的新位置
+	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayMechanice")
+	static FVector GetPositionByAngleAndRadius(const FVector& Origin, const FVector& Forward, float Angle, float Radius);
+
 };
