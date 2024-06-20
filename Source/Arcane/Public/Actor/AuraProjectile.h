@@ -39,12 +39,15 @@ protected:
 
 	virtual void Destroyed() override;
 
+	static bool IsNotValidOverlap(AActor* OtherActor, FDamageEffectParams& Params);
+
+	bool bHit = false;
+
 	// 球形碰撞体重叠事件
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
-	bool bHit = false;
 
 	UPROPERTY(EditDefaultsOnly)
 	float LifeSpan = 5.0f;	// 生存时间

@@ -90,6 +90,33 @@ void AAuraProjectile::Destroyed()
 	Super::Destroyed();
 }
 
+bool AAuraProjectile::IsNotValidOverlap(AActor* OtherActor, FDamageEffectParams& Params)
+{
+	if (!IsValid(Params.InstigatorASC))
+	{
+		// 如果没有施法者ASC，不处理 添加这一行。这将解决客户端火球问题。
+		return true;
+	}
+
+	AActor* SourceActor = Params.InstigatorASC->GetAvatarActor();
+
+	// 如果没有施法者，不处理
+	if (SourceActor == nullptr) return true;
+
+	if (OtherActor == SourceActor)
+	{
+		// 如果是自己，不处理
+		return true;
+	}
+
+	if (UAuraAbilitySystemLibrary::IsFriendly(SourceActor, OtherActor))
+	{
+		// 如果是友军，不处理
+		return true;
+	}
+	return false;
+}
+
 void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// 遍历伤害效果参数
@@ -98,28 +125,7 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, 
 		// 获取伤害效果参数
 		FDamageEffectParams& Params = Pair.Value;
 
-		if (!IsValid(Params.InstigatorASC))
-		{
-			// 如果没有施法者ASC，不处理 添加这一行。这将解决客户端火球问题。
-			return;
-		}
-
-		AActor* SourceActor = Params.InstigatorASC->GetAvatarActor();
-
-		// 如果没有施法者，不处理
-		if (SourceActor == nullptr) return;
-
-		if (OtherActor == SourceActor)
-		{
-			// 如果是自己，不处理
-			return;
-		}
-
-		if (UAuraAbilitySystemLibrary::IsFriendly(SourceActor, OtherActor))
-		{
-			// 如果是友军，不处理
-			return;
-		}
+		if (IsNotValidOverlap(OtherActor, Params)) return;
 
 		if (!bHit)
 		{

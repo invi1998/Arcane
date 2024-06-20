@@ -40,9 +40,9 @@ FString UAuraFireBlast::GetDescription(int32 Level)
 
 	}
 
-	const int32 RealMaxNumOfTargets = FMath::Min(MaxNumOfFireBalls, Level);
+	const int32 RealMaxNumOfTargets = FMath::Min(MaxNumOfFireBalls, Level+3);
 
-	FString Desc = FString::Printf(TEXT("<Title>火爆</>\t<Small>Fire Blast</>\n\n"
+	FString Desc = FString::Printf(TEXT("<Title>火焰精灵</>\t<Small>Fire Blast</>\n\n"
 		"<Default>在角色周围生成数个火球，火球会像四周散开到达最大距离后会折返回来。散开和折返均会造成伤害，同时火球数量和折返距离会随等级变化</>\n\n"
 		"\t<Default>技能等级：</><Level>%d</>\n"
 		"\t<Default>冷却时间：</><Cooldown>%.1f s</>\n"
@@ -65,7 +65,7 @@ FString UAuraFireBlast::GetNextLevelDescription(int32 Level)
 TArray<AAuraFireBall*> UAuraFireBlast::SpawnFireBalls()
 {
 	const FVector TemForward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
-	TArray<FRotator> FireBallRotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(TemForward, FVector::UpVector, 360.f, 4);
+	TArray<FRotator> FireBallRotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(TemForward, FVector::UpVector, 360.f, 12);
 
 	TArray<AAuraFireBall*> FireBalls;
 
