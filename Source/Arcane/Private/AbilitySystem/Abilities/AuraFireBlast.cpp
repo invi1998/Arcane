@@ -80,6 +80,8 @@ TArray<AAuraFireBall*> UAuraFireBlast::SpawnFireBalls()
 			CurrentActorInfo->PlayerController->GetPawn(),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		// 生成火球
+
+		FireBall->SetOwner(GetOwningActorFromActorInfo());
 		
 		for (auto& DamagePair : DamageType)
 		{
