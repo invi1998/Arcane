@@ -180,6 +180,10 @@ public:
 	FGameplayTag Abilities_Type_None;			// 能力类型：无
 
 	/*
+	 * Ability Cast State Tags	法术释放状态
+	 */
+
+	/*
 	 * Cooldown Tags
 	 */
 	FGameplayTag Cooldown_Fire_FireBolt;		// 冷却：火焰：火球

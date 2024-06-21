@@ -25,8 +25,7 @@ void UAuraAbilitySystemComponent::AbilityActorInfoSet()
 
 }
 
-void UAuraAbilitySystemComponent::MulticastActivatePassiveEffect_Implementation(const FGameplayTag& AbilityTag,
-	bool bActivate)
+void UAuraAbilitySystemComponent::MulticastActivatePassiveEffect_Implementation(const FGameplayTag& AbilityTag, bool bActivate)
 {
 	// 1：调用激活被动效果的委托
 	ActivatePassiveEffectDelegate.Broadcast(AbilityTag, bActivate);
@@ -60,8 +59,7 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
     AbilitiesGivenDelegate.Broadcast();    // 广播给UI，告诉UI能力已经添加，可以显示了
 }
 
-void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(
-	const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities)
+void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities)
 {
 	for (TSubclassOf<UGameplayAbility> Ability : StartupAbilities)
 	{

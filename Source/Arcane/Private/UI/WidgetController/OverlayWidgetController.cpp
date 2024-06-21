@@ -82,12 +82,47 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		{
 			// 如果已经给予了能力，我们就可以直接调用OnInitializedStartupAbilities
 			BroadcastAbilityInfo();	// 广播能力信息
+
+			GetAuraASC()->AbilityCastStartDelegate.AddLambda(
+				[this](const FGameplayTag& AbilityTag)
+				{
+					AbilityCastStateChangeDelegate.Broadcast(AbilityTag, true);	// 广播技能施法状态改变
+				}
+			);
+
+			GetAuraASC()->AbilityCastEndDelegate.AddLambda(
+				[this](const FGameplayTag& AbilityTag)
+				{
+					AbilityCastStateChangeDelegate.Broadcast(AbilityTag, false);	// 广播技能施法状态改变
+				}
+			);
 		}
 		else
 		{
 			// 如果没有给予能力，我们就需要添加一个委托，以便在给予能力时调用OnInitializedStartupAbilities
 			GetAuraASC()->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::BroadcastAbilityInfo);
+
+			GetAuraASC()->AbilitiesGivenDelegate.AddLambda(
+				[this]()
+				{
+					GetAuraASC()->AbilityCastStartDelegate.AddLambda(
+						[this](const FGameplayTag& AbilityTag)
+						{
+							AbilityCastStateChangeDelegate.Broadcast(AbilityTag, true);	// 广播技能施法状态改变
+						}
+					);
+
+					GetAuraASC()->AbilityCastEndDelegate.AddLambda(
+						[this](const FGameplayTag& AbilityTag)
+						{
+							AbilityCastStateChangeDelegate.Broadcast(AbilityTag, false);	// 广播技能施法状态改变
+						}
+					);
+				}
+			);
 		}
+
+		
 	}
 
 }

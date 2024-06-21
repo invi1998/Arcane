@@ -19,7 +19,7 @@ void UAuraWidgetController::SetWidgetControllerParams(const FWidgetControllerPar
 
 void UAuraWidgetController::BroadcastInitialValues()
 {
-	// ¹ã²¥³õÊ¼Öµ
+	// å¹¿æ’­åˆå§‹å€¼
 	
 }
 
@@ -30,7 +30,7 @@ void UAuraWidgetController::BindCallbacksToDependencies()
 
 void UAuraWidgetController::BroadcastAbilityInfo()
 {
-	// ¹ã²¥¼¼ÄÜĞÅÏ¢
+	// å¹¿æ’­æŠ€èƒ½ä¿¡æ¯
 
 	if (!GetAuraASC() || !GetAuraASC()->bStartupAbilitiesGiven) return;
 
@@ -38,23 +38,23 @@ void UAuraWidgetController::BroadcastAbilityInfo()
 	BroadcastAbilityDelegate.BindLambda(
 		[this](const FGameplayAbilitySpec& AbilitySpec)->void
 		{
-			// Í¨¹ıAbilityTag»ñÈ¡AbilityInfo
+			// é€šè¿‡AbilityTagè·å–AbilityInfo
 			const FGameplayTag tag = AuraAbilitySystemComponent->GetAbilityTagBySpec(AbilitySpec);
-			FAuraAbilityInfo AbilityInfo = AbilityInformation->FindAbilityInfoByTag(tag);	// Í¨¹ıTag²éÕÒAbilityInfo
+			FAuraAbilityInfo AbilityInfo = AbilityInformation->FindAbilityInfoByTag(tag);	// é€šè¿‡TagæŸ¥æ‰¾AbilityInfo
 
-			// »ñÈ¡ÊäÈëTag
+			// è·å–è¾“å…¥Tag
 			const FGameplayTag inputTag = AuraAbilitySystemComponent->GetAbilityInputTagBySpec(AbilitySpec);
-			AbilityInfo.InputTag = inputTag;	// ÉèÖÃÊäÈëTag
+			AbilityInfo.InputTag = inputTag;	// è®¾ç½®è¾“å…¥Tag
 
-			// »ñÈ¡×´Ì¬Tag
+			// è·å–çŠ¶æ€Tag
 			const FGameplayTag stateTag = AuraAbilitySystemComponent->GetAbilityStateTag(AbilitySpec);
-			AbilityInfo.StateTag = stateTag;	// ÉèÖÃ×´Ì¬Tag
+			AbilityInfo.StateTag = stateTag;	// è®¾ç½®çŠ¶æ€Tag
 
-			// ¹ã²¥Î¯ÍĞ
-			AbilityInfoDelegate.Broadcast(AbilityInfo);	// ¹ã²¥ÄÜÁ¦ĞÅÏ¢
+			// å¹¿æ’­å§”æ‰˜
+			AbilityInfoDelegate.Broadcast(AbilityInfo);	// å¹¿æ’­èƒ½åŠ›ä¿¡æ¯
 		}
 	);
-	GetAuraASC()->ForEachAbility(BroadcastAbilityDelegate);	// ¶ÔÃ¿¸öÄÜÁ¦½øĞĞ¹ã²¥
+	GetAuraASC()->ForEachAbility(BroadcastAbilityDelegate);	// å¯¹æ¯ä¸ªèƒ½åŠ›è¿›è¡Œå¹¿æ’­
 
 }
 
