@@ -83,8 +83,6 @@ USpellMenuWidgetController* UAuraAbilitySystemLibrary::GetSpellMenuWidgetControl
 		return AuraHUD->GetSpellMenuWidgetController(InitParams);
 	}
 
-	UKismetSystemLibrary::PrintString(WorldContextObject, "GetSpellMenuWidgetController Failed", true, false, FLinearColor::Red, 5.f);
-
 	return nullptr;
 }
 
@@ -551,6 +549,18 @@ int32 UAuraAbilitySystemLibrary::GetAbilityLevelByTag(const UObject* WorldContex
 		return AbilitySystemComponent->GetAbilityLevelByTag(AbilityTag);
 	}
 	return 0;
+}
+
+float UAuraAbilitySystemLibrary::GetAbilityManaCostByTag(const UObject* WorldContextObject, const FGameplayTag& AbilityTag)
+{
+	if (const APlayerController* PlayerController = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	{
+		const AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(PlayerController->PlayerState);	// 获取玩家状态
+		UAuraAbilitySystemComponent* AbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent());	// 获取玩家的能力系统组件
+
+		return AbilitySystemComponent->GetManaCostByAbilityTag(AbilityTag);
+	}
+	return 0.f;
 }
 
 FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const FDamageEffectParams& Params)

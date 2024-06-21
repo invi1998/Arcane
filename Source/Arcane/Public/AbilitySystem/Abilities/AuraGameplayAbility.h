@@ -25,7 +25,6 @@ public:
 
 	static FString GetLockedDescription(int32 Level);
 
-protected:
 	float GetManaCost(float Level = 1.f);
 
 	float GetCooldown(float Level = 1.f);

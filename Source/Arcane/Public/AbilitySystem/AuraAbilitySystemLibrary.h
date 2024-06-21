@@ -185,6 +185,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|AbilityInfo")
 	static int32 GetAbilityLevelByTag(const UObject* WorldContextObject, const FGameplayTag& AbilityTag);
 
+	// 传入AbilityTag，获取技能蓝耗
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|AbilityInfo")
+	static float GetAbilityManaCostByTag(const UObject* WorldContextObject, const FGameplayTag& AbilityTag);
+
 	/*
 	 * Apply Damage -----------------------------------
 	 */
@@ -209,5 +213,7 @@ public:
 	// 传入中心位置, 传入前向向量，传入半径，传入角度，获取计算后的新位置
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayMechanice")
 	static FVector GetPositionByAngleAndRadius(const FVector& Origin, const FVector& Forward, float Angle, float Radius);
+
+
 
 };

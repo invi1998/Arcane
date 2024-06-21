@@ -70,6 +70,9 @@ public:
 
 	void UpgradeAttribute(const FGameplayTag& AttributeTag);	// 升级属性
 
+	UFUNCTION(BlueprintCallable)
+	float GetManaCostByAbilityTag(const FGameplayTag& AbilityTag);	// 通过标签获取技能的法力消耗
+
 	UFUNCTION(Server, Reliable)
 	void ServerUpgradeAttribute(const FGameplayTag& AttributeTag);	// 服务端升级属性
 

@@ -32,7 +32,7 @@ float UAuraGameplayAbility::GetManaCost(float Level)
 			// 如果修饰器的属性是法力属性
 			if (ModifierInfo.Attribute == UAuraAttributeSet::GetManaAttribute())
 			{
-				ManaCost = ModifierInfo.ModifierMagnitude.GetStaticMagnitudeIfPossible(Level, ManaCost);
+				ModifierInfo.ModifierMagnitude.GetStaticMagnitudeIfPossible(Level, ManaCost);
 				break;
 			}
 		}

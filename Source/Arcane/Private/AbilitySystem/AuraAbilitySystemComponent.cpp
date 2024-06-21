@@ -361,6 +361,19 @@ void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& Attribute
     }
 }
 
+float UAuraAbilitySystemComponent::GetManaCostByAbilityTag(const FGameplayTag& AbilityTag)
+{
+	if (const FGameplayAbilitySpec* Spec = FindAbilitySpecByTag(AbilityTag))
+	{
+		if (UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(Spec->Ability))
+		{
+			return AuraAbility->GetManaCost(Spec->Level);    // 返回技能的法力消耗
+		}
+	}
+
+	return 0.0f;    // 返回0
+}
+
 void UAuraAbilitySystemComponent::UpdateAbilityStateTags(int32 NewLevel)
 {
 	// 获取AbilityInfo
