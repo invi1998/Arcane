@@ -14,27 +14,27 @@ class UAbilitySystemComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCooldownChangeSignature, float, CooldownTimeRemaining);
 
 /**
- * ¼¼ÄÜÀäÈ´Ê±¼äÒì²½ÈÎÎñ
+ * æŠ€èƒ½å†·å´æ—¶é—´å¼‚æ­¥ä»»åŠ¡
  */
-UCLASS(BlueprintType, meta=(ExposedAsyncProxy="AsyncTask"))	// À¶Í¼ÀàĞÍ£¬±©Â¶Òì²½´úÀí
+UCLASS(BlueprintType, meta=(ExposedAsyncProxy="AsyncTask"))	// è“å›¾ç±»å‹ï¼Œæš´éœ²å¼‚æ­¥ä»£ç†
 class ARCANE_API UWaitCooldownChange : public UBlueprintAsyncActionBase
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintAssignable)	// À¶Í¼°ó¶¨ÊÂ¼ş
-	FOnCooldownChangeSignature CooldownStart;	// ÀäÈ´¿ªÊ¼
+	UPROPERTY(BlueprintAssignable)	// è“å›¾ç»‘å®šäº‹ä»¶
+	FOnCooldownChangeSignature CooldownStart;	// å†·å´å¼€å§‹
 
-	UPROPERTY(BlueprintAssignable)	// À¶Í¼°ó¶¨ÊÂ¼ş
-	FOnCooldownChangeSignature CooldownEnd;	// ÀäÈ´½áÊø
+	UPROPERTY(BlueprintAssignable)	// è“å›¾ç»‘å®šäº‹ä»¶
+	FOnCooldownChangeSignature CooldownEnd;	// å†·å´ç»“æŸ
 
-	// ¸Ãº¯Êı±ØĞëÊÇÀ¶Í¼µ÷ÓÃµÄ£¬¶øÇÒÒòÎªÕâÊÇÒ»¸öÒì²½ÈÎÎñ£¬ËùÒÔÕâ¸öº¯ÊıÊÇÒ»¸öÄÚ²¿º¯Êı£¬ÕâÓëAbilityTaskÒ»Ñù£¬»áÔÚÀ¶Í¼ÖĞ´´½¨Ò»¸öÒì²½ÈÎÎñ½Úµã
-	// ¸Ãº¯ÊıÖ´ĞĞ¸Ã½ÚµãµÄÊ±ºò½«»á´´½¨Ò»¸öÊµÀı£¬ËùÒÔ£¬ÎªÁËËµÃ÷Õâ¸öº¯ÊıÊÇÒ»¸öÄÚ²¿º¯Êı£¬ÎÒÃÇĞèÒªÊ¹ÓÃmeta±êÇ©
-	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"))	// À¶Í¼µ÷ÓÃ
-	static UWaitCooldownChange* WaitCooldownChange(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag& InCooldownTag);	// ´´½¨ÈÎÎñ
+	// è¯¥å‡½æ•°å¿…é¡»æ˜¯è“å›¾è°ƒç”¨çš„ï¼Œè€Œä¸”å› ä¸ºè¿™æ˜¯ä¸€ä¸ªå¼‚æ­¥ä»»åŠ¡ï¼Œæ‰€ä»¥è¿™ä¸ªå‡½æ•°æ˜¯ä¸€ä¸ªå†…éƒ¨å‡½æ•°ï¼Œè¿™ä¸AbilityTaskä¸€æ ·ï¼Œä¼šåœ¨è“å›¾ä¸­åˆ›å»ºä¸€ä¸ªå¼‚æ­¥ä»»åŠ¡èŠ‚ç‚¹
+	// è¯¥å‡½æ•°æ‰§è¡Œè¯¥èŠ‚ç‚¹çš„æ—¶å€™å°†ä¼šåˆ›å»ºä¸€ä¸ªå®ä¾‹ï¼Œæ‰€ä»¥ï¼Œä¸ºäº†è¯´æ˜è¿™ä¸ªå‡½æ•°æ˜¯ä¸€ä¸ªå†…éƒ¨å‡½æ•°ï¼Œæˆ‘ä»¬éœ€è¦ä½¿ç”¨metaæ ‡ç­¾
+	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"))	// è“å›¾è°ƒç”¨
+	static UWaitCooldownChange* WaitCooldownChange(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag& InCooldownTag);	// åˆ›å»ºä»»åŠ¡
 
 	UFUNCTION(BlueprintCallable)
-	void EndTask();	// ½áÊøÈÎÎñÊ±µ÷ÓÃ£¬ÇåÀíÊÂ¼ş°ó¶¨
+	void EndTask();	// ç»“æŸä»»åŠ¡æ—¶è°ƒç”¨ï¼Œæ¸…ç†äº‹ä»¶ç»‘å®š
 
 
 protected:
@@ -44,9 +44,15 @@ protected:
 	UPROPERTY()
 	FGameplayTag CooldownTag;
 
-	void CooldownTagChanged(const FGameplayTag InCooldownTag, int32 NewCount);	// ÀäÈ´Ê±¼ä¸Ä±äÊ±µ÷ÓÃ
+	void OnInputTagChanged(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag& OldTag, const FGameplayTag& NewTag);	// è¾“å…¥æ ‡ç­¾æ”¹å˜æ—¶è°ƒç”¨
 
-	void OnActiveEffectAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveHandle);	// Ìí¼ÓÀäÈ´Ğ§¹ûÊ±µ÷ÓÃ
+	void CooldownTagChanged(const FGameplayTag InCooldownTag, int32 NewCount);	// å†·å´æ—¶é—´æ”¹å˜æ—¶è°ƒç”¨
+
+	void OnActiveEffectAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveHandle);	// æ·»åŠ å†·å´æ•ˆæœæ—¶è°ƒç”¨
+
+private:
+	// å£°æ˜ä¸€ä¸ªé™æ€æ•°ç»„ï¼Œç”¨äºå­˜å‚¨æœªå®Œæˆçš„å†·å´æ ‡ç­¾
+	static TArray<FGameplayTag> ActiveCooldownTags;
 
 };
 

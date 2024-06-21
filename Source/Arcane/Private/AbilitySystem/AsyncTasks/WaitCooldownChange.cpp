@@ -4,7 +4,10 @@
 #include "AbilitySystem/AsyncTasks/WaitCooldownChange.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+
+TArray<FGameplayTag> UWaitCooldownChange::ActiveCooldownTags;
 
 UWaitCooldownChange* UWaitCooldownChange::WaitCooldownChange(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag& InCooldownTag)
 {
@@ -18,64 +21,118 @@ UWaitCooldownChange* UWaitCooldownChange::WaitCooldownChange(UAbilitySystemCompo
 		return nullptr;
 	}
 
-	// ÀäÈ´ºÎÊ±½áÊø£¨CooldownTagºÎÊ±±»ÒÆ³ı£©
-	// ÎÒÃÇ¿ÉÒÔÍ¨¹ı¶©ÔÄRegiterGameplayTagEventÀ´¼àÌıCooldownTagµÄ±ä»¯
-	// ×¢Òâ£ºÒÔÎªÕâÊÇÒ»¸ö¾²Ì¬º¯Êı£¬Ã»ÓĞthisÖ¸Õë£¬ËùÒÔÎÒÃÇĞèÒªÊ¹ÓÃÉÏÃæ´´½¨µÄWaitForCooldownChange¶ÔÏóÀ´AddUObject
+	// å†·å´ä½•æ—¶ç»“æŸï¼ˆCooldownTagä½•æ—¶è¢«ç§»é™¤ï¼‰
+	// æˆ‘ä»¬å¯ä»¥é€šè¿‡è®¢é˜…RegiterGameplayTagEventæ¥ç›‘å¬CooldownTagçš„å˜åŒ–
+	// æ³¨æ„ï¼šä»¥ä¸ºè¿™æ˜¯ä¸€ä¸ªé™æ€å‡½æ•°ï¼Œæ²¡æœ‰thisæŒ‡é’ˆï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦ä½¿ç”¨ä¸Šé¢åˆ›å»ºçš„WaitForCooldownChangeå¯¹è±¡æ¥AddUObject
 	AbilitySystemComponent->RegisterGameplayTagEvent(InCooldownTag, EGameplayTagEventType::NewOrRemoved).AddUObject(WaitForCooldownChange, &UWaitCooldownChange::CooldownTagChanged);
 
-	// ÀäÈ´ºÎÊ±¿ªÊ¼£¬£¨µ±Ìí¼ÓÒ»¸öĞÂµÄ»ùÓÚ³ÖĞøÊ±¼äµÄGameplayEffectÊ±£©
-	// Ã¿µ±Ìí¼ÓÒ»¸öĞÂµÄ»ùÓÚ³ÖĞøÊ±¼äµÄGameplayEffectÊ±£¬¿Í»§¶ËºÍ·şÎñÆ÷¶¼»áµ÷ÓÃ´ËÎ¯ÍĞ
+	// å†·å´ä½•æ—¶å¼€å§‹ï¼Œï¼ˆå½“æ·»åŠ ä¸€ä¸ªæ–°çš„åŸºäºæŒç»­æ—¶é—´çš„GameplayEffectæ—¶ï¼‰
+	// æ¯å½“æ·»åŠ ä¸€ä¸ªæ–°çš„åŸºäºæŒç»­æ—¶é—´çš„GameplayEffectæ—¶ï¼Œå®¢æˆ·ç«¯å’ŒæœåŠ¡å™¨éƒ½ä¼šè°ƒç”¨æ­¤å§”æ‰˜
 	AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(WaitForCooldownChange, &UWaitCooldownChange::OnActiveEffectAdded);
+
+	// åŒæ—¶ï¼Œæˆ‘ä»¬è¿˜éœ€è¦ç›‘å¬æŠ€èƒ½æ§½çš„å˜åŒ–ï¼Œå› ä¸ºæŠ€èƒ½æ§½çš„å˜åŒ–çš„æ—¶å€™ï¼Œå¦‚æœæœ‰æŠ€èƒ½å¤„äºå†·å´çŠ¶æ€ï¼Œæˆ‘ä»¬éœ€è¦æ›´æ–°å†·å´æ—¶é—´åˆ°æ–°çš„æŠ€èƒ½æ§½ä¸Š
+	if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		AuraAbilitySystemComponent->AbilitySlotChangedDelegate.AddUObject(WaitForCooldownChange, &UWaitCooldownChange::OnInputTagChanged);
+	}
 
 	return WaitForCooldownChange;
 }
 
 void UWaitCooldownChange::EndTask()
 {
-	// ÒÆ³ı¼àÌı
+	// ç§»é™¤ç›‘å¬
 	if (IsValid(ASC))
 	{
 		ASC->RegisterGameplayTagEvent(CooldownTag, EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
 	}
 
-	SetReadyToDestroy();	// ÉèÖÃÎª×¼±¸Ïú»Ù£¬¶¯×÷ÍêÈ«½áÊøºóµ÷ÓÃ£¬ÕâÑù¾ÍÄÜ×ÔÓÉÉ¾³ı¸Ã²Ù×÷£¬²¢ÇÒÈ¡ÏûÔÚÓÎÏ·ÊµÀıÖĞµÄ×¢²á
-	MarkAsGarbage();		// ±ê¼ÇÎªÀ¬»ø£¬µÈ´ıGC»ØÊÕ
+	SetReadyToDestroy();	// è®¾ç½®ä¸ºå‡†å¤‡é”€æ¯ï¼ŒåŠ¨ä½œå®Œå…¨ç»“æŸåè°ƒç”¨ï¼Œè¿™æ ·å°±èƒ½è‡ªç”±åˆ é™¤è¯¥æ“ä½œï¼Œå¹¶ä¸”å–æ¶ˆåœ¨æ¸¸æˆå®ä¾‹ä¸­çš„æ³¨å†Œ
+	MarkAsGarbage();		// æ ‡è®°ä¸ºåƒåœ¾ï¼Œç­‰å¾…GCå›æ”¶
+}
+
+void UWaitCooldownChange::OnInputTagChanged(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag& OldTag, const FGameplayTag& NewTag)
+{
+	UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+	if (AuraAbilitySystemComponent)
+	{
+		// å…ˆè·å–æŠ€èƒ½æ§½çš„AbilityTag
+		FGameplayTag AbilityTag = AuraAbilitySystemComponent->GetAbilityTagByInputTag(NewTag);
+		FGameplayTag TempCooldownTag = AuraAbilitySystemComponent->GetCoolDownTagByAbilityTag(AbilityTag);
+
+		if (TempCooldownTag.IsValid() && ActiveCooldownTags.Contains(TempCooldownTag) && CooldownTag.MatchesTagExact(TempCooldownTag))
+		{
+			const FGameplayEffectQuery Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTag.GetSingleTagContainer());	// æŸ¥è¯¢æ˜¯å¦æœ‰CooldownTag
+
+			// ä¸ºä»€ä¹ˆGetActiveEffectsTimeRemainingè¿”å›çš„æ˜¯ä¸€ä¸ªfloatæ•°ç»„ï¼Ÿ
+			// å› ä¸ºè¯¥å‡½æ•°è¿”å›æ‰€æœ‰åŒ¹é…çš„GameplayEffectçš„å‰©ä½™æ—¶é—´ï¼Œè€Œä¸æ˜¯åªè¿”å›ä¸€ä¸ª
+			TArray<float> TimeRemainingArray = AbilitySystemComponent->GetActiveEffectsTimeRemaining(Query);	// è·å–å‰©ä½™æ—¶é—´
+			// UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("TimeRemainingArray.Num() = %d"), TimeRemainingArray.Num()), true, false, FLinearColor::Red, 5.0f);
+			// å†·å´å¼€å§‹
+			if (TimeRemainingArray.Num() > 0)
+			{
+				// UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("TimeRemainingArray[0] = %f"), TimeRemainingArray[0]), true, false, FLinearColor::Blue, 5.0f);
+				// è¿”å›å†·å´æ•°ç»„é‡Œçš„æœ€å¤§å€¼ä½œä¸ºæˆ‘ä»¬çš„å†·å´æ—¶é—´
+				float CooldownTime = TimeRemainingArray[0];
+				for (int i = 1; i < TimeRemainingArray.Num(); i++)
+				{
+					CooldownTime = FMath::Max(CooldownTime, TimeRemainingArray[i]);
+				}
+				CooldownStart.Broadcast(CooldownTime);
+			}
+			else
+			{
+				ActiveCooldownTags.Remove(CooldownTag);
+			}
+		}
+	}
 }
 
 void UWaitCooldownChange::CooldownTagChanged(const FGameplayTag InCooldownTag, int32 NewCount)
 {
-	if (NewCount == 0)	// Èç¹ûÀäÈ´Ê±¼äÎª0£¬½áÊøÈÎÎñ
+	if (NewCount == 0)	// å¦‚æœå†·å´æ—¶é—´ä¸º0ï¼Œç»“æŸä»»åŠ¡
 	{
 		CooldownEnd.Broadcast(0);
 	}
 }
 
-void UWaitCooldownChange::OnActiveEffectAdded(UAbilitySystemComponent* AbilitySystemComponent,
-	const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveHandle)
+void UWaitCooldownChange::OnActiveEffectAdded(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveHandle)
 {
 	FGameplayTagContainer AssetTags;
-	EffectSpec.GetAllAssetTags(AssetTags);
+	EffectSpec.GetAllAssetTags(AssetTags);		// ä»EffectSpecä¸­è·å–æ‰€æœ‰çš„AssetTagsï¼Œè¿™äº›æ ‡ç­¾æ˜¯åœ¨ç¼–è¾‘å™¨ä¸­æ·»åŠ çš„
 
 	FGameplayTagContainer GrantedTags;
-	EffectSpec.GetAllGrantedTags(GrantedTags);
+	EffectSpec.GetAllGrantedTags(GrantedTags);	// ä»EffectSpecä¸­è·å–æ‰€æœ‰çš„GrantedTagsï¼Œè¿™äº›æ ‡ç­¾æ˜¯åœ¨è¿è¡Œæ—¶æ·»åŠ çš„
+
+	ActiveCooldownTags.AddUnique(CooldownTag);
 
 	if (AssetTags.HasTagExact(CooldownTag) || GrantedTags.HasTagExact(CooldownTag))
 	{
-		FGameplayEffectQuery Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTag.GetSingleTagContainer());	// ²éÑ¯ÊÇ·ñÓĞCooldownTag
+		const FGameplayEffectQuery Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTag.GetSingleTagContainer());	// æŸ¥è¯¢æ˜¯å¦æœ‰CooldownTag
 
-		// ÎªÊ²Ã´GetActiveEffectsTimeRemaining·µ»ØµÄÊÇÒ»¸öfloatÊı×é£¿
-		// ÒòÎª¸Ãº¯Êı·µ»ØËùÓĞÆ¥ÅäµÄGameplayEffectµÄÊ£ÓàÊ±¼ä£¬¶ø²»ÊÇÖ»·µ»ØÒ»¸ö
-		TArray<float> TimeRemainingArray = AbilitySystemComponent->GetActiveEffectsTimeRemaining(Query);	// »ñÈ¡Ê£ÓàÊ±¼ä
-		// ÀäÈ´¿ªÊ¼
+		// ä¸ºä»€ä¹ˆGetActiveEffectsTimeRemainingè¿”å›çš„æ˜¯ä¸€ä¸ªfloatæ•°ç»„ï¼Ÿ
+		// å› ä¸ºè¯¥å‡½æ•°è¿”å›æ‰€æœ‰åŒ¹é…çš„GameplayEffectçš„å‰©ä½™æ—¶é—´ï¼Œè€Œä¸æ˜¯åªè¿”å›ä¸€ä¸ª
+		TArray<float> TimeRemainingArray = AbilitySystemComponent->GetActiveEffectsTimeRemaining(Query);	// è·å–å‰©ä½™æ—¶é—´
+		// UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("TimeRemainingArray.Num() = %d"), TimeRemainingArray.Num()), true, false, FLinearColor::Red, 5.0f);
+		// å†·å´å¼€å§‹
 		if (TimeRemainingArray.Num() > 0)
 		{
-			// ·µ»ØÀäÈ´Êı×éÀïµÄ×î´óÖµ×÷ÎªÎÒÃÇµÄÀäÈ´Ê±¼ä
+			// UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("TimeRemainingArray[0] = %f"), TimeRemainingArray[0]), true, false, FLinearColor::Blue, 5.0f);
+			// è¿”å›å†·å´æ•°ç»„é‡Œçš„æœ€å¤§å€¼ä½œä¸ºæˆ‘ä»¬çš„å†·å´æ—¶é—´
 			float CooldownTime = TimeRemainingArray[0];
 			for (int i = 1; i < TimeRemainingArray.Num(); i++)
 			{
 				CooldownTime = FMath::Max(CooldownTime, TimeRemainingArray[i]);
 			}
 			CooldownStart.Broadcast(CooldownTime);
+		}
+		else
+		{
+			if (ActiveCooldownTags.Contains(CooldownTag))	// å¦‚æœå†·å´æ—¶é—´ä¸º0ï¼Œç»“æŸä»»åŠ¡
+			{
+				// è¯´æ˜å†·å´æ—¶é—´å·²ç»ç»“æŸï¼Œå°†å®ƒä»ActiveCooldownTagsä¸­ç§»é™¤
+				ActiveCooldownTags.Remove(CooldownTag);
+			}
 		}
 	}
 }

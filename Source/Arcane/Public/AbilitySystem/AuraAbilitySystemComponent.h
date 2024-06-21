@@ -20,6 +20,9 @@ DECLARE_MULTICAST_DELEGATE_TwoParams(FActivatePassiveEffect, const FGameplayTag&
 // 该委托用于广播技能状态（开始施法，施法中，施法结束）
 DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityCastStart, const FGameplayTag& /* Ability Tag */);
 DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityCastEnd, const FGameplayTag& /* Ability Tag */);
+// 监听技能槽改变
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnAbilitySlotChangeDelegate, UAbilitySystemComponent*, const FGameplayTag& /*old*/, const FGameplayTag&/*new*/);
+
 
 /**
  * 
@@ -43,6 +46,8 @@ public:
 	FAbilityCastStart AbilityCastStartDelegate;	// 定义一个委托，用于在技能释放开始时调用
 	FAbilityCastEnd AbilityCastEndDelegate;	// 定义一个委托，用于在技能释放结束时调用
 
+	FOnAbilitySlotChangeDelegate OnAbilitySlotChangeDelegate;	// 监听技能槽改变
+
 	UFUNCTION(NetMulticast, Unreliable)		// 因为该函数只是用于特效的通知，所以不需要可靠性
 	void MulticastActivatePassiveEffect(const FGameplayTag& AbilityTag, bool bActivate);	// 多播激活被动效果
 
@@ -61,7 +66,7 @@ public:
 	static FGameplayTag GetAbilityTagBySpec(const FGameplayAbilitySpec& Spec);	// 通过AbilitySpec获取能力标签
 	static FGameplayTag GetAbilityInputTagBySpec(const FGameplayAbilitySpec& Spec);	// 通过AbilitySpec获取能力输入标签
 	static FGameplayTag GetAbilityStateTag(const FGameplayAbilitySpec& Spec);	// 获取能力状态标签
-
+	
 	FGameplayTag GetStatusTagByAbilityTag(const FGameplayTag& AbilityTag);	// 通过能力标签获取状态标签
 	FGameplayTag GetInputTagByAbilityTag(const FGameplayTag& AbilityTag);	// 通过能力标签获取输入标签
 	FGameplayTag GetAbilityTagByInputTag(const FGameplayTag& InputTag);		// 通过输入标签获取能力标签
@@ -70,6 +75,9 @@ public:
 	bool IsPassiveAbility(const FGameplayAbilitySpec* Spec) const;	// 是否是被动技能
 	static bool AbilityHasAnyInputTag(const FGameplayAbilitySpec* Spec);	// 技能是否有输入标签
 	static void AssignSlotToAbility(FGameplayAbilitySpec& AbilitySpec, const FGameplayTag& SlotTag);	// 将技能分配到插槽
+
+	// 通过AbilityTag获取技能的CoolDownTag
+	FGameplayTag GetCoolDownTagByAbilityTag(const FGameplayTag& AbilityTag);
 
 	int32 GetAbilityLevelByTag(const FGameplayTag& AbilityTag);	// 通过标签获取技能等级
 

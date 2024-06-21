@@ -321,6 +321,16 @@ void UAuraAbilitySystemComponent::AssignSlotToAbility(FGameplayAbilitySpec& Abil
     AbilitySpec.DynamicAbilityTags.AddTag(SlotTag);    // 添加槽标签
 }
 
+FGameplayTag UAuraAbilitySystemComponent::GetCoolDownTagByAbilityTag(const FGameplayTag& AbilityTag)
+{
+	if (const FGameplayAbilitySpec* Spec = FindAbilitySpecByTag(AbilityTag))
+	{
+        return Spec->Ability->GetCooldownTags()->First();
+	}
+
+	return FGameplayTag();    // 返回一个空的标签
+}
+
 int32 UAuraAbilitySystemComponent::GetAbilityLevelByTag(const FGameplayTag& AbilityTag)
 {
 	if (const FGameplayAbilitySpec* Spec = FindAbilitySpecByTag(AbilityTag))
@@ -467,7 +477,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
         }
 
         ClientEquipAbility(AbilityTag, AuraTags.Abilities_State_Equipped, SlotTag, PreviousSlotTag);    // 通知客户端装备技能
-
+        OnAbilitySlotChangeDelegate.Broadcast(this, PreviousSlotTag, SlotTag);    // 广播技能槽改变
 	}
 }
 
@@ -596,8 +606,7 @@ void UAuraAbilitySystemComponent::ClientUpdateAbilityStateTags_Implementation(co
 	AbilityStatusChangedDelegate.Broadcast(StateTag, AbilityTag, AbilityLevel);
 }
 
-void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,
-                                                                     const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
+void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
     FGameplayTagContainer AssetTagContainer;    // 创建一个GameplayTagContainer
     // 通过绑定委托，获取到GameplayTag，然后将其添加到AbilitySystemComponent的AssetTags中
