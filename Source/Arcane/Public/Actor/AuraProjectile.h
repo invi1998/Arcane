@@ -35,7 +35,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
-	void OnHit();
+	virtual void OnHit();
 
 	virtual void Destroyed() override;
 
@@ -46,11 +46,6 @@ protected:
 	// 球形碰撞体重叠事件
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-private:
-
-	UPROPERTY(EditDefaultsOnly)
-	float LifeSpan = 5.0f;	// 生存时间
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> Sphere;	// 球形碰撞体
@@ -66,5 +61,10 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UAudioComponent> LoopingSoundComponent;		// 飞行音效组件
+
+private:
+
+	UPROPERTY(EditDefaultsOnly)
+	float LifeSpan = 5.0f;	// 生存时间
 
 };

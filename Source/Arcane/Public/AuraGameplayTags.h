@@ -239,6 +239,11 @@ public:
 	FGameplayTag Player_Block_InputHeld;			// 玩家：阻挡输入按住
 	FGameplayTag Player_Block_CursorTrace;			// 玩家：阻挡光标追踪
 
+	/*
+	 * GameplayCue Tags
+	 */
+	FGameplayTag GameplayCue_FireBlast;				// 游戏性提示：火爆
+
 protected:
 
 private:

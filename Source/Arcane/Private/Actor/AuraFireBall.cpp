@@ -4,7 +4,11 @@
 #include "Actor/AuraFireBall.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemGlobals.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "GameplayCueManager.h"
+#include "Components/AudioComponent.h"
 
 void AAuraFireBall::BeginPlay()
 {
@@ -13,8 +17,7 @@ void AAuraFireBall::BeginPlay()
 	StartOutgoingTimeLine();
 }
 
-void AAuraFireBall::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AAuraFireBall::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// 遍历伤害效果参数
 	for (auto& Pair : DamageEffectParams)
@@ -37,4 +40,28 @@ void AAuraFireBall::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AA
 			}
 		}
 	}
+}
+
+void AAuraFireBall::OnHit()
+{
+	// 如何执行本地GameplayCue？
+	if (GetOwner())
+	{
+		// 播放击中特效, 播放击中音效
+		FGameplayCueParameters CueParameters;
+
+		CueParameters.Location = GetActorLocation();
+
+		UGameplayCueManager::ExecuteGameplayCue_NonReplicated(GetOwner(), FAuraGameplayTags::Get().GameplayCue_FireBlast, CueParameters);
+
+	}
+
+	// 停止飞行音效
+	if (LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
+
+	bHit = true;
 }
