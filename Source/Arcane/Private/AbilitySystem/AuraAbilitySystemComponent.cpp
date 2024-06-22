@@ -477,13 +477,14 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
         }
 
         ClientEquipAbility(AbilityTag, AuraTags.Abilities_State_Equipped, SlotTag, PreviousSlotTag);    // 通知客户端装备技能
-        OnAbilitySlotChangeDelegate.Broadcast(this, PreviousSlotTag, SlotTag);    // 广播技能槽改变
+        // OnAbilitySlotChangeDelegate.Broadcast(this, PreviousSlotTag, SlotTag);    // 广播技能槽改变
 	}
 }
 
 void UAuraAbilitySystemComponent::ClientEquipAbility_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& Status, const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlotTag)
 {
     AbilitySlotChangedDelegate.Broadcast(AbilityTag, Status, SlotTag, PreviousSlotTag);    // 广播技能槽改变
+    OnAbilitySlotChangeDelegate.Broadcast(this, PreviousSlotTag, SlotTag);    // 广播技能槽改变
 }
 
 void UAuraAbilitySystemComponent::ClearSlot(FGameplayAbilitySpec* Spec)
