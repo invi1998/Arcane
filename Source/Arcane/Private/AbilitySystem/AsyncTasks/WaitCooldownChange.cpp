@@ -33,7 +33,7 @@ UWaitCooldownChange* UWaitCooldownChange::WaitCooldownChange(UAbilitySystemCompo
 	// 同时，我们还需要监听技能槽的变化，因为技能槽的变化的时候，如果有技能处于冷却状态，我们需要更新冷却时间到新的技能槽上
 	if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
 	{
-		AuraAbilitySystemComponent->AbilitySlotChangedDelegate.AddUObject(WaitForCooldownChange, &UWaitCooldownChange::OnInputTagChanged);
+		AuraAbilitySystemComponent->OnAbilitySlotChangeDelegate.AddUObject(WaitForCooldownChange, &UWaitCooldownChange::OnInputTagChanged);
 	}
 
 	return WaitForCooldownChange;
@@ -51,14 +51,13 @@ void UWaitCooldownChange::EndTask()
 	MarkAsGarbage();		// 标记为垃圾，等待GC回收
 }
 
-void UWaitCooldownChange::OnInputTagChanged(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag& OldTag, const FGameplayTag& NewTag)
+void UWaitCooldownChange::OnInputTagChanged(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag& OldTag, const FGameplayTag& NewTag) const
 {
-	UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
-	if (AuraAbilitySystemComponent)
+	if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
 	{
 		// 先获取技能槽的AbilityTag
-		FGameplayTag AbilityTag = AuraAbilitySystemComponent->GetAbilityTagByInputTag(NewTag);
-		FGameplayTag TempCooldownTag = AuraAbilitySystemComponent->GetCoolDownTagByAbilityTag(AbilityTag);
+		const FGameplayTag AbilityTag = AuraAbilitySystemComponent->GetAbilityTagByInputTag(NewTag);
+		const FGameplayTag TempCooldownTag = AuraAbilitySystemComponent->GetCoolDownTagByAbilityTag(AbilityTag);
 
 		if (TempCooldownTag.IsValid() && ActiveCooldownTags.Contains(TempCooldownTag) && CooldownTag.MatchesTagExact(TempCooldownTag))
 		{

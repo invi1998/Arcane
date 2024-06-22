@@ -44,7 +44,7 @@ protected:
 	UPROPERTY()
 	FGameplayTag CooldownTag;
 
-	void OnInputTagChanged(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag& OldTag, const FGameplayTag& NewTag);	// 输入标签改变时调用
+	void OnInputTagChanged(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag& OldTag, const FGameplayTag& NewTag) const;	// 输入标签改变时调用
 
 	void CooldownTagChanged(const FGameplayTag InCooldownTag, int32 NewCount);	// 冷却时间改变时调用
 
