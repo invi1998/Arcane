@@ -325,7 +325,10 @@ FGameplayTag UAuraAbilitySystemComponent::GetCoolDownTagByAbilityTag(const FGame
 {
 	if (const FGameplayAbilitySpec* Spec = FindAbilitySpecByTag(AbilityTag))
 	{
-        return Spec->Ability->GetCooldownTags()->First();
+        if (Spec && Spec->Ability && Spec->Ability->GetCooldownTags() && Spec->Ability->GetCooldownTags()->Num() > 0)
+        {
+            return Spec->Ability->GetCooldownTags()->First();    // 返回冷却标签
+        }
 	}
 
 	return FGameplayTag();    // 返回一个空的标签

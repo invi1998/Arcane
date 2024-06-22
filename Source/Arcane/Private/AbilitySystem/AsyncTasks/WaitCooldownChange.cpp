@@ -57,33 +57,37 @@ void UWaitCooldownChange::OnInputTagChanged(UAbilitySystemComponent* AbilitySyst
 	{
 		// 先获取技能槽的AbilityTag
 		const FGameplayTag AbilityTag = AuraAbilitySystemComponent->GetAbilityTagByInputTag(NewTag);
-		const FGameplayTag TempCooldownTag = AuraAbilitySystemComponent->GetCoolDownTagByAbilityTag(AbilityTag);
-
-		if (TempCooldownTag.IsValid() && ActiveCooldownTags.Contains(TempCooldownTag) && CooldownTag.MatchesTagExact(TempCooldownTag))
+		if (AbilityTag.IsValid())
 		{
-			const FGameplayEffectQuery Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTag.GetSingleTagContainer());	// 查询是否有CooldownTag
+			const FGameplayTag TempCooldownTag = AuraAbilitySystemComponent->GetCoolDownTagByAbilityTag(AbilityTag);
 
-			// 为什么GetActiveEffectsTimeRemaining返回的是一个float数组？
-			// 因为该函数返回所有匹配的GameplayEffect的剩余时间，而不是只返回一个
-			TArray<float> TimeRemainingArray = AbilitySystemComponent->GetActiveEffectsTimeRemaining(Query);	// 获取剩余时间
-			// UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("TimeRemainingArray.Num() = %d"), TimeRemainingArray.Num()), true, false, FLinearColor::Red, 5.0f);
-			// 冷却开始
-			if (TimeRemainingArray.Num() > 0)
+			if (TempCooldownTag.IsValid() && ActiveCooldownTags.Contains(TempCooldownTag) && CooldownTag.MatchesTagExact(TempCooldownTag))
 			{
-				// UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("TimeRemainingArray[0] = %f"), TimeRemainingArray[0]), true, false, FLinearColor::Blue, 5.0f);
-				// 返回冷却数组里的最大值作为我们的冷却时间
-				float CooldownTime = TimeRemainingArray[0];
-				for (int i = 1; i < TimeRemainingArray.Num(); i++)
+				const FGameplayEffectQuery Query = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(CooldownTag.GetSingleTagContainer());	// 查询是否有CooldownTag
+
+				// 为什么GetActiveEffectsTimeRemaining返回的是一个float数组？
+				// 因为该函数返回所有匹配的GameplayEffect的剩余时间，而不是只返回一个
+				TArray<float> TimeRemainingArray = AbilitySystemComponent->GetActiveEffectsTimeRemaining(Query);	// 获取剩余时间
+				// UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("TimeRemainingArray.Num() = %d"), TimeRemainingArray.Num()), true, false, FLinearColor::Red, 5.0f);
+				// 冷却开始
+				if (TimeRemainingArray.Num() > 0)
 				{
-					CooldownTime = FMath::Max(CooldownTime, TimeRemainingArray[i]);
+					// UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("TimeRemainingArray[0] = %f"), TimeRemainingArray[0]), true, false, FLinearColor::Blue, 5.0f);
+					// 返回冷却数组里的最大值作为我们的冷却时间
+					float CooldownTime = TimeRemainingArray[0];
+					for (int i = 1; i < TimeRemainingArray.Num(); i++)
+					{
+						CooldownTime = FMath::Max(CooldownTime, TimeRemainingArray[i]);
+					}
+					CooldownStart.Broadcast(CooldownTime);
 				}
-				CooldownStart.Broadcast(CooldownTime);
-			}
-			else
-			{
-				ActiveCooldownTags.Remove(CooldownTag);
+				else
+				{
+					ActiveCooldownTags.Remove(CooldownTag);
+				}
 			}
 		}
+		
 	}
 }
 
