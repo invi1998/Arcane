@@ -105,6 +105,8 @@ void AAuraPlayerController::SetupInputComponent()
 	// 绑定技能输入 ThisClass::AbilityInputTagPressed = AAuraPlayerController::AbilityInputTagPressed
 	AuraEnhancedInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
 
+	// 为了避免某些蓝图使用了 OnMouseButtonDown 而导致鼠标点击事件被拦截，我们需要ActionDelegate来处理鼠标点击事件
+
 }
 
 UAuraAbilitySystemComponent* AAuraPlayerController::GetASC()
