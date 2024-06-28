@@ -14,10 +14,10 @@ UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetCont
 	
 	if (!OverlayWidgetController)
 	{
-		checkf(OverlayWidgetControllerClass, TEXT("OverlayWidgetControllerClass is nullptr! please fill out BP_AuraHUD"));		// Èç¹ûOverlayWidgetControllerClassÎª¿Õ£¬ÄÇÃ´¾Í»á±¨´í
+		checkf(OverlayWidgetControllerClass, TEXT("OverlayWidgetControllerClass is nullptr! please fill out BP_AuraHUD"));		// å¦‚æœOverlayWidgetControllerClassä¸ºç©ºï¼Œé‚£ä¹ˆå°±ä¼šæŠ¥é”™
 		OverlayWidgetController = NewObject<UOverlayWidgetController>(this, OverlayWidgetControllerClass);
 		OverlayWidgetController->SetWidgetControllerParams(WCParams);
-		OverlayWidgetController->BindCallbacksToDependencies();		// °ó¶¨»Øµ÷º¯Êıµ½ÒÀÀµÏî
+		OverlayWidgetController->BindCallbacksToDependencies();		// ç»‘å®šå›è°ƒå‡½æ•°åˆ°ä¾èµ–é¡¹
 	}
 	return OverlayWidgetController;
 }
@@ -26,10 +26,10 @@ UAttributeMenuWidgetController* AAuraHUD::GetAttributeMenuWidgetController(const
 {
 	if (!AttributeMenuWidgetController)
 	{
-		checkf(AttributeMenuWidgetControllerClass, TEXT("AttributeMenuWidgetControllerClass is nullptr! please fill out BP_AuraHUD"));		// Èç¹ûAttributeMenuWidgetControllerClassÎª¿Õ£¬ÄÇÃ´¾Í»á±¨´í
+		checkf(AttributeMenuWidgetControllerClass, TEXT("AttributeMenuWidgetControllerClass is nullptr! please fill out BP_AuraHUD"));		// å¦‚æœAttributeMenuWidgetControllerClassä¸ºç©ºï¼Œé‚£ä¹ˆå°±ä¼šæŠ¥é”™
 		AttributeMenuWidgetController = NewObject<UAttributeMenuWidgetController>(this, AttributeMenuWidgetControllerClass);
 		AttributeMenuWidgetController->SetWidgetControllerParams(WCParams);
-		AttributeMenuWidgetController->BindCallbacksToDependencies();		// °ó¶¨»Øµ÷º¯Êıµ½ÒÀÀµÏî
+		AttributeMenuWidgetController->BindCallbacksToDependencies();		// ç»‘å®šå›è°ƒå‡½æ•°åˆ°ä¾èµ–é¡¹
 	}
 	return AttributeMenuWidgetController;
 }
@@ -38,28 +38,43 @@ USpellMenuWidgetController* AAuraHUD::GetSpellMenuWidgetController(const FWidget
 {
 	if (!SpellMenuWidgetController)
 	{
-		checkf(SpellMenuWidgetControllerClass, TEXT("SpellMenuWidgetControllerClass is nullptr! please fill out BP_AuraHUD"));		// Èç¹ûSpellMenuWidgetControllerClassÎª¿Õ£¬ÄÇÃ´¾Í»á±¨´í
+		checkf(SpellMenuWidgetControllerClass, TEXT("SpellMenuWidgetControllerClass is nullptr! please fill out BP_AuraHUD"));		// å¦‚æœSpellMenuWidgetControllerClassä¸ºç©ºï¼Œé‚£ä¹ˆå°±ä¼šæŠ¥é”™
 		SpellMenuWidgetController = NewObject<USpellMenuWidgetController>(this, SpellMenuWidgetControllerClass);
 		SpellMenuWidgetController->SetWidgetControllerParams(WCParams);
-		SpellMenuWidgetController->BindCallbacksToDependencies();		// °ó¶¨»Øµ÷º¯Êıµ½ÒÀÀµÏî
+		SpellMenuWidgetController->BindCallbacksToDependencies();		// ç»‘å®šå›è°ƒå‡½æ•°åˆ°ä¾èµ–é¡¹
 	}
 	return SpellMenuWidgetController;
 }
 
 void AAuraHUD::InitOverlay(APlayerController* PlayerController, APlayerState* PlayerState, UAbilitySystemComponent* AbilitySystemComponent, UAttributeSet* AttributeSet)
 {
-	checkf(OverlayWidgetClass, TEXT("OverlayWidgetClass is nullptr! please fill out BP_AuraHUD"));		// Èç¹ûOverlayWidgetClassÎª¿Õ£¬ÄÇÃ´¾Í»á±¨´í
-	checkf(OverlayWidgetControllerClass, TEXT("OverlayWidgetControllerClass is nullptr! please fill out BP_AuraHUD"));		// Èç¹ûOverlayWidgetControllerClassÎª¿Õ£¬ÄÇÃ´¾Í»á±¨´í
+	checkf(OverlayWidgetClass, TEXT("OverlayWidgetClass is nullptr! please fill out BP_AuraHUD"));		// å¦‚æœOverlayWidgetClassä¸ºç©ºï¼Œé‚£ä¹ˆå°±ä¼šæŠ¥é”™
+	checkf(OverlayWidgetControllerClass, TEXT("OverlayWidgetControllerClass is nullptr! please fill out BP_AuraHUD"));		// å¦‚æœOverlayWidgetControllerClassä¸ºç©ºï¼Œé‚£ä¹ˆå°±ä¼šæŠ¥é”™
 	
-	UUserWidget* TempWidget= CreateWidget<UUserWidget>(GetWorld(), OverlayWidgetClass);	// ´´½¨Ò»¸öOverlayWidget
-	OverlayWidget = Cast<UAuraUserWidget>(TempWidget);	// ½«Õâ¸öOverlayWidget×ª»»ÎªUAuraUserWidget
+	UUserWidget* TempWidget= CreateWidget<UUserWidget>(GetWorld(), OverlayWidgetClass);	// åˆ›å»ºä¸€ä¸ªOverlayWidget
+	OverlayWidget = Cast<UAuraUserWidget>(TempWidget);	// å°†è¿™ä¸ªOverlayWidgetè½¬æ¢ä¸ºUAuraUserWidget
 
-	const FWidgetControllerParams WCParams(PlayerController, PlayerState, AbilitySystemComponent, AttributeSet);	// ´´½¨Ò»¸ö¿ØÖÆÆ÷²ÎÊı
-	UOverlayWidgetController* TempController = GetOverlayWidgetController(WCParams);	// »ñÈ¡Ò»¸öOverlayWidgetController
+	const FWidgetControllerParams WCParams(PlayerController, PlayerState, AbilitySystemComponent, AttributeSet);	// åˆ›å»ºä¸€ä¸ªæ§åˆ¶å™¨å‚æ•°
+	UOverlayWidgetController* TempController = GetOverlayWidgetController(WCParams);	// è·å–ä¸€ä¸ªOverlayWidgetController
 
-	OverlayWidget->SetWidgetController(TempController);	// ÉèÖÃOverlayWidgetµÄ¿ØÖÆÆ÷
+	OverlayWidget->SetWidgetController(TempController);	// è®¾ç½®OverlayWidgetçš„æ§åˆ¶å™¨
 
-	TempController->BroadcastInitialValues();	// ¹ã²¥³õÊ¼Öµ
+	TempController->BroadcastInitialValues();	// å¹¿æ’­åˆå§‹å€¼
 
-	OverlayWidget->AddToViewport();
+	// OverlayWidget->AddToViewport();
+}
+
+void AAuraHUD::ShowOverlayWidget()
+{
+	if (OverlayWidget)
+	{
+		OverlayWidget->AddToViewport();
+
+		UOverlayWidgetController* TempController = Cast<UOverlayWidgetController>(OverlayWidget->WidgetController);
+		TempController->BroadcastInitialValues();
+		TempController->BroadcastAbilityInfo();
+
+		// å°†é¼ æ ‡èšç„¦åˆ°OverlayWidgetä¸Š
+		// OverlayWidget->SetUserFocus(GetWorld()->GetFirstPlayerController());
+	}
 }

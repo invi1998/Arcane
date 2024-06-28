@@ -30,31 +30,34 @@ public:
 
 	void InitOverlay(APlayerController* PlayerController, APlayerState* PlayerState, UAbilitySystemComponent* AbilitySystemComponent, UAttributeSet* AttributeSet);
 
+	UFUNCTION(BlueprintCallable)
+	void ShowOverlayWidget();
+
 protected:
+	UPROPERTY(BlueprintReadOnly)
+	TObjectPtr<UAuraUserWidget> OverlayWidget;		// å…¨å±€åªæœ‰è¿™ä¸€ä¸ªOverlayWidgetï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦å°†å…¶å®ç°ä¸ºä¸€ä¸ªå•ä¾‹
 
 private:
-	UPROPERTY()
-	TObjectPtr<UAuraUserWidget> OverlayWidget;		// È«¾ÖÖ»ÓĞÕâÒ»¸öOverlayWidget£¬ËùÒÔÎÒÃÇĞèÒª½«ÆäÊµÏÖÎªÒ»¸öµ¥Àı
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UAuraUserWidget> OverlayWidgetClass;	// Õâ¸öÀàÊÇÓÃÀ´´´½¨OverlayWidgetµÄ
+	TSubclassOf<UAuraUserWidget> OverlayWidgetClass;	// è¿™ä¸ªç±»æ˜¯ç”¨æ¥åˆ›å»ºOverlayWidgetçš„
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;		// Õâ¸öÀàÊÇÓÃÀ´´´½¨OverlayWidgetControllerµÄ
+	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;		// è¿™ä¸ªç±»æ˜¯ç”¨æ¥åˆ›å»ºOverlayWidgetControllerçš„
 
 	UPROPERTY()
-	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;		// È«¾ÖÖ»ÓĞÕâÒ»¸öOverlayWidgetController£¬ËùÒÔÎÒÃÇĞèÒª½«ÆäÊµÏÖÎªÒ»¸öµ¥Àı
+	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;		// å…¨å±€åªæœ‰è¿™ä¸€ä¸ªOverlayWidgetControllerï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦å°†å…¶å®ç°ä¸ºä¸€ä¸ªå•ä¾‹
 
 	UPROPERTY()
-	TObjectPtr<UAttributeMenuWidgetController> AttributeMenuWidgetController;	// ÊôĞÔ²Ëµ¥µÄ¿ØÖÆÆ÷
+	TObjectPtr<UAttributeMenuWidgetController> AttributeMenuWidgetController;	// å±æ€§èœå•çš„æ§åˆ¶å™¨
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UAttributeMenuWidgetController> AttributeMenuWidgetControllerClass;	// ÊôĞÔ²Ëµ¥µÄ¿ØÖÆÆ÷Àà
+	TSubclassOf<UAttributeMenuWidgetController> AttributeMenuWidgetControllerClass;	// å±æ€§èœå•çš„æ§åˆ¶å™¨ç±»
 
 	UPROPERTY()
-	TObjectPtr<USpellMenuWidgetController> SpellMenuWidgetController;	// ¼¼ÄÜ²Ëµ¥µÄ¿ØÖÆÆ÷
+	TObjectPtr<USpellMenuWidgetController> SpellMenuWidgetController;	// æŠ€èƒ½èœå•çš„æ§åˆ¶å™¨
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<USpellMenuWidgetController> SpellMenuWidgetControllerClass;	// ¼¼ÄÜ²Ëµ¥µÄ¿ØÖÆÆ÷Àà
+	TSubclassOf<USpellMenuWidgetController> SpellMenuWidgetControllerClass;	// æŠ€èƒ½èœå•çš„æ§åˆ¶å™¨ç±»
 
 };
