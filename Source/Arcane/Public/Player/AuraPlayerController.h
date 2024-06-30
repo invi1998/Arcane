@@ -71,8 +71,11 @@ private:
 	IEnemyInterface* LastActor;		// 上一个命中的Actor
 	IEnemyInterface* ThisActor;		// 当前命中的Actor
 
+	UFUNCTION(BlueprintCallable)
 	void AbilityInputTagPressed(FGameplayTag InputTag);	// 技能输入标签按下
+
 	void AbilityInputTagReleased(FGameplayTag InputTag);	// 技能输入标签释放
+
 	void AbilityInputTagHeld(FGameplayTag InputTag);	// 技能输入标签按住
 
 	UPROPERTY(EditDefaultsOnly, Category="Input")
