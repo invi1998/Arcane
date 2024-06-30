@@ -4,6 +4,7 @@
 #include "UI/HUD/AuraHUD.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "UI/Widget/AuraUserWidget.h"
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
@@ -73,6 +74,14 @@ void AAuraHUD::ShowOverlayWidget()
 		UOverlayWidgetController* TempController = Cast<UOverlayWidgetController>(OverlayWidget->WidgetController);
 		TempController->BroadcastInitialValues();
 		TempController->BroadcastAbilityInfo();
+
+		FInputModeGameAndUI InputMode;
+		InputMode.SetHideCursorDuringCapture(false);
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		InputMode.SetWidgetToFocus(OverlayWidget->TakeWidget());
+
+		// 设置输入模式
+		GetWorld()->GetFirstPlayerController()->SetInputMode(InputMode);
 
 		// 将鼠标聚焦到OverlayWidget上
 		// OverlayWidget->SetUserFocus(GetWorld()->GetFirstPlayerController());
