@@ -19,9 +19,14 @@ class ARCANE_API AAuraGameModeBase : public AGameModeBase
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category="Character Class Defaults")
-	TObjectPtr<UCharacterClassInfo>	CharacterClassInfo;		// ½ÇÉ«Ö°ÒµĞÅÏ¢
+	TObjectPtr<UCharacterClassInfo>	CharacterClassInfo;		// è§’è‰²èŒä¸šä¿¡æ¯
 
 	UPROPERTY(EditDefaultsOnly, Category="Ability Info")
-	TObjectPtr<UAbilityInfo> AbilityInfo;				// ¼¼ÄÜĞÅÏ¢
+	TObjectPtr<UAbilityInfo> AbilityInfo;				// æŠ€èƒ½ä¿¡æ¯
+
+	void SaveSlotData(FString SaveSlotName, FString UserName);
+
+	UPROPERTY(EditDefaultsOnly, Category="Save Game")
+	TSubclassOf<USaveGame> MenuSaveGameClass;
 	
 };
