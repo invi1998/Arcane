@@ -34,10 +34,11 @@ public:
 	void ShowOverlayWidget();
 
 protected:
-	UPROPERTY(BlueprintReadOnly)
-	TObjectPtr<UAuraUserWidget> OverlayWidget;		// 全局只有这一个OverlayWidget，所以我们需要将其实现为一个单例
 
 private:
+
+	UPROPERTY()
+	TObjectPtr<UAuraUserWidget> OverlayWidget;		// 全局只有这一个OverlayWidget，所以我们需要将其实现为一个单例
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UAuraUserWidget> OverlayWidgetClass;	// 这个类是用来创建OverlayWidget的

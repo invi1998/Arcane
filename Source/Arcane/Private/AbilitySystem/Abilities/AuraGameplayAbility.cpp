@@ -29,6 +29,8 @@ void UAuraGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 		AuraAbilitySystemComponent->AbilityCastEndDelegate.Broadcast(AbilityTags.First());
 	}
 
+	AbilityStateTag = FGameplayTag::EmptyTag;
+
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 

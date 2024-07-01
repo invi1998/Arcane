@@ -21,6 +21,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	FGameplayTag StartupInputTag;	// 启动输入标签
 
+	UPROPERTY(BlueprintReadWrite, Category="State")
+	FGameplayTag AbilityStateTag;	// 技能状态标签
+
 	virtual FString GetDescription(int32 Level);
 
 	virtual FString GetNextLevelDescription(int32 Level);

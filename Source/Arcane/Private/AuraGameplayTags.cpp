@@ -535,6 +535,19 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("No Ability")
 	);
 
+	/*
+	 * Ability State Tags
+	 */
+	GameplayTags.Abilities_CastState_Casting = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.CastState.Casting"),
+		FString("Ability is Casting")
+	);
+
+	GameplayTags.Abilities_CastState_Ended = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.CastState.Ended"),
+		FString("Ability has Ended")
+	);
+
 
 	/*
 	 * Cooldown Tags

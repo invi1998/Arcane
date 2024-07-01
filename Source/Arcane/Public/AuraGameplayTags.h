@@ -182,6 +182,8 @@ public:
 	/*
 	 * Ability Cast State Tags	法术释放状态
 	 */
+	FGameplayTag Abilities_CastState_Casting;	// 法术释放状态：施法中
+	FGameplayTag Abilities_CastState_Ended;		// 法术释放状态：结束
 
 	/*
 	 * Cooldown Tags
