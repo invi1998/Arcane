@@ -122,6 +122,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<AMagicCircle> MagicCircle;	// 法环
 
-	void UpdateMagicCircleLocation();	// 更新法环位置
+	void UpdateMagicCircleLocation() const;	// 更新法环位置
 
 };
