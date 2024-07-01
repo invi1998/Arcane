@@ -87,8 +87,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
                // 5： 判断能力是否已经激活
                 if (Spec.IsActive())
                 {
-                    UKismetSystemLibrary::PrintString(this, TEXT("Ability is already active!"), true, true, FLinearColor::Blue, 5.0f);
-                    // InvokeReplicatedEvent是一个复制事件，它会在服务端调用，然后在客户端广播。这是我们能对按下和释放事件进行预测响应的原因。
+					// InvokeReplicatedEvent是一个复制事件，它会在服务端调用，然后在客户端广播。这是我们能对按下和释放事件进行预测响应的原因。
                     InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());    // 调用复制事件
 				}
             }
@@ -112,7 +111,6 @@ void UAuraAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& In
             {
 				// 5：释放输入标签
                 AbilitySpecInputReleased(Spec);    // 释放输入标签
-
                 // 为能力输入标签的释放调用复制事件，我们在蓝图中就可以使用WaitInputRelease来等待这个事件
                 // 比如对于一个持续性技能，我们可以在按下输入标签时激活技能，然后在释放输入标签时停止技能
                 InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());    // 调用复制事件
@@ -141,7 +139,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
                 // 5： 判断能力是否已经激活
                 if (!Spec.IsActive())
                 {
-                    // 6：尝试激活能力
+					// 6：尝试激活能力
                     TryActivateAbility(Spec.Handle);    // 尝试激活能力
                 }
             }

@@ -244,7 +244,7 @@ void AAuraPlayerController::Move(const FInputActionValue& Value)
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AbilityInputTagPressed: %s"), *InputTag.ToString()));
+	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AbilityInputTagPressed: %s"), *InputTag.ToString()));
 
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))	// 如果能力系统组件有匹配的游戏标签（Player_Block_AbilityInput）
 	{
@@ -264,7 +264,6 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 	if (GetASC())
 	{
-		UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("AbilityInputTagPressed: %s"), *InputTag.ToString()), true, false, FLinearColor::Gray, 5.f);	// 打印字符串
 		GetASC()->AbilityInputTagPressed(InputTag);	// 调用能力系统组件的技能输入标签按下函数
 	}
 	

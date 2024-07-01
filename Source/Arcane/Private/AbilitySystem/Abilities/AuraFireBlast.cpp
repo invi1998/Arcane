@@ -44,7 +44,7 @@ FString UAuraFireBlast::GetDescription(int32 Level)
 	const int32 RealMaxNumOfTargets = FMath::Min(MaxNumOfFireBalls, Level+3);
 
 	FString Desc = FString::Printf(TEXT("<Title>火焰精灵</>\t<Small>Fire Blast</>\n\n"
-		"<Default>在角色周围生成数个火球，火球会像四周散开到达最大距离后会折返回来。散开和折返均会造成伤害，同时火球数量和折返距离会随等级变化</>\n\n"
+		"<Default>在角色周围生成数个火球，火球会像四周散开到达最大距离后会折返回来，再次施法可提前结束飞行。散开和折返均会对撞到的敌人造成伤害，同时火球数量和折返距离会随等级变化</>\n\n"
 		"\t<Default>技能等级：</><Level>%d</>\n"
 		"\t<Default>冷却时间：</><Cooldown>%.1f s</>\n"
 		"\t<Default>法力消耗：</><ManaCast>%.1f</>\n"
@@ -66,22 +66,14 @@ FString UAuraFireBlast::GetNextLevelDescription(int32 Level)
 TArray<AAuraFireBall*> UAuraFireBlast::SpawnFireBalls()
 {
 	const int32 FireBallNum = FMath::Min(GetAbilityLevel() + 3, MaxNumOfFireBalls);
-	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("FireBallNum: %d"), FireBallNum), true, false, FLinearColor::Red, 2.f);
 	const FVector TemForward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
 	TArray<FRotator> FireBallRotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(TemForward, FVector::UpVector, 360.f, FireBallNum);
 
-	// 打印FireBallRotators数量
-	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("FireBallRotators Num: %d"), FireBallRotators.Num()), true, false, FLinearColor::Red, 2.f);
-
 	TArray<AAuraFireBall*> FireBalls;
-
-	int32 i = 0;
+	
 	for (const FRotator& Rot : FireBallRotators)
 	{
-		// debug绘制火球方向
-		FLinearColor DebugColor = i % 2 == 0 ? FLinearColor::Red : FLinearColor::Green;
-		UKismetSystemLibrary::DrawDebugArrow(GetWorld(), GetAvatarActorFromActorInfo()->GetActorLocation(), GetAvatarActorFromActorInfo()->GetActorLocation() + Rot.Vector() * (100 * (i + 1)), 100.f, DebugColor, 20.f, 2.f);
-		i++;
+	
 		const FVector SpawnLocation = GetAvatarActorFromActorInfo()->GetActorLocation() + TemForward * 100.f;
 		const FTransform SpawnTransform = FTransform(Rot, SpawnLocation);
 		AAuraFireBall* FireBall = GetWorld()->SpawnActorDeferred<AAuraFireBall>(
