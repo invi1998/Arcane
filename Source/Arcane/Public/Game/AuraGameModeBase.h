@@ -8,6 +8,7 @@
 
 class UCharacterClassInfo;
 class UAbilityInfo;
+class USaveGame;
 
 /**
  * 
