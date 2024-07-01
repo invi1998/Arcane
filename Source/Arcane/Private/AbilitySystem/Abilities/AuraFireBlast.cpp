@@ -6,6 +6,7 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Actor/AuraFireBall.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 FString UAuraFireBlast::GetDescription(int32 Level)
 {
@@ -64,13 +65,23 @@ FString UAuraFireBlast::GetNextLevelDescription(int32 Level)
 
 TArray<AAuraFireBall*> UAuraFireBlast::SpawnFireBalls()
 {
+	const int32 FireBallNum = FMath::Min(GetAbilityLevel() + 3, MaxNumOfFireBalls);
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("FireBallNum: %d"), FireBallNum), true, false, FLinearColor::Red, 2.f);
 	const FVector TemForward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
-	TArray<FRotator> FireBallRotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(TemForward, FVector::UpVector, 360.f, 12);
+	TArray<FRotator> FireBallRotators = UAuraAbilitySystemLibrary::EvenlySpacedRotators(TemForward, FVector::UpVector, 360.f, FireBallNum);
+
+	// 打印FireBallRotators数量
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("FireBallRotators Num: %d"), FireBallRotators.Num()), true, false, FLinearColor::Red, 2.f);
 
 	TArray<AAuraFireBall*> FireBalls;
 
+	int32 i = 0;
 	for (const FRotator& Rot : FireBallRotators)
 	{
+		// debug绘制火球方向
+		FLinearColor DebugColor = i % 2 == 0 ? FLinearColor::Red : FLinearColor::Green;
+		UKismetSystemLibrary::DrawDebugArrow(GetWorld(), GetAvatarActorFromActorInfo()->GetActorLocation(), GetAvatarActorFromActorInfo()->GetActorLocation() + Rot.Vector() * (100 * (i + 1)), 100.f, DebugColor, 20.f, 2.f);
+		i++;
 		const FVector SpawnLocation = GetAvatarActorFromActorInfo()->GetActorLocation() + TemForward * 100.f;
 		const FTransform SpawnTransform = FTransform(Rot, SpawnLocation);
 		AAuraFireBall* FireBall = GetWorld()->SpawnActorDeferred<AAuraFireBall>(

@@ -638,7 +638,7 @@ TArray<FRotator> UAuraAbilitySystemLibrary::EvenlySpacedRotators(const FVector& 
 
 	const FVector LeftVector = Forward.RotateAngleAxis(-SpreadAngle / 2.f, Axis);
 
-	const float DeltaAngle = SpreadAngle / (RotatorNum - 1);
+	const float DeltaAngle = SpreadAngle / RotatorNum;
 
 	for (int32 i = 0; i < RotatorNum; i++)
 	{
