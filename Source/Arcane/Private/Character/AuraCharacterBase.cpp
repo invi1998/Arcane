@@ -468,6 +468,11 @@ USkeletalMeshComponent* AAuraCharacterBase::GetWeaponMesh_Implementation() const
 	return Weapon;
 }
 
+USkeletalMeshComponent* AAuraCharacterBase::GetCharacterMesh_Implementation() const
+{
+	return GetMesh();
+}
+
 void AAuraCharacterBase::SetIsBeingShock_Implementation(bool bShock)
 {
 	bIsBeingShocked = bShock;

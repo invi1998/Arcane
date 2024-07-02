@@ -124,6 +124,9 @@ public:
 	USkeletalMeshComponent* GetWeaponMesh() const;	// 获取武器Mesh
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	USkeletalMeshComponent* GetCharacterMesh() const;	// 获取角色Mesh
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	bool IsBeingShock() const;	// 是否处于震荡循环中
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)

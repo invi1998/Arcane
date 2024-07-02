@@ -41,37 +41,77 @@ void UAuraBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 
 	if (OwnerCharacter->Implements<UCombatInterface>())
 	{
-		if (USkeletalMeshComponent* Weapon = ICombatInterface::Execute_GetWeaponMesh(OwnerCharacter))
+		if (IsWeaponCast)
 		{
-			// 获取武器插槽位置
-			const FVector SocketLocation = Weapon->GetSocketLocation(FName("TipSocket"));
-
-			TArray<AActor*> IgnoredActors;
-			IgnoredActors.Add(OwnerCharacter);
-
-			FHitResult HitResult;
-
-			UKismetSystemLibrary::SphereTraceSingle(
-				OwnerCharacter,
-				SocketLocation,
-				BeamTargetLocation,
-				10.f,
-				TraceTypeQuery1,
-				false,
-				IgnoredActors,
-				EDrawDebugTrace::None,
-				HitResult,
-				true,
-				FLinearColor::Red,
-				FLinearColor::Green,
-				5.f);
-
-			if (HitResult.bBlockingHit)
+			if (USkeletalMeshComponent* Weapon = ICombatInterface::Execute_GetWeaponMesh(OwnerCharacter))
 			{
-				MouseHitLocation = HitResult.ImpactPoint;
-				MouseHitActor = HitResult.GetActor();
+				// 获取武器插槽位置
+				const FVector SocketLocation = Weapon->GetSocketLocation(FName("TipSocket"));
+
+				TArray<AActor*> IgnoredActors;
+				IgnoredActors.Add(OwnerCharacter);
+
+				FHitResult HitResult;
+
+				UKismetSystemLibrary::SphereTraceSingle(
+					OwnerCharacter,
+					SocketLocation,
+					BeamTargetLocation,
+					10.f,
+					TraceTypeQuery1,
+					false,
+					IgnoredActors,
+					EDrawDebugTrace::None,
+					HitResult,
+					true,
+					FLinearColor::Red,
+					FLinearColor::Green,
+					5.f);
+
+				if (HitResult.bBlockingHit)
+				{
+					MouseHitLocation = HitResult.ImpactPoint;
+					MouseHitActor = HitResult.GetActor();
+				}
 			}
 		}
+		else
+		{
+			if (USkeletalMeshComponent* CharacterMesh = ICombatInterface::Execute_GetCharacterMesh(OwnerCharacter))
+			{
+				// 获取角色手部施法插槽位置
+				const FVector SocketLocation = CharacterMesh->GetSocketLocation(FName("LeftHeadSpellSocket"));
+
+				UKismetSystemLibrary::DrawDebugSphere(OwnerCharacter, SocketLocation, 10.f, 12, FLinearColor::Red, 5.f);
+
+				TArray<AActor*> IgnoredActors;
+				IgnoredActors.Add(OwnerCharacter);
+
+				FHitResult HitResult;
+
+				UKismetSystemLibrary::SphereTraceSingle(
+					OwnerCharacter,
+					SocketLocation,
+					BeamTargetLocation,
+					10.f,
+					TraceTypeQuery1,
+					false,
+					IgnoredActors,
+					EDrawDebugTrace::None,
+					HitResult,
+					true,
+					FLinearColor::Red,
+					FLinearColor::Green,
+					5.f);
+
+				if (HitResult.bBlockingHit)
+				{
+					MouseHitLocation = HitResult.ImpactPoint;
+					MouseHitActor = HitResult.GetActor();
+				}
+			}
+		}
+		
 	}
 
 	// 绑定角色死亡委托

@@ -65,4 +65,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Beam")
 	FScalableFloat MaxSpellContinuationTime;	// 技能最大持续时间
 
+	UPROPERTY(EditDefaultsOnly, Category = "Beam")
+	bool IsWeaponCast = false;	// 是否是武器释放法术
+
 };
