@@ -82,8 +82,6 @@ void UAuraBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 				// 获取角色手部施法插槽位置
 				const FVector SocketLocation = CharacterMesh->GetSocketLocation(FName("LeftHeadSpellSocket"));
 
-				UKismetSystemLibrary::DrawDebugSphere(OwnerCharacter, SocketLocation, 10.f, 12, FLinearColor::Red, 5.f);
-
 				TArray<AActor*> IgnoredActors;
 				IgnoredActors.Add(OwnerCharacter);
 
