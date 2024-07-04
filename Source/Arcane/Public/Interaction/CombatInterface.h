@@ -132,4 +132,8 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void SetIsBeingShock(bool bShock);	// 设置是否处于震荡循环中
 
+	// 传入是否是BoStaff动画类型（bool）来更新武器的绑定插槽（因为不同的动画来源，插值位置不同，需要进行调整）
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void UpdateWeaponSocket(bool bIsBoStaff);	// 更新武器插槽
+
 };

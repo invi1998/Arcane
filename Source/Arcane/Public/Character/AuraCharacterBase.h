@@ -59,6 +59,7 @@ public:
 	virtual USkeletalMeshComponent* GetCharacterMesh_Implementation() const override;	// 获取角色网格
 	virtual void SetIsBeingShock_Implementation(bool bShock) override;	// 设置是否被电击
 	virtual bool IsBeingShock_Implementation() const override;	// 是否被电击
+	virtual void UpdateWeaponSocket_Implementation(bool bIsBoStaff) override;	// 更新武器插槽
 	/* Combat Interface End*/
 
 	FOnASCRegistered OnASCRegistered;		// ASC注册委托

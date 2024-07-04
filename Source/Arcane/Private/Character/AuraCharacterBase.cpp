@@ -483,4 +483,17 @@ bool AAuraCharacterBase::IsBeingShock_Implementation() const
 	return bIsBeingShocked;
 }
 
+void AAuraCharacterBase::UpdateWeaponSocket_Implementation(bool bIsBoStaff)
+{
+	if (bIsBoStaff)
+	{
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FName("BotStaff_RightWeaponSlot"));
+	}
+	else
+	{
+		Weapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FName("WeaponHandSocket"));
+	}
+}
+
+
 
