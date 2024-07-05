@@ -747,4 +747,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("GameplayCue.FireBlast"),
 		FString("FireBlast GameplayCue")
 	);
+
+	GameplayTags.GameplayCue_Swing = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("GameplayCue.Swing"),
+		FString("Swing GameplayCue")
+	);
 }

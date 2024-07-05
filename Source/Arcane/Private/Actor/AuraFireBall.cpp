@@ -5,7 +5,6 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
-#include "AbilitySystem/AuraAbilitySystemGlobals.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "GameplayCueManager.h"
 #include "Components/AudioComponent.h"

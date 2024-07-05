@@ -14,6 +14,9 @@ class ARCANE_API AMonkSwingProjectile : public AAuraProjectile
 {
 	GENERATED_BODY()
 
+public:
+	
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -21,5 +24,5 @@ protected:
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 	virtual void OnHit() override;
-	
+
 };

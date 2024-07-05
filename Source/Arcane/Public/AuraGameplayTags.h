@@ -246,6 +246,8 @@ public:
 	 */
 	FGameplayTag GameplayCue_FireBlast;				// 游戏性提示：火爆
 
+	FGameplayTag GameplayCue_Swing;					// 游戏性提示：挥击
+
 protected:
 
 private:
