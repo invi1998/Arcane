@@ -34,6 +34,9 @@ public:
 	FString DefaultLevelName;
 
 	UPROPERTY(EditDefaultsOnly)
+	FName DefaultPlayerStartTag;
+
+	UPROPERTY(EditDefaultsOnly)
 	TSoftObjectPtr<UWorld> DefaultLevelMap;
 
 	UPROPERTY(EditDefaultsOnly)

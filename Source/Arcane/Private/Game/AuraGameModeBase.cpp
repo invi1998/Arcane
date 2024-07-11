@@ -3,8 +3,13 @@
 
 #include "Game/AuraGameModeBase.h"
 
+#include "Game/ArcaneGameInstance.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
+
+void AAuraGameModeBase::SaveSlotData(FString SaveSlotName, FString UserName)
+{
+}
 
 void AAuraGameModeBase::TravelToLevel(FString LevelName)
 {
@@ -16,14 +21,16 @@ AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 	TArray<AActor*> PlayerStarts;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
 
-	if (PlayerStarts.Num() > 0)
+	const UArcaneGameInstance* GameInstance = Cast<UArcaneGameInstance>(GetGameInstance());
+
+	if (GameInstance && PlayerStarts.Num() > 0)
 	{
 		AActor* PlayerStart = PlayerStarts[0];
 		for (AActor* Start : PlayerStarts)
 		{
 			if (APlayerStart* PS = Cast<APlayerStart>(Start))
 			{
-				if (PS->PlayerStartTag == "PlayerStart")
+				if (PS->PlayerStartTag == GameInstance->PlayerStartTag)
 				{
 					PlayerStart = PS;
 					break;
@@ -32,7 +39,7 @@ AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 		}
 		return PlayerStart;
 	}
-	return nullptr;
+	return Super::ChoosePlayerStart_Implementation(Player);
 }
 
 void AAuraGameModeBase::BeginPlay()

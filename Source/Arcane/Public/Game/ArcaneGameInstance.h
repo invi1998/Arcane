@@ -15,6 +15,11 @@ class ARCANE_API UArcaneGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
+	UPROPERTY()
+	FName PlayerStartTag = FName("");
+
+	UPROPERTY()
+	FString LoadSlotName = FString();
 
 private:
 	
