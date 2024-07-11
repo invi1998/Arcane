@@ -29,5 +29,17 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Save Game")
 	TSubclassOf<USaveGame> MenuSaveGameClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	FString DefaultLevelName;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UWorld> DefaultLevelMap;
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<FString, TSoftObjectPtr<UWorld>> LevelMaps;
+
+protected:
+	virtual void BeginPlay() override;
 	
 };
