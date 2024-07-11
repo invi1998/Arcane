@@ -39,6 +39,11 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FString, TSoftObjectPtr<UWorld>> LevelMaps;
 
+	UFUNCTION(BlueprintCallable)
+	void TravelToLevel(FString LevelName);
+
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+
 protected:
 	virtual void BeginPlay() override;
 	
