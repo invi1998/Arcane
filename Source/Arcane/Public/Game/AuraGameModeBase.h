@@ -30,7 +30,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Save Game")
 	TSubclassOf<USaveGame> MenuSaveGameClass;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FString DefaultLevelName;
 
 	UPROPERTY(EditDefaultsOnly)
