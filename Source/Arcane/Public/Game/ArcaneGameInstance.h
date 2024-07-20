@@ -15,7 +15,7 @@ class ARCANE_API UArcaneGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	FName PlayerStartTag = FName("");
 
 	UPROPERTY()

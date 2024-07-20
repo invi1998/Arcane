@@ -50,6 +50,10 @@ public:
 	/** 角色位置 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, SaveGame, meta = (DisplayName = "Player Transform"))
 	FTransform PlayerTransform;
+
+	/** 角色起始生成标记 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, SaveGame, meta = (DisplayName = "Player Spawn Point"))
+	FName PlayerStartTag;
 };
 
 

@@ -25,7 +25,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Ability Info")
 	TObjectPtr<UAbilityInfo> AbilityInfo;				// 技能信息
 
-	void SaveSlotData(FString SaveSlotName, FString UserName);
+	UFUNCTION(BlueprintCallable)
+	void SaveSlotData(USaveGame* SaveGameObject, FName SlotName, int32 SlotIndex);
 
 	UPROPERTY(EditDefaultsOnly, Category="Save Game")
 	TSubclassOf<USaveGame> MenuSaveGameClass;

@@ -7,8 +7,9 @@
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
-void AAuraGameModeBase::SaveSlotData(FString SaveSlotName, FString UserName)
+void AAuraGameModeBase::SaveSlotData(USaveGame* SaveGameObject, FName SlotName, int32 SlotIndex)
 {
+	UGameplayStatics::SaveGameToSlot(SaveGameObject, SlotName.ToString(), SlotIndex);
 }
 
 void AAuraGameModeBase::TravelToLevel(FString LevelName)
