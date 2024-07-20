@@ -43,6 +43,30 @@ struct FSavedGameInfo
 {
 	GENERATED_BODY()
 public:
+	/** 插槽名 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Slot Name", MakeStructureDefaultValue = "None"))
+	FName SlotName;
+
+	/** 存档时间 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Date Time", MakeStructureDefaultValue = "0001.01.01-00.00.00"))
+	FDateTime DateTime;
+
+	/** 存档名称 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Player Name", MakeStructureDefaultValue = "None"))
+	FName PlayerName;
+
+	/** 存档背景 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Quest Image", MakeStructureDefaultValue = "None"))
+	TObjectPtr<UTexture2D> QuestImage;
+
+	/** 角色等级 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Level", MakeStructureDefaultValue = "0"))
+	int32 Level;
+
+	/** 关卡名 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Map"))
+	FString Map;
+
 	/** 是否是新游戏 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Is New Game", MakeStructureDefaultValue = "True"))
 	bool IsNewGame;
