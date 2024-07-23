@@ -57,6 +57,149 @@ public:
 };
 
 
+/** SaveSetting 设置保存 */
+
+/** Audio（音频设置) */
+USTRUCT(BlueprintType)
+struct FStructAudioSave
+{
+	GENERATED_BODY()
+public:
+	/** 声音开启 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Sounds Enabled"))
+	bool SoundsEnabled;
+
+	/** 主体音量 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Master Volume"))
+	float MasterVolume;
+
+	/** BGM开启 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Music Enabled"))
+	bool MusicEnabled;
+
+	/** BGM音量 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Music Volume"))
+	float MusicVolume;
+
+	/** 音效 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Sound Effects Enabled"))
+	bool SoundEffectsEnabled;
+
+	/** 音效音量 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Sound Effects Volume"))
+	float SoundEffectsVolume;
+
+	/** UI音效 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "UI Sounds Enabled"))
+	bool UISoundsEnabled;
+
+	/** 用户接口音量 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "User Interface Volume"))
+	float UserInterfaceVolume;
+};
+
+/** 游戏设置 */
+USTRUCT(BlueprintType)
+struct FStructGameplaySettingsSave
+{
+	GENERATED_BODY()
+public:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Show HUD"))
+	bool ShowHUD;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Chat Log"))
+	FName ChatLog;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Minimap"))
+	bool Minimap;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Vehicle Seat Info"))
+	bool VehicleSeatInfo;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Awards"))
+	bool Awards;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Crosshair Color", MakeStructureDefaultValue = "(R=1.000000,G=1.000000,B=1.000000,A=1.000000)"))
+	FLinearColor CrosshairColor;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Crosshair Opacity"))
+	float CrosshairOpacity;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Kill Log"))
+	bool KillLog;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Kill Log Filter"))
+	FName KillLogFilter;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Kill Log Weapon"))
+	FName KillLogWeapon;
+};
+
+/** 鼠标设置 */
+USTRUCT(BlueprintType)
+struct FStructMouseSave
+{
+	GENERATED_BODY()
+public:
+	/* 鼠标翻转 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Invert Mouse"))
+	bool InvertMouse;
+
+	/** 鼠标灵敏度 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Mouse Sensitivity", MakeStructureDefaultValue = "1.000000"))
+	float MouseSensitivity;
+};
+
+/** 视频设置 */
+USTRUCT(BlueprintType)
+struct FStructVideoSave
+{
+	GENERATED_BODY()
+public:
+	/** 运动模糊 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Motion Blur"))
+	bool MotionBlur;
+
+	/** gama值 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Gamma", MakeStructureDefaultValue = "2.200000"))
+	float Gamma;
+};
+
+/** 游戏设置保存 */
+USTRUCT(BlueprintType)
+struct FStructGameSave
+{
+	GENERATED_BODY()
+public:
+	/** 鼠标设置 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Mouse Settings"))
+	FStructMouseSave MouseSettings;
+
+	/** 游戏设置 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Gameplay Settings"))
+	FStructGameplaySettingsSave GameplaySettings;
+};
+
+/** 设置 */
+USTRUCT(BlueprintType)
+struct FStructSettingsSave
+{
+	GENERATED_BODY()
+public:
+	/** 音频n */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Audio Settings"))
+	FStructAudioSave AudioSettings;
+
+	/** 视频 */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Video Settings"))
+	FStructVideoSave VideoSettings;
+};
+
+
+
+
+
 
 /**
  * 
@@ -78,5 +221,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FSavedGameInfo SavedGameInfo;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FStructSettingsSave Settings;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FStructGameSave Gameplay;
 
 };
