@@ -120,8 +120,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Awards"))
 	bool Awards;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Crosshair Color", MakeStructureDefaultValue = "(R=1.000000,G=1.000000,B=1.000000,A=1.000000)"))
-	FLinearColor CrosshairColor;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Crosshair Color"))
+	FLinearColor CrosshairColor = FLinearColor::White;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Crosshair Opacity"))
 	float CrosshairOpacity;
@@ -147,8 +147,8 @@ public:
 	bool InvertMouse;
 
 	/** 鼠标灵敏度 */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Mouse Sensitivity", MakeStructureDefaultValue = "1.000000"))
-	float MouseSensitivity;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Mouse Sensitivity"))
+	float MouseSensitivity = 1.0f;
 };
 
 /** 视频设置 */
@@ -162,8 +162,8 @@ public:
 	bool MotionBlur;
 
 	/** gama值 */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Gamma", MakeStructureDefaultValue = "2.200000"))
-	float Gamma;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Gamma"))
+	float Gamma = 2.2f;
 };
 
 /** 游戏设置保存 */
@@ -202,7 +202,7 @@ public:
 
 
 /**
- * 
+ * 蓝图可见的存档类
  */
 UCLASS()
 class ARCANE_API UMenuSaveGame : public USaveGame
