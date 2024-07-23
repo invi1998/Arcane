@@ -45,6 +45,7 @@ public:
 	virtual int32 GetSkillPoint_Implementation() const override;	// 获取技能点
 	virtual void ShowMagicCircle_Implementation(UMaterialInterface* DecalMaterial) override;	// 显示法环
 	virtual void HideMagicCircle_Implementation() override;	// 隐藏法环
+	virtual void SaveProgress_Implementation(const FName& CheckPointTag) override;
 	/* Player Interface End*/
 
 	// 角色升级特效

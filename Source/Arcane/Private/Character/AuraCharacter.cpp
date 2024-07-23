@@ -14,8 +14,11 @@
 #include "NiagaraComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Camera/CameraComponent.h"
+#include "Game/ArcaneGameInstance.h"
+#include "Game/AuraGameModeBase.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/HUD/AuraHUD.h"
 
@@ -260,6 +263,16 @@ void AAuraCharacter::HideMagicCircle_Implementation()
 	{
 		AuraPlayerController->HideMagicCircle();	// 隐藏法环
 		AuraPlayerController->bShowMouseCursor = true;	// 显示鼠标光标
+	}
+}
+
+void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
+{
+	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
+	UArcaneGameInstance* ArcaneGameInstance = Cast<UArcaneGameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (AuraGameMode && ArcaneGameInstance)
+	{
+		
 	}
 }
 

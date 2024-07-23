@@ -63,4 +63,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void HideMagicCircle();	// 隐藏法环
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SaveProgress(const FName& CheckPointTag);	// 保存进度
 };
