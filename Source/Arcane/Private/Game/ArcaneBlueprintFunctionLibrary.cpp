@@ -6,7 +6,7 @@
 #include "Game/MenuSaveGame.h"
 #include "Kismet/GameplayStatics.h"
 
-TArray<FString> UArcaneBlueprintFunctionLibrary::FindAllSaveGames(FString SlotPrefix)
+TArray<FString> UArcaneBlueprintFunctionLibrary::FindAllSaveGames(const UObject* WorldContextObject, FString SlotPrefix)
 {
 	TArray<FString> SaveGameNames;
 	for (int32 i = 0; i < 100; i++)
@@ -37,7 +37,8 @@ TArray<FString> UArcaneBlueprintFunctionLibrary::FindAllSaveGames(FString SlotPr
 	return SaveGameNames;
 }
 
-void UArcaneBlueprintFunctionLibrary::CreateNewGameSave(FName PlayerName, FString SlotPrefix)
+void UArcaneBlueprintFunctionLibrary::CreateNewGameSave(const UObject* WorldContextObject, FName PlayerName,
+	FString SlotPrefix)
 {
 	int32 LocCheckedSlot = 0;
 	FString SlotName = SlotPrefix + FString::FromInt(LocCheckedSlot);
@@ -49,5 +50,4 @@ void UArcaneBlueprintFunctionLibrary::CreateNewGameSave(FName PlayerName, FStrin
 	}
 
 	// 创建新存档
-	
 }
