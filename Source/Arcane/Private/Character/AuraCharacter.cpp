@@ -277,6 +277,21 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 
 		SaveGame->SavedGameInfo.PlayerStartTag = CheckPointTag;	// 保存检查点标签
 
+		// 角色数据保存
+		if (const AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
+		{
+			SaveGame->PlayerData.PlayerLevel = AuraPlayerState->GetPlayerLevel();	// 保存等级
+			SaveGame->PlayerData.PlayerExp = AuraPlayerState->GetPlayerEXP();	// 保存经验
+			SaveGame->PlayerData.SpellPoints = AuraPlayerState->GetSkillPoints();	// 保存技能点
+			SaveGame->PlayerData.AttributePoints = AuraPlayerState->GetAttributePoints();	// 保存属性点
+		}
+		// 角色属性保存
+		SaveGame->PlayerData.Strength = UAuraAttributeSet::GetStrengthAttribute().GetNumericValue(AttributeSet);	// 保存力量
+		SaveGame->PlayerData.Agility = UAuraAttributeSet::GetAgilityAttribute().GetNumericValue(AttributeSet);	// 保存敏捷
+		SaveGame->PlayerData.Intelligence = UAuraAttributeSet::GetIntelligenceAttribute().GetNumericValue(AttributeSet);	// 保存智力
+		SaveGame->PlayerData.Vigor = UAuraAttributeSet::GetVigorAttribute().GetNumericValue(AttributeSet);	// 保存体力
+		SaveGame->PlayerData.Resilience = UAuraAttributeSet::GetResilienceAttribute().GetNumericValue(AttributeSet);	// 保存韧性
+
 		AuraGameMode->SaveInGameProgressData(SaveGame);	// 保存游戏进度数据
 	}
 }

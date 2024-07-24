@@ -197,7 +197,43 @@ public:
 };
 
 
+/*
+ * player Data (玩家数据)
+ */
+USTRUCT(BlueprintType)
+struct FPlayerData
+{
+	GENERATED_BODY()
 
+public:
+	UPROPERTY()
+	int32 PlayerLevel = 1;	// 玩家等级
+
+	UPROPERTY()
+	int32 PlayerExp = 0;	// 玩家经验
+
+	UPROPERTY()
+	int32 SpellPoints = 0;	// 技能点
+
+	UPROPERTY()
+	int32 AttributePoints = 0;	// 属性点
+
+	UPROPERTY()
+	float Strength = 0;	// 力量
+
+	UPROPERTY()
+	float Agility = 0;	// 敏捷
+
+	UPROPERTY()
+	float Intelligence = 0;	// 智力
+
+	UPROPERTY()
+	float Vigor = 0;	// 体力
+
+	UPROPERTY()
+	float Resilience = 0;	// 抗性
+	
+};
 
 
 
@@ -227,5 +263,8 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FStructGameSave Gameplay;
+
+	UPROPERTY()
+	FPlayerData PlayerData;
 
 };
