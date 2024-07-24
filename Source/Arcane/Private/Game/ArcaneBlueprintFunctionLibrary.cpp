@@ -3,6 +3,7 @@
 
 #include "Game/ArcaneBlueprintFunctionLibrary.h"
 
+#include "Game/AuraGameModeBase.h"
 #include "Game/MenuSaveGame.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -37,8 +38,7 @@ TArray<FString> UArcaneBlueprintFunctionLibrary::FindAllSaveGames(const UObject*
 	return SaveGameNames;
 }
 
-void UArcaneBlueprintFunctionLibrary::CreateNewGameSave(const UObject* WorldContextObject, FName PlayerName,
-	FString SlotPrefix)
+UMenuSaveGame* UArcaneBlueprintFunctionLibrary::CreateNewGameSave(const UObject* WorldContextObject, FName PlayerName, TSubclassOf<USaveGame> SaveGameClass, FString SlotPrefix)
 {
 	int32 LocCheckedSlot = 0;
 	FString SlotName = SlotPrefix + FString::FromInt(LocCheckedSlot);
@@ -50,4 +50,29 @@ void UArcaneBlueprintFunctionLibrary::CreateNewGameSave(const UObject* WorldCont
 	}
 
 	// 创建新存档
+	UMenuSaveGame* NewSaveGame = Cast<UMenuSaveGame>(UGameplayStatics::CreateSaveGameObject(SaveGameClass));
+	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+
+	if (AuraGameMode && NewSaveGame)
+	{
+		// save game slot
+		NewSaveGame->SaveGameSlot.DateTime = FDateTime::Now();
+		NewSaveGame->SaveGameSlot.PlayerName = PlayerName;
+		NewSaveGame->SaveGameSlot.SlotName = FName(SlotName);
+		NewSaveGame->SaveGameSlot.Level = 1;
+		NewSaveGame->SaveGameSlot.Map = AuraGameMode->DefaultLevelName;
+		NewSaveGame->SaveGameSlot.QuestImage = AuraGameMode->DefaultSaveGameScreen;
+
+		UGameplayStatics::SaveGameToSlot(NewSaveGame, SlotName, 0);
+	}
+
+	return NewSaveGame;
 }
+
+UMenuSaveGame* UArcaneBlueprintFunctionLibrary::LoadSpecificSlot(const UObject* WorldContextObject, FString SlotName)
+{
+	UMenuSaveGame* SaveGame = Cast<UMenuSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, 0));
+	return SaveGame;
+}
+
+

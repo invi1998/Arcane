@@ -43,6 +43,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TMap<FString, TSoftObjectPtr<UWorld>> LevelMaps;
 
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UTexture2D> DefaultSaveGameScreen;
+
 	UFUNCTION(BlueprintCallable)
 	void TravelToLevel(FString LevelName);
 

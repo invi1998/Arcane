@@ -6,6 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ArcaneBlueprintFunctionLibrary.generated.h"
 
+class UMenuSaveGame;
+
 /**
  * 
  */
@@ -19,8 +21,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Arcane|SaveGame", meta=(DefaultToSelf="WorldContextObject"))
 	static TArray<FString> FindAllSaveGames(const UObject* WorldContextObject, FString SlotPrefix = FString("UMS"));
 
-	// 传入角色名（FName)，传入插槽名前缀(默认FString("UMS")），创建一个新的游戏存档
+	// 传入角色名（FName)，传入插槽名前缀(默认FString("UMS")），创建一个新的游戏存档，返回存档对象
 	UFUNCTION(BlueprintCallable, Category = "Arcane|SaveGame", meta = (DefaultToSelf = "WorldContextObject"))
-	static void CreateNewGameSave(const UObject* WorldContextObject, FName PlayerName, FString SlotPrefix = FString("UMS"));
-	
+	static UMenuSaveGame* CreateNewGameSave(const UObject* WorldContextObject, FName PlayerName, TSubclassOf<USaveGame> SaveGameClass, FString SlotPrefix = FString("UMS"));
+
+	// 传入插槽名，获取存档对象
+	UFUNCTION(BlueprintCallable, Category = "Arcane|SaveGame", meta = (DefaultToSelf = "WorldContextObject"))
+	static UMenuSaveGame* LoadSpecificSlot(const UObject* WorldContextObject, FString SlotName);
+
 };

@@ -3,6 +3,7 @@
 
 #include "Game/AuraGameModeBase.h"
 
+#include "Game/ArcaneBlueprintFunctionLibrary.h"
 #include "Game/ArcaneGameInstance.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
