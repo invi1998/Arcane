@@ -6,6 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "ArcaneGameInstance.generated.h"
 
+class UMenuSaveGame;
+
 /**
  * 
  */
@@ -18,8 +20,19 @@ public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	FName PlayerStartTag = FName("");
 
-	UPROPERTY()
-	FString LoadSlotName = FString();
+	UPROPERTY(BlueprintReadWrite)
+	FString CurrentSlotName = FString();
+
+	// 当前存档
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<UMenuSaveGame> LoadedGame = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TObjectPtr<UTexture2D>> SlotBackgrounds;
+
+	// 保存当前游戏存档
+	UFUNCTION(BlueprintCallable)
+	void OnSaveCurrentGame();
 
 private:
 	
