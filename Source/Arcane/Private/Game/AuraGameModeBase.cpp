@@ -5,6 +5,7 @@
 
 #include "Game/ArcaneBlueprintFunctionLibrary.h"
 #include "Game/ArcaneGameInstance.h"
+#include "Game/MenuSaveGame.h"
 #include "GameFramework/PlayerStart.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -42,6 +43,23 @@ AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 		return PlayerStart;
 	}
 	return Super::ChoosePlayerStart_Implementation(Player);
+}
+
+UMenuSaveGame* AAuraGameModeBase::GetCurrentSaveGame() const
+{
+	UArcaneGameInstance* GameInstance = Cast<UArcaneGameInstance>(GetGameInstance());
+
+	return GameInstance->LoadedGame;
+}
+
+void AAuraGameModeBase::SaveInGameProgressData(const UMenuSaveGame* SaveGameObject) const
+{
+	if (UArcaneGameInstance* GameInstance = Cast<UArcaneGameInstance>(GetGameInstance()))
+	{
+		GameInstance->PlayerStartTag = SaveGameObject->SavedGameInfo.PlayerStartTag;
+
+		GameInstance->OnSaveCurrentGame();
+	}
 }
 
 void AAuraGameModeBase::BeginPlay()

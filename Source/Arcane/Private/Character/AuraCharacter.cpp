@@ -16,6 +16,7 @@
 #include "Camera/CameraComponent.h"
 #include "Game/ArcaneGameInstance.h"
 #include "Game/AuraGameModeBase.h"
+#include "Game/MenuSaveGame.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameplayEffectComponents/TargetTagsGameplayEffectComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -268,11 +269,15 @@ void AAuraCharacter::HideMagicCircle_Implementation()
 
 void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 {
-	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
-	UArcaneGameInstance* ArcaneGameInstance = Cast<UArcaneGameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (AuraGameMode && ArcaneGameInstance)
+	if (const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
 	{
-		
+		UMenuSaveGame* SaveGame = AuraGameMode->GetCurrentSaveGame();
+
+		if (!SaveGame) return;
+
+		SaveGame->SavedGameInfo.PlayerStartTag = CheckPointTag;	// 保存检查点标签
+
+		AuraGameMode->SaveInGameProgressData(SaveGame);	// 保存游戏进度数据
 	}
 }
 

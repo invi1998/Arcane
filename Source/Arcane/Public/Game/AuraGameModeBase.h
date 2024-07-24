@@ -9,6 +9,7 @@
 class UCharacterClassInfo;
 class UAbilityInfo;
 class USaveGame;
+class UMenuSaveGame;
 
 /**
  * 
@@ -50,6 +51,11 @@ public:
 	void TravelToLevel(FString LevelName);
 
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+
+	// 获取当前的存档
+	UMenuSaveGame* GetCurrentSaveGame() const;
+
+	void SaveInGameProgressData(const UMenuSaveGame* SaveGameObject) const;
 
 protected:
 	virtual void BeginPlay() override;
