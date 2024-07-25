@@ -10,40 +10,40 @@
 class UGameplayEffect;
 class UGameplayAbility;
 
-// ½ÇÉ«Ö°ÒµÃ¶¾Ù
+// è§’è‰²èŒä¸šæšä¸¾
 UENUM(BlueprintType)
 enum class ECharacterClass : uint8
 {
-	Elementalist,		// ÔªËØÊ¦
-	Warrior,			// Õ½Ê¿
-	Ranger,				// ÓÎÏÀ
-	Zombie,				// É¥Ê¬
-	Lich,				// Î×Ñı
-	LichKing,			// Î×ÑıÍõ
-	LichGuard,			// Î×ÑıÎÀÊ¿
-	LichQueen,			// Î×ÑıÅ®Íõ
-	Ghoul,				// Ê³Ê¬¹í
-	Goblin,				// ¸ç²¼ÁÖ
+	Elementalist,		// å…ƒç´ å¸ˆ
+	Warrior,			// æˆ˜å£«
+	Ranger,				// æ¸¸ä¾ 
+	Zombie,				// ä¸§å°¸
+	Lich,				// å·«å¦–
+	LichKing,			// å·«å¦–ç‹
+	LichGuard,			// å·«å¦–å«å£«
+	LichQueen,			// å·«å¦–å¥³ç‹
+	Ghoul,				// é£Ÿå°¸é¬¼
+	Goblin,				// å“¥å¸ƒæ—
 };
 
-// Ä¬ÈÏ½ÇÉ«Ö°ÒµĞÅÏ¢
+// é»˜è®¤è§’è‰²èŒä¸šä¿¡æ¯
 USTRUCT(BlueprintType)
 struct FCharacterClassDefaultInfo
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly, Category="Class Defaults")
-	TSubclassOf<UGameplayEffect> PrimaryAttributes;	// Ö÷ÊôĞÔĞ§¹û
+	TSubclassOf<UGameplayEffect> PrimaryAttributes;	// ä¸»å±æ€§æ•ˆæœ
 
 	UPROPERTY(EditDefaultsOnly, Category="Class Defaults")
-	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;	// ³õÊ¼ÄÜÁ¦
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;	// åˆå§‹èƒ½åŠ›
 
 	UPROPERTY(EditDefaultsOnly, Category="Class Defaults")
-	FScalableFloat EXPReward = FScalableFloat();	// ¾­Ñé½±Àø
+	FScalableFloat EXPReward = FScalableFloat();	// ç»éªŒå¥–åŠ±
 };
 
 /**
- * ½ÇÉ«Ö°ÒµĞÅÏ¢Êı¾İ×Ê²ú
+ * è§’è‰²èŒä¸šä¿¡æ¯æ•°æ®èµ„äº§
  */
 UCLASS()
 class ARCANE_API UCharacterClassInfo : public UDataAsset
@@ -52,20 +52,23 @@ class ARCANE_API UCharacterClassInfo : public UDataAsset
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
-	TMap<ECharacterClass, FCharacterClassDefaultInfo> CharacterClassInformation;	// ½ÇÉ«Ö°ÒµÊôĞÔĞÅÏ¢
-
-	UPROPERTY(EditDefaultsOnly, Category="Common Class Defaults")
-	TSubclassOf<UGameplayEffect> SecondaryAttributes;	// ´ÎÒªÊôĞÔĞ§¹û, ÓÃÓÚËùÓĞÖ°Òµ
-
-	UPROPERTY(EditDefaultsOnly, Category= "Common Class Defaults")
-	TSubclassOf<UGameplayEffect> VitalAttributes;		// ÖØÒªÊôĞÔĞ§¹û, ÓÃÓÚËùÓĞÖ°Òµ
-
-	FCharacterClassDefaultInfo GetCharacterClassDefaultInfo(ECharacterClass CharacterClass) const;	// »ñÈ¡½ÇÉ«Ö°ÒµÄ¬ÈÏĞÅÏ¢
+	TMap<ECharacterClass, FCharacterClassDefaultInfo> CharacterClassInformation;	// è§’è‰²èŒä¸šå±æ€§ä¿¡æ¯
 
 	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults")
-	TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;	// ÄÜÁ¦
+	TSubclassOf<UGameplayEffect> PrimaryAttributes_SetByCaller;		// ä¸»å±æ€§æ•ˆæœ_ç”±è°ƒç”¨è€…è®¾ç½®ï¼ˆä¸»è¦ç”¨äºä»å­˜æ¡£ä¸­åŠ è½½æ•°æ®ï¼‰
+
+	UPROPERTY(EditDefaultsOnly, Category="Common Class Defaults")
+	TSubclassOf<UGameplayEffect> SecondaryAttributes;	// æ¬¡è¦å±æ€§æ•ˆæœ, ç”¨äºæ‰€æœ‰èŒä¸š
+
+	UPROPERTY(EditDefaultsOnly, Category= "Common Class Defaults")
+	TSubclassOf<UGameplayEffect> VitalAttributes;		// é‡è¦å±æ€§æ•ˆæœ, ç”¨äºæ‰€æœ‰èŒä¸š
+
+	FCharacterClassDefaultInfo GetCharacterClassDefaultInfo(ECharacterClass CharacterClass) const;	// è·å–è§’è‰²èŒä¸šé»˜è®¤ä¿¡æ¯
+
+	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults")
+	TArray<TSubclassOf<UGameplayAbility>> CommonAbilities;	// èƒ½åŠ›
 
 	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults|Damage")
-	TObjectPtr<UCurveTable> DamageCalculationCurveTable;	// ÉËº¦¼ÆËãÇúÏß±í
+	TObjectPtr<UCurveTable> DamageCalculationCurveTable;	// ä¼¤å®³è®¡ç®—æ›²çº¿è¡¨
 
 };

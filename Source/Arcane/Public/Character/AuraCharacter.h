@@ -55,6 +55,9 @@ public:
 	virtual void OnRep_Stunned() override;
 	virtual void OnRep_Burned() override;
 
+	// 从游戏存档中加载角色信息
+	void LoadProgress();
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> TopDownCameraComponent;	// 顶部相机组件

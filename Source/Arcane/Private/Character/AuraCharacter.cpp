@@ -59,6 +59,9 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	// 为服务器初始化AbilitySystemComponent
 	InitAbilityActorInfo();
 
+	// 从游戏存档中加载角色数据
+	LoadProgress();
+
 	// 初始化角色能力
 	AddCharacterAbilities();
 	
@@ -292,6 +295,8 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 		SaveGame->PlayerData.Vigor = UAuraAttributeSet::GetVigorAttribute().GetNumericValue(AttributeSet);	// 保存体力
 		SaveGame->PlayerData.Resilience = UAuraAttributeSet::GetResilienceAttribute().GetNumericValue(AttributeSet);	// 保存韧性
 
+		SaveGame->SavedGameInfo.IsNewGame = false;	// 设置不是第一次加载游戏
+
 		AuraGameMode->SaveInGameProgressData(SaveGame);	// 保存游戏进度数据
 	}
 }
@@ -353,6 +358,45 @@ void AAuraCharacter::OnRep_Burned()
 		BurnDebuffEffect->Deactivate();	// 停止灼烧Debuff特效
 	}
 }
+
+void AAuraCharacter::LoadProgress()
+{
+	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (AuraGameMode)
+	{
+		UMenuSaveGame* SaveGame = AuraGameMode->GetCurrentSaveGame();
+		if (SaveGame)
+		{
+			// 读取角色数据
+			if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
+			{
+				AuraPlayerState->SetLevel(SaveGame->PlayerData.PlayerLevel);	// 设置等级
+				AuraPlayerState->SetEXP(SaveGame->PlayerData.PlayerExp);	// 设置经验
+				AuraPlayerState->SetSkillPoint(SaveGame->PlayerData.SpellPoints);	// 设置技能点
+				AuraPlayerState->SetAttributePoint(SaveGame->PlayerData.AttributePoints);	// 设置属性点
+			}
+
+			if (SaveGame->SavedGameInfo.IsNewGame)
+			{
+				InitializeDefaultAttributes();	// 初始化主要属性
+				AddCharacterAbilities();		// 添加角色能力
+			}
+			else
+			{
+				// 读取角色属性
+				if (UAuraAttributeSet* AuraAttributeSet = Cast<UAuraAttributeSet>(AttributeSet))
+				{
+					AuraAttributeSet->SetStrength(SaveGame->PlayerData.Strength);	// 设置力量
+					AuraAttributeSet->SetAgility(SaveGame->PlayerData.Agility);	// 设置敏捷
+					AuraAttributeSet->SetIntelligence(SaveGame->PlayerData.Intelligence);	// 设置智力
+					AuraAttributeSet->SetVigor(SaveGame->PlayerData.Vigor);	// 设置体力
+					AuraAttributeSet->SetResilience(SaveGame->PlayerData.Resilience);	// 设置韧性
+				}
+			}
+			
+		}
+	}
+}
 ;
 void AAuraCharacter::InitAbilityActorInfo()
 {
@@ -380,7 +424,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 		}
 	}
 
-	InitializeDefaultAttributes();	// 初始化主要能力
+	// InitializeDefaultAttributes();	// 初始化主要能力
 
 }
 
