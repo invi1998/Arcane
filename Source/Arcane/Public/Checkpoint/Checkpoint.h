@@ -23,6 +23,16 @@ public:
 	UPROPERTY(BlueprintReadOnly, SaveGame)
 	bool bReached = false;	// 是否到达
 
+	/*
+	 * Save Interface Start
+	 */
+	virtual bool ShouldLoadTransform_Implementation() override;
+	virtual void LoadActor_Implementation() override;
+
+	/*
+	 * Save Interface End
+	 */
+
 protected:
 	virtual void BeginPlay() override;	// 开始游戏时调用
 

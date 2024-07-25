@@ -66,6 +66,12 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 
 	// 初始化角色能力
 	AddCharacterAbilities();
+
+	// 加载世界状态数据
+	if (AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+	{
+		AuraGameMode->LoadWorldState(GetWorld());
+	}
 	
 }
 

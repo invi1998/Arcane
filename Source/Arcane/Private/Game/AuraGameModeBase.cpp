@@ -11,6 +11,7 @@
 #include "Interaction/SaveInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
+#include "Arcane/ArcaneLogChannels.h"
 
 void AAuraGameModeBase::SaveSlotData(USaveGame* SaveGameObject, FName SlotName, int32 SlotIndex)
 {
@@ -65,7 +66,7 @@ void AAuraGameModeBase::SaveInGameProgressData(const UMenuSaveGame* SaveGameObje
 	}
 }
 
-void AAuraGameModeBase::SaveWorldState(UWorld* World)
+void AAuraGameModeBase::SaveWorldState(UWorld* World) const
 {
 	FString WorldName = World->GetName();
 	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);	// 移除 StreamingLevelsPrefix 前缀
@@ -92,7 +93,7 @@ void AAuraGameModeBase::SaveWorldState(UWorld* World)
 			if (Actor && Actor->Implements<USaveInterface>())
 			{
 				FSavedActor NewSavedActor;
-				NewSavedActor.ActorName = FName(Actor->GetName());
+				NewSavedActor.ActorName = Actor->GetFName();
 				NewSavedActor.Transform = Actor->GetActorTransform();
 
 				FMemoryWriter MemoryWriter(NewSavedActor.Bytes);		// 创建一个内存写入器
@@ -118,6 +119,58 @@ void AAuraGameModeBase::SaveWorldState(UWorld* World)
 
 		UGameplayStatics::SaveGameToSlot(SaveGame, GameInstance->CurrentSlotName, 0);
 
+	}
+
+}
+
+void AAuraGameModeBase::LoadWorldState(UWorld* World) const
+{
+	FString WorldName = World->GetName();
+	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);	// 移除 StreamingLevelsPrefix 前缀
+
+	const UArcaneGameInstance* GameInstance = Cast<UArcaneGameInstance>(GetGameInstance());
+	check(GameInstance);
+
+	if (UGameplayStatics::DoesSaveGameExist(GameInstance->CurrentSlotName, 0))
+	{
+		if (UMenuSaveGame* SaveGame = Cast<UMenuSaveGame>(UGameplayStatics::LoadGameFromSlot(GameInstance->CurrentSlotName, 0)))
+		{
+			FSavedMap SavedMap = SaveGame->GetSavedMapWithMapName(WorldName);
+
+			// 遍历当前世界中的所有 Actor
+			for (FActorIterator It(World); It; ++It)
+			{
+				AActor* Actor = *It;
+				if (Actor && Actor->Implements<USaveInterface>())
+				{
+					// 遍历保存的 Actor
+					for (const FSavedActor& SavedActor : SavedMap.SavedActors)
+					{
+						if (SavedActor.ActorName == Actor->GetFName())
+						{
+							if (ISaveInterface::Execute_ShouldLoadTransform(Actor))
+							{
+								// 需要加载 Transform
+								Actor->SetActorTransform(SavedActor.Transform);
+							}
+
+							FMemoryReader MemoryReader(SavedActor.Bytes);		// 创建一个内存读取器
+							FObjectAndNameAsStringProxyArchive Ar(MemoryReader, true);	// 创建一个序列化器
+							Ar.ArIsSaveGame = true;		// 设置为保存游戏
+
+							// 反序列化 Actor
+							Actor->Serialize(Ar);		// 将序列化器中的数据反序列化到 Actor 中 （虽然都是序列化，但是这里是反序列化）
+
+							ISaveInterface::Execute_LoadActor(Actor);	// 调用 Actor 的 LoadActor 方法
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			UE_LOG(LogArcane, Error, TEXT("Failed to load save game from slot %s"), *GameInstance->CurrentSlotName);
+		}
 	}
 
 }
