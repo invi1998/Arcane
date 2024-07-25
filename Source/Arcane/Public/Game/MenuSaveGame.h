@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/SaveGame.h"
 #include "MenuSaveGame.generated.h"
 
@@ -235,6 +236,35 @@ public:
 	
 };
 
+/*
+ * player Ability (玩家技能)
+ */
+USTRUCT(BlueprintType)
+struct FPlayerSavedAbility
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ClassDefaults")
+	TSubclassOf<UGameplayAbility> GameplayAbility;	// 技能
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ClassDefaults")
+	FGameplayTag AbilityTag = FGameplayTag::EmptyTag;	// 技能标签
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ClassDefaults")
+	FGameplayTag AbilityStatus = FGameplayTag::EmptyTag;	// 技能状态标签
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ClassDefaults")
+	FGameplayTag AbilitySlot = FGameplayTag::EmptyTag;	// 技能槽标签
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ClassDefaults")
+	FGameplayTag AbilityType = FGameplayTag::EmptyTag;	// 技能类型标签
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ClassDefaults")
+	int32 AbilityLevel = 1;			// 技能等级
+
+};
+
 
 
 /**
@@ -266,5 +296,8 @@ public:
 
 	UPROPERTY()
 	FPlayerData PlayerData;
+
+	UPROPERTY()
+	TArray<FPlayerSavedAbility> SavedPlayerAbilities;
 
 };

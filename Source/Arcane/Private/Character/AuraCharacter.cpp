@@ -14,6 +14,7 @@
 #include "NiagaraComponent.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 #include "Camera/CameraComponent.h"
 #include "Game/ArcaneGameInstance.h"
 #include "Game/AuraGameModeBase.h"
@@ -297,6 +298,37 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 		SaveGame->PlayerData.Resilience = UAuraAttributeSet::GetResilienceAttribute().GetNumericValue(AttributeSet);	// 保存韧性
 
 		SaveGame->SavedGameInfo.IsNewGame = false;	// 设置不是第一次加载游戏
+
+		UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
+		if (AuraAbilitySystemComponent)
+		{
+			FForEachAbility SaveAbilitiesDelegate;	// 保存技能委托
+			SaveAbilitiesDelegate.BindLambda([this, &SaveGame, AuraAbilitySystemComponent](const FGameplayAbilitySpec& AbilitySpec)
+				{
+					if (AbilitySpec.Ability)
+					{
+						
+						FGameplayTag AbilityTag = AuraAbilitySystemComponent->GetAbilityTagBySpec(AbilitySpec);		// 获取技能标签
+						UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(this);
+						FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(AbilityTag);	// 通过标签获取技能信息
+
+						FPlayerSavedAbility PlayerSavedAbility;	// 创建玩家保存技能
+
+						PlayerSavedAbility.GameplayAbility = AbilitySpec.Ability->GetClass();	// 保存技能类
+						PlayerSavedAbility.AbilityTag = AbilityTag;	// 保存技能标签
+						PlayerSavedAbility.AbilityLevel = AbilitySpec.Level;	// 保存技能等级
+						PlayerSavedAbility.AbilitySlot = AuraAbilitySystemComponent->GetInputTagByAbilityTag(AbilityTag);	// 保存技能槽位
+						PlayerSavedAbility.AbilityStatus = AuraAbilitySystemComponent->GetStatusTagByAbilityTag(AbilityTag);	// 保存技能状态
+						PlayerSavedAbility.AbilityType = Info.AbilityTypeTag;	// 保存技能类型
+
+						SaveGame->SavedPlayerAbilities.Add(PlayerSavedAbility);	// 添加技能到存档
+					}
+				});
+
+			AuraAbilitySystemComponent->ForEachAbility(SaveAbilitiesDelegate);	// 遍历技能
+		}
+
+		
 
 		AuraGameMode->SaveInGameProgressData(SaveGame);	// 保存游戏进度数据
 	}
