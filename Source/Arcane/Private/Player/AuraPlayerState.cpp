@@ -12,13 +12,13 @@
 
 AAuraPlayerState::AAuraPlayerState()
 {
-	NetUpdateFrequency = 100.0f;		// ÉèÖÃ¿Í»§¶ËÃ¿Ãë100´Î¸üĞÂ£¬·şÎñ¶Ë³¢ÊÔ¸üĞÂ¿Í»§¶ËµÄÆµÂÊ
+	NetUpdateFrequency = 100.0f;		// è®¾ç½®å®¢æˆ·ç«¯æ¯ç§’100æ¬¡æ›´æ–°ï¼ŒæœåŠ¡ç«¯å°è¯•æ›´æ–°å®¢æˆ·ç«¯çš„é¢‘ç‡
 
-	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>(TEXT("AbilitySystemComponent"));	// ´´½¨ÄÜÁ¦ÏµÍ³×é¼ş
-	AbilitySystemComponent->SetIsReplicated(true);	// ÉèÖÃÎª¿É¸´ÖÆ
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);	// ÉèÖÃ¸´ÖÆÄ£Ê½£¬»ìºÏÄ£Ê½£¬¶ÔÓÚ¶àÈËÓÎÏ·À´Ëµ£¬ÌØ±ğÊÇÍæ¼Ò¿ØÖÆµÄ½ÇÉ«£¬ÉèÖÃÎªMixedÊÇ×îºÃµÄÑ¡Ôñ
+	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>(TEXT("AbilitySystemComponent"));	// åˆ›å»ºèƒ½åŠ›ç³»ç»Ÿç»„ä»¶
+	AbilitySystemComponent->SetIsReplicated(true);	// è®¾ç½®ä¸ºå¯å¤åˆ¶
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);	// è®¾ç½®å¤åˆ¶æ¨¡å¼ï¼Œæ··åˆæ¨¡å¼ï¼Œå¯¹äºå¤šäººæ¸¸æˆæ¥è¯´ï¼Œç‰¹åˆ«æ˜¯ç©å®¶æ§åˆ¶çš„è§’è‰²ï¼Œè®¾ç½®ä¸ºMixedæ˜¯æœ€å¥½çš„é€‰æ‹©
 
-	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("AttributeSet"));		// ´´½¨ÊôĞÔ¼¯
+	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>(TEXT("AttributeSet"));		// åˆ›å»ºå±æ€§é›†
 
 }
 
@@ -62,13 +62,13 @@ void AAuraPlayerState::SetEXP(int32 Value)
 void AAuraPlayerState::AddLevel(int32 Value)
 {
 	Level += Value;
-	OnLevelChangedDelegate.Broadcast(Level);
+	OnLevelChangedDelegate.Broadcast(Level, true);
 }
 
 void AAuraPlayerState::SetLevel(int32 Value)
 {
 	Level = Value;
-	OnLevelChangedDelegate.Broadcast(Level);
+	OnLevelChangedDelegate.Broadcast(Level, false);
 }
 
 void AAuraPlayerState::AddAttributePoint(int32 Value)
@@ -97,7 +97,7 @@ void AAuraPlayerState::SetSkillPoint(int32 Value)
 
 void AAuraPlayerState::OnRep_Level(int32 OldLevel)
 {
-	OnLevelChangedDelegate.Broadcast(Level);
+	OnLevelChangedDelegate.Broadcast(Level, true);
 }
 
 void AAuraPlayerState::OnRep_EXP(int32 OldEXP)

@@ -38,6 +38,7 @@ struct FUIWidgetRow : public FTableRowBase 	// UI小部件行，继承自FTableR
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, MessageWidgetRow);		// 消息小部件行，一个参数是消息小部件行
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangeSignature, int32, NewValue);		// 玩家状态改变委托，一个参数是新值（等级，属性点，技能点）
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerLevelChangeSignature, int32, NewValue, bool, bLevelUp);		// 玩家等级改变委托，一个参数是新值（等级，属性点，技能点）
 
 /**
  * OverlayWidgetController, 叠加层控件控制器, 设置为BlueprintType, Blueprintable，是因为我们希望在蓝图中使用它
@@ -72,7 +73,7 @@ public:
 	FOnAttributeChangeSignature OnExpPercentChangedDelegate;		// 经验改变
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Stat")
-	FOnPlayerStatChangeSignature OnLevelChangedDelegate;		// 等级改变
+	FOnPlayerLevelChangeSignature OnLevelChangedDelegate;		// 等级改变
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Stat")
 	FOnPlayerStatChangeSignature OnAttributePointsChangedDelegate;		// 属性点改变
@@ -92,7 +93,7 @@ protected:
 
 	void OnExpChanged(int32 NewExp);		// 当经验改变时
 
-	void OnPlayerLevelChanged(int32 NewLevel) const;		// 当玩家等级改变时
+	void OnPlayerLevelChanged(int32 NewLevel, bool ShowLevelUp) const;		// 当玩家等级改变时
 
 	void OnAttributePointsChanged(int32 NewAttributePoints) const;		// 当属性点改变时
 

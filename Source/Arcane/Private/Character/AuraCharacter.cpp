@@ -12,6 +12,7 @@
 #include "Player/AuraPlayerState.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "NiagaraComponent.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Camera/CameraComponent.h"
 #include "Game/ArcaneGameInstance.h"
@@ -361,21 +362,10 @@ void AAuraCharacter::OnRep_Burned()
 
 void AAuraCharacter::LoadProgress()
 {
-	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
-	if (AuraGameMode)
+	if (const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
 	{
-		UMenuSaveGame* SaveGame = AuraGameMode->GetCurrentSaveGame();
-		if (SaveGame)
+		if (UMenuSaveGame* SaveGame = AuraGameMode->GetCurrentSaveGame())
 		{
-			// 读取角色数据
-			if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
-			{
-				AuraPlayerState->SetLevel(SaveGame->PlayerData.PlayerLevel);	// 设置等级
-				AuraPlayerState->SetEXP(SaveGame->PlayerData.PlayerExp);	// 设置经验
-				AuraPlayerState->SetSkillPoint(SaveGame->PlayerData.SpellPoints);	// 设置技能点
-				AuraPlayerState->SetAttributePoint(SaveGame->PlayerData.AttributePoints);	// 设置属性点
-			}
-
 			if (SaveGame->SavedGameInfo.IsNewGame)
 			{
 				InitializeDefaultAttributes();	// 初始化主要属性
@@ -383,15 +373,16 @@ void AAuraCharacter::LoadProgress()
 			}
 			else
 			{
-				// 读取角色属性
-				if (UAuraAttributeSet* AuraAttributeSet = Cast<UAuraAttributeSet>(AttributeSet))
+				// 读取角色数据
+				if (AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
 				{
-					AuraAttributeSet->SetStrength(SaveGame->PlayerData.Strength);	// 设置力量
-					AuraAttributeSet->SetAgility(SaveGame->PlayerData.Agility);	// 设置敏捷
-					AuraAttributeSet->SetIntelligence(SaveGame->PlayerData.Intelligence);	// 设置智力
-					AuraAttributeSet->SetVigor(SaveGame->PlayerData.Vigor);	// 设置体力
-					AuraAttributeSet->SetResilience(SaveGame->PlayerData.Resilience);	// 设置韧性
+					AuraPlayerState->SetLevel(SaveGame->PlayerData.PlayerLevel);	// 设置等级
+					AuraPlayerState->SetEXP(SaveGame->PlayerData.PlayerExp);	// 设置经验
+					AuraPlayerState->SetSkillPoint(SaveGame->PlayerData.SpellPoints);	// 设置技能点
+					AuraPlayerState->SetAttributePoint(SaveGame->PlayerData.AttributePoints);	// 设置属性点
 				}
+
+				UAuraAbilitySystemLibrary::InitCharacterAttributesBySaveData(this, AbilitySystemComponent, SaveGame);	// 通过存档数据初始化角色属性)
 			}
 			
 		}

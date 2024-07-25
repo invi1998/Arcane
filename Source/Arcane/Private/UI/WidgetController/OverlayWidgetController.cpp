@@ -146,9 +146,9 @@ void UOverlayWidgetController::OnExpChanged(int32 NewExp)
 	OnExpPercentChangedDelegate.Broadcast(ExpPercent);	// 广播经验百分比
 }
 
-void UOverlayWidgetController::OnPlayerLevelChanged(int32 NewLevel) const
+void UOverlayWidgetController::OnPlayerLevelChanged(int32 NewLevel, bool ShowLevelUp) const
 {
-	OnLevelChangedDelegate.Broadcast(NewLevel);	// 广播等级改变
+	OnLevelChangedDelegate.Broadcast(NewLevel, ShowLevelUp);	// 广播等级改变
 }
 
 void UOverlayWidgetController::OnAttributePointsChanged(int32 NewAttributePoints) const

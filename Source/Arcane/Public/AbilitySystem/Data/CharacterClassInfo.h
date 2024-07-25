@@ -60,6 +60,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Common Class Defaults")
 	TSubclassOf<UGameplayEffect> SecondaryAttributes;	// 次要属性效果, 用于所有职业
 
+	UPROPERTY(EditDefaultsOnly, Category = "Common Class Defaults")
+	TSubclassOf<UGameplayEffect> SecondaryAttributes_Infinite;	// 次要属性效果, 用于所有职业，无限时间
+
 	UPROPERTY(EditDefaultsOnly, Category= "Common Class Defaults")
 	TSubclassOf<UGameplayEffect> VitalAttributes;		// 重要属性效果, 用于所有职业
 

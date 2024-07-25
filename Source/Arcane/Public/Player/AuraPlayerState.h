@@ -12,6 +12,7 @@ class UAttributeSet;
 class ULevelUpInfo;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnplayerStatChanged, int32/*状态值（exp，level..)*/);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnLevelChanged, int32/*状态值（exp，level..)*/, bool/*是否展示升级效果*/);
 
 /**
  * 
@@ -34,7 +35,7 @@ public:
 	TObjectPtr<ULevelUpInfo> LevelUpInfo;		// 等级升级信息
 
 	FOnplayerStatChanged OnExpChangedDelegate;		// 经验改变事件
-	FOnplayerStatChanged OnLevelChangedDelegate;	// 等级改变事件
+	FOnLevelChanged OnLevelChangedDelegate;	// 等级改变事件
 	FOnplayerStatChanged OnAttributePointChangedDelegate;	// 属性点改变事件
 	FOnplayerStatChanged OnSkillPointChangedDelegate;		// 技能点改变事件
 

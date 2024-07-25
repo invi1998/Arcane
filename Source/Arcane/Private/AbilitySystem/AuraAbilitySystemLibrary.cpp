@@ -13,6 +13,7 @@
 #include "Components/Widget.h"
 #include "Components/WidgetComponent.h"
 #include "Game/AuraGameModeBase.h"
+#include "Game/MenuSaveGame.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerState.h"
@@ -110,6 +111,41 @@ void UAuraAbilitySystemLibrary::InitCharacterAttributesByClassAndLevel(const UOb
 		ASC->ApplyGameplayEffectSpecToSelf(*VitalAttrSpecHandle.Data.Get());
 	}
 
+}
+
+void UAuraAbilitySystemLibrary::InitCharacterAttributesBySaveData(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, UMenuSaveGame* SaveGame)
+{
+	const UCharacterClassInfo* ClassDefaultInfo = GetCharacterClassInfo(WorldContextObject);	// 获取角色初始化信息
+	if (ClassDefaultInfo)
+	{
+		const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();	// 获取游戏标签
+		const AActor* SourceActor = ASC->GetAvatarActor();	// 获取角色
+
+		FGameplayEffectContextHandle EffectContextHandle = ASC->MakeEffectContext();	// 创建效果上下文
+		EffectContextHandle.AddSourceObject(SourceActor);	// 添加源对象
+
+		const FGameplayEffectSpecHandle PrimaryAttrSpecHandle = ASC->MakeOutgoingSpec(ClassDefaultInfo->PrimaryAttributes_SetByCaller, 1, EffectContextHandle);	// 创建效果规格
+
+		// 通过PrimaryAttributes_SetByCaller来设置角色的属性，这个属性值是直接通过SaveGame中获取的值来设置的，没有经过任何等级缩放计算，所以这个属性值是固定的，存档加载就需要这种效果
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(PrimaryAttrSpecHandle, GameplayTags.Attributes_Primary_Strength, SaveGame->PlayerData.Strength);	// 分配体质属性
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(PrimaryAttrSpecHandle, GameplayTags.Attributes_Primary_Intelligence, SaveGame->PlayerData.Intelligence);	// 分配智力属性
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(PrimaryAttrSpecHandle, GameplayTags.Attributes_Primary_Agility, SaveGame->PlayerData.Agility);	// 分配敏捷属性
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(PrimaryAttrSpecHandle, GameplayTags.Attributes_Primary_Vigor, SaveGame->PlayerData.Vigor);	// 分配活力
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(PrimaryAttrSpecHandle, GameplayTags.Attributes_Primary_Resilience, SaveGame->PlayerData.Resilience);	// 分配韧性
+
+		// 将效果应用到自己
+		ASC->ApplyGameplayEffectSpecToSelf(*PrimaryAttrSpecHandle.Data);
+
+		// 主属性设置完成，下一步就是设置次要属性
+		// SecondaryAttributes
+		const FGameplayEffectSpecHandle SecondaryAttrSpecHandle = ASC->MakeOutgoingSpec(ClassDefaultInfo->SecondaryAttributes_Infinite, 1, EffectContextHandle);
+		ASC->ApplyGameplayEffectSpecToSelf(*SecondaryAttrSpecHandle.Data.Get());
+
+		// VitalAttributes
+		const FGameplayEffectSpecHandle VitalAttrSpecHandle = ASC->MakeOutgoingSpec(ClassDefaultInfo->VitalAttributes, 1, EffectContextHandle);
+		ASC->ApplyGameplayEffectSpecToSelf(*VitalAttrSpecHandle.Data.Get());
+
+	}
 }
 
 void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass)
