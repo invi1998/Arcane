@@ -56,7 +56,7 @@ void ACheckpoint::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	{
 		bReached = true;
 
-		if (AAuraGameModeBase* GameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+		if (const AAuraGameModeBase* GameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
 		{
 			GameMode->SaveWorldState(GetWorld());
 		}
@@ -71,10 +71,11 @@ void ACheckpoint::HandleGlowEffects()
 	CollisionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// 创建一个动态材质实例，基于当前的材质
-	UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(CheckpointMesh->GetMaterial(0), this);
-	CheckpointMesh->SetMaterial(0, DynamicMaterial);
-
-	CheckpointReached(DynamicMaterial);
+	if (UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(CheckpointMesh->GetMaterial(0), this))
+	{
+		CheckpointMesh->SetMaterial(0, DynamicMaterial);
+		CheckpointReached(DynamicMaterial);
+	}
 }
 
 
