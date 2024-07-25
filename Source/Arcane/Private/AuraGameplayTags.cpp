@@ -372,6 +372,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("ManaSiphon Ability")
 	);
 
+	GameplayTags.Abilities_Passive_ListenForEvent = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Passive.ListenForEvent"),
+		FString("ListenForEvent Ability")
+	);
+
 	/*
 	 * Fire Ability Tags
 	 */

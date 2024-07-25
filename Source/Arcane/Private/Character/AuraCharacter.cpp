@@ -414,6 +414,11 @@ void AAuraCharacter::LoadProgress()
 					AuraPlayerState->SetAttributePoint(SaveGame->PlayerData.AttributePoints);	// 设置属性点
 				}
 
+				if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+				{
+					AuraASC->AddCharacterAbilitiesFromSaveData(SaveGame);
+				}
+
 				UAuraAbilitySystemLibrary::InitCharacterAttributesBySaveData(this, AbilitySystemComponent, SaveGame);	// 通过存档数据初始化角色属性)
 			}
 			

@@ -7,6 +7,7 @@
 #include "AuraAbilitySystemComponent.generated.h"
 
 class UAuraGameplayAbility;
+class UMenuSaveGame;
 
 // 定义一个委托，用于在效果应用到目标时调用，该委托用于广播效果的标签
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer& /* Asset Tags */);
@@ -54,6 +55,8 @@ public:
 	void AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities);		// 添加角色的能力，这些能力在角色创建时就会被添加
 
 	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities);	// 添加角色的被动能力，这些能力在角色创建时就会被添加
+
+	void AddCharacterAbilitiesFromSaveData(UMenuSaveGame* SaveGame);	// 从存档数据中添加角色的能力
 
 	bool bStartupAbilitiesGiven = false;	// 是否已经添加了角色的能力
 

@@ -11,6 +11,7 @@
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Arcane/ArcaneLogChannels.h"
+#include "Game/MenuSaveGame.h"
 #include "Interaction/PlayerInterface.h"
 
 void UAuraAbilitySystemComponent::AbilityActorInfoSet()
@@ -66,6 +67,31 @@ void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(const TArray<TSub
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability.GetDefaultObject(), 1);
 		GiveAbilityAndActivateOnce(AbilitySpec);   // 添加能力并激活一次
 	}
+}
+
+void UAuraAbilitySystemComponent::AddCharacterAbilitiesFromSaveData(UMenuSaveGame* SaveGame)
+{
+	const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();    // 获取AuraGameplayTags
+    for (const FPlayerSavedAbility& Data : SaveGame->SavedPlayerAbilities)
+	{
+		const TSubclassOf<UGameplayAbility> AbilityClass = Data.GameplayAbility;
+
+        FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass.GetDefaultObject(), Data.AbilityLevel);
+
+		AbilitySpec.DynamicAbilityTags.AddTag(Data.AbilitySlot);    // 添加槽标签
+		AbilitySpec.DynamicAbilityTags.AddTag(Data.AbilityStatus);    // 添加技能状态标签
+
+        if (Data.AbilityType == AuraTags.Abilities_Type_Passive)
+		{
+			GiveAbilityAndActivateOnce(AbilitySpec);   // 添加能力并激活一次
+		}
+		else if (Data.AbilityType == AuraTags.Abilities_Type_Offensive)
+		{
+			GiveAbility(AbilitySpec);   // 添加能力
+		}
+	}
+	bStartupAbilitiesGiven = true;    // 标记已经添加了能力
+	AbilitiesGivenDelegate.Broadcast();    // 广播给UI，告诉UI能力已经添加，可以显示了
 }
 
 void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)

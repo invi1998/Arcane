@@ -115,6 +115,7 @@ public:
 	FGameplayTag Abilities_Passive_HaloOfProtection;	// 被动：保护光环
 	FGameplayTag Abilities_Passive_LifeSiphon;			// 被动：生命虹吸
 	FGameplayTag Abilities_Passive_ManaSiphon;			// 被动：法力虹吸
+	FGameplayTag Abilities_Passive_ListenForEvent;		// 被动：监听事件
 
 	/*
 	 * Fire Ability Tags
