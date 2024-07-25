@@ -57,6 +57,8 @@ public:
 
 	void SaveInGameProgressData(const UMenuSaveGame* SaveGameObject) const;
 
+	void SaveWorldState(UWorld* World);
+
 protected:
 	virtual void BeginPlay() override;
 	

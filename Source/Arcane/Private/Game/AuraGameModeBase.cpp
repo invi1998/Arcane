@@ -47,7 +47,7 @@ AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 
 UMenuSaveGame* AAuraGameModeBase::GetCurrentSaveGame() const
 {
-	UArcaneGameInstance* GameInstance = Cast<UArcaneGameInstance>(GetGameInstance());
+	const UArcaneGameInstance* GameInstance = Cast<UArcaneGameInstance>(GetGameInstance());
 
 	return GameInstance->LoadedGame;
 }
@@ -60,6 +60,26 @@ void AAuraGameModeBase::SaveInGameProgressData(const UMenuSaveGame* SaveGameObje
 
 		GameInstance->OnSaveCurrentGame();
 	}
+}
+
+void AAuraGameModeBase::SaveWorldState(UWorld* World)
+{
+	FString WorldName = World->GetName();
+	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);	// 移除 StreamingLevelsPrefix 前缀
+
+	const UArcaneGameInstance* GameInstance = Cast<UArcaneGameInstance>(GetGameInstance());
+	check(GameInstance);
+
+	if (UMenuSaveGame* SaveGame = GetCurrentSaveGame())
+	{
+		if (!SaveGame->HasMap(WorldName))
+		{
+			FSavedMap NewSavedMap;
+			NewSavedMap.MapAssertName = WorldName;
+			SaveGame->SavedMaps.Add(NewSavedMap);
+		}
+	}
+
 }
 
 void AAuraGameModeBase::BeginPlay()
