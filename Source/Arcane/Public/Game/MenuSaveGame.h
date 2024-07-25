@@ -7,6 +7,8 @@
 #include "GameFramework/SaveGame.h"
 #include "MenuSaveGame.generated.h"
 
+class UGameplayAbility;
+
 /** 存档Slot数据 */
 USTRUCT(BlueprintType)
 struct FSaveSlot
@@ -264,6 +266,12 @@ public:
 	int32 AbilityLevel = 1;			// 技能等级
 
 };
+
+// 重载==运算符，用于比较两个FPlayerSavedAbility是否相等，用于TArray::AddUnique
+inline bool operator==(const FPlayerSavedAbility& Lhs, const FPlayerSavedAbility& Rhs)
+{
+	return Lhs.AbilityTag.MatchesTagExact(Rhs.AbilityTag);
+}
 
 
 

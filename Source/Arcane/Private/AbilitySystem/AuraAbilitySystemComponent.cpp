@@ -65,7 +65,9 @@ void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(const TArray<TSub
 	for (TSubclassOf<UGameplayAbility> Ability : StartupAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability.GetDefaultObject(), 1);
+		AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_State_Equipped);    // 添加被动技能标签
 		GiveAbilityAndActivateOnce(AbilitySpec);   // 添加能力并激活一次
+		
 	}
 }
 
@@ -83,7 +85,14 @@ void UAuraAbilitySystemComponent::AddCharacterAbilitiesFromSaveData(UMenuSaveGam
 
         if (Data.AbilityType == AuraTags.Abilities_Type_Passive)
 		{
-			GiveAbilityAndActivateOnce(AbilitySpec);   // 添加能力并激活一次
+			if (Data.AbilityStatus.MatchesTagExact(AuraTags.Abilities_State_Equipped))
+			{
+				GiveAbilityAndActivateOnce(AbilitySpec);   // 添加能力并激活一次
+			}
+			else
+			{
+				GiveAbility(AbilitySpec);
+			}
 		}
 		else if (Data.AbilityType == AuraTags.Abilities_Type_Offensive)
 		{
@@ -486,6 +495,8 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 					TryActivateAbility(AbilitySpec->Handle);    // 尝试激活能力
                     MulticastActivatePassiveEffect(AbilityTag, true);    // 广播激活被动技能
 				}
+				AbilitySpec->DynamicAbilityTags.RemoveTag(GetAbilityStateTag(*AbilitySpec));    // 移除技能状态标签
+				AbilitySpec->DynamicAbilityTags.AddTag(AuraTags.Abilities_State_Equipped);		// 添加技能状态标签
             }
 
 	        ClearSlot(AbilitySpec);    // 清除槽

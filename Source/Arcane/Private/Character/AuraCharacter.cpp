@@ -302,6 +302,7 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 		UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 		if (AuraAbilitySystemComponent)
 		{
+			SaveGame->SavedPlayerAbilities.Empty();	// 清空技能
 			FForEachAbility SaveAbilitiesDelegate;	// 保存技能委托
 			SaveAbilitiesDelegate.BindLambda([this, &SaveGame, AuraAbilitySystemComponent](const FGameplayAbilitySpec& AbilitySpec)
 				{
@@ -321,7 +322,7 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 						PlayerSavedAbility.AbilityStatus = AuraAbilitySystemComponent->GetStatusTagByAbilityTag(AbilityTag);	// 保存技能状态
 						PlayerSavedAbility.AbilityType = Info.AbilityTypeTag;	// 保存技能类型
 
-						SaveGame->SavedPlayerAbilities.Add(PlayerSavedAbility);	// 添加技能到存档
+						SaveGame->SavedPlayerAbilities.AddUnique(PlayerSavedAbility);	// 添加技能到存档
 					}
 				});
 
