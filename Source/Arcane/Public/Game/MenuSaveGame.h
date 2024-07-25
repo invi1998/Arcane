@@ -273,6 +273,45 @@ inline bool operator==(const FPlayerSavedAbility& Lhs, const FPlayerSavedAbility
 	return Lhs.AbilityTag.MatchesTagExact(Rhs.AbilityTag);
 }
 
+/*
+ * 世界场景存档
+ */
+USTRUCT(BlueprintType)
+struct FSavedActor
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	FName ActorName = NAME_None;
+
+	UPROPERTY()
+	FTransform Transform = FTransform();
+
+	// Serialized variables from the actor - only those marked with SaveGame Specifiers （从Actor序列化的变量 - 仅标记了SaveGame Specifiers的变量）
+	UPROPERTY()
+	TArray<uint8> Bytes;
+
+};
+
+inline bool operator==(const FSavedActor& Lhs, const FSavedActor& Rhs)
+{
+	return Lhs.ActorName == Rhs.ActorName;
+}
+
+USTRUCT(BlueprintType)
+struct FSavedMap
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	FString MapAssertName = FString();
+
+	UPROPERTY()
+	TArray<FSavedActor> SavedActors;
+};
+
 
 
 /**
@@ -307,5 +346,12 @@ public:
 
 	UPROPERTY()
 	TArray<FPlayerSavedAbility> SavedPlayerAbilities;
+
+	UPROPERTY()
+	TArray<FSavedMap> SavedMaps;
+
+	FSavedMap GetSavedMapWithMapName(const FString& InMapName);
+
+	bool HasMap(const FString& InMapName);
 
 };
