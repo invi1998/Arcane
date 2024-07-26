@@ -27,8 +27,8 @@ public:
 	virtual void PossessedBy(AController* NewController) override;	// 被控制器控制
 
 	/*begin Highlight 接口*/
-	virtual void HighlightActor() override;
-	virtual void UnHighlightActor() override;
+	virtual void HighlightActor_Implementation() override;
+	virtual void UnHighlightActor_Implementation() override;
 	/*end Highlight 接口*/
 
 	/** CombatInterface begin */

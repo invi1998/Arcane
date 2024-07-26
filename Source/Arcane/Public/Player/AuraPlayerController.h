@@ -10,13 +10,19 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
-class IHilightInterface;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
 class USplineComponent;		// 样条曲线组件
 class UDamageTextComponent;
 class UNiagaraSystem;
 class AMagicCircle;
+
+enum class ETargetingStatus : uint8
+{
+	TargetingEnemy,				// 瞄准敌人
+	TargetingMapEntrance,		// 瞄准地图入口
+	NoneTargeting				// 无目标
+};
 
 /**
  * 
@@ -51,6 +57,9 @@ protected:
 
 	FHitResult CursorHitResult;	// 创建一个碰撞结果
 
+	static void HighlightActor(AActor* Actor);	// 高亮显示Actor
+	static void UnHighlightActor(AActor* Actor);	// 取消高亮显示Actor
+
 private:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputMappingContext> AuraContext;	// 输入映射上下文
@@ -68,8 +77,8 @@ private:
 	void ShiftReleased() { bShiftKeyDown = false; }	// Shift释放
 	bool bShiftKeyDown = false;
 
-	IHilightInterface* LastActor;		// 上一个命中的Actor
-	IHilightInterface* ThisActor;		// 当前命中的Actor
+	TObjectPtr<AActor> LastActor;		// 上一个命中的Actor
+	TObjectPtr<AActor> ThisActor;		// 当前命中的Actor
 	
 	void AbilityInputTagPressed(FGameplayTag InputTag);	// 技能输入标签按下
 
@@ -96,7 +105,7 @@ private:
 
 	bool bAutoRunning = false;	// 是否自动寻路
 
-	bool bTargeting = false;	// 是否在瞄准
+	ETargetingStatus TargetingStatus = ETargetingStatus::NoneTargeting;	// 目标状态
 
 	UPROPERTY(EditDefaultsOnly)
 	float AutoRunAcceptanceRadius = 50.0f;	// 自动寻路接受半径

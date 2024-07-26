@@ -22,6 +22,11 @@ class ARCANE_API IHilightInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void HighlightActor() = 0;		// 高亮显示
-	virtual void UnHighlightActor() = 0;	// 取消高亮显示
+	UFUNCTION(BlueprintNativeEvent)
+	void HighlightActor();		// 高亮显示
+
+	UFUNCTION(BlueprintNativeEvent)
+	void UnHighlightActor();	// 取消高亮显示
+
+
 };

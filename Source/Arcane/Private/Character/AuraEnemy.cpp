@@ -192,7 +192,7 @@ void AAuraEnemy::InitializeDefaultAttributes() const
 	UAuraAbilitySystemLibrary::InitCharacterAttributesByClassAndLevel(this, CharacterClass, Level, AbilitySystemComponent);
 }
 
-void AAuraEnemy::HighlightActor()
+void AAuraEnemy::HighlightActor_Implementation()
 {
 	// 通过设置后处理材质来高亮，后处理材质主要通过渲染自定义深度来实现
 
@@ -227,7 +227,7 @@ void AAuraEnemy::HighlightActor()
 
 }
 
-void AAuraEnemy::UnHighlightActor()
+void AAuraEnemy::UnHighlightActor_Implementation()
 {
 	GetMesh()->SetRenderCustomDepth(false);	// 取消自定义深度渲染
 	if (Weapon)

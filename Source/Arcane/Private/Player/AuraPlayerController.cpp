@@ -16,6 +16,7 @@
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
 #include "Input/AuraEnhancedInputComponent.h"
+#include "Interaction/EnemyInterface.h"
 #include "Interaction/HilightInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/Widget/DamageTextComponent.h"
@@ -156,16 +157,10 @@ void AAuraPlayerController::CursorTrace()
 		// 查看是否有技能禁用了鼠标跟踪（激活了Player_Block_CursorTrace标签）
 		if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))	// 如果有匹配的游戏标签
 		{
-			if (LastActor)
-			{
-				LastActor->UnHighlightActor();		// 取消上一个物体的高亮
-				LastActor = nullptr;	// 重置上一个物体
-			}
-			if (ThisActor)
-			{
-				ThisActor->UnHighlightActor();		// 取消当前物体的高亮
-				ThisActor = nullptr;	// 重置当前物体
-			}
+			UnHighlightActor(ThisActor);	// 取消高亮
+			UnHighlightActor(LastActor);	// 取消高亮
+			ThisActor = nullptr;	// 设置当前命中的Actor为空
+			LastActor = nullptr;	// 设置上一个命中的Actor为空
 			return;	// 返回
 		}
 		
@@ -179,7 +174,14 @@ void AAuraPlayerController::CursorTrace()
 
 	// 根据这帧和上一帧的碰撞结果，判断是否是同一个物体
 	LastActor = ThisActor;
-	ThisActor = Cast<IHilightInterface>(CursorHitResult.GetActor());		// 将碰撞结果的Actor转换为敌人接口，如果转换失败则返回nullptr
+	if (IsValid(CursorHitResult.GetActor()) && CursorHitResult.GetActor()->Implements<UHilightInterface>())
+	{
+		ThisActor = CursorHitResult.GetActor();	// 获取碰撞结果的Actor
+	}
+	else
+	{
+		ThisActor = nullptr;	// 如果碰撞结果的Actor不是实现了IHilightInterface接口的Actor，则设置为nullptr
+	}
 
 	/*
 	 * 鼠标点的射线检测。可能有如下情况：
@@ -193,19 +195,35 @@ void AAuraPlayerController::CursorTrace()
 	{
 		if (LastActor != ThisActor)
 		{
-			LastActor->UnHighlightActor();	// 取消上一个物体的高亮
-			ThisActor->HighlightActor();	// 高亮这个物体
+			UnHighlightActor(LastActor);	// 取消上一个物体的高亮
+			HighlightActor(ThisActor);	// 高亮这个物体
 		}
 	}
 	else if (LastActor && !ThisActor)
 	{
-		LastActor->UnHighlightActor();	// 取消上一个物体的高亮
+		UnHighlightActor(LastActor);	// 取消上一个物体的高亮
 	}
 	else if (!LastActor && ThisActor)
 	{
-		ThisActor->HighlightActor();	// 高亮这个物体
+		HighlightActor(ThisActor);	// 高亮这个物体
 	}
 
+}
+
+void AAuraPlayerController::HighlightActor(AActor* Actor)
+{
+	if (IsValid(Actor) && Actor->Implements<UHilightInterface>())	// 如果Actor有效，并且实现了IHilightInterface接口
+	{
+		IHilightInterface::Execute_HighlightActor(Actor);	// 高亮Actor
+	}
+}
+
+void AAuraPlayerController::UnHighlightActor(AActor* Actor)
+{
+	if (IsValid(Actor) && Actor->Implements<UHilightInterface>())	// 如果Actor有效，并且实现了IHilightInterface接口
+	{
+		IHilightInterface::Execute_UnHighlightActor(Actor);	// 取消高亮Actor
+	}
 }
 
 void AAuraPlayerController::ShowDamageText_Implementation(float Damage, ACharacter* Target, bool bBlockedHit, bool bCriticalHit)
@@ -253,13 +271,13 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_RightMouseButton))	// 如果输入标签匹配自动寻路标签（右键点地板）
 	{
-		bTargeting = ThisActor != nullptr;	// 如果当前命中的Actor不为空，则设置为瞄准状态
+		TargetingStatus = IsValid(ThisActor) ? ThisActor->Implements<UEnemyInterface>() ? ETargetingStatus::TargetingEnemy : ETargetingStatus::TargetingMapEntrance : ETargetingStatus::NoneTargeting;	// 如果当前命中的Actor有效，且实现了IEnemyInterface接口，那么设置为Enemy，否则设置为None
 		bAutoRunning = false;	// 取消自动寻路
 	}
 
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LeftMouseButton))	// 如果输入标签匹配左键点击标签
 	{
-		bTargeting = ThisActor != nullptr;
+		TargetingStatus = IsValid(ThisActor) ? ThisActor->Implements<UEnemyInterface>() ? ETargetingStatus::TargetingEnemy : ETargetingStatus::TargetingMapEntrance : ETargetingStatus::NoneTargeting;	// 如果当前命中的Actor有效，且实现了IEnemyInterface接口，那么设置为Enemy，否则设置为None
 	}
 
 	if (GetASC())
@@ -293,7 +311,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		GetASC()->AbilityInputTagReleased(InputTag);
 	}
 
-	if (!bTargeting && !bShiftKeyDown)
+	if (TargetingStatus != ETargetingStatus::TargetingEnemy && !bShiftKeyDown)
 	{
 		APawn* ControlledPawn = GetPawn<APawn>();	// 获取控制的Pawn
 		// 判断当前是短按还是长按
@@ -327,7 +345,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		}
 
 		FollowTime = 0.f;	// 重置跟随时间
-		bTargeting = false;	// 取消瞄准
+		TargetingStatus = ETargetingStatus::NoneTargeting;	// 目标状态设置为None
 
 	}
 
@@ -353,7 +371,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	}
 
 	// 表明右键点击角色也能触发技能
-	if (bTargeting || bShiftKeyDown)
+	if (TargetingStatus == ETargetingStatus::TargetingEnemy || bShiftKeyDown)
 	{
 		if (GetASC())
 		{
