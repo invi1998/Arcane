@@ -70,12 +70,25 @@ void ACheckpoint::HandleGlowEffects()
 {
 	CollisionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	// 创建一个动态材质实例，基于当前的材质
-	if (UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(CheckpointMesh->GetMaterial(0), this))
+	// 获取当前材质
+
+	if (UMaterialInterface* Material = CheckpointMesh->GetMaterial(0))
 	{
-		CheckpointMesh->SetMaterial(0, DynamicMaterial);
-		CheckpointReached(DynamicMaterial);
+		// 判断当前材质是否为UMaterialInstanceDynamic
+		if (UMaterialInstanceDynamic* DynamicMaterial = Cast<UMaterialInstanceDynamic>(Material))
+		{
+			CheckpointReached(DynamicMaterial);
+			return;
+		}
+
+		// 创建一个动态材质实例，基于当前的材质
+		if (UMaterialInstanceDynamic* DynamicMaterial = UMaterialInstanceDynamic::Create(Material, this))
+		{
+			CheckpointMesh->SetMaterial(0, DynamicMaterial);
+			CheckpointReached(DynamicMaterial);
+		}
 	}
+	
 }
 
 

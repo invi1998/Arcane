@@ -80,7 +80,7 @@ void AAuraGameModeBase::SaveWorldState(UWorld* World) const
 		{
 			FSavedMap NewSavedMap;
 			NewSavedMap.MapAssertName = WorldName;
-			SaveGame->SavedMaps.Add(NewSavedMap);
+			SaveGame->SavedMaps.AddUnique(NewSavedMap);
 		}
 
 		FSavedMap SavedMap = SaveGame->GetSavedMapWithMapName(WorldName);
@@ -106,14 +106,13 @@ void AAuraGameModeBase::SaveWorldState(UWorld* World) const
 				SavedMap.SavedActors.AddUnique(NewSavedActor);
 			}
 		}
-
+		
 		// 更新保存的地图数据
 		for (FSavedMap& Map : SaveGame->SavedMaps)
 		{
 			if (Map.MapAssertName == WorldName)
 			{
 				Map = SavedMap;
-				break;
 			}
 		}
 
@@ -141,7 +140,7 @@ void AAuraGameModeBase::LoadWorldState(UWorld* World) const
 			for (FActorIterator It(World); It; ++It)
 			{
 				AActor* Actor = *It;
-				if (Actor && Actor->Implements<USaveInterface>())
+				if (Actor && Actor->Implements<USaveInterface>())	// 判断 Actor 是否实现了 USaveInterface 接口
 				{
 					// 遍历保存的 Actor
 					for (const FSavedActor& SavedActor : SavedMap.SavedActors)

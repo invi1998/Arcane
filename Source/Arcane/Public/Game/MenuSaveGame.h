@@ -312,6 +312,11 @@ public:
 	TArray<FSavedActor> SavedActors;
 };
 
+inline bool operator==(const FSavedMap& Lhs, const FSavedMap& Rhs)
+{
+	return Lhs.MapAssertName == Rhs.MapAssertName;
+}
+
 
 
 /**
