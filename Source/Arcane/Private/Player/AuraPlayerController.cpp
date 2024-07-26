@@ -16,7 +16,7 @@
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
 #include "Input/AuraEnhancedInputComponent.h"
-#include "Interaction/EnemyInterface.h"
+#include "Interaction/HilightInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "UI/Widget/DamageTextComponent.h"
 
@@ -179,7 +179,7 @@ void AAuraPlayerController::CursorTrace()
 
 	// 根据这帧和上一帧的碰撞结果，判断是否是同一个物体
 	LastActor = ThisActor;
-	ThisActor = Cast<IEnemyInterface>(CursorHitResult.GetActor());		// 将碰撞结果的Actor转换为敌人接口，如果转换失败则返回nullptr
+	ThisActor = Cast<IHilightInterface>(CursorHitResult.GetActor());		// 将碰撞结果的Actor转换为敌人接口，如果转换失败则返回nullptr
 
 	/*
 	 * 鼠标点的射线检测。可能有如下情况：

@@ -10,7 +10,7 @@
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
-class IEnemyInterface;
+class IHilightInterface;
 class UAuraInputConfig;
 class UAuraAbilitySystemComponent;
 class USplineComponent;		// 样条曲线组件
@@ -68,8 +68,8 @@ private:
 	void ShiftReleased() { bShiftKeyDown = false; }	// Shift释放
 	bool bShiftKeyDown = false;
 
-	IEnemyInterface* LastActor;		// 上一个命中的Actor
-	IEnemyInterface* ThisActor;		// 当前命中的Actor
+	IHilightInterface* LastActor;		// 上一个命中的Actor
+	IHilightInterface* ThisActor;		// 当前命中的Actor
 	
 	void AbilityInputTagPressed(FGameplayTag InputTag);	// 技能输入标签按下
 
