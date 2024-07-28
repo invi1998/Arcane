@@ -43,11 +43,12 @@ protected:
 	void CheckpointReached(UMaterialInstanceDynamic* DynamicMaterialIns);	// 检查点到达
 
 	void HandleGlowEffects();	// 处理光效
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UStaticMeshComponent> CheckpointMesh;	// 检查点模型
 	
 
 private:
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UStaticMeshComponent> CheckpointMesh;	// 检查点模型
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UShapeComponent> CollisionSphere;	// 碰撞体
