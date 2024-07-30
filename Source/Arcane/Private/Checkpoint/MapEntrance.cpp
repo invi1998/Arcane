@@ -3,10 +3,16 @@
 
 #include "Checkpoint/MapEntrance.h"
 
+#include "Components/SphereComponent.h"
 #include "Game/AuraGameModeBase.h"
 #include "Interaction/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
 
+
+AMapEntrance::AMapEntrance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+	CollisionSphere->SetupAttachment(MoveToComponent);
+}
 
 void AMapEntrance::LoadActor_Implementation()
 {
@@ -28,5 +34,7 @@ void AMapEntrance::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 		}
 
 		IPlayerInterface::Execute_SaveProgress(OtherActor, DestinationPlayerStartTag);		// 保存玩家游戏进度
+
+		UGameplayStatics::OpenLevelBySoftObjectPtr(this, DestinationMap);
 	}
 }

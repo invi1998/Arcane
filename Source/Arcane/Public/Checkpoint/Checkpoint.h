@@ -67,13 +67,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 CustomDepthStencilValueOverride = CUSTOM_DEPTH_STENCIL_TAN;	// 自定义深度缓冲值
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UShapeComponent> CollisionSphere;	// 碰撞体
 	
 
 private:
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UShapeComponent> CollisionSphere;	// 碰撞体
-
-
-	
 };

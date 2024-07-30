@@ -15,6 +15,8 @@ class ARCANE_API AMapEntrance : public ACheckpoint
 	GENERATED_BODY()
 
 public:
+	AMapEntrance(const FObjectInitializer& ObjectInitializer);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MapEntrance")
 	TSoftObjectPtr<UWorld> DestinationMap;		// 目的地地图
 

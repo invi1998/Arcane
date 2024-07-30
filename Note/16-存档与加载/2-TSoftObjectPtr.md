@@ -42,3 +42,44 @@ if (AActor* Actor = MyActorRef.Get())
 ```
 
 总之，`TSoftObjectPtr<>` 在UE5中是一个强大的工具，用于管理游戏资源的加载和卸载，有助于提高游戏性能和响应速度。
+
+
+
+
+
+## UE5里的OpenLevel by name 和 Load Stream Level by Name
+
+在Unreal Engine 5 (UE5)中，`OpenLevel`和`LoadStreamLevel`是两种不同的方法来处理关卡的加载。这两种方法的主要区别在于它们对关卡的处理方式以及对游戏状态的影响。
+
+### OpenLevel
+`OpenLevel` 是一个用于切换到新关卡或重新加载当前关卡的方法。当调用 `OpenLevel` 时，它会关闭当前关卡并加载指定的关卡。这意味着玩家的所有进度（如角色位置、游戏状态等）都会被重置。
+
+#### 使用方法：
+```cpp
+// 在C++中
+FName LevelName = TEXT("YourLevelName");
+UGameplayStatics::OpenLevel(GetWorld(), LevelName);
+
+// 在蓝图中
+// 使用 "Open Level" 节点，并设置 Level 名称。
+```
+
+### LoadStreamLevel
+`LoadStreamLevel` 则是用于在不中断游戏的情况下异步加载额外的关卡部分。这通常用于流式加载技术，例如开放世界游戏中的无缝加载。这种方法不会重置游戏状态，而是将新的关卡数据添加到当前关卡中。
+
+#### 使用方法：
+```cpp
+// 在C++中
+FName LevelName = TEXT("YourLevelName");
+UGameplayStatics::LoadStreamLevel(GetWorld(), LevelName, true, false);
+
+// 在蓝图中
+// 使用 "Load Stream Level" 节点，并设置 Level 名称，同时设置 bShouldBlockOnComplete 和 bShouldLoadInStages。
+```
+
+这里有一些关键的区别：
+- **阻塞行为**：`OpenLevel` 通常是阻塞的，这意味着它会等待直到关卡完全加载完毕。而`LoadStreamLevel` 可以选择是否阻塞，取决于你设置的参数。
+- **游戏状态**：`OpenLevel` 会重置游戏状态，而`LoadStreamLevel` 不会。
+- **用途**：`OpenLevel` 适合于完全切换到另一个关卡，而`LoadStreamLevel` 适用于加载关卡的一部分或者动态地扩展当前关卡。
+
+确保在使用这些函数时考虑到这些差异，并根据你的游戏需求选择合适的方法。
