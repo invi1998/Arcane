@@ -29,6 +29,7 @@ public:
 	/*begin Highlight 接口*/
 	virtual void HighlightActor_Implementation() override;
 	virtual void UnHighlightActor_Implementation() override;
+	virtual void SetMoveToLocation_Implementation(FVector& OutLocation) override;
 	/*end Highlight 接口*/
 
 	/** CombatInterface begin */

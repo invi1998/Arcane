@@ -28,5 +28,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void UnHighlightActor();	// 取消高亮显示
 
+	UFUNCTION(BlueprintNativeEvent)
+	void SetMoveToLocation(FVector& OutLocation);	// 设置移动到的位置
 
 };

@@ -318,6 +318,19 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		if (FollowTime <= ShortPressThreshold && ControlledPawn)
 		{
 			// 点按（短按）时，通过寻路避障到目标位置
+
+			if (IsValid(ThisActor) && ThisActor->Implements<UHilightInterface>())
+			{
+				IHilightInterface::Execute_SetMoveToLocation(ThisActor, CashedDestination);	// 设置移动到的位置
+			}
+			else
+			{
+				if (GetASC() && !GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
+				{
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CashedDestination);	// 在鼠标点击的位置生成特效
+				}
+			}
+
 			// // 寻找路径到目标位置
 			if (UNavigationPath* NavPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, ControlledPawn->GetActorLocation(), CashedDestination))	// 如果路径有效
 			{
@@ -337,11 +350,7 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 					bAutoRunning = true;	// 设置为自动寻路
 				}
 			}
-
-			if (GetASC() && !GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
-			{
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CashedDestination);	// 在鼠标点击的位置生成特效
-			}
+			
 		}
 
 		FollowTime = 0.f;	// 重置跟随时间

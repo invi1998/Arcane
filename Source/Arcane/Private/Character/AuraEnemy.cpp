@@ -198,31 +198,37 @@ void AAuraEnemy::HighlightActor_Implementation()
 
 	GetMesh()->SetRenderCustomDepth(true);	// 设置自定义深度渲染
 	GetMesh()->CustomDepthStencilValue = CUSTOM_DEPTH_STENCIL_RED;	// 设置自定义深度值
+	GetMesh()->MarkRenderStateDirty();	// 标记渲染状态脏，这样我们就不会在每次突出显示时都调用SetRenderCustomDepth
 
 	if (Weapon)
 	{
 		Weapon->SetRenderCustomDepth(true);	// 设置自定义深度渲染
 		Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// 设置自定义深度值
+		Weapon->MarkRenderStateDirty();	// 标记渲染状态脏
 	}
 	if (LeftWeapon)
 	{
 		LeftWeapon->SetRenderCustomDepth(true);	// 设置自定义深度渲染
 		LeftWeapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// 设置自定义深度值
+		LeftWeapon->MarkRenderStateDirty();	// 标记渲染状态脏
 	}
 	if (RightWeapon)
 	{
 		RightWeapon->SetRenderCustomDepth(true);	// 设置自定义深度渲染
 		RightWeapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// 设置自定义深度值
+		RightWeapon->MarkRenderStateDirty();	// 标记渲染状态脏
 	}
 	if (BowWeapon)
 	{
 		BowWeapon->SetRenderCustomDepth(true);	// 设置自定义深度渲染
 		BowWeapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// 设置自定义深度值
+		BowWeapon->MarkRenderStateDirty();	// 标记渲染状态脏
 	}
 	if (BowArrow)
 	{
 		BowArrow->SetRenderCustomDepth(true);	// 设置自定义深度渲染
 		BowArrow->SetCustomDepthStencilValue(CUSTOM_DEPTH_STENCIL_RED);	// 设置自定义深度值
+		BowArrow->MarkRenderStateDirty();	// 标记渲染状态脏
 	}
 
 }
@@ -250,6 +256,11 @@ void AAuraEnemy::UnHighlightActor_Implementation()
 	{
 		BowArrow->SetRenderCustomDepth(false);	// 设置自定义深度渲染
 	}
+}
+
+void AAuraEnemy::SetMoveToLocation_Implementation(FVector& OutLocation)
+{
+	// 不做设置
 }
 
 int32 AAuraEnemy::GetCharacterLevel_Implementation() const

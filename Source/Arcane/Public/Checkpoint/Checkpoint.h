@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Arcane/Arcane.h"
 #include "GameFramework/PlayerStart.h"
+#include "Interaction/HilightInterface.h"
 #include "Interaction/SaveInterface.h"
 #include "Checkpoint.generated.h"
 
@@ -11,7 +13,7 @@
  * 检查点
  */
 UCLASS()
-class ARCANE_API ACheckpoint : public APlayerStart, public ISaveInterface
+class ARCANE_API ACheckpoint : public APlayerStart, public ISaveInterface, public IHilightInterface
 {
 	GENERATED_BODY()
 
@@ -28,13 +30,25 @@ public:
 	 */
 	virtual bool ShouldLoadTransform_Implementation() override;
 	virtual void LoadActor_Implementation() override;
-
 	/*
 	 * Save Interface End
 	 */
 
 protected:
 	virtual void BeginPlay() override;	// 开始游戏时调用
+
+	/*
+	*` Hilight Interface Start
+	*/
+	virtual void HighlightActor_Implementation() override;
+	virtual void UnHighlightActor_Implementation() override;
+	virtual void SetMoveToLocation_Implementation(FVector& OutLocation) override;
+	/*
+	 * Hilight Interface End
+	 */
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USceneComponent> MoveToComponent;	// 移动到组件
 
 	UFUNCTION()
 	virtual void OnSphereOverlap(UPrimitiveComponent*OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);	// 碰撞体重叠事件
@@ -46,6 +60,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UStaticMeshComponent> CheckpointMesh;	// 检查点模型
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 CustomDepthStencilValueOverride = CUSTOM_DEPTH_STENCIL_TAN;	// 自定义深度缓冲值
 	
 
 private:
