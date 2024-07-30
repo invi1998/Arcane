@@ -57,9 +57,11 @@ public:
 
 	void SaveInGameProgressData(const UMenuSaveGame* SaveGameObject) const;
 
-	void SaveWorldState(UWorld* World) const;
+	void SaveWorldState(UWorld* World, const FString& DestinationMapAssertName = FString()) const;
 
 	void LoadWorldState(UWorld* World) const;
+
+	FString GetMapNameFromAssertName(const FString& MapAssertName) const;
 
 protected:
 	virtual void BeginPlay() override;

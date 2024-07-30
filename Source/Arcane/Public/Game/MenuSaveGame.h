@@ -38,6 +38,9 @@ public:
 	/** 关卡名 */
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Map"))
 	FString Map;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (DisplayName = "Map Assert Name"))
+	FString MapAssertName;
 };
 
 /** 存档数据 */

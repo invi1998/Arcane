@@ -66,7 +66,7 @@ void AAuraGameModeBase::SaveInGameProgressData(const UMenuSaveGame* SaveGameObje
 	}
 }
 
-void AAuraGameModeBase::SaveWorldState(UWorld* World) const
+void AAuraGameModeBase::SaveWorldState(UWorld* World, const FString& DestinationMapAssertName) const
 {
 	FString WorldName = World->GetName();
 	WorldName.RemoveFromStart(World->StreamingLevelsPrefix);	// 移除 StreamingLevelsPrefix 前缀
@@ -76,6 +76,12 @@ void AAuraGameModeBase::SaveWorldState(UWorld* World) const
 
 	if (UMenuSaveGame* SaveGame = GetCurrentSaveGame())
 	{
+		if (DestinationMapAssertName.Len() > 0)
+		{
+			SaveGame->SaveGameSlot.MapAssertName = DestinationMapAssertName;
+			SaveGame->SaveGameSlot.Map = GetMapNameFromAssertName(DestinationMapAssertName);
+		}
+
 		if (!SaveGame->HasMap(WorldName))
 		{
 			FSavedMap NewSavedMap;
@@ -172,6 +178,18 @@ void AAuraGameModeBase::LoadWorldState(UWorld* World) const
 		}
 	}
 
+}
+
+FString AAuraGameModeBase::GetMapNameFromAssertName(const FString& MapAssertName) const
+{
+	for (const TPair<FString, TSoftObjectPtr<UWorld>>& Pair : LevelMaps)
+	{
+		if (Pair.Value.ToSoftObjectPath().GetAssetName() == MapAssertName)
+		{
+			return Pair.Key;
+		}
+	}
+	return FString();
 }
 
 void AAuraGameModeBase::BeginPlay()
