@@ -22,7 +22,7 @@ public:
 
 	// SaveGame 表示是否保存到存档，SaveGame 修饰符告诉 Unreal Engine 该属性应该被保存到游戏存档中。
 	// 当游戏保存时，标记为 SaveGame 的属性会被序列化并保存下来，以便下次游戏加载时能够恢复这些状态。
-	UPROPERTY(BlueprintReadOnly, SaveGame)
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, SaveGame)
 	bool bReached = false;	// 是否到达
 
 	/*
@@ -33,6 +33,9 @@ public:
 	/*
 	 * Save Interface End
 	 */
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bBindOverlapCallback = true;	// 是否调用重叠回调
 
 protected:
 	virtual void BeginPlay() override;	// 开始游戏时调用
@@ -56,6 +59,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)	// 蓝图实现的事件
 	void CheckpointReached(UMaterialInstanceDynamic* DynamicMaterialIns);	// 检查点到达
 
+	UFUNCTION(BlueprintCallable)
 	void HandleGlowEffects();	// 处理光效
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
