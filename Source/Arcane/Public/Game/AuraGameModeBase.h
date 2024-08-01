@@ -63,6 +63,8 @@ public:
 
 	FString GetMapNameFromAssertName(const FString& MapAssertName) const;
 
+	void PlayerDied(ACharacter* PlayerCharacter);
+
 protected:
 	virtual void BeginPlay() override;
 	

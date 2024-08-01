@@ -58,6 +58,11 @@ public:
 	// 从游戏存档中加载角色信息
 	void LoadProgress();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Death Setting")
+	float DeathTime = 5.0f;	// 死亡时间
+
+	FTimerHandle DeathTimerHandle;	// 死亡定时器句柄
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> TopDownCameraComponent;	// 顶部相机组件

@@ -12,6 +12,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 #include "Arcane/ArcaneLogChannels.h"
+#include "GameFramework/Character.h"
 
 void AAuraGameModeBase::SaveSlotData(USaveGame* SaveGameObject, FName SlotName, int32 SlotIndex)
 {
@@ -190,6 +191,14 @@ FString AAuraGameModeBase::GetMapNameFromAssertName(const FString& MapAssertName
 		}
 	}
 	return FString();
+}
+
+void AAuraGameModeBase::PlayerDied(ACharacter* PlayerCharacter)
+{
+	if (UMenuSaveGame* SaveGame = GetCurrentSaveGame())
+	{
+		UGameplayStatics::OpenLevel(PlayerCharacter, FName(SaveGame->SaveGameSlot.MapAssertName));
+	}
 }
 
 void AAuraGameModeBase::BeginPlay()

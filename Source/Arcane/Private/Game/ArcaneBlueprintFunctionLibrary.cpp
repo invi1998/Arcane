@@ -62,6 +62,7 @@ UMenuSaveGame* UArcaneBlueprintFunctionLibrary::CreateNewGameSave(const UObject*
 		NewSaveGame->SaveGameSlot.Level = 1;
 		NewSaveGame->SaveGameSlot.Map = AuraGameMode->DefaultLevelName;
 		NewSaveGame->SaveGameSlot.QuestImage = AuraGameMode->DefaultSaveGameScreen;
+		NewSaveGame->SaveGameSlot.MapAssertName = AuraGameMode->DefaultLevelMap.ToSoftObjectPath().GetAssetName();
 
 		UGameplayStatics::SaveGameToSlot(NewSaveGame, SlotName, 0);
 	}

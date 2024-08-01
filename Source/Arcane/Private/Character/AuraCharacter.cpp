@@ -97,7 +97,19 @@ void AAuraCharacter::Die(const FVector& DeathImpulse)
 {
 	Super::Die(DeathImpulse);
 
+	// 添加一个死亡定时器
+	FTimerDelegate DeathTimerDelegate;
+	DeathTimerDelegate.BindLambda([this]()
+		{
+			// 重生
+			if (AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
+			{
+				AuraGameMode->PlayerDied(this);
+			}
+		});
 
+	GetWorldTimerManager().SetTimer(DeathTimerHandle, DeathTimerDelegate, DeathTime, false);
+	TopDownCameraComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);	// 解除相机附加，保持世界变换，这样相机就不会跟随角色移动，就不会出现死亡后相机掉落地底的情况
 }
 
 void AAuraCharacter::AddToEXP_Implementation(int32 EXP)

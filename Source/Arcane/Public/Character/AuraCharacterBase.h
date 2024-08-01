@@ -199,6 +199,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartArrowDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);	// 开始溶解时间轴
 
+	UPROPERTY(BlueprintReadOnly, Category="Combat")
 	bool bDead = false;	// 是否死亡
 
 	/*
