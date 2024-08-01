@@ -86,6 +86,8 @@ public:
 	UFUNCTION()
 	virtual void OnRep_Burned();	// 灼烧改变
 
+	void SetCharacterClass(ECharacterClass InCharacterClass);	// 设置角色职业
+
 protected:
 	virtual void BeginPlay() override;
 

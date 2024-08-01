@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Actor/ArcaneEnemySpawnPoint.h"
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
 #include "Interaction/HilightInterface.h"
@@ -57,6 +58,8 @@ public:
 	virtual AActor* GetCombatTarget_Implementation() const override;
 
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount) override;
+
+	void SetCharacterLevel(int32 InLevel);
 
 protected:
 	virtual void BeginPlay() override;

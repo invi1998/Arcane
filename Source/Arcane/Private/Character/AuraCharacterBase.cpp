@@ -382,6 +382,11 @@ void AAuraCharacterBase::OnRep_Burned()
 {
 }
 
+void AAuraCharacterBase::SetCharacterClass(ECharacterClass InCharacterClass)
+{
+	CharacterClass = InCharacterClass;
+}
+
 bool AAuraCharacterBase::IsDead_Implementation() const
 {
 	return bDead;
