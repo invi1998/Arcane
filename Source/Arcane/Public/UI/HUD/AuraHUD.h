@@ -33,6 +33,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ShowOverlayWidget();
 
+	UFUNCTION(BlueprintCallable)
+	void HideOverlayWidget();
+
 protected:
 
 private:

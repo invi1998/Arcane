@@ -4,7 +4,6 @@
 #include "Game/AuraGameModeBase.h"
 
 #include "EngineUtils.h"
-#include "Game/ArcaneBlueprintFunctionLibrary.h"
 #include "Game/ArcaneGameInstance.h"
 #include "Game/MenuSaveGame.h"
 #include "GameFramework/PlayerStart.h"
@@ -13,6 +12,8 @@
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 #include "Arcane/ArcaneLogChannels.h"
 #include "GameFramework/Character.h"
+#include "Player/AuraPlayerController.h"
+#include "UI/HUD/AuraHUD.h"
 
 void AAuraGameModeBase::SaveSlotData(USaveGame* SaveGameObject, FName SlotName, int32 SlotIndex)
 {
@@ -195,9 +196,19 @@ FString AAuraGameModeBase::GetMapNameFromAssertName(const FString& MapAssertName
 
 void AAuraGameModeBase::PlayerDied(ACharacter* PlayerCharacter)
 {
-	if (UMenuSaveGame* SaveGame = GetCurrentSaveGame())
+	if (const UMenuSaveGame* SaveGame = GetCurrentSaveGame())
 	{
 		UGameplayStatics::OpenLevel(PlayerCharacter, FName(SaveGame->SaveGameSlot.MapAssertName));
+
+		// OpenLevel 会销毁当前的 PlayerController，所以需要重新获取 PlayerController
+
+		if (const AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(this, 0)))
+		{
+			if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(PlayerController->GetHUD()))
+			{
+				AuraHUD->ShowOverlayWidget();
+			}
+		}
 	}
 }
 

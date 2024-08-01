@@ -7,6 +7,8 @@
 #include "Game/AuraGameModeBase.h"
 #include "Interaction/PlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/AuraPlayerController.h"
+#include "UI/HUD/AuraHUD.h"
 
 
 AMapEntrance::AMapEntrance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -36,5 +38,14 @@ void AMapEntrance::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 		IPlayerInterface::Execute_SaveProgress(OtherActor, DestinationPlayerStartTag);		// 保存玩家游戏进度
 
 		UGameplayStatics::OpenLevelBySoftObjectPtr(this, DestinationMap);
+
+		if (const AAuraPlayerController* PlayerController = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(this, 0)))
+		{
+			if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(PlayerController->GetHUD()))
+			{
+				AuraHUD->ShowOverlayWidget();
+			}
+		}
+
 	}
 }

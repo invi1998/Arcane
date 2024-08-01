@@ -5,6 +5,8 @@
 
 #include "Blueprint/UserWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Game/ArcaneGameInstance.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "UI/Widget/AuraUserWidget.h"
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
@@ -62,17 +64,33 @@ void AAuraHUD::InitOverlay(APlayerController* PlayerController, APlayerState* Pl
 
 	TempController->BroadcastInitialValues();	// 广播初始值
 
-	// OverlayWidget->AddToViewport();
+	OverlayWidget->AddToViewport();
+
+	if (const UArcaneGameInstance *GameInstance = Cast<UArcaneGameInstance>(GetGameInstance()))
+	{
+		GameInstance->OnOverlayWidgetShow.Broadcast();		// 广播OverlayWidget显示的委托
+	}
+
 }
 
 void AAuraHUD::ShowOverlayWidget()
 {
 	if (OverlayWidget)
 	{
-		OverlayWidget->AddToViewport();
+		/*OverlayWidget->AddToViewport();
 
 		UOverlayWidgetController* TempController = Cast<UOverlayWidgetController>(OverlayWidget->WidgetController);
 		TempController->BroadcastInitialValues();
-		TempController->BroadcastAbilityInfo();
+		TempController->BroadcastAbilityInfo();*/
+
+		OverlayWidget->SetRenderOpacity(1.0f);
+	}
+}
+
+void AAuraHUD::HideOverlayWidget()
+{
+	if (OverlayWidget)
+	{
+		OverlayWidget->SetRenderOpacity(0.0f);
 	}
 }

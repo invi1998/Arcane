@@ -8,6 +8,8 @@
 
 class UMenuSaveGame;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnOverlayWidgetShowSignature);		// OverlayWidget显示的委托
+
 /**
  * 
  */
@@ -33,6 +35,9 @@ public:
 	// 保存当前游戏存档
 	UFUNCTION(BlueprintCallable)
 	void OnSaveCurrentGame();
+
+	UPROPERTY(BlueprintAssignable)
+	FOnOverlayWidgetShowSignature OnOverlayWidgetShow;
 
 private:
 	
