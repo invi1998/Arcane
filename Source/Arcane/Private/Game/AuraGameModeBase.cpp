@@ -194,7 +194,7 @@ FString AAuraGameModeBase::GetMapNameFromAssertName(const FString& MapAssertName
 	return FString();
 }
 
-void AAuraGameModeBase::PlayerDied(ACharacter* PlayerCharacter)
+void AAuraGameModeBase::PlayerDied(const ACharacter* PlayerCharacter) const
 {
 	if (const UMenuSaveGame* SaveGame = GetCurrentSaveGame())
 	{
