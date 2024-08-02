@@ -569,7 +569,6 @@ void UAuraAbilitySystemLibrary::GetWidgetPositionAndSize(const UObject* WorldCon
 	if (MyWidgetInstance)
 	{
 		OutPosition = MyWidgetInstance->GetCachedGeometry().GetAbsolutePosition();
-		UKismetSystemLibrary::PrintString(WorldContextObject, FString::Printf(TEXT("Position: %s"), *OutPosition.ToString()), true, false, FLinearColor::Green, 5.f);
 	}
 }
 
