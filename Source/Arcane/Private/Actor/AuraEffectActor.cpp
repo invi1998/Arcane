@@ -13,7 +13,7 @@
 // Sets default values
 AAuraEffectActor::AAuraEffectActor()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	// 设置Tick函数的时间间隔
 
@@ -30,12 +30,6 @@ void AAuraEffectActor::Tick(float DeltaTime)
 	RunningTime = FMath::Fmod(RunningTime, Frequency * TWO_PI);	// 取模运算
 
 	ItemMovement(DeltaTime);	// 物品移动
-
-	if (bFloating || bRotate)	// 如果允许浮动或者旋转
-	{
-		SetActorLocation(CalculateLocation);	// 设置位置
-		SetActorRotation(CalculateRotation);	// 设置旋转
-	}
 }
 
 void AAuraEffectActor::BeginPlay()
@@ -45,14 +39,6 @@ void AAuraEffectActor::BeginPlay()
 	CalculateLocation = InitialLocation;	// 设置计算位置
 	CalculateRotation = GetActorRotation();	// 设置计算旋转
 
-	if (bFloating)	// 如果允许浮动
-	{
-		StartSinusoidalFloat();	// 开始正弦浮动
-	}
-	if (bRotate)	// 如果允许旋转
-	{
-		StartRotating();	// 开始旋转
-	}
 }
 
 void AAuraEffectActor::ItemMovement(float DeltaTime)

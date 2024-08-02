@@ -37,10 +37,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Pickup Movement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
 	FVector CalculateLocation;	// 计算正弦浮动
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Pickup Movement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
 	FRotator CalculateRotation;	// 计算旋转
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
