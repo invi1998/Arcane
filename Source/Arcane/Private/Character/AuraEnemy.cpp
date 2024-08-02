@@ -143,7 +143,7 @@ void AAuraEnemy::Die(const FVector& DeathImpulse)
 	{
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool("IsAlive", false);	// 设置黑板值, 是否存活
 	}
-	
+	SpawnLoot();	// 生成战利品
 	SetLifeSpan(LifeSpan);
 	Super::Die(DeathImpulse);
 }

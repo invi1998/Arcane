@@ -80,6 +80,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<AAuraAIController> AuraAIController;
 
+	UFUNCTION(BlueprintImplementableEvent)	// 蓝图实现
+	void SpawnLoot();	// 生成战利品
+
 private:
 	
 	

@@ -10,6 +10,7 @@ class UCharacterClassInfo;
 class UAbilityInfo;
 class USaveGame;
 class UMenuSaveGame;
+class ULootTiers;
 
 /**
  * 
@@ -25,6 +26,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Ability Info")
 	TObjectPtr<UAbilityInfo> AbilityInfo;				// 技能信息
+
+	UPROPERTY(EditDefaultsOnly, Category="Loot Tiers")
+	TObjectPtr<ULootTiers> LootTiers;					// 战利品掉落
 
 	UFUNCTION(BlueprintCallable)
 	void SaveSlotData(USaveGame* SaveGameObject, FName SlotName, int32 SlotIndex);

@@ -7,21 +7,21 @@
 #include "GameplayEffectTypes.h"
 #include "AuraEffectActor.generated.h"
 
-// ¶¨ÒåĞ§¹ûÓ¦ÓÃ²ßÂÔ
+// å®šä¹‰æ•ˆæœåº”ç”¨ç­–ç•¥
 UENUM(BlueprintType)
 enum class EEffectApplicationPolicy
 {
-	ApplyOnOverlap,		// ÔÚÖØµşÊ±Ó¦ÓÃĞ§¹û
-	ApplyOnEndOverlap,	// ÔÚ½áÊøÖØµşÊ±Ó¦ÓÃĞ§¹û
-	DoNotApply			// ²»Ó¦ÓÃĞ§¹û
+	ApplyOnOverlap,		// åœ¨é‡å æ—¶åº”ç”¨æ•ˆæœ
+	ApplyOnEndOverlap,	// åœ¨ç»“æŸé‡å æ—¶åº”ç”¨æ•ˆæœ
+	DoNotApply			// ä¸åº”ç”¨æ•ˆæœ
 };
 
-// ¶¨ÒåĞ§¹ûÒÆ³ı²ßÂÔ£¬Êµ¼ÊÉÏ£¬Ğ§¹ûÒÆ³ıÒ»°ãÖ»Õë¶ÔÓÀ¾ÃĞ§¹û£¬ÒòÎªË²Ê±Ğ§¹ûºÍ³ÖĞøĞ§¹û»áÔÚ×ÔÉí½áÊøÊ±×Ô¶¯ÒÆ³ı
+// å®šä¹‰æ•ˆæœç§»é™¤ç­–ç•¥ï¼Œå®é™…ä¸Šï¼Œæ•ˆæœç§»é™¤ä¸€èˆ¬åªé’ˆå¯¹æ°¸ä¹…æ•ˆæœï¼Œå› ä¸ºç¬æ—¶æ•ˆæœå’ŒæŒç»­æ•ˆæœä¼šåœ¨è‡ªèº«ç»“æŸæ—¶è‡ªåŠ¨ç§»é™¤
 UENUM(BlueprintType)
 enum class EEffectRemovePolicy
 {
-	RemoveOnEndOverlap,	// ÔÚ½áÊøÖØµşÊ±ÒÆ³ıĞ§¹û
-	DoNotRemove			// ²»ÒÆ³ıĞ§¹û
+	RemoveOnEndOverlap,	// åœ¨ç»“æŸé‡å æ—¶ç§»é™¤æ•ˆæœ
+	DoNotRemove			// ä¸ç§»é™¤æ•ˆæœ
 };
 
 UCLASS()
@@ -36,61 +36,61 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
-	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);	// ½«Ğ§¹ûÓ¦ÓÃµ½Ä¿±ê£¬´«ÈëÄ¿±êºÍGameplayEffectÀà
+	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);	// å°†æ•ˆæœåº”ç”¨åˆ°ç›®æ ‡ï¼Œä¼ å…¥ç›®æ ‡å’ŒGameplayEffectç±»
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura Effect")
-	bool bDestroyOnEffectApplication = false;	// ÊÇ·ñÔÚĞ§¹ûÓ¦ÓÃºóÏú»Ù
+	bool bDestroyOnEffectApplication = false;	// æ˜¯å¦åœ¨æ•ˆæœåº”ç”¨åé”€æ¯
 
 	/*
-	 * ÓÎÏ·ÖĞµÄĞ§¹û·ÖÎªÈıÖÖ£ºË²Ê±Ğ§¹û¡¢³ÖĞøĞ§¹ûºÍÓÀ¾ÃĞ§¹û
+	 * æ¸¸æˆä¸­çš„æ•ˆæœåˆ†ä¸ºä¸‰ç§ï¼šç¬æ—¶æ•ˆæœã€æŒç»­æ•ˆæœå’Œæ°¸ä¹…æ•ˆæœ
 	 */
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
-	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;	// Ë²Ê±ÀàĞÍµÄGameplayEffectÀà
+	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;	// ç¬æ—¶ç±»å‹çš„GameplayEffectç±»
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
-	TSubclassOf<UGameplayEffect> DurationGameplayEffectClass;	// ³ÖĞøÀàĞÍµÄGameplayEffectÀà
+	TSubclassOf<UGameplayEffect> DurationGameplayEffectClass;	// æŒç»­ç±»å‹çš„GameplayEffectç±»
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
-	TSubclassOf<UGameplayEffect> InfiniteGameplayEffectClass;	// ÎŞÏŞÀàĞÍµÄGameplayEffectÀà
+	TSubclassOf<UGameplayEffect> InfiniteGameplayEffectClass;	// æ— é™ç±»å‹çš„GameplayEffectç±»
 
 	/*
-	 * 3ÖÖÓÎÏ·Ğ§¹ûµÄÓ¦ÓÃ²ßÂÔ
-	 */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
-	EEffectApplicationPolicy InstantEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;	// Ë²Ê±Ğ§¹ûÓ¦ÓÃ²ßÂÔ
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
-	EEffectApplicationPolicy DurationEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;	// ³ÖĞøĞ§¹ûÓ¦ÓÃ²ßÂÔ
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
-	EEffectApplicationPolicy InfiniteEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;	// (ÓÀ¾ÃÀàĞÍ)ÎŞÏŞĞ§¹ûÓ¦ÓÃ²ßÂÔ
-
-	/*
-	 * ÓÎÏ·Ğ§¹ûµÄÒÆ³ı²ßÂÔ £¨Ö»Õë¶ÔÓÀ¾ÃĞ§¹û£¬ÆäËûĞ§¹ûÈç¹ûÏëÍ¨¹ı²ßÂÔ¿ØÖÆÒÆ³ı£¬Ò²¿É×ÔĞĞÌí¼Ó£©
+	 * 3ç§æ¸¸æˆæ•ˆæœçš„åº”ç”¨ç­–ç•¥
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
-	EEffectRemovePolicy InfiniteEffectRemovePolicy = EEffectRemovePolicy::RemoveOnEndOverlap;		// (ÓÀ¾ÃÀàĞÍ)ÎŞÏŞĞ§¹ûÒÆ³ı²ßÂÔ
+	EEffectApplicationPolicy InstantEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;	// ç¬æ—¶æ•ˆæœåº”ç”¨ç­–ç•¥
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
+	EEffectApplicationPolicy DurationEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;	// æŒç»­æ•ˆæœåº”ç”¨ç­–ç•¥
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
+	EEffectApplicationPolicy InfiniteEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;	// (æ°¸ä¹…ç±»å‹)æ— é™æ•ˆæœåº”ç”¨ç­–ç•¥
 
 	/*
-	 * ÓÎÏ·Ğ§¹ûºÍÄÜÁ¦ÏµÍ³×é¼şµÄÓ³ÉäMap£¬¸ÃMapºóĞøÓÃÓÚÒÆ³ıĞ§¹û
+	 * æ¸¸æˆæ•ˆæœçš„ç§»é™¤ç­–ç•¥ ï¼ˆåªé’ˆå¯¹æ°¸ä¹…æ•ˆæœï¼Œå…¶ä»–æ•ˆæœå¦‚æœæƒ³é€šè¿‡ç­–ç•¥æ§åˆ¶ç§»é™¤ï¼Œä¹Ÿå¯è‡ªè¡Œæ·»åŠ ï¼‰
 	 */
-	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveGameplayEffectsMap;	// »î¶¯Ğ§¹û¾ä±ú ÓÃÓÚ´æ´¢ÓÎÏ·Ğ§¹ûºÍÄÜÁ¦ÏµÍ³×é¼şµÄÓ³Éä
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
+	EEffectRemovePolicy InfiniteEffectRemovePolicy = EEffectRemovePolicy::RemoveOnEndOverlap;		// (æ°¸ä¹…ç±»å‹)æ— é™æ•ˆæœç§»é™¤ç­–ç•¥
 
 	/*
-	 * ²ßÂÔº¯Êı
+	 * æ¸¸æˆæ•ˆæœå’Œèƒ½åŠ›ç³»ç»Ÿç»„ä»¶çš„æ˜ å°„Mapï¼Œè¯¥Mapåç»­ç”¨äºç§»é™¤æ•ˆæœ
+	 */
+	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveGameplayEffectsMap;	// æ´»åŠ¨æ•ˆæœå¥æŸ„ ç”¨äºå­˜å‚¨æ¸¸æˆæ•ˆæœå’Œèƒ½åŠ›ç³»ç»Ÿç»„ä»¶çš„æ˜ å°„
+
+	/*
+	 * ç­–ç•¥å‡½æ•°
 	 */
 	UFUNCTION(BlueprintCallable)
-	void OnOverlap(AActor* TargetActor);	// ÖØµşÊ±µÄ²ßÂÔº¯Êı
+	void OnOverlap(AActor* TargetActor);	// é‡å æ—¶çš„ç­–ç•¥å‡½æ•°
 
 	UFUNCTION(BlueprintCallable)
-	void OnEndOverlap(AActor* TargetActor);	// ½áÊøÖØµşÊ±µÄ²ßÂÔº¯Êı
+	void OnEndOverlap(AActor* TargetActor);	// ç»“æŸé‡å æ—¶çš„ç­–ç•¥å‡½æ•°
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Aura Effect")
+	float ActorLevel = 1.f;	// Actorç­‰çº§
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura Effect")
-	float ActorLevel = 1.f;	// ActorµÈ¼¶
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Aura Effect")
-	bool bApplyEffectToEnemies = false;	// ÊÇ·ñ½«Ğ§¹ûÓ¦ÓÃµ½µĞÈË
+	bool bApplyEffectToEnemies = false;	// æ˜¯å¦å°†æ•ˆæœåº”ç”¨åˆ°æ•Œäºº
 
 private:
 };
