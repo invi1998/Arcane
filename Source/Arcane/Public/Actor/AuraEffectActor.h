@@ -32,8 +32,40 @@ class ARCANE_API AAuraEffectActor : public AActor
 public:	
 	AAuraEffectActor();
 
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Pickup Movement")
+	FVector CalculateLocation;	// 计算正弦浮动
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Pickup Movement")
+	FRotator CalculateRotation;	// 计算旋转
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
+	bool bRotate = false;	// 是否旋转
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
+	float RotationRate = 45.f;	// 旋转速度
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
+	bool bFloating = false;	// 是否浮动
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
+	float Frequency = 1.0;	// 频率(控制浮动速度)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
+	float Amplitude = 1.f;	// 振幅(控制浮动幅度)
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup Movement")
+	FVector InitialLocation;	// 初始位置
+
+	UFUNCTION(BlueprintCallable)
+	void StartSinusoidalFloat();	// 开始正弦浮动
+
+	UFUNCTION(BlueprintCallable)
+	void StartRotating();	// 开始旋转
 
 	UFUNCTION(BlueprintCallable)
 	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);	// 将效果应用到目标，传入目标和GameplayEffect类
@@ -93,4 +125,8 @@ protected:
 	bool bApplyEffectToEnemies = false;	// 是否将效果应用到敌人
 
 private:
+	float RunningTime = 0.f;	// 运行时间
+
+	void ItemMovement(float DeltaTime);	// 物品运动
 };
+

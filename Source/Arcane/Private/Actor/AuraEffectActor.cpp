@@ -7,65 +7,125 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 AAuraEffectActor::AAuraEffectActor()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
-	SetRootComponent(CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));	// ´´½¨¸ù×é¼ş, ³¡¾°×é¼ş¡£
+	// è®¾ç½®Tickå‡½æ•°çš„æ—¶é—´é—´éš”
 
+	SetRootComponent(CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));	// åˆ›å»ºæ ¹ç»„ä»¶, åœºæ™¯ç»„ä»¶ã€‚
+
+}
+
+void AAuraEffectActor::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	RunningTime += DeltaTime;	// ç´¯åŠ è¿è¡Œæ—¶é—´
+	// RunningTimeå¯èƒ½ä¼šæº¢å‡ºï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦å¯¹å…¶è¿›è¡Œå–æ¨¡è¿ç®—ï¼Œä½¿å…¶å§‹ç»ˆä¿æŒåœ¨0åˆ°2PIä¹‹é—´ã€‚
+	RunningTime = FMath::Fmod(RunningTime, Frequency * TWO_PI);	// å–æ¨¡è¿ç®—
+
+	ItemMovement(DeltaTime);	// ç‰©å“ç§»åŠ¨
+
+	if (bFloating || bRotate)	// å¦‚æœå…è®¸æµ®åŠ¨æˆ–è€…æ—‹è½¬
+	{
+		SetActorLocation(CalculateLocation);	// è®¾ç½®ä½ç½®
+		SetActorRotation(CalculateRotation);	// è®¾ç½®æ—‹è½¬
+	}
 }
 
 void AAuraEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
+	InitialLocation = GetActorLocation();	// è·å–åˆå§‹ä½ç½®
+	CalculateLocation = InitialLocation;	// è®¾ç½®è®¡ç®—ä½ç½®
+	CalculateRotation = GetActorRotation();	// è®¾ç½®è®¡ç®—æ—‹è½¬
+
+	if (bFloating)	// å¦‚æœå…è®¸æµ®åŠ¨
+	{
+		StartSinusoidalFloat();	// å¼€å§‹æ­£å¼¦æµ®åŠ¨
+	}
+	if (bRotate)	// å¦‚æœå…è®¸æ—‹è½¬
+	{
+		StartRotating();	// å¼€å§‹æ—‹è½¬
+	}
+}
+
+void AAuraEffectActor::ItemMovement(float DeltaTime)
+{
+	if (bRotate)	// å¦‚æœå…è®¸æ—‹è½¬
+	{
+		const FRotator NewRotation = FRotator(0.f, RotationRate * DeltaTime, 0.f);	// è®¡ç®—æ–°çš„æ—‹è½¬
+		CalculateRotation = UKismetMathLibrary::ComposeRotators(CalculateRotation, NewRotation);	// åˆæˆæ—‹è½¬
+	}
+
+	if (bFloating)	// å¦‚æœå…è®¸æµ®åŠ¨
+	{
+		const FVector NewLocation = FVector(0.f, 0.f, Amplitude * FMath::Sin(Frequency * RunningTime));	// è®¡ç®—æ–°çš„ä½ç½®
+		CalculateLocation = InitialLocation + NewLocation;	// è®¾ç½®æ–°çš„ä½ç½®
+	}
+}
+
+void AAuraEffectActor::StartSinusoidalFloat()
+{
+	bFloating = true;	// å¼€å¯æµ®åŠ¨
+	InitialLocation = GetActorLocation();	// è·å–åˆå§‹ä½ç½®
+	CalculateLocation = InitialLocation;	// è®¾ç½®è®¡ç®—ä½ç½®
+}
+
+void AAuraEffectActor::StartRotating()
+{
+	bRotate = true;	// å¼€å¯æ—‹è½¬
+	CalculateRotation = GetActorRotation();	// è®¾ç½®è®¡ç®—æ—‹è½¬
 }
 
 void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
 {
-	// µ±È»£¬²»ÊÇËùÓĞµÄÄ¿±ê¶¼»áÊµÏÖIAbilitySystemInterface½Ó¿Ú£¬ËùÒÔÎÒÃÇ¿ÉÒÔÖ±½Ó»ñÈ¡Ä¿±êµÄÄÜÁ¦ÏµÍ³×é¼ş
-	// ÎÒÃÇ¿ÉÒÔµ÷ÓÃAbilitySystemBlueprintLibrary::GetAbilitySystemComponentº¯ÊıÀ´»ñÈ¡Ä¿±êµÄÄÜÁ¦ÏµÍ³×é¼ş
-	// £¬Õâ¸öº¯Êı»á×Ô¶¯ÅĞ¶ÏÄ¿±êÊÇ·ñÊµÏÖÁËIAbilitySystemInterface½Ó¿Ú£¬Èç¹ûÊµÏÖÁË£¬¾Í»á·µ»ØÄ¿±êµÄÄÜÁ¦ÏµÍ³×é¼ş£¬
-	// Èç¹ûÃ»ÓĞÊµÏÖ£¬Ëû»á²éÕÒÄ¿±êµÄËùÓĞÕßÊÇ·ñÊµÏÖÁËIAbilitySystemInterface½Ó¿Ú£¬Èç¹ûÊµÏÖÁË£¬¾Í»á·µ»ØËùÓĞÕßµÄÄÜÁ¦ÏµÍ³×é¼ş
+	// å½“ç„¶ï¼Œä¸æ˜¯æ‰€æœ‰çš„ç›®æ ‡éƒ½ä¼šå®ç°IAbilitySystemInterfaceæ¥å£ï¼Œæ‰€ä»¥æˆ‘ä»¬å¯ä»¥ç›´æ¥è·å–ç›®æ ‡çš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
+	// æˆ‘ä»¬å¯ä»¥è°ƒç”¨AbilitySystemBlueprintLibrary::GetAbilitySystemComponentå‡½æ•°æ¥è·å–ç›®æ ‡çš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
+	// ï¼Œè¿™ä¸ªå‡½æ•°ä¼šè‡ªåŠ¨åˆ¤æ–­ç›®æ ‡æ˜¯å¦å®ç°äº†IAbilitySystemInterfaceæ¥å£ï¼Œå¦‚æœå®ç°äº†ï¼Œå°±ä¼šè¿”å›ç›®æ ‡çš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶ï¼Œ
+	// å¦‚æœæ²¡æœ‰å®ç°ï¼Œä»–ä¼šæŸ¥æ‰¾ç›®æ ‡çš„æ‰€æœ‰è€…æ˜¯å¦å®ç°äº†IAbilitySystemInterfaceæ¥å£ï¼Œå¦‚æœå®ç°äº†ï¼Œå°±ä¼šè¿”å›æ‰€æœ‰è€…çš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
 
-	if (TargetActor->ActorHasTag(FName("Enemy")) && !bApplyEffectToEnemies) return;	// Èç¹ûÄ¿±êÊÇµĞÈË£¬µ«ÊÇÎÒÃÇ²»Ï£ÍûÓ¦ÓÃĞ§¹ûµ½µĞÈË£¬¾ÍÖ±½Ó·µ»Ø
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bApplyEffectToEnemies) return;	// å¦‚æœç›®æ ‡æ˜¯æ•Œäººï¼Œä½†æ˜¯æˆ‘ä»¬ä¸å¸Œæœ›åº”ç”¨æ•ˆæœåˆ°æ•Œäººï¼Œå°±ç›´æ¥è¿”å›
 
-	// »ñÈ¡Ä¿±êµÄÄÜÁ¦ÏµÍ³×é¼ş
+	// è·å–ç›®æ ‡çš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
 	if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor))
 	{
-		checkf(GameplayEffectClass, TEXT("GameplayEffectClass is nullptr!"));	// ¼ì²éGameplayEffectClassÊÇ·ñÎª¿Õ
+		checkf(GameplayEffectClass, TEXT("GameplayEffectClass is nullptr!"));	// æ£€æŸ¥GameplayEffectClassæ˜¯å¦ä¸ºç©º
 
-		// ´´½¨Ğ§¹ûÉÏÏÂÎÄ£¬ÓÃÓÚ´´½¨Ğ§¹û¹æ¸ñ¡£
-		// Ê²Ã´ÊÇĞ§¹ûÉÏÏÂÎÄÄØ£¿Ğ§¹ûÉÏÏÂÎÄÊÇÒ»¸ö½á¹¹Ìå£¬ÓÃÓÚ´æ´¢Ğ§¹ûµÄÀ´Ô´£¬Ä¿±ê£¬Ê©·¨ÕßµÈĞÅÏ¢¡£ÔÚ´´½¨Ğ§¹û¹æ¸ñÊ±£¬ÎÒÃÇĞèÒª´«ÈëĞ§¹ûÉÏÏÂÎÄ¡£
+		// åˆ›å»ºæ•ˆæœä¸Šä¸‹æ–‡ï¼Œç”¨äºåˆ›å»ºæ•ˆæœè§„æ ¼ã€‚
+		// ä»€ä¹ˆæ˜¯æ•ˆæœä¸Šä¸‹æ–‡å‘¢ï¼Ÿæ•ˆæœä¸Šä¸‹æ–‡æ˜¯ä¸€ä¸ªç»“æ„ä½“ï¼Œç”¨äºå­˜å‚¨æ•ˆæœçš„æ¥æºï¼Œç›®æ ‡ï¼Œæ–½æ³•è€…ç­‰ä¿¡æ¯ã€‚åœ¨åˆ›å»ºæ•ˆæœè§„æ ¼æ—¶ï¼Œæˆ‘ä»¬éœ€è¦ä¼ å…¥æ•ˆæœä¸Šä¸‹æ–‡ã€‚
 		FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
-		EffectContext.AddSourceObject(this);	// Ìí¼ÓÔ´¶ÔÏó£¬±íÊ¾Õâ¸öĞ§¹ûÊÇÓÉË­·¢³öµÄ¡£
+		EffectContext.AddSourceObject(this);	// æ·»åŠ æºå¯¹è±¡ï¼Œè¡¨ç¤ºè¿™ä¸ªæ•ˆæœæ˜¯ç”±è°å‘å‡ºçš„ã€‚
 
-		// ´´½¨Ğ§¹û¹æ¸ñ£¬ÓÃÓÚÓ¦ÓÃĞ§¹û¡£²ÎÊı·Ö±ğÊÇĞ§¹ûÀà£¬µÈ¼¶£¬Ğ§¹ûÉÏÏÂÎÄ¡£
+		// åˆ›å»ºæ•ˆæœè§„æ ¼ï¼Œç”¨äºåº”ç”¨æ•ˆæœã€‚å‚æ•°åˆ†åˆ«æ˜¯æ•ˆæœç±»ï¼Œç­‰çº§ï¼Œæ•ˆæœä¸Šä¸‹æ–‡ã€‚
 		const FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ActorLevel, EffectContext);
 
-		// »ñÈ¡Ğ§¹ûµÄ³ÖĞøÊ±¼äÀàĞÍ£¬ÅĞ¶ÏĞ§¹ûÊÇ·ñÊÇÎŞÏŞ³ÖĞøµÄ¡£
+		// è·å–æ•ˆæœçš„æŒç»­æ—¶é—´ç±»å‹ï¼Œåˆ¤æ–­æ•ˆæœæ˜¯å¦æ˜¯æ— é™æŒç»­çš„ã€‚
 		const bool bIsInfinite = EffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
 
-		// Èç¹ûĞ§¹û¹æ¸ñÓĞĞ§£¬¾ÍÓ¦ÓÃĞ§¹û¹æ¸ñµ½×Ô¼º¡£
+		// å¦‚æœæ•ˆæœè§„æ ¼æœ‰æ•ˆï¼Œå°±åº”ç”¨æ•ˆæœè§„æ ¼åˆ°è‡ªå·±ã€‚
 		if (EffectSpecHandle.IsValid())
 		{
-			// Ó¦ÓÃĞ§¹û¹æ¸ñµ½×Ô¼º¡£
+			// åº”ç”¨æ•ˆæœè§„æ ¼åˆ°è‡ªå·±ã€‚
 			const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpecHandle.Data.Get());
 
 			
-			// Ö»ÓĞĞ§¹ûÊÇÎŞÏŞ³ÖĞøµÄ£¬²¢ÇÒÎÒÃÇÏ£ÍûÔÚ½áÊøÖØµşÊ±ÒÆ³ıĞ§¹ûÊ±£¬ÎÒÃÇ²Å½«Ğ§¹û¾ä±úºÍÄÜÁ¦ÏµÍ³×é¼ş´æ´¢µ½Ó³Éä±íÖĞ¡£
+			// åªæœ‰æ•ˆæœæ˜¯æ— é™æŒç»­çš„ï¼Œå¹¶ä¸”æˆ‘ä»¬å¸Œæœ›åœ¨ç»“æŸé‡å æ—¶ç§»é™¤æ•ˆæœæ—¶ï¼Œæˆ‘ä»¬æ‰å°†æ•ˆæœå¥æŸ„å’Œèƒ½åŠ›ç³»ç»Ÿç»„ä»¶å­˜å‚¨åˆ°æ˜ å°„è¡¨ä¸­ã€‚
 			if (bIsInfinite && InfiniteEffectRemovePolicy == EEffectRemovePolicy::RemoveOnEndOverlap)
 			{
-				// Èç¹ûĞ§¹ûÊÇÎŞÏŞ³ÖĞøµÄ£¬¾Í½«Ğ§¹û¾ä±úºÍÄÜÁ¦ÏµÍ³×é¼ş´æ´¢µ½Ó³Éä±íÖĞ¡£
+				// å¦‚æœæ•ˆæœæ˜¯æ— é™æŒç»­çš„ï¼Œå°±å°†æ•ˆæœå¥æŸ„å’Œèƒ½åŠ›ç³»ç»Ÿç»„ä»¶å­˜å‚¨åˆ°æ˜ å°„è¡¨ä¸­ã€‚
 				ActiveGameplayEffectsMap.Add(ActiveEffectHandle, TargetASC);
 			}
 		}
 
 		if (!bIsInfinite)
 		{
-			// Èç¹ûÊÇÔÚĞ§¹ûÓ¦ÓÃºóÏú»Ù£¬²¢ÇÒĞ§¹ûÊÇË²Ê±µÄ£¬¾ÍÏú»Ù×Ô¼º¡£
+			// å¦‚æœæ˜¯åœ¨æ•ˆæœåº”ç”¨åé”€æ¯ï¼Œå¹¶ä¸”æ•ˆæœæ˜¯ç¬æ—¶çš„ï¼Œå°±é”€æ¯è‡ªå·±ã€‚
 			Destroy();
 		}
 
@@ -75,7 +135,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 
 void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 {
-	if (TargetActor->ActorHasTag(FName("Enemy")) && !bApplyEffectToEnemies) return;	// Èç¹ûÄ¿±êÊÇµĞÈË£¬µ«ÊÇÎÒÃÇ²»Ï£ÍûÓ¦ÓÃĞ§¹ûµ½µĞÈË£¬¾ÍÖ±½Ó·µ»Ø
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bApplyEffectToEnemies) return;	// å¦‚æœç›®æ ‡æ˜¯æ•Œäººï¼Œä½†æ˜¯æˆ‘ä»¬ä¸å¸Œæœ›åº”ç”¨æ•ˆæœåˆ°æ•Œäººï¼Œå°±ç›´æ¥è¿”å›
 
 	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlap)
 	{
@@ -93,7 +153,7 @@ void AAuraEffectActor::OnOverlap(AActor* TargetActor)
 
 void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 {
-	if (TargetActor->ActorHasTag(FName("Enemy")) && !bApplyEffectToEnemies) return;	// Èç¹ûÄ¿±êÊÇµĞÈË£¬µ«ÊÇÎÒÃÇ²»Ï£ÍûÓ¦ÓÃĞ§¹ûµ½µĞÈË£¬¾ÍÖ±½Ó·µ»Ø
+	if (TargetActor->ActorHasTag(FName("Enemy")) && !bApplyEffectToEnemies) return;	// å¦‚æœç›®æ ‡æ˜¯æ•Œäººï¼Œä½†æ˜¯æˆ‘ä»¬ä¸å¸Œæœ›åº”ç”¨æ•ˆæœåˆ°æ•Œäººï¼Œå°±ç›´æ¥è¿”å›
 
 	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
 	{
@@ -109,26 +169,27 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 	}
 	if (InfiniteEffectRemovePolicy == EEffectRemovePolicy::RemoveOnEndOverlap)
 	{
-		// ÒÆ³ıĞ§¹û
-		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);	// »ñÈ¡Ä¿±êµÄÄÜÁ¦ÏµÍ³×é¼ş
+		// ç§»é™¤æ•ˆæœ
+		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);	// è·å–ç›®æ ‡çš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶
 		if (IsValid(TargetASC))
 		{
-			TArray<FActiveGameplayEffectHandle> ActiveEffectsToRemove;	// ÓÃÓÚ´æ´¢ÒªÒÆ³ıµÄĞ§¹û¾ä±ú
+			TArray<FActiveGameplayEffectHandle> ActiveEffectsToRemove;	// ç”¨äºå­˜å‚¨è¦ç§»é™¤çš„æ•ˆæœå¥æŸ„
 			for (const TTuple<FActiveGameplayEffectHandle, UAbilitySystemComponent*>& Elem : ActiveGameplayEffectsMap)
 			{
-				if (Elem.Value == TargetASC)	// Èç¹ûÓ³Éä±íÖĞµÄÄÜÁ¦ÏµÍ³×é¼şºÍÄ¿±êµÄÄÜÁ¦ÏµÍ³×é¼şÏàÍ¬£¬±íÊ¾Õâ¸öĞ§¹ûÊÇÄ¿±êµÄ
+				if (Elem.Value == TargetASC)	// å¦‚æœæ˜ å°„è¡¨ä¸­çš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶å’Œç›®æ ‡çš„èƒ½åŠ›ç³»ç»Ÿç»„ä»¶ç›¸åŒï¼Œè¡¨ç¤ºè¿™ä¸ªæ•ˆæœæ˜¯ç›®æ ‡çš„
 				{
-					TargetASC->RemoveActiveGameplayEffect(Elem.Key, 1);	// ÒÆ³ıĞ§¹û
-					ActiveEffectsToRemove.Add(Elem.Key);	// ½«ÒªÒÆ³ıµÄĞ§¹û¾ä±ú´æ´¢µ½Êı×éÖĞ
+					TargetASC->RemoveActiveGameplayEffect(Elem.Key, 1);	// ç§»é™¤æ•ˆæœ
+					ActiveEffectsToRemove.Add(Elem.Key);	// å°†è¦ç§»é™¤çš„æ•ˆæœå¥æŸ„å­˜å‚¨åˆ°æ•°ç»„ä¸­
 				}
 			}
 			for (const FActiveGameplayEffectHandle& ActiveEffectHandle : ActiveEffectsToRemove)
 			{
-				ActiveGameplayEffectsMap.Remove(ActiveEffectHandle);	// ´ÓÓ³Éä±íÖĞÒÆ³ıĞ§¹û¾ä±ú
+				ActiveGameplayEffectsMap.Remove(ActiveEffectHandle);	// ä»æ˜ å°„è¡¨ä¸­ç§»é™¤æ•ˆæœå¥æŸ„
 			}
 		}
 	}
 }
+
 
 
 
