@@ -63,7 +63,7 @@ void USpellMenuWidgetController::EquipAbility(const FGameplayTag& AbilityTag, co
 	
 }
 
-void USpellMenuWidgetController::OnAbilitySlotChange(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& OldSlotTag)
+void USpellMenuWidgetController::OnAbilitySlotChange(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& OldSlotTag) const
 {
 	const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();
 
@@ -73,10 +73,16 @@ void USpellMenuWidgetController::OnAbilitySlotChange(const FGameplayTag& Ability
 	LastSlotInfo.AbilityTag = AuraTags.Abilities_None;	// 设置技能标签为空标签
 	AbilityInfoDelegate.Broadcast(LastSlotInfo);	// 广播技能信息
 
+	// 打印上一个槽信息(LastSlotInfo)
+	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Ability %s is now in slot %s"), *LastSlotInfo.AbilityTag.ToString(), *LastSlotInfo.InputTag.ToString()), true, false, FLinearColor::Green, 5.0f);
+
 	FAuraAbilityInfo AbilityInfo = AbilityInformation->FindAbilityInfoByTag(AbilityTag);	// 通过技能标签查找技能信息
 	AbilityInfo.StateTag = StatusTag;	// 设置技能状态标签
 	AbilityInfo.InputTag = SlotTag;	// 设置输入标签
 	AbilityInfoDelegate.Broadcast(AbilityInfo);	// 广播技能信息
+
+	// 打印当前槽信息(AbilityInfo)
+	UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("Ability %s is now in slot %s, status %s"), *AbilityInfo.AbilityTag.ToString(), *AbilityInfo.InputTag.ToString(), *StatusTag.ToString()), true, false, FLinearColor::Red, 5.0f);
 
 	SpellButtonReassignDelegate.Broadcast(AbilityTag);	// 重新分配技能按钮
 }

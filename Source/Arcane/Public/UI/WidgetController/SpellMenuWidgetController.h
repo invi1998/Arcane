@@ -33,6 +33,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "gas|Attributes")	// 蓝图可调用的函数
 	void EquipAbility(const FGameplayTag& AbilityTag, const FGameplayTag& SlotTag);	// 装备能力
 
-	void OnAbilitySlotChange(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& OldSlotTag);	// 能力槽改变
+	void OnAbilitySlotChange(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& OldSlotTag) const;	// 能力槽改变
 	
 };

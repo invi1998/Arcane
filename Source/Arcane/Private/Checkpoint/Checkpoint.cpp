@@ -84,10 +84,10 @@ void ACheckpoint::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 			FString MapName = GetWorld()->GetMapName();
 			MapName.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
 			GameMode->SaveWorldState(GetWorld(), MapName);
-		}
 
-		IPlayerInterface::Execute_SaveProgress(OtherActor, PlayerStartTag);		// 保存玩家游戏进度
-		HandleGlowEffects();
+			IPlayerInterface::Execute_SaveProgress(OtherActor, PlayerStartTag);		// 保存玩家游戏进度
+			HandleGlowEffects();
+		}
 	}
 }
 

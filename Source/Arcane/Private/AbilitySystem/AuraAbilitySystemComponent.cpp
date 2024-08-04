@@ -119,13 +119,22 @@ void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
             // 4：检测能力的输入标签是否与输入的标签相同，这里采用的是精确匹配
             if (Spec.DynamicAbilityTags.HasTagExact(InputTag))
             {
-               // 5： 判断能力是否已经激活
+				// 5： 判断能力是否已经激活
                 if (Spec.IsActive())
                 {
+					UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("TTTT IsActive AbilityInputTagPressed: %s, %s"), *InputTag.ToString(), *Spec.Ability->GetName()), true, true, FLinearColor::Green, 5.0f);
 					// InvokeReplicatedEvent是一个复制事件，它会在服务端调用，然后在客户端广播。这是我们能对按下和释放事件进行预测响应的原因。
                     InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());    // 调用复制事件
 				}
+				else
+				{
+					UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("IsActive NOT AbilityInputTagPressed: %s, %s"), *InputTag.ToString(), *Spec.Ability->GetName()), true, true, FLinearColor::Red, 5.0f);
+				}
             }
+			else
+			{
+				UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("AbilityInputTagPressed: %s"), *InputTag.ToString()), true, true, FLinearColor::Red, 5.0f);
+			}
 		}
 	}
 }
@@ -446,26 +455,21 @@ void UAuraAbilitySystemComponent::UpdateAbilityStateTags(int32 NewLevel)
 	}
 }
 
-void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGameplayTag& AbilityTag,
-	const FGameplayTag& SlotTag)
+void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGameplayTag& AbilityTag, const FGameplayTag& SlotTag)
 {
 	// 1：检查当前Tag是否有效
 	if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecByTag(AbilityTag))
 	{
-        const FGameplayTag& PreviousSlotTag = GetAbilityInputTagBySpec(*AbilitySpec);	// 获取之前的槽标签
-        const FGameplayTag& StatusTag = GetAbilityStateTag(*AbilitySpec);    // 获取技能状态标签
+        const FGameplayTag PreviousSlotTag = GetAbilityInputTagBySpec(*AbilitySpec);	// 获取当前技能之前的槽标签
+		FGameplayTag StatusTag = GetAbilityStateTag(*AbilitySpec);    // 获取技能状态标签
         const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();    // 获取AuraGameplayTags
 
-        const bool bStatusValid = StatusTag.IsValid() && (StatusTag.MatchesTagExact(AuraTags.Abilities_State_UnLocked) || StatusTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_State_Equipped));
-        if (bStatusValid)
+        if (StatusTag.IsValid() && (StatusTag.MatchesTagExact(AuraTags.Abilities_State_Eligible) || StatusTag.MatchesTagExact(AuraTags.Abilities_State_UnLocked) || StatusTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_State_Equipped)))
         {
             if (!IsEmptySlot(SlotTag))
             {
             	// 如果槽不为空
-            	FGameplayAbilitySpec* PreSlotAbilitySpec = FindAbilitySpecByTag(GetAbilityTagByInputTag(SlotTag));    // 通过输入标签查找技能
-
-                // 判断是否是被动技能
-                if (PreSlotAbilitySpec)
+                if (FGameplayAbilitySpec* PreSlotAbilitySpec = FindAbilitySpecByTag(GetAbilityTagByInputTag(SlotTag)))
                 {
                     const FGameplayTag& PreSlotAbilityTag = GetAbilityTagBySpec(*PreSlotAbilitySpec);    // 获取技能标签
 	                // 判断两个技能是否相同
@@ -504,6 +508,8 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
             // 将新的槽标签添加到技能的DynamicAbilityTags中
             AbilitySpec->DynamicAbilityTags.AddTag(SlotTag);    // 添加槽标签
 
+			StatusTag = GetAbilityStateTag(*AbilitySpec);    // 获取技能状态标签
+
             if (StatusTag.MatchesTagExact(AuraTags.Abilities_State_UnLocked))
             {
             	// 如果技能状态是已解锁，那么就设置技能状态为已装备
@@ -513,9 +519,9 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 
             MarkAbilitySpecDirty(*AbilitySpec);    // 标记技能为脏，这样在下一帧就会更新技能状态
             // 通知客户端技能状态改变
-        }
 
-        ClientEquipAbility(AbilityTag, AuraTags.Abilities_State_Equipped, SlotTag, PreviousSlotTag);    // 通知客户端装备技能
+			ClientEquipAbility(AbilityTag, AuraTags.Abilities_State_Equipped, SlotTag, PreviousSlotTag);    // 通知客户端装备技能
+        }
         // OnAbilitySlotChangeDelegate.Broadcast(this, PreviousSlotTag, SlotTag);    // 广播技能槽改变
 	}
 }

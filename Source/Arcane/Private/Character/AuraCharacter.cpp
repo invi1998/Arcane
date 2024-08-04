@@ -317,8 +317,7 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 
 		SaveGame->SavedGameInfo.IsNewGame = false;	// 设置不是第一次加载游戏
 
-		UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
-		if (AuraAbilitySystemComponent)
+		if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
 		{
 			SaveGame->SavedPlayerAbilities.Empty();	// 清空技能
 			FForEachAbility SaveAbilitiesDelegate;	// 保存技能委托
@@ -326,7 +325,6 @@ void AAuraCharacter::SaveProgress_Implementation(const FName& CheckPointTag)
 				{
 					if (AbilitySpec.Ability)
 					{
-						
 						FGameplayTag AbilityTag = AuraAbilitySystemComponent->GetAbilityTagBySpec(AbilitySpec);		// 获取技能标签
 						UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(this);
 						FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoByTag(AbilityTag);	// 通过标签获取技能信息
