@@ -41,7 +41,11 @@ public:
 	FAbilitiesGiven AbilitiesGivenDelegate;	// 定义一个委托，用于在给角色添加能力时调用
 	FAbilityStatusChanged AbilityStatusChangedDelegate;	// 定义一个委托，用于在技能状态改变时调用
 	FAbilitySlotChanged AbilitySlotChangedDelegate;	// 定义一个委托，用于在技能槽改变时调用
+
+	UPROPERTY(BlueprintAssignable)
 	FDeactivatePassiveAbilities DeactivatePassiveAbilitiesDelegate;	// 定义一个委托，用于在被动技能失效时调用
+
+	UPROPERTY(BlueprintAssignable)
 	FActivatePassiveEffect ActivatePassiveEffectDelegate;	// 定义一个委托，用于在被动效果激活或者失效时调用
 
 	FAbilityCastStart AbilityCastStartDelegate;	// 定义一个委托，用于在技能释放开始时调用

@@ -635,7 +635,7 @@ FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const 
 
 		return ContextHandle;
 	}
-	   
+
 	return FGameplayEffectContextHandle();
 }
 
