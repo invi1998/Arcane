@@ -8,43 +8,43 @@
 
 UMMC_MaxHealth::UMMC_MaxHealth()
 {
-	VigorDef.AttributeToCapture = UAuraAttributeSet::GetVigorAttribute();		// ÌåÖÊ
-	VigorDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;	// Ä¿±ê
-	VigorDef.bSnapshot = false;	// ²»ÊÇ¿ìÕÕ£¬¿ìÕÕÊÇÖ¸ÔÚĞ§¹ûÉúĞ§Ê±²¶»ñµÄÊôĞÔÖµ£¬¶ø²»ÊÇÔÚĞ§¹û´´½¨Ê±²¶»ñµÄÊôĞÔÖµ£¬ËùÒÔĞ§¹û±»´´½¨Ê±£¬ÊôĞÔÖµÊÇ¶àÉÙ£¬Ğ§¹û¾ÍÊÇ¶àÉÙ£¬ÕâÀï»ñÈ¡µÄÊÇÕæÊµÖµ
+	VigorDef.AttributeToCapture = UAuraAttributeSet::GetVigorAttribute();		// ä½“è´¨
+	VigorDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;	// ç›®æ ‡
+	VigorDef.bSnapshot = false;	// ä¸æ˜¯å¿«ç…§ï¼Œå¿«ç…§æ˜¯æŒ‡åœ¨æ•ˆæœç”Ÿæ•ˆæ—¶æ•è·çš„å±æ€§å€¼ï¼Œè€Œä¸æ˜¯åœ¨æ•ˆæœåˆ›å»ºæ—¶æ•è·çš„å±æ€§å€¼ï¼Œæ‰€ä»¥æ•ˆæœè¢«åˆ›å»ºæ—¶ï¼Œå±æ€§å€¼æ˜¯å¤šå°‘ï¼Œæ•ˆæœå°±æ˜¯å¤šå°‘ï¼Œè¿™é‡Œè·å–çš„æ˜¯çœŸå®å€¼
 
-	// ¶ÔÌåÖÊ£¨»îÁ¦£©¶¨ÒåÉèÖÃÁËÕâĞ©»ù´¡ÊôĞÔºó£¬ÎÒÃÇµÄĞŞÊÎ·û¼ÆËã»¹ĞèÒªÒ»¸ö±äÁ¿£¬ËûÊÇÒª²¶»ñµÄÊôĞÔÊıÖµÖ®Ò»
-	// ÎÒÃÇĞèÒª½«Õâ¸ö VigorDef Ìí¼Óµ½ CapturedAttributeModifiers Êı×éÖĞ£¬ÕâÑùÎÒÃÇµÄĞŞÊÎ·û¼ÆËã¾Í¿ÉÒÔ»ñÈ¡µ½Õâ¸öÊôĞÔµÄÊıÖµÁË
-	RelevantAttributesToCapture.Add(VigorDef);	// Ìí¼Óµ½²¶»ñÊôĞÔÊı×éÖĞ
-	// ÕâÑù£¬ÔÚ×îÖÕÖ´ĞĞĞŞÊÎ·û¼ÆËãÊ±£¬ÎÒÃÇ¾Í¿ÉÒÔ»ñÈ¡µ½ÌåÖÊµÄÊıÖµÁË
+	// å¯¹ä½“è´¨ï¼ˆæ´»åŠ›ï¼‰å®šä¹‰è®¾ç½®äº†è¿™äº›åŸºç¡€å±æ€§åï¼Œæˆ‘ä»¬çš„ä¿®é¥°ç¬¦è®¡ç®—è¿˜éœ€è¦ä¸€ä¸ªå˜é‡ï¼Œä»–æ˜¯è¦æ•è·çš„å±æ€§æ•°å€¼ä¹‹ä¸€
+	// æˆ‘ä»¬éœ€è¦å°†è¿™ä¸ª VigorDef æ·»åŠ åˆ° CapturedAttributeModifiers æ•°ç»„ä¸­ï¼Œè¿™æ ·æˆ‘ä»¬çš„ä¿®é¥°ç¬¦è®¡ç®—å°±å¯ä»¥è·å–åˆ°è¿™ä¸ªå±æ€§çš„æ•°å€¼äº†
+	RelevantAttributesToCapture.Add(VigorDef);	// æ·»åŠ åˆ°æ•è·å±æ€§æ•°ç»„ä¸­
+	// è¿™æ ·ï¼Œåœ¨æœ€ç»ˆæ‰§è¡Œä¿®é¥°ç¬¦è®¡ç®—æ—¶ï¼Œæˆ‘ä»¬å°±å¯ä»¥è·å–åˆ°ä½“è´¨çš„æ•°å€¼äº†
 }
 
 float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	// Cather tags from source and target £¨´ÓÀ´Ô´ºÍÄ¿±êÖĞ²¶»ñ±êÇ©£©
-	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();		// À´Ô´±êÇ©
-	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();		// Ä¿±ê±êÇ©
+	// Cather tags from source and target ï¼ˆä»æ¥æºå’Œç›®æ ‡ä¸­æ•è·æ ‡ç­¾ï¼‰
+	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();		// æ¥æºæ ‡ç­¾
+	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();		// ç›®æ ‡æ ‡ç­¾
 
-	// ÏÖÔÚ£¬ÎªÁË²¶»ñÒ»¸öÊôĞÔ²¢»ñÈ¡ËûµÄÊıÖµ£¬ÎÒÃÇĞèÒªÊ¹ÓÃ FAggregatorEvaluateParameters ½á¹¹Ìå, Õâ¸ö½á¹¹Ìå°üº¬ÁËÎÒÃÇĞèÒªµÄËùÓĞĞÅÏ¢
-	FAggregatorEvaluateParameters EvaluationParameters;	// ÆÀ¹À²ÎÊı
-	EvaluationParameters.SourceTags = SourceTags;	// À´Ô´±êÇ©
-	EvaluationParameters.TargetTags = TargetTags;	// Ä¿±ê±êÇ©
+	// ç°åœ¨ï¼Œä¸ºäº†æ•è·ä¸€ä¸ªå±æ€§å¹¶è·å–ä»–çš„æ•°å€¼ï¼Œæˆ‘ä»¬éœ€è¦ä½¿ç”¨ FAggregatorEvaluateParameters ç»“æ„ä½“, è¿™ä¸ªç»“æ„ä½“åŒ…å«äº†æˆ‘ä»¬éœ€è¦çš„æ‰€æœ‰ä¿¡æ¯
+	FAggregatorEvaluateParameters EvaluationParameters;	// è¯„ä¼°å‚æ•°
+	EvaluationParameters.SourceTags = SourceTags;	// æ¥æºæ ‡ç­¾
+	EvaluationParameters.TargetTags = TargetTags;	// ç›®æ ‡æ ‡ç­¾
 
-	float Vigor = 0.f;	// ÌåÖÊ
-	GetCapturedAttributeMagnitude(VigorDef, Spec, EvaluationParameters, Vigor);	// »ñÈ¡²¶»ñµÄÊôĞÔÊıÖµ£¬´«Èë²¶»ñ¶¨Òå£¬Ğ§¹û¹æ¸ñ£¬ÆÀ¹À²ÎÊı£¬ÌåÖÊ£¨ÊôĞÔ£©
+	float Vigor = 0.f;	// ä½“è´¨
+	GetCapturedAttributeMagnitude(VigorDef, Spec, EvaluationParameters, Vigor);	// è·å–æ•è·çš„å±æ€§æ•°å€¼ï¼Œä¼ å…¥æ•è·å®šä¹‰ï¼Œæ•ˆæœè§„æ ¼ï¼Œè¯„ä¼°å‚æ•°ï¼Œä½“è´¨ï¼ˆå±æ€§ï¼‰
 
-	// Clamp the value to be positive £¨½«ÖµÏŞÖÆÎªÕıÊı£©
-	Vigor = FMath::Max<float>(Vigor, 0.f);	// ÌåÖÊ
+	// Clamp the value to be positive ï¼ˆå°†å€¼é™åˆ¶ä¸ºæ­£æ•°ï¼‰
+	Vigor = FMath::Max<float>(Vigor, 0.f);	// ä½“è´¨
 
-	// Í¬Ê±£¬ÎÒÃÇÏ£ÍûÍæ¼ÒµÄ×î´óÉúÃüÖµ²»½öÈ¡¾öÓÚÌåÖÊ£¨vigor£©£¬»¹È¡¾öÓÚÆäËûÒòËØ£¬±ÈÈçµÈ¼¶£¬ËùÒÔÎÒÃÇĞèÒªÒ»¸ö¹«Ê½À´¼ÆËã×î´óÉúÃüÖµ
-	// ÕâÒ²ÊÇÎÒÃÇ´´½¨Õâ¸öĞŞÊÎ·ûµÄÔ­Òò£¬ÒòÎªÎÒÃÇÔÚÕâÀï¿ÉÒÔÊ¼ÖÕ»ñÈ¡µ½Õâ¸öĞ§¹ûµÄÀ´Ô´ºÍÄ¿±ê£¬ËùÒÔÎÒÃÇ¿ÉÒÔ¸ù¾İÀ´Ô´ºÍÄ¿±êµÄÊôĞÔÀ´¼ÆËã×î´óÉúÃüÖµ
+	// åŒæ—¶ï¼Œæˆ‘ä»¬å¸Œæœ›ç©å®¶çš„æœ€å¤§ç”Ÿå‘½å€¼ä¸ä»…å–å†³äºä½“è´¨ï¼ˆvigorï¼‰ï¼Œè¿˜å–å†³äºå…¶ä»–å› ç´ ï¼Œæ¯”å¦‚ç­‰çº§ï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦ä¸€ä¸ªå…¬å¼æ¥è®¡ç®—æœ€å¤§ç”Ÿå‘½å€¼
+	// è¿™ä¹Ÿæ˜¯æˆ‘ä»¬åˆ›å»ºè¿™ä¸ªä¿®é¥°ç¬¦çš„åŸå› ï¼Œå› ä¸ºæˆ‘ä»¬åœ¨è¿™é‡Œå¯ä»¥å§‹ç»ˆè·å–åˆ°è¿™ä¸ªæ•ˆæœçš„æ¥æºå’Œç›®æ ‡ï¼Œæ‰€ä»¥æˆ‘ä»¬å¯ä»¥æ ¹æ®æ¥æºå’Œç›®æ ‡çš„å±æ€§æ¥è®¡ç®—æœ€å¤§ç”Ÿå‘½å€¼
 	int32 Level = 1;
 	if (Spec.GetContext().GetSourceObject() && Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
 	{
 		if (const ICombatInterface* SourceActor = Cast<ICombatInterface>(Spec.GetEffectContext().GetSourceObject()))
 		{
-			Level = SourceActor->Execute_GetCharacterLevel(Spec.GetEffectContext().GetSourceObject());	// »ñÈ¡½ÇÉ«µÈ¼¶
+			Level = SourceActor->Execute_GetCharacterLevel(Spec.GetEffectContext().GetSourceObject());	// è·å–è§’è‰²ç­‰çº§
 		}
 	}
-	return 80.f + Level * 10.5f + Vigor * 2.5f;	// ·µ»Ø×î´óÉúÃüÖµ
+	return 80.f + Level * 50.5f + Vigor * 22.5f;	// è¿”å›æœ€å¤§ç”Ÿå‘½å€¼
 
 }

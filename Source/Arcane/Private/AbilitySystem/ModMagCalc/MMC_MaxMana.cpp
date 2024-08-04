@@ -8,7 +8,7 @@
 
 UMMC_MaxMana::UMMC_MaxMana()
 {
-	// ÎªÎÒÃÇÏëÒª²¶»ñµÄÊôĞÔ´´½¨Ò»¸öÊôĞÔ¶¨Òå£¬ÒòÎªÎÒÃÇµÄĞŞÊÎ·ûÊÇÓÃÀ´¼ÆËã×î´ó·¨Á¦ÖµµÄ£¬¶ø×î´ó·¨Á¦È¡¾öÓÚÖÇÁ¦£¬ËùÒÔÎÒÃÇĞèÒª²¶»ñÖÇÁ¦ÊôĞÔ
+	// ä¸ºæˆ‘ä»¬æƒ³è¦æ•è·çš„å±æ€§åˆ›å»ºä¸€ä¸ªå±æ€§å®šä¹‰ï¼Œå› ä¸ºæˆ‘ä»¬çš„ä¿®é¥°ç¬¦æ˜¯ç”¨æ¥è®¡ç®—æœ€å¤§æ³•åŠ›å€¼çš„ï¼Œè€Œæœ€å¤§æ³•åŠ›å–å†³äºæ™ºåŠ›ï¼Œæ‰€ä»¥æˆ‘ä»¬éœ€è¦æ•è·æ™ºåŠ›å±æ€§
 	IntelligenceDef.AttributeToCapture = UAuraAttributeSet::GetIntelligenceAttribute();
 	IntelligenceDef.AttributeSource = EGameplayEffectAttributeCaptureSource::Target;
 	IntelligenceDef.bSnapshot = false;
@@ -18,23 +18,23 @@ UMMC_MaxMana::UMMC_MaxMana()
 
 float UMMC_MaxMana::CalculateBaseMagnitude_Implementation(const FGameplayEffectSpec& Spec) const
 {
-	// 1: Cather tags from source and target £¨´ÓÀ´Ô´ºÍÄ¿±êÖĞ²¶»ñ±êÇ©£©
+	// 1: Cather tags from source and target ï¼ˆä»æ¥æºå’Œç›®æ ‡ä¸­æ•è·æ ‡ç­¾ï¼‰
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 
-	//2: Create EvaluationParameters £¨´´½¨ÆÀ¹À²ÎÊı£©
-	FAggregatorEvaluateParameters EvaluationParameters;	// ÆÀ¹À²ÎÊı
-	EvaluationParameters.SourceTags = SourceTags;	// À´Ô´±êÇ©
-	EvaluationParameters.TargetTags = TargetTags;	// Ä¿±ê±êÇ©
+	//2: Create EvaluationParameters ï¼ˆåˆ›å»ºè¯„ä¼°å‚æ•°ï¼‰
+	FAggregatorEvaluateParameters EvaluationParameters;	// è¯„ä¼°å‚æ•°
+	EvaluationParameters.SourceTags = SourceTags;	// æ¥æºæ ‡ç­¾
+	EvaluationParameters.TargetTags = TargetTags;	// ç›®æ ‡æ ‡ç­¾
 
-	// 3: Get Captured Attribute Magnitude £¨»ñÈ¡²¶»ñµÄÊôĞÔÊıÖµ£©
+	// 3: Get Captured Attribute Magnitude ï¼ˆè·å–æ•è·çš„å±æ€§æ•°å€¼ï¼‰
 	float Intelligence = 0.f;
 	GetCapturedAttributeMagnitude(IntelligenceDef, Spec, EvaluationParameters, Intelligence);
 
-	// 4: Clamp the value to be positive £¨½«ÖµÏŞÖÆÎªÕıÊı£©
+	// 4: Clamp the value to be positive ï¼ˆå°†å€¼é™åˆ¶ä¸ºæ­£æ•°ï¼‰
 	Intelligence = FMath::Max<float>(Intelligence, 0.f);
 
-	// 5: get the player level £¨»ñÈ¡Íæ¼ÒµÈ¼¶£©
+	// 5: get the player level ï¼ˆè·å–ç©å®¶ç­‰çº§ï¼‰
 	int32 Level = 1;
 	if (Spec.GetContext().GetSourceObject() && Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
 	{
@@ -44,6 +44,6 @@ float UMMC_MaxMana::CalculateBaseMagnitude_Implementation(const FGameplayEffectS
 		}
 	}
 
-	// 6£ºReturn the max mana £¨·µ»Ø×î´ó·¨Á¦Öµ£©
-	return 50.f + Level * 15.5f + Intelligence * 2.5f;
+	// 6ï¼šReturn the max mana ï¼ˆè¿”å›æœ€å¤§æ³•åŠ›å€¼ï¼‰
+	return 50.f + Level * 25.5f + Intelligence * 12.5f;
 }
