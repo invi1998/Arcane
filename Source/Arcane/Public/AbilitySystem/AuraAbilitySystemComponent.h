@@ -16,8 +16,11 @@ DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);	// 为�
 DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityInputTagChanged, const FGameplayTag& /* Input Tag */, bool /* Pressed */);	// 定义一个委托，用于在技能输入标签改变时调用
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged, const FGameplayTag& /* State Tag */, const FGameplayTag& /* Ability Tag */, const int32 /* Ability Level */);	// 定义一个委托，用于在技能状态改变时调用
 DECLARE_MULTICAST_DELEGATE_FourParams(FAbilitySlotChanged, const FGameplayTag& /* Ability Tag */, const FGameplayTag& /* Status */, const FGameplayTag& /* Slot Tag */, const FGameplayTag& /* Previous Slot Tag */);	// 定义一个委托，用于在技能槽改变时调用
+
 DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbilities, const FGameplayTag& /* Ability Tag */);	// 定义一个委托，用于在被动技能失效时调用
-DECLARE_MULTICAST_DELEGATE_TwoParams(FActivatePassiveEffect, const FGameplayTag& /* Ability Tag */, bool /* bActivate */);	// 定义一个委托，用于在被动效果激活或者失效时调用
+
+DECLARE_MULTICAST_DELEGATE_TwoParams(FActivatePassiveEffect, const FGameplayTag&, /* Ability Tag */bool /* 是否激活 */);		// 定义一个委托，用于在被动效果激活或者失效时调用
+
 // 该委托用于广播技能状态（开始施法，施法中，施法结束）
 DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityCastStart, const FGameplayTag& /* Ability Tag */);
 DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityCastEnd, const FGameplayTag& /* Ability Tag */);
@@ -42,10 +45,8 @@ public:
 	FAbilityStatusChanged AbilityStatusChangedDelegate;	// 定义一个委托，用于在技能状态改变时调用
 	FAbilitySlotChanged AbilitySlotChangedDelegate;	// 定义一个委托，用于在技能槽改变时调用
 
-	UPROPERTY(BlueprintAssignable)
 	FDeactivatePassiveAbilities DeactivatePassiveAbilitiesDelegate;	// 定义一个委托，用于在被动技能失效时调用
-
-	UPROPERTY(BlueprintAssignable)
+	
 	FActivatePassiveEffect ActivatePassiveEffectDelegate;	// 定义一个委托，用于在被动效果激活或者失效时调用
 
 	FAbilityCastStart AbilityCastStartDelegate;	// 定义一个委托，用于在技能释放开始时调用

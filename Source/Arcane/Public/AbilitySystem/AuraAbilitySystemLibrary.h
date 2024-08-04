@@ -228,6 +228,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayMechanice")
 	static FVector GetPositionByAngleAndRadius(const FVector& Origin, const FVector& Forward, float Angle, float Radius);
 
-
-
+	// 传入ScalableFloat和等级，获取最终值
+	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|GameplayMechanice", meta = (DefaultToSelf = "WorldContextObject"))
+	static float GetFinalValueByScalableFloat(const UObject* WorldContextObject, const FScalableFloat& ScalableFloat, int32 Level);
 };

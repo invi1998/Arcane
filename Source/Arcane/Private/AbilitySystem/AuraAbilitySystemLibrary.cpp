@@ -719,3 +719,9 @@ FVector UAuraAbilitySystemLibrary::GetPositionByAngleAndRadius(const FVector& Or
 	return Position;
 }
 
+float UAuraAbilitySystemLibrary::GetFinalValueByScalableFloat(const UObject* WorldContextObject,
+	const FScalableFloat& ScalableFloat, int32 Level)
+{
+	return ScalableFloat.GetValueAtLevel(Level);
+}
+

@@ -29,32 +29,32 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	GetAuraPS()->OnAttributePointChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnAttributePointsChanged);	// 添加属性点改变的委托
 	GetAuraPS()->OnSkillPointChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnSkillPointsChanged);	// 添加技能点改变的委托
 
-	GetAuraASC()->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetHealthAttribute()).AddLambda( 
-		[this](const FOnAttributeChangeData& Data)->void
-		{
-			OnHealthChanged.Broadcast(Data.NewValue);	// 广播生命值改变
-		});	// 添加生命值改变的委托
-
-	GetAuraASC()->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetMaxHealthAttribute()).AddLambda(
-		[this](const FOnAttributeChangeData& Data)->void
-		{
-			OnMaxHealthChanged.Broadcast(Data.NewValue);	// 广播最大生命值改变
-		});	// 添加最大生命值改变的委托)
-
-	GetAuraASC()->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetManaAttribute()).AddLambda(
-		[this](const FOnAttributeChangeData& Data)->void
-		{
-			OnManaChanged.Broadcast(Data.NewValue);	// 广播法力值改变
-		});	// 添加法力值改变的委托)
-
-	GetAuraASC()->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetMaxManaAttribute()).AddLambda(
-		[this](const FOnAttributeChangeData& Data)->void
-		{
-			OnMaxManaChanged.Broadcast(Data.NewValue);	// 广播最大法力值改变
-		});	// 添加最大法力值改变的委托)
-
 	if (GetAuraASC())
 	{
+		GetAuraASC()->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)->void
+			{
+				OnHealthChanged.Broadcast(Data.NewValue);	// 广播生命值改变
+			});	// 添加生命值改变的委托
+
+		GetAuraASC()->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetMaxHealthAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)->void
+			{
+				OnMaxHealthChanged.Broadcast(Data.NewValue);	// 广播最大生命值改变
+			});	// 添加最大生命值改变的委托)
+
+		GetAuraASC()->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetManaAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)->void
+			{
+				OnManaChanged.Broadcast(Data.NewValue);	// 广播法力值改变
+			});	// 添加法力值改变的委托)
+
+		GetAuraASC()->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetMaxManaAttribute()).AddLambda(
+			[this](const FOnAttributeChangeData& Data)->void
+			{
+				OnMaxManaChanged.Broadcast(Data.NewValue);	// 广播最大法力值改变
+			});	// 添加最大法力值改变的委托)
+
 		GetAuraASC()->AbilitySlotChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnAbilitySlotChange);	// 添加技能槽改变的委托
 
 		GetAuraASC()->EffectAssetTags.AddLambda(
@@ -122,7 +122,8 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 			);
 		}
 
-		
+		GetAuraASC()->DeactivatePassiveAbilitiesDelegate.AddUObject(this, &UOverlayWidgetController::OnPassiveAbilityDeactivate);	// 添加被动技能失效的委托
+		GetAuraASC()->ActivatePassiveEffectDelegate.AddUObject(this, &UOverlayWidgetController::OnPassiveEffectActivate);	// 添加被动效果激活的委托
 	}
 
 }
@@ -175,5 +176,15 @@ void UOverlayWidgetController::OnAbilitySlotChange(const FGameplayTag& AbilityTa
 	AbilityInfo.StateTag = StatusTag;	// 设置技能状态标签
 	AbilityInfo.InputTag = SlotTag;	// 设置输入标签
 	AbilityInfoDelegate.Broadcast(AbilityInfo);	// 广播技能信息
+}
+
+void UOverlayWidgetController::OnPassiveAbilityDeactivate(const FGameplayTag& AbilityTag) const
+{
+	UIDeactivatePassiveAbilitiesDelegate.Broadcast(AbilityTag);	// 广播被动技能失效
+}
+
+void UOverlayWidgetController::OnPassiveEffectActivate(const FGameplayTag& AbilityTag, bool IsActivate) const
+{
+	UIActivatePassiveEffectDelegate.Broadcast(AbilityTag, IsActivate);	// 广播被动效果激活
 }
 

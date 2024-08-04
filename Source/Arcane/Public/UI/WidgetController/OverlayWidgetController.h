@@ -40,6 +40,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidge
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStatChangeSignature, int32, NewValue);		// 玩家状态改变委托，一个参数是新值（等级，属性点，技能点）
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerLevelChangeSignature, int32, NewValue, bool, bLevelUp);		// 玩家等级改变委托，一个参数是新值（等级，属性点，技能点）
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbilitiesSignature, const FGameplayTag&, PassiveTag /* Ability Tag */);	// 定义一个委托，用于在被动技能失效时调用
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FActivatePassiveEffectSignature, const FGameplayTag&, PassiveTag, /* Ability Tag */bool, IsActivate /* 是否激活 */);		// 定义一个委托，用于在被动效果激活或者失效时调用
+
+
+
 /**
  * OverlayWidgetController, 叠加层控件控制器, 设置为BlueprintType, Blueprintable，是因为我们希望在蓝图中使用它
  */
@@ -84,6 +91,12 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="GAS|Message")		// 设置为蓝图可分配，分类为GAS下的Attributes
 	FMessageWidgetRowSignature MessageWidgetRowDelegate;		// 消息小部件 行委托
 
+	UPROPERTY(BlueprintAssignable, Category="GAS|Abilities")		// 设置为蓝图可分配，分类为GAS下的Abilities
+	FDeactivatePassiveAbilitiesSignature UIDeactivatePassiveAbilitiesDelegate;		// 被动技能失效委托
+
+	UPROPERTY(BlueprintAssignable, Category="GAS|Abilities")		// 设置为蓝图可分配，分类为GAS下的Abilities
+	FActivatePassiveEffectSignature UIActivatePassiveEffectDelegate;		// 激活被动效果委托
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Widget Data")		// 设置为可编辑的任何地方，蓝图可读
 	TObjectPtr<UDataTable> MessageWidgetDataTable;		// 消息小部件数据表
@@ -100,6 +113,10 @@ protected:
 	void OnSkillPointsChanged(int32 NewSkillPoints) const;		// 当技能点改变时
 
 	void OnAbilitySlotChange(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& OldSlotTag) const;		// 当能力槽改变时
+
+	void OnPassiveAbilityDeactivate(const FGameplayTag& AbilityTag) const;		// 当被动技能失效时
+
+	void OnPassiveEffectActivate(const FGameplayTag& AbilityTag, bool IsActivate) const;		// 当被动效果激活时
 
 };
 
