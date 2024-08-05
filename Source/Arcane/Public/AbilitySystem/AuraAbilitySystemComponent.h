@@ -78,6 +78,7 @@ public:
 	FGameplayTag GetStatusTagByAbilityTag(const FGameplayTag& AbilityTag);	// 通过能力标签获取状态标签
 	FGameplayTag GetInputTagByAbilityTag(const FGameplayTag& AbilityTag);	// 通过能力标签获取输入标签
 	FGameplayTag GetAbilityTagByInputTag(const FGameplayTag& InputTag);		// 通过输入标签获取能力标签
+	FGameplayAbilitySpec* FindAbilitySpecByInputTag(const FGameplayTag& InputTag);	// 通过输入标签查找能力
 	FGameplayAbilitySpec* FindAbilitySpecByTag(const FGameplayTag& AbilityTag);	// 通过标签查找能力
 	bool IsEmptySlot(const FGameplayTag& SlotTag);	// 指定插槽是否为空
 	bool IsPassiveAbility(const FGameplayAbilitySpec* Spec) const;	// 是否是被动技能

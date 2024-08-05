@@ -69,24 +69,24 @@ private:
 	int32 Level = 1;		// 玩家等级
 
 	UFUNCTION()
-	void OnRep_Level(int32 OldLevel);	// 当玩家等级被复制时调用
+	void OnRep_Level(int32 OldLevel) const;	// 当玩家等级被复制时调用
 
 	UPROPERTY(ReplicatedUsing = OnRep_EXP, VisibleAnywhere, Category = "Attributes")
 	int32 EXP = 0;		// 玩家经验
 
 	UFUNCTION()
-	void OnRep_EXP(int32 OldEXP);	// 当玩家经验被复制时调用
+	void OnRep_EXP(int32 OldEXP) const;	// 当玩家经验被复制时调用
 
 	UPROPERTY(ReplicatedUsing = OnRep_AttributePoint, VisibleAnywhere, Category = "PlayerStat")
 	int32 AttributePoints = 0;		// 属性点
 
 	UFUNCTION()
-	void OnRep_AttributePoint(int32 OldAttributePoint);	// 当属性点被复制时调用
+	void OnRep_AttributePoint(int32 OldAttributePoint) const;	// 当属性点被复制时调用
 
 	UPROPERTY(ReplicatedUsing = OnRep_SkillPoint, VisibleAnywhere, Category = "PlayerStat")
 	int32 SkillPoints = 0;		// 技能点
 
 	UFUNCTION()
-	void OnRep_SkillPoint(int32 OldSkillPoint);	// 当技能点被复制时调用
+	void OnRep_SkillPoint(int32 OldSkillPoint) const;	// 当技能点被复制时调用
 
 };

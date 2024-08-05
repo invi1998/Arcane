@@ -156,7 +156,7 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 		{
 			if (AbilityClass)
 			{
-				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass.GetDefaultObject(), 1);
+				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
 				ASC->GiveAbility(AbilitySpec);
 			}
 		}
@@ -167,7 +167,7 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 		{
 			if (AbilityClass && CombatInterface)
 			{
-				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass.GetDefaultObject(), CombatInterface->Execute_GetCharacterLevel(ASC->GetAvatarActor()));
+				FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, ICombatInterface::Execute_GetCharacterLevel(ASC->GetAvatarActor()));
 				ASC->GiveAbility(AbilitySpec);
 			}
 		}

@@ -5,8 +5,6 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
-#include "AbilitySystem/Data/LevelUpInfo.h"
-#include "Interaction/PlayerInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Net/UnrealNetwork.h"
 
@@ -95,22 +93,22 @@ void AAuraPlayerState::SetSkillPoint(int32 Value)
 	OnSkillPointChangedDelegate.Broadcast(SkillPoints);
 }
 
-void AAuraPlayerState::OnRep_Level(int32 OldLevel)
+void AAuraPlayerState::OnRep_Level(int32 OldLevel) const
 {
 	OnLevelChangedDelegate.Broadcast(Level, true);
 }
 
-void AAuraPlayerState::OnRep_EXP(int32 OldEXP)
+void AAuraPlayerState::OnRep_EXP(int32 OldEXP) const
 {
 	OnExpChangedDelegate.Broadcast(EXP);
 }
 
-void AAuraPlayerState::OnRep_AttributePoint(int32 OldAttributePoint)
+void AAuraPlayerState::OnRep_AttributePoint(int32 OldAttributePoint) const
 {
 	OnAttributePointChangedDelegate.Broadcast(AttributePoints);
 }
 
-void AAuraPlayerState::OnRep_SkillPoint(int32 OldSkillPoint)
+void AAuraPlayerState::OnRep_SkillPoint(int32 OldSkillPoint) const
 {
 	OnSkillPointChangedDelegate.Broadcast(SkillPoints);
 }
