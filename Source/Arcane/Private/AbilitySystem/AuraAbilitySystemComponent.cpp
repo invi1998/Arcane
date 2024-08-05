@@ -34,7 +34,7 @@ void UAuraAbilitySystemComponent::MulticastActivatePassiveEffect_Implementation(
 
 void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UAuraGameplayAbility>>& StartupAbilities)
 {
-	for (TSubclassOf<UGameplayAbility> Ability : StartupAbilities)
+	for (const TSubclassOf<UGameplayAbility> Ability : StartupAbilities)
 	{
         // 创建能力
         FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability, 1);
@@ -80,6 +80,7 @@ void UAuraAbilitySystemComponent::AddCharacterAbilitiesFromSaveData(UMenuSaveGam
 
         FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, Data.AbilityLevel);
 
+		ClearSlot(&AbilitySpec);    // 清除槽
 		AbilitySpec.DynamicAbilityTags.AddTag(Data.AbilitySlot);    // 添加槽标签
 		AbilitySpec.DynamicAbilityTags.AddTag(Data.AbilityStatus);    // 添加技能状态标签
 
@@ -123,7 +124,6 @@ void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
 				// 5： 判断能力是否已经激活
                 if (Spec.IsActive())
                 {
-					UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("TTTT IsActive AbilityInputTagPressed: %s, %s"), *InputTag.ToString(), *Spec.Ability->GetName()), true, true, FLinearColor::Green, 5.0f);
 					// InvokeReplicatedEvent是一个复制事件，它会在服务端调用，然后在客户端广播。这是我们能对按下和释放事件进行预测响应的原因。
                     InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());    // 调用复制事件
 				}
@@ -182,6 +182,22 @@ void UAuraAbilitySystemComponent::AbilityInputTagHeld(const FGameplayTag& InputT
             }
         }
     }
+}
+
+TArray<FGameplayTag> UAuraAbilitySystemComponent::GetAllInputTagsByAbilitySpec(const FGameplayAbilitySpec& Spec)
+{
+	TArray<FGameplayTag> InputTags;    // 输入标签数组
+	// 1：遍历所有的动态能力标签
+	for (const FGameplayTag& Tag : Spec.DynamicAbilityTags)
+	{
+		// 2：检测标签是否是输入标签
+		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("InputTag"))))
+		{
+			InputTags.Add(Tag);    // 添加标签
+		}
+	}
+
+	return InputTags;    // 返回输入标签数组
 }
 
 void UAuraAbilitySystemComponent::ForEachAbility(const FForEachAbility& Delegate)
@@ -472,7 +488,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
         const FGameplayTag& StatusTag = GetAbilityStateTag(*AbilitySpec);    // 获取技能状态标签
         const FAuraGameplayTags& AuraTags = FAuraGameplayTags::Get();    // 获取AuraGameplayTags
 
-        if (StatusTag.IsValid() && (StatusTag.MatchesTagExact(AuraTags.Abilities_State_Eligible) || StatusTag.MatchesTagExact(AuraTags.Abilities_State_UnLocked) || StatusTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_State_Equipped)))
+        if (StatusTag.MatchesTagExact(AuraTags.Abilities_State_UnLocked) || StatusTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_State_Equipped))
         {
             if (!IsEmptySlot(SlotTag))
             {

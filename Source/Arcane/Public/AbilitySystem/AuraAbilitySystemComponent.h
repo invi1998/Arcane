@@ -68,6 +68,7 @@ public:
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);	// 技能输入标签按下
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);	// 技能输入标签释放
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);	// 技能输入标签按住
+	TArray<FGameplayTag> GetAllInputTagsByAbilitySpec(const FGameplayAbilitySpec& Spec);	// 通过AbilitySpec获取所有的输入标签
 
 	void ForEachAbility(const FForEachAbility& Delegate);	// 为每个能力调用一个委托)
 

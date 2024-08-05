@@ -447,6 +447,8 @@ void AAuraCharacter::AddCharacterAbilities() const
 {
 	Super::AddCharacterAbilities();
 
+	if (!HasAuthority()) return;
+
 	if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
 	{
 		if (const AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
