@@ -127,15 +127,7 @@ void UAuraAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inp
 					// InvokeReplicatedEvent是一个复制事件，它会在服务端调用，然后在客户端广播。这是我们能对按下和释放事件进行预测响应的原因。
                     InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());    // 调用复制事件
 				}
-				else
-				{
-					UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("IsActive NOT AbilityInputTagPressed: %s, %s"), *InputTag.ToString(), *Spec.Ability->GetName()), true, true, FLinearColor::Red, 5.0f);
-				}
             }
-			else
-			{
-				UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("AbilityInputTagPressed: %s"), *InputTag.ToString()), true, true, FLinearColor::Red, 5.0f);
-			}
 		}
 	}
 }
@@ -456,8 +448,7 @@ void UAuraAbilitySystemComponent::UpdateAbilityStateTags(int32 NewLevel)
     	if (NewLevel >= Info.LevelRequired && Info.AbilityTag.IsValid())
     	{
     		// 如果角色的等级大于等于技能的等级需求，那么就判断该技能是否已经添加
-			FGameplayAbilitySpec* Spec = FindAbilitySpecByTag(Info.AbilityTag);
-			if (!Spec)
+            if (FindAbilitySpecByTag(Info.AbilityTag) == nullptr)
 			{
 				// 如果技能还没有添加，那么就将技能状态设置为已解锁
                 FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.AbilityClass, 1);

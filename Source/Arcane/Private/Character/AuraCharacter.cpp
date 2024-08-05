@@ -442,6 +442,19 @@ void AAuraCharacter::LoadProgress()
 		}
 	}
 }
+
+void AAuraCharacter::AddCharacterAbilities() const
+{
+	Super::AddCharacterAbilities();
+
+	if (UAuraAbilitySystemComponent* AuraAbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		if (const AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState()))
+		{
+			AuraAbilitySystemComponent->UpdateAbilityStateTags(AuraPlayerState->GetPlayerLevel());
+		}
+	}
+}
 ;
 void AAuraCharacter::InitAbilityActorInfo()
 {

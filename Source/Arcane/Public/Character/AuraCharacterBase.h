@@ -151,7 +151,7 @@ protected:
 	/*
 	 * Ability
 	 */
-	void AddCharacterAbilities();	// 添加角色能力
+	virtual void AddCharacterAbilities() const;	// 添加角色能力
 
 
 	UPROPERTY(BlueprintReadOnly, Category = "Combat")

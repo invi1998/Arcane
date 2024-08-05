@@ -11,6 +11,7 @@
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "AbilitySystem/Passive/PassiveNiagaraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Interaction/PlayerInterface.h"
 #include "Net/UnrealNetwork.h"
 
 AAuraCharacterBase::AAuraCharacterBase()
@@ -312,7 +313,7 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 	ApplyEffectToSelf(DefaultVitalGameplayEffectClass, 1.f);
 }
 
-void AAuraCharacterBase::AddCharacterAbilities()
+void AAuraCharacterBase::AddCharacterAbilities() const
 {
 	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
 

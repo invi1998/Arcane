@@ -63,6 +63,9 @@ public:
 
 	FTimerHandle DeathTimerHandle;	// 死亡定时器句柄
 
+protected:
+	virtual void AddCharacterAbilities() const override;	// 添加角色能力
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> TopDownCameraComponent;	// 顶部相机组件
