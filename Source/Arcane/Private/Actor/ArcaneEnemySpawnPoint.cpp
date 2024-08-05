@@ -12,7 +12,7 @@ void AArcaneEnemySpawnPoint::SpawnEnemy()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;	// 如果可能则调整，但总是生成
 
-		if (AAuraEnemy* Enemy = GetWorld()->SpawnActor<AAuraEnemy>(EnemyClass, GetActorLocation(), GetActorRotation(), SpawnParams))
+		if (AAuraEnemy* Enemy = GetWorld()->SpawnActorDeferred<AAuraEnemy>(EnemyClass, GetActorTransform()))
 		{
 			Enemy->SetCharacterClass(EnemyCharacterClass);
 			Enemy->SetCharacterLevel(EnemyLevel);
