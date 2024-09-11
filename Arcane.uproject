@@ -43,6 +43,10 @@
 		{
 			"Name": "ModelViewViewModel",
 			"Enabled": true
+		},
+		{
+			"Name": "SuperManager",
+			"Enabled": true
 		}
 	]
 }

@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "SuperManager",
+	"Description": "在虚幻引擎 5 中通过不同的编辑器模块和 Slate 小部件使用 C++创建自定义编辑器工具，辅助用户快速管理资产和Actor",
+	"Category": "Super Manager",
+	"CreatedBy": "INVI_1998",
+	"CreatedByURL": "https://github.com/invi1998/UE5_Slate",
+	"DocsURL": "https://github.com/invi1998/UE5_Slate",
+	"MarketplaceURL": "",
+	"SupportURL": "https://discord.gg/uNbQkXwr",
+	"EngineVersion": "5.3.0",
+	"CanContainContent": true,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "SuperManager",
+			"Type": "Editor",
+			"LoadingPhase": "PreDefault"
+		}
+	]
+}
